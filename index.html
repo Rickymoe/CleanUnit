@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+document.documentElement.classList.add("js");
+// Nødluke: hvis js/main.js 404-er eller kaster før avdekkingen kjører,
+// blir .seksjon__sveip-overlayene aldri fjernet. Etter 1,2 s uten flagg: fjern dem.
+addEventListener("load", function () {
+  setTimeout(function () {
+    if (window.__sideKjort) return;
+    document.querySelectorAll(".seksjon").forEach(function (e) { e.classList.add("sveipt"); });
+  }, 1200);
+});
+</script>
+<script nomodule>document.documentElement.classList.remove("js")</script>
+<title>Clean Unit – renhold i Oslo og Stavanger</title>
+<meta name="description" content="Clean Unit Renhold AS og Clean Unit Stavanger AS. Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører.">
+<meta name="theme-color" content="#0A5C5B">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Clean Unit – renhold i Oslo og Stavanger">
+<meta property="og:description" content="Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører.">
+<meta property="og:image" content="https://rickymoe.github.io/CleanUnit/bilder/og-cleanunit.png">
+<meta property="og:url" content="https://rickymoe.github.io/CleanUnit/">
+<meta property="og:locale" content="nb_NO">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="bilder/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="bilder/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="bilder/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main>
+<!-- Task 3-6 fyller inn <header class="hero seksjon"> og seksjonene her -->
+</main>
+<script type="module">
+  import { initSider } from './js/main.js';
+  initSider();
+</script>
+</body>
+</html>

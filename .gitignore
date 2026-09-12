@@ -1,0 +1,6 @@
+docs/superpowers/
+.superpowers/
+bilder/_kilde/
+lab-*.html
+.DS_Store
+*.swp
