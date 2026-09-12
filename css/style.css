@@ -119,3 +119,23 @@ html.js .seksjon.sveipt .seksjon__sveip {
 }
 .tillit-liste h3 { font-size: var(--t-md); color: var(--teal-mork); }
 .tillit-liste p { margin-top: var(--s-2); color: var(--tekst-svak); font-size: var(--t-sm); }
+
+.stopp--om { padding-block: var(--seksjon-y); background: var(--teal-lys); }
+.stopp--om .stopp__lede { max-width: 60ch; margin-top: var(--s-4); color: var(--tekst-svak); }
+.side-footer { background: var(--teal-mork); color: #fff; padding-block: var(--s-8); }
+.side-footer .wrap { display: grid; gap: var(--s-6); justify-items: center; text-align: center; }
+.side-footer__merke { font: 800 var(--t-2xl)/1 var(--sans); margin: 0; }
+.side-footer__kontorer {
+  display: grid; gap: var(--s-6); justify-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); width: 100%;
+}
+.side-footer__kontorer h3 { color: #fff; font-size: var(--t-lg); }
+.side-footer__kontorer p { margin-top: var(--s-1); opacity: .85; font-size: var(--t-sm); }
+.side-footer__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); justify-content: center; margin-top: var(--s-4); }
+.side-footer .knapp { border-color: #fff; }
+.side-footer .knapp--fyll { background: #fff; color: var(--teal-mork); }
+.side-footer .knapp--omriss { color: #fff; }
+.side-footer :where(a, button):focus-visible { outline-color: #fff; }
+@media (hover: hover) {
+  .side-footer .knapp--omriss:hover { background: #fff; color: var(--teal-mork); }
+}
