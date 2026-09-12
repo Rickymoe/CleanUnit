@@ -36,6 +36,33 @@ addEventListener("load", function () {
 <body>
 <main>
 <!-- Task 3-6 fyller inn <header class="hero seksjon"> og seksjonene her -->
+<header class="hero seksjon">
+  <span class="seksjon__sveip" aria-hidden="true"></span>
+  <div class="hero__kart" aria-hidden="true">
+    <img src="bilder/hero-kart.png" alt="" width="768" height="768">
+  </div>
+  <div class="wrap hero__innhold">
+    <h1 class="hero__tittel">Vi kommer til deg — uansett hvor</h1>
+    <p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Barnehager, skoler, bilforhandlere og kontorer i Oslo og Stavanger. Direkte ansatte, ingen underleverandører.</p>
+    <div class="hero__knapper">
+      <a class="knapp knapp--fyll" href="tel:+4721555680">Ring Oslo – 21 55 56 80</a>
+      <a class="knapp knapp--omriss" href="tel:+4790065009">Ring Stavanger – 900 65 009</a>
+    </div>
+    <figure class="hero__bil" aria-hidden="true">
+      <!-- Pickup i strektegning-stil, kost+spann i lasteplanet — Ricky bygger
+           SVG-en visuelt i egen økt (samme prosess som Team-klinikkens
+           logo-figurer). Plassholder: enkel boks-silhuett til mekanikken
+           er verifisert, erstattes før side vises fram. -->
+      <svg viewBox="0 0 320 180" width="320" height="180" role="presentation">
+        <rect x="20" y="90" width="220" height="60" rx="10" fill="var(--teal)"/>
+        <rect x="170" y="50" width="70" height="40" rx="8" fill="var(--teal-mork)"/>
+        <circle cx="70" cy="155" r="18" fill="var(--tekst)"/>
+        <circle cx="200" cy="155" r="18" fill="var(--tekst)"/>
+      </svg>
+    </figure>
+    <p class="hero__kart-kreditt">Kart © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>-bidragsytere</p>
+  </div>
+</header>
 </main>
 <script type="module">
   import { initSider } from './js/main.js';
