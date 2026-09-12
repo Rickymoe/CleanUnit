@@ -20,6 +20,11 @@
   --logo-gra: #B6B6B6;
   --logo-turkis-lys: #87CAC9;
   --logo-turkis-mork: #008789;
+  /* Bokstavene trengte tydeligere farger enn selve logobildet hadde — disse
+     to er bevisst mørkere/mer mettet enn originalen (Ricky: "vi tar sjansen"),
+     mens boble-fargene over beholdes uendret. */
+  --logo-tekst-gra: #8A8A8A;
+  --logo-tekst-turkis: #178F86;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; overflow-x: clip; background: var(--base); }
@@ -71,7 +76,7 @@ a { color: inherit; }
 /* Steg 3: Hero */
 .hero {
   position: relative; overflow: hidden;
-  min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-start;
+  min-height: 100svh; display: flex; flex-direction: column; justify-content: center;
   padding-top: clamp(3rem, 12vh, 6rem); padding-bottom: clamp(2rem, 8vh, 5rem);
   background: var(--base);
 }
@@ -93,41 +98,26 @@ a { color: inherit; }
   width: 100%; height: auto; max-height: 100%; object-fit: contain;
   object-position: bottom; display: block; margin-inline: auto;
 }
-/* Varebil + kost/mopp/spann i det åpne midtrommet mellom byene — AI-generert
+/* Varebil + kost/mopp/spann — øvre høyre hjørne av heroen, egen posisjonert
+   boks (ikke i innholds-flyten sammen med overskrift/ingress). AI-generert
    (bilder/bil.png, samme stil/prompt-tilnærming som Byer.png) for å matche
-   kvaliteten på by-illustrasjonen. Boblene er derimot VÅRE egne (enkle,
-   posisjonerte spans), lagt oppå bildet, slik at de kan animeres ekte og
-   kontinuerlig — det AI ikke kan gi oss i et stillbilde. */
+   kvaliteten på by-illustrasjonen. Boblene (tidligere animert fra spannet)
+   er fjernet på Rickys ønske. Bredden holdes tydelig under logoens egen
+   bredde (~260px på desktop), siden den ellers ble for dominerende. */
 .hero__verktoy {
-  /* Nå et vanlig blokk-barn inni .hero__innhold (ikke lenger egen flex-
-     søsken) — margin-inline:auto sentrerer den normalt innenfor wrap-boksen,
-     som selv er sentrert på hele heroen. */
-  position: relative; z-index: 1; pointer-events: none;
-  /* Minimum senket fra 180px til 70px — det gamle gulvet var det som holdt
-     bilen kunstig stor på smale skjermer (der 20vw uansett ville gitt en
-     naturlig mindre verdi), mens byene ved siden av skalerte helt fint. */
-  width: clamp(65px, 14vw, 190px); margin: var(--s-3) auto 0;
+  position: absolute; top: clamp(1.5rem, 6vh, 3rem); right: clamp(1rem, 4vw, 3rem);
+  z-index: 1; pointer-events: none;
+  width: clamp(90px, 10vw, 160px);
 }
 .hero__verktoy img { width: 100%; height: auto; display: block; }
-.verktoy__bobler { position: absolute; inset: 0; }
-.v-boble {
-  position: absolute; left: var(--x); top: var(--y);
-  width: 3.2%; aspect-ratio: 1; border-radius: 50%;
-  background: var(--teal-lys); opacity: 0;
-  transform: translate(-50%, -50%);
-}
-.v-boble--2 { width: 2.2%; background: var(--teal-mork); }
-.v-boble--3 { width: 4.2%; background: var(--teal-lys); }
-html.js .v-boble { animation: verktoy-boble-stig 3s ease-in infinite; }
-.v-boble--2 { animation-delay: 1s; }
-.v-boble--3 { animation-delay: 2s; }
-@keyframes verktoy-boble-stig {
-  0%   { transform: translate(-50%, -50%) translateY(0) scale(.7); opacity: 0; }
-  18%  { opacity: .9; }
-  100% { transform: translate(-50%, -50%) translateY(-34px) scale(1.1); opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  html.js .v-boble { animation: none; opacity: .8; }
+/* "CLEANUNIT" på dørpanelet — ekte tekst, ikke del av AI-bildet (som ikke
+   kan gjengi tekst pålitelig). Målt i bilder/bil.png: panelet ligger omtrent
+   38–61% av bredden, 40–60% av høyden. */
+.verktoy__merke {
+  position: absolute; left: 49%; top: 50%; transform: translate(-50%, -50%);
+  width: 21%; font: 700 clamp(4px, 1vw, 6px)/1 var(--sans);
+  letter-spacing: .02em; color: var(--tekst); text-align: center;
+  white-space: nowrap;
 }
 
 /* Knappene ligger IKKE i .hero__innhold sin sentrerte flyt — de er plassert
@@ -165,8 +155,8 @@ html.js .v-boble { animation: verktoy-boble-stig 3s ease-in infinite; }
   font: 700 clamp(1.75rem, 5vw, 2.75rem) "Poppins", var(--sans);
   letter-spacing: .2em; -webkit-font-smoothing: antialiased;
 }
-.logo__clean { color: var(--logo-gra); }
-.logo__unit { color: var(--logo-turkis-lys); }
+.logo__clean { color: var(--logo-tekst-gra); }
+.logo__unit { color: var(--logo-tekst-turkis); }
 .logo__i-hylse { position: relative; display: inline-block; }
 .logo__bokstav {
   display: inline-block; transform-style: preserve-3d; opacity: 1;
@@ -216,14 +206,26 @@ html.js .bobler.vist .boble--lys  { opacity: 1; transition-delay: .5s; }
 .hero__innhold { position: relative; z-index: 1; }
 .hero__kart-vannmerke {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: clamp(320px, 60vw, 620px); height: auto; max-width: none;
+  width: clamp(500px, 85vw, 1000px); aspect-ratio: 1; max-width: none;
   z-index: -1; pointer-events: none;
   /* Radial maske — toner ut mot kantene i stedet for å vise en synlig
-     firkant-grense der kartutsnittet slutter. */
-  mask-image: radial-gradient(ellipse at center, black 35%, transparent 72%);
-  -webkit-mask-image: radial-gradient(ellipse at center, black 35%, transparent 72%);
+     firkant-grense der kartutsnittet slutter. Asymmetrisk (bredere/mer
+     synlig øverst, smalner nedover) à la skissen Ricky tegnet. Ligger på
+     HELE gruppen (kart + markører), så de fades sammen konsekvent. */
+  mask-image: radial-gradient(ellipse 65% 85% at 50% 22%, black 15%, transparent 68%);
+  -webkit-mask-image: radial-gradient(ellipse 65% 85% at 50% 22%, black 15%, transparent 68%);
 }
-.hero__tittel { font-size: clamp(2rem, 5vw, var(--t-3xl)); max-width: 20ch; }
+.kart-vannmerke__kart { width: 100%; height: 100%; max-width: none; display: block; }
+/* Små bil-markører spredt på kartet — "vi kjører her". Egen, litt lavere
+   opasitet enn hovedbilen (som er skarp/tydelig i forgrunnen), for å holde
+   dem tilbake som del av vannmerket, ikke konkurrere med den. */
+.kart-markor {
+  position: absolute; left: var(--x); top: var(--y);
+  width: 7%; max-width: none; height: auto;
+  transform: translate(-50%, -50%);
+  opacity: .55;
+}
+.hero__tittel { font-size: clamp(2rem, 5vw, var(--t-3xl)); max-width: 20ch; color: var(--teal-mork); }
 .hero__ingress { max-width: 42ch; color: var(--tekst-svak); margin-top: var(--s-6); font-size: var(--t-md); }
 
 .tjeneste-grid, .tillit-liste {
