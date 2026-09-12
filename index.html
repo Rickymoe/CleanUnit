@@ -57,8 +57,33 @@ addEventListener("load", function () {
     </p>
   </div>
   <div class="wrap hero__innhold">
-    <h1 class="hero__tittel">Vi kommer til deg — uansett hvor</h1>
-    <p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Barnehager, skoler, bilforhandlere og kontorer i Oslo og Stavanger. Direkte ansatte, ingen underleverandører.</p>
+    <!-- Utydelig kart-vannmerke bak bil+tekst — ekte OSM-utsnitt (sentrum
+         Oslo), sterkt avmettet/lysnet og lav, fast alpha bakt inn i selve
+         PNG-en. Rent dekorativt, ligger under alt annet i denne wrap-en. -->
+    <picture>
+      <source srcset="bilder/hero-kart-vannmerke.webp" type="image/webp">
+      <img class="hero__kart-vannmerke" src="bilder/hero-kart-vannmerke.png" alt="" width="768" height="768" aria-hidden="true">
+    </picture>
+    <h1 class="hero__tittel">Renhold i Oslo og Stavanger</h1>
+    <!-- Bilen ligger INNI samme wrap som overskrift/ingress (ikke som egen
+         flex-søsken) — ellers ville .wrap sin egen krymp-til-innhold+auto-
+         sentrering gitt overskrift og ingress ulik venstrekant, siden de da
+         hver for seg sentrerer en boks tilpasset sin egen bredde. -->
+    <div class="hero__verktoy" aria-hidden="true">
+      <picture>
+        <source srcset="bilder/bil.webp" type="image/webp">
+        <img src="bilder/bil.png" alt="" width="1448" height="1086">
+      </picture>
+      <!-- Boblene er våre egne (ikke del av AI-bildet) slik at de kan
+           animeres ekte og kontinuerlig — posisjonert over spannets kant,
+           målt i selve bildet (~28%/47% av bredde/høyde). -->
+      <span class="verktoy__bobler">
+        <span class="v-boble v-boble--1" style="--x: 27%; --y: 47%;"></span>
+        <span class="v-boble v-boble--2" style="--x: 31%; --y: 44%;"></span>
+        <span class="v-boble v-boble--3" style="--x: 24%; --y: 41%;"></span>
+      </span>
+    </div>
+    <p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte – ingen underleverandører.</p>
   </div>
   <!-- Plassert under hver sin by i illustrasjonen (bilder/Byer.png), ikke i
        den vanlige innholds-flyten — se .hero__knapper i style.css. -->
