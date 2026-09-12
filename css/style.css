@@ -54,3 +54,20 @@ a { color: inherit; }
 :where(a, button):focus-visible {
   outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 4px;
 }
+/* Steg 2: «Ren sveip» — signaturgrepet som brukes på hver seksjon nedover siden */
+.seksjon { position: relative; overflow: hidden; }
+.seksjon__sveip {
+  position: absolute; inset: -4% -4%; z-index: 2; pointer-events: none;
+  background: linear-gradient(100deg, var(--teal) 0%, var(--teal-mork) 100%);
+  transform: translateX(0) skewX(-8deg);
+  transform-origin: top left;
+}
+html.js .seksjon__sveip {
+  transition: transform 1s cubic-bezier(.65, 0, .35, 1);
+}
+html.js .seksjon.sveipt .seksjon__sveip {
+  transform: translateX(115%) skewX(-8deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .seksjon__sveip { display: none; }
+}
