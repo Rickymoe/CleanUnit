@@ -110,3 +110,12 @@ html.js .seksjon.sveipt .seksjon__sveip {
 }
 .tjeneste-kort h3 { color: var(--teal-mork); }
 .tjeneste-kort p { margin-top: var(--s-2); color: var(--tekst-svak); font-size: var(--t-sm); }
+
+.stopp--tillit { padding-block: var(--seksjon-y); background: var(--base); }
+.tillit-liste {
+  list-style: none; margin: var(--s-6) 0 0; padding: 0;
+  display: grid; gap: var(--s-6);
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+.tillit-liste h3 { font-size: var(--t-md); color: var(--teal-mork); }
+.tillit-liste p { margin-top: var(--s-2); color: var(--tekst-svak); font-size: var(--t-sm); }
