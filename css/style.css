@@ -2,7 +2,7 @@
   --teal: #0E7C7B;
   --teal-mork: #0A5C5B;
   --teal-lys: #E6F5F4;
-  --base: #F7F9F9;
+  --base: #F3F5F7; /* matcher himmelfargen i to-byer-illustrasjonen (bilder/Byer.png) */
   --flate: #FFFFFF;
   --tekst: #1E2B2B;
   --tekst-svak: #55706E;
@@ -69,14 +69,44 @@ a { color: inherit; }
 }
 
 /* Steg 3: Hero */
-/* Hero har IKKE "ren sveip" (logoens entré er nok — sveipen brukes fortsatt
-   lenger ned på siden). Ingen kart/pickup lenger — kun logo + tekst + knapper,
-   så vanlig symmetrisk padding holder (boblene er nå små og faste, trenger
-   ikke ekstra klaring). */
 .hero {
-  min-height: 100svh; display: flex; flex-direction: column; justify-content: center;
-  padding-block: clamp(2rem, 8vh, 5rem);
+  position: relative; overflow: hidden;
+  min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-start;
+  padding-top: clamp(3rem, 12vh, 6rem); padding-bottom: clamp(2rem, 8vh, 5rem);
   background: var(--base);
+}
+/* To-byer-illustrasjon (Oslo/Holmenkollbakken venstre, Stavanger/Fargegaten+
+   Preikestolen høyre) — bunnforankret bakgrunn, med åpent rom i midten der
+   logo/overskrift ligger oppå. Løftet opp fra selve hero-bunnen (bottom, ikke
+   0) for å gi plass til knapperaden under. Fyller nesten hele bredden, kun
+   litt luft i kantene (venstre/høyre). Bevisst plass til flere tegninger
+   senere (Ricky: "muligvis noen flere tegninger"). */
+.hero__by {
+  position: absolute; left: clamp(1rem, 3vw, 2.5rem); right: clamp(1rem, 3vw, 2.5rem);
+  bottom: clamp(4.5rem, 13vh, 6.5rem); z-index: 0; pointer-events: none;
+  /* Selve bildefilen er beskjært (Python/PIL) til å fjerne det meste av den
+     tomme himmelen over landemerkene, så full bredde ikke lenger gir en
+     urimelig høy boks — object-fit:cover er ikke lenger nødvendig. */
+  max-height: 55vh;
+}
+.hero__by img {
+  width: 100%; height: auto; max-height: 100%; object-fit: contain;
+  object-position: bottom; display: block; margin-inline: auto;
+}
+/* Knappene ligger IKKE i .hero__innhold sin sentrerte flyt — de er plassert
+   direkte under hver sin by i illustrasjonen over (Oslo-klyngen sentrerer seg
+   rundt ~20% av bredden, Stavanger-klyngen rundt ~79%, målt i selve bildet). */
+.hero__knapper {
+  position: absolute; left: 0; right: 0; bottom: clamp(1.5rem, 4vh, 2.5rem);
+  z-index: 1; pointer-events: none;
+}
+.hero__knapper .knapp { position: absolute; bottom: 0; pointer-events: auto; white-space: nowrap; }
+.hero__knapp--oslo { left: 20%; transform: translateX(-50%); }
+.hero__knapp--stavanger { left: 79%; transform: translateX(-50%); }
+@media (hover: hover) {
+  /* .knapp:hover setter sin egen transform (løft), som ellers ville overskrevet
+     translateX(-50%) helt og fått knappen til å "hoppe" til høyre. */
+  .hero__knapp--oslo:hover, .hero__knapp--stavanger:hover { transform: translateX(-50%) translateY(-1px); }
 }
 /* Logo — først i heroens normale flyt, sentrert, med luft ned mot overskriften.
    Samme lag (z-index) som .hero__innhold, slik at den avdekkes sammen med resten. */
@@ -141,7 +171,6 @@ html.js .bobler.vist .boble--lys  { opacity: 1; transition-delay: .5s; }
 .hero__innhold { position: relative; z-index: 1; }
 .hero__tittel { font-size: clamp(2rem, 5vw, var(--t-3xl)); max-width: 20ch; }
 .hero__ingress { max-width: 42ch; color: var(--tekst-svak); margin-top: var(--s-4); font-size: var(--t-md); }
-.hero__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
 
 .tjeneste-grid, .tillit-liste {
   list-style: none; margin: var(--s-6) 0 0; padding: 0;

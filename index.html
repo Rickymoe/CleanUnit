@@ -40,6 +40,12 @@ addEventListener("load", function () {
 <body>
 <main>
 <header class="hero">
+  <div class="hero__by" aria-hidden="true">
+    <picture>
+      <source srcset="bilder/Byer.webp" type="image/webp">
+      <img src="bilder/Byer.png" alt="" width="1860" height="701">
+    </picture>
+  </div>
   <div class="hero__logo">
     <p class="logo" aria-label="CleanUnit">
       <span class="logo__clean" aria-hidden="true">
@@ -53,10 +59,12 @@ addEventListener("load", function () {
   <div class="wrap hero__innhold">
     <h1 class="hero__tittel">Vi kommer til deg — uansett hvor</h1>
     <p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Barnehager, skoler, bilforhandlere og kontorer i Oslo og Stavanger. Direkte ansatte, ingen underleverandører.</p>
-    <div class="hero__knapper">
-      <a class="knapp knapp--fyll" href="tel:+4721555680">Ring Oslo – 21 55 56 80</a>
-      <a class="knapp knapp--omriss" href="tel:+4790065009">Ring Stavanger – 900 65 009</a>
-    </div>
+  </div>
+  <!-- Plassert under hver sin by i illustrasjonen (bilder/Byer.png), ikke i
+       den vanlige innholds-flyten — se .hero__knapper i style.css. -->
+  <div class="hero__knapper">
+    <a class="knapp knapp--fyll hero__knapp--oslo" href="tel:+4721555680">Ring Oslo – 21 55 56 80</a>
+    <a class="knapp knapp--omriss hero__knapp--stavanger" href="tel:+4790065009">Ring Stavanger – 900 65 009</a>
   </div>
 </header>
 <section class="stopp--tjenester" id="tjenester">
