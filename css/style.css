@@ -59,45 +59,24 @@ a { color: inherit; }
 :where(a, button):focus-visible {
   outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 4px;
 }
-/* Steg 2: «Ren sveip» — signaturgrepet som brukes på hver seksjon nedover siden */
-.seksjon { position: relative; overflow: hidden; }
-.seksjon__sveip {
-  position: absolute; inset: -4% -4%; z-index: 2; pointer-events: none;
-  background: linear-gradient(100deg, var(--teal) 0%, var(--teal-mork) 100%);
-  transform: translateX(115%) skewX(-8deg); /* usynlig som standard (ingen/blokkert JS) */
-  transform-origin: top left;
-  display: none;
-}
-html.js .seksjon__sveip {
-  display: block;
-  transform: translateX(0) skewX(-8deg); /* dekker seksjonen til sveipt er satt */
-  transition: transform 1s cubic-bezier(.65, 0, .35, 1);
-}
-html.js .seksjon.sveipt .seksjon__sveip {
-  transform: translateX(115%) skewX(-8deg);
-}
+/* Signaturgrep for scroll-reveal fjernet 2026-09-12 (Ricky: alle forsøk —
+   full flate, backdrop-filter, smal stripe, clip-path-skjuling — forstyrret
+   lesing på én eller annen måte). Seksjonene vises nå rett fram, uten
+   reveal-animasjon. Kommer tilbake til dette med en ny idé senere. */
 @media (prefers-reduced-motion: reduce) {
-  /* Samme spesifisitet som html.js .seksjon__sveip, men senere i filen: vinner kappen
-     og holder overlayen skjult selv når html.js er satt (uten dette ville
-     display:block fra html.js-regelen slå igjennom pga. høyere spesifisitet). */
-  .seksjon__sveip, html.js .seksjon__sveip { display: none; }
   .knapp { transition: none; }
   .knapp:hover { transform: none; }
 }
 
 /* Steg 3: Hero */
+/* Hero har IKKE "ren sveip" (logoens entré er nok — sveipen brukes fortsatt
+   lenger ned på siden). Ingen kart/pickup lenger — kun logo + tekst + knapper,
+   så vanlig symmetrisk padding holder (boblene er nå små og faste, trenger
+   ikke ekstra klaring). */
 .hero {
   min-height: 100svh; display: flex; flex-direction: column; justify-content: center;
-  /* Toppen får ekstra luft utover den vanlige clampen: boblene stiger opp til
-     ~3.75em over logoens egen topp, og trenger den plassen for ikke å bli
-     klippet av .seksjon sin overflow:hidden. */
-  padding-top: clamp(6.5rem, 20vh, 10rem);
-  padding-bottom: clamp(2rem, 8vh, 5rem);
+  padding-block: clamp(2rem, 8vh, 5rem);
   background: var(--base);
-  /* Hero har IKKE "ren sveip" (logoens egen entré er nok — sveipen brukes
-     lenger ned på siden). Trenger likevel position/overflow som .seksjon
-     ellers ga, for .hero__kart sin absolutte posisjonering. */
-  position: relative; overflow: hidden;
 }
 /* Logo — først i heroens normale flyt, sentrert, med luft ned mot overskriften.
    Samme lag (z-index) som .hero__innhold, slik at den avdekkes sammen med resten. */
@@ -159,24 +138,10 @@ html.js .bobler.vist .boble--lys  { opacity: 1; transition-delay: .5s; }
   html.js .boble { transition: none; opacity: 1; }
 }
 
-.hero__kart {
-  position: absolute; inset: 0; z-index: 0; overflow: hidden;
-}
-.hero__kart img { width: 100%; height: 100%; object-fit: cover; opacity: .8; }
-.hero__kart::after {
-  content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, var(--base) 0%, rgba(247,249,249,.55) 45%, rgba(247,249,249,.85) 100%);
-}
 .hero__innhold { position: relative; z-index: 1; }
 .hero__tittel { font-size: clamp(2rem, 5vw, var(--t-3xl)); max-width: 20ch; }
 .hero__ingress { max-width: 42ch; color: var(--tekst-svak); margin-top: var(--s-4); font-size: var(--t-md); }
 .hero__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
-.hero__bil { width: min(60vw, 420px); margin: var(--s-8) 0 0; }
-.hero__kart-kreditt { font-size: var(--t-xs); color: var(--tekst-svak); margin-top: var(--s-4); }
-.hero__kart-kreditt a { color: var(--tekst-svak); }
-@media (max-width: 640px) {
-  .hero__bil { width: min(85vw, 320px); }
-}
 
 .tjeneste-grid, .tillit-liste {
   list-style: none; margin: var(--s-6) 0 0; padding: 0;

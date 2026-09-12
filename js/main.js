@@ -1,6 +1,5 @@
 export function initSider() {
   const reduksjon = matchMedia('(prefers-reduced-motion: reduce)').matches
-  sveipAvdekk(reduksjon)
   logoAnimer(reduksjon)
   window.__sideKjort = true
 }
@@ -10,8 +9,8 @@ export function initSider() {
 // ingen bevegelse, bare en enkel opacity-overgang. Funnet i lab-logo.html,
 // forenklet etter Rickys ønske (den reisende boble-animasjonen er fjernet).
 // Kjører med en gang siden heroen alltid er synlig ved sidelast (ikke
-// scroll-styrt som .seksjon__sveip). Reduced-motion viser sluttresultatet
-// direkte via CSS — ingenting å gjøre her i så fall.
+// scroll-styrt). Reduced-motion viser sluttresultatet direkte via CSS —
+// ingenting å gjøre her i så fall.
 //
 // Rein setTimeout mot den samme, faste tidsberegningen som CSS-en bruker
 // (ni bokstaver × 55ms forsinkelse + 550ms varighet på den siste) — ikke
@@ -31,20 +30,4 @@ function logoAnimer(reduksjon) {
   setTimeout(() => {
     if (bobler) bobler.classList.add('vist')
   }, SNURR_TOTAL_MS + 80) // liten margin så siste bokstav garantert er ferdig tegnet
-}
-
-// Hver .seksjon starter dekket av sin .seksjon__sveip-overlay. Når seksjonen
-// scrolles inn i syne, sveipes overlayen bort — det gjennomgående signaturgrepet.
-function sveipAvdekk(reduksjon) {
-  const seksjoner = [...document.querySelectorAll('.seksjon')]
-  if (reduksjon || !('IntersectionObserver' in window)) {
-    seksjoner.forEach(s => s.classList.add('sveipt'))
-    return
-  }
-  const io = new IntersectionObserver((poster) => {
-    for (const p of poster) {
-      if (p.isIntersecting) { p.target.classList.add('sveipt'); io.unobserve(p.target) }
-    }
-  }, { threshold: 0.2 })
-  seksjoner.forEach(s => io.observe(s))
 }
