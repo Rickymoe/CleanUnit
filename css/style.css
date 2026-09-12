@@ -6,13 +6,12 @@
   --flate: #FFFFFF;
   --tekst: #1E2B2B;
   --tekst-svak: #55706E;
-  --linje: rgba(30, 43, 43, .14);
   --sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --t-xs: .8125rem; --t-sm: .9rem; --t-base: 1rem; --t-md: 1.0625rem;
-  --t-lg: 1.25rem; --t-xl: 1.5rem; --t-2xl: 2rem; --t-3xl: 2.75rem;
+  --t-lg: 1.25rem; --t-2xl: 2rem; --t-3xl: 2.75rem;
   --lh-brod: 1.6;
   --s-1: .25rem; --s-2: .5rem; --s-3: .75rem; --s-4: 1rem; --s-5: 1.5rem;
-  --s-6: 2rem; --s-7: 3rem; --s-8: 4.5rem; --seksjon-y: 6rem;
+  --s-6: 2rem; --s-8: 4.5rem; --seksjon-y: 6rem;
   --wrap: 68rem;
   --radius: 14px;
 }
@@ -33,7 +32,7 @@ p { margin: 0; }
 a { color: inherit; }
 .eyebrow {
   display: inline-block; font: 700 var(--t-sm)/1 var(--sans); letter-spacing: .12em;
-  text-transform: uppercase; color: var(--teal);
+  text-transform: uppercase; color: var(--teal); margin-bottom: var(--s-2);
 }
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -76,6 +75,8 @@ html.js .seksjon.sveipt .seksjon__sveip {
      og holder overlayen skjult selv når html.js er satt (uten dette ville
      display:block fra html.js-regelen slå igjennom pga. høyere spesifisitet). */
   .seksjon__sveip, html.js .seksjon__sveip { display: none; }
+  .knapp { transition: none; }
+  .knapp:hover { transform: none; }
 }
 
 /* Steg 3: Hero */
@@ -88,6 +89,10 @@ html.js .seksjon.sveipt .seksjon__sveip {
   position: absolute; inset: 0; z-index: 0; overflow: hidden;
 }
 .hero__kart img { width: 100%; height: 100%; object-fit: cover; opacity: .8; }
+.hero__kart::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, var(--base) 0%, rgba(247,249,249,.55) 45%, rgba(247,249,249,.85) 100%);
+}
 .hero__innhold { position: relative; z-index: 1; }
 .hero__tittel { font-size: clamp(2rem, 5vw, var(--t-3xl)); max-width: 20ch; }
 .hero__ingress { max-width: 42ch; color: var(--tekst-svak); margin-top: var(--s-4); font-size: var(--t-md); }
@@ -99,26 +104,22 @@ html.js .seksjon.sveipt .seksjon__sveip {
   .hero__bil { width: min(85vw, 320px); }
 }
 
-.stopp--tjenester { padding-block: var(--seksjon-y); background: var(--flate); }
-.tjeneste-grid {
+.tjeneste-grid, .tillit-liste {
   list-style: none; margin: var(--s-6) 0 0; padding: 0;
-  display: grid; gap: var(--s-5);
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  display: grid;
 }
+.tjeneste-grid { gap: var(--s-5); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.tillit-liste { gap: var(--s-6); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+.tjeneste-kort p, .tillit-liste p { margin-top: var(--s-2); color: var(--tekst-svak); font-size: var(--t-sm); }
+
+.stopp--tjenester { padding-block: var(--seksjon-y); background: var(--flate); }
 .tjeneste-kort {
   background: var(--teal-lys); border-radius: var(--radius); padding: var(--s-5);
 }
 .tjeneste-kort h3 { color: var(--teal-mork); }
-.tjeneste-kort p { margin-top: var(--s-2); color: var(--tekst-svak); font-size: var(--t-sm); }
 
 .stopp--tillit { padding-block: var(--seksjon-y); background: var(--base); }
-.tillit-liste {
-  list-style: none; margin: var(--s-6) 0 0; padding: 0;
-  display: grid; gap: var(--s-6);
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-}
-.tillit-liste h3 { font-size: var(--t-md); color: var(--teal-mork); }
-.tillit-liste p { margin-top: var(--s-2); color: var(--tekst-svak); font-size: var(--t-sm); }
+.tillit-liste h3 { color: var(--teal-mork); }
 
 .stopp--om { padding-block: var(--seksjon-y); background: var(--teal-lys); }
 .stopp--om .stopp__lede { max-width: 60ch; margin-top: var(--s-4); color: var(--tekst-svak); }
@@ -138,4 +139,5 @@ html.js .seksjon.sveipt .seksjon__sveip {
 .side-footer :where(a, button):focus-visible { outline-color: #fff; }
 @media (hover: hover) {
   .side-footer .knapp--omriss:hover { background: #fff; color: var(--teal-mork); }
+  .side-footer .knapp--fyll:hover { background: var(--teal-lys); }
 }

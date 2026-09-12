@@ -39,7 +39,10 @@ addEventListener("load", function () {
 <header class="hero seksjon">
   <span class="seksjon__sveip" aria-hidden="true"></span>
   <div class="hero__kart" aria-hidden="true">
-    <img src="bilder/hero-kart.png" alt="" width="768" height="768">
+    <picture>
+      <source srcset="bilder/hero-kart.webp" type="image/webp">
+      <img src="bilder/hero-kart.png" alt="" width="768" height="768">
+    </picture>
   </div>
   <div class="wrap hero__innhold">
     <h1 class="hero__tittel">Vi kommer til deg — uansett hvor</h1>
@@ -125,7 +128,7 @@ addEventListener("load", function () {
 <footer class="side-footer seksjon">
   <span class="seksjon__sveip" aria-hidden="true"></span>
   <div class="wrap">
-    <p class="side-footer__merke" aria-hidden="true">Clean Unit</p>
+    <p class="side-footer__merke">Clean Unit</p>
     <h2 class="visually-hidden">Kontakt</h2>
     <div class="side-footer__kontorer">
       <div>
