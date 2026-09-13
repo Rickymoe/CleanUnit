@@ -1,5 +1,54 @@
 # Åpne punkter — CleanUnit-redesign
 
+- [x] Hero-logoen klippet av i venstre kant på mellomstore skjermer (Ricky,
+      ekte skjermbilde av nedskalert nettleservindu 2026-09-13, ~803px
+      bredde). Målte `.logo` sin `getBoundingClientRect()` over hele
+      bredde-spekteret med `_debug-viewport.html` (samme same-origin-
+      iframe-teknikk som tidligere denne sesjonen): fra 700px og opp til
+      960px bredde stakk "C" ut til venstre for skjermkanten (verst rundt
+      850-886px, ca. 19px usynlig). Rotårsak: `.hero__logo`s
+      `left: clamp(9.5rem, 20%, 30%)` var kun trygg mot klipping fra
+      ca. 1000px og oppover — under det vokser `.logo` sin font-size
+      (også vw-skalert) fortere enn 20vw-marginen holder følge med.
+      Mobil-fiksen fra tidligere denne sesjonen (`left: 50%` under 40rem)
+      dekket kun til 640px, langt fra nok. Fix: hevet brytningspunktet for
+      ekte sentrering fra 40rem til 64rem — "over Oslo-klyngen"-
+      plasseringen (bevisst desktop-komposisjon, se kommentar i
+      style.css) gjelder nå bare fra ca. 1024px, der målingene bekrefter
+      det er trygt. Sjekket samme klippe-bug på `.hero__knapper` (samme
+      clamp-mønster) — ikke rammet, alltid innenfor skjermen. Verifisert
+      på nytt over hele 650-1100px-spekteret etter fiksen: ingen klipping
+      noe sted, ingen konsoll-feil.
+- [ ] "Ekstra mye space under logo og til vannmerke starter" (Ricky,
+      skjermbilde av localhost:8000 ved ~487px bredde, 2026-09-13) — testet
+      identisk bredde/høyde med FERSK (ucachet) kode i sandkassen og fant
+      IKKE dette gapet; innholdet fylte normalt fra logo til vannmerke som
+      forventet. Mistenker sterkt at Rickys egen localhost:8000-fane viser
+      en gammel, mellomlagret versjon av style.css — samme root cause som
+      "mye white space øverst"-runden tidligere denne sesjonen. Be Ricky
+      hard-refreshe (Ctrl+Shift+R) eller restarte serveren sin før vi evt.
+      graver videre — ingen kodeendring gjort her ennå, uklart om det
+      faktisk er en bug.
+- [x] Logo-mynt-snurringen bittelitt tregere igjen (Ricky, 2026-09-13). Fra
+      700ms→780ms varighet per bokstav og 75ms→85ms forsinkelse mellom
+      bokstaver (CSS `logo-snurr` + JS `BOKSTAV_VARIGHET_MS`/
+      `BOKSTAV_FORSINKELSE_MS` holdt synkronisert som vanlig, ellers
+      kommer boblene før siste bokstav er ferdig). Verifisert i browser,
+      ingen konsoll-feil.
+- [x] De tre boblene over "I" i logoen vises nå samtidig, ikke én og én
+      (Ricky, 2026-09-13: "De tre boblene over I, de må vises samtidig").
+      style.css: fjernet de tre separate `transition-delay`-reglene
+      (`.boble--dott`/`--mork` med .25s, `.boble--lys` med .5s) og slo dem
+      sammen til én felles regel — alle tre bruker nå samme
+      `opacity`-transition (.35s ease) uten forsinkelse seg imellom.
+      js/main.js: fjernet `BOBLE_SISTE_FORSINKELSE_MS` (ikke lenger noen
+      "siste boble"-forsinkelse å regne med), `BOBLE_TOTAL_MS` er nå bare
+      selve varigheten (350ms). Sideeffekt: tittel-lystenningen
+      ("Renhold"-ordet) starter dermed et par hundre ms tidligere enn før,
+      siden den venter på at boblene er ferdig FØR den starter — ingen ny
+      kode trengtes for det, det følger automatisk av at
+      `BOBLE_TOTAL_MS` er mindre nå. Verifisert i browser (zoom på
+      logo-området, alle tre boblene synlige samtidig), ingen konsoll-feil.
 - [x] Logo-mynt-snurringen ("CLEANUNIT" bokstav for bokstav) gjort tregere
       (Ricky, 2026-09-13) — varighet 550ms→700ms per bokstav, forsinkelse
       mellom bokstaver 55ms→75ms. Holdt CSS (`logo-snurr`-animasjonen) og

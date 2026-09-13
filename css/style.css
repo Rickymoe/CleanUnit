@@ -175,8 +175,20 @@ a { color: inherit; }
    Under 40rem (samme brytningspunkt som hero__knapper/min-height) sentreres
    den derfor ekte i stedet — testet at det ikke klipper "C" ned til
    320px bredde (logoen er ca. 240px bred i sin minste font-clamp-størrelse,
-   god margin selv på eldre/mindre telefoner). */
-@media (max-width: 40rem) {
+   god margin selv på eldre/mindre telefoner).
+
+   Målt med getBoundingClientRect() over hele bredde-spekteret (Ricky,
+   skjermbilde av et nedskalert nettleservindu, 2026-09-13: logoen klippet
+   av i venstre kant ved 803px bredde) — 20%-formelen er IKKE trygg før
+   viewport når ca. 1000px: fra 700px og helt opp til 960px stikker "C"
+   ut til venstre for skjermkanten (verst rundt 850-886px, ca. 19px
+   usynlig), fordi font-size (også vw-skalert, se .logo) vokser fortere
+   enn 20vw-marginen i akkurat det spennet. Brytningspunktet for ekte
+   sentrering er derfor hevet fra 40rem til 64rem — "over Oslo-klyngen"-
+   plasseringen gjelder nå kun fra ca. 1024px og oppover, der det er
+   bekreftet trygt. hero__knapper (samme clamp-mønster) er IKKE rammet —
+   testet separat, alltid innenfor skjermen i hele spennet. */
+@media (max-width: 64rem) {
   .hero__logo { left: 50%; }
 }
 .logo {
@@ -210,8 +222,8 @@ html.js .logo__bokstav {
   transform: rotateY(90deg); opacity: 0;
 }
 html.js .logo.kjor .logo__bokstav {
-  animation: logo-snurr 700ms cubic-bezier(.22,.9,.32,1) forwards;
-  animation-delay: calc(var(--i) * 75ms);
+  animation: logo-snurr 780ms cubic-bezier(.22,.9,.32,1) forwards;
+  animation-delay: calc(var(--i) * 85ms);
 }
 @keyframes logo-snurr {
   0%   { transform: rotateY(90deg); opacity: 0; }
@@ -220,8 +232,8 @@ html.js .logo.kjor .logo__bokstav {
 }
 
 /* Tre faste bobler tett over "I"-en (samme plassering som det ekte logobildet)
-   — ingen bevegelse, dukker opp én og én (ikke samtidig) når siste bokstav er
-   ferdig snurret inn (styrt fra js/main.js). Uten JS/i reduced-motion vises
+   — ingen bevegelse, dukker opp SAMTIDIG når siste bokstav er ferdig
+   snurret inn (styrt fra js/main.js). Uten JS/i reduced-motion vises
    de med en gang. */
 .bobler {
   /* left:0 = "I"-ens VENSTRE kant (ikke midten) — --x/--y under er målt
@@ -236,10 +248,7 @@ html.js .logo.kjor .logo__bokstav {
 .boble--mork { width: .35em; height: .35em; background: var(--logo-turkis-mork); }
 .boble--lys  { width: .54em; height: .54em; background: var(--logo-turkis-lys); }
 html.js .boble { opacity: 0; transition: opacity .35s ease; }
-/* Én og én: hver boble får sin egen forsinkelse før den sveiver inn. */
-html.js .bobler.vist .boble--dott { opacity: 1; }
-html.js .bobler.vist .boble--mork { opacity: 1; transition-delay: .25s; }
-html.js .bobler.vist .boble--lys  { opacity: 1; transition-delay: .5s; }
+html.js .bobler.vist .boble { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   html.js .logo__bokstav { animation: none !important; transform: rotateY(0deg); opacity: 1; }
   html.js .boble { transition: none; opacity: 1; }

@@ -51,17 +51,17 @@ function kortReveal(reduksjon) {
 // (ni bokstaver × 75ms forsinkelse + 700ms varighet på den siste) — ikke
 // animationend/Web Animations API, som viste seg upålitelig (event kunne
 // komme ute av synk, .finished-løftet kunne henge seg fast).
-const BOKSTAV_VARIGHET_MS = 700
-const BOKSTAV_FORSINKELSE_MS = 75
+const BOKSTAV_VARIGHET_MS = 780
+const BOKSTAV_FORSINKELSE_MS = 85
 const ANTALL_BOKSTAVER = 9 // CLEANUNIT
 const SNURR_TOTAL_MS = (ANTALL_BOKSTAVER - 1) * BOKSTAV_FORSINKELSE_MS + BOKSTAV_VARIGHET_MS
 
-// De tre boblene (.boble--dott/--mork/--lys i style.css) dukker opp én og
-// én via opacity-transition: siste boble (--lys) har transition-delay .5s
-// og varighet .35s, altså 850ms fra .vist legges på til alle er synlige.
-const BOBLE_SISTE_FORSINKELSE_MS = 500
+// De tre boblene (.boble--dott/--mork/--lys i style.css) dukker opp SAMTIDIG
+// via opacity-transition (var tidligere én-og-én med stigende delay, fjernet
+// etter Ricky 2026-09-13: "de tre boblene over I, de må vises samtidig") —
+// .35s varighet, ingen forsinkelse.
 const BOBLE_VARIGHET_MS = 350
-const BOBLE_TOTAL_MS = BOBLE_SISTE_FORSINKELSE_MS + BOBLE_VARIGHET_MS
+const BOBLE_TOTAL_MS = BOBLE_VARIGHET_MS
 
 function logoAnimer(reduksjon) {
   if (reduksjon) return
