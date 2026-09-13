@@ -1,5 +1,47 @@
 # Åpne punkter — CleanUnit-redesign
 
+- [x] Bilene på vannmerke-kartet litt mer tydelige (Ricky, 2026-09-19).
+      `.kart-markor` sin opasitet hevet fra .55 til .75 — fortsatt tydelig
+      lavere enn hovedbilen i forgrunnen (skarp/full opasitet), så de
+      holder seg som del av vannmerket uten å konkurrere med den.
+      Verifisert i browser, ingen konsoll-feil.
+- [x] "Renhold i Oslo og Stavanger"-innholdet flyttet litt oppover, nærmere
+      logoen (Ricky, 2026-09-19: "flytte innholdet ... litt oppover og
+      nærmere logoen"). `.hero__innhold` er det eneste elementet i
+      `.hero` sin flex-strøm (by/knapper/logo er alle absolutt
+      posisjonert) — `justify-content:center` sentrerer den derfor midt
+      i HELE den tilgjengelige høyden, uavhengig av hvor logoen sitter.
+      Fix: `margin-top: -120px` på `.hero__innhold` — trekker den
+      sentrerte posisjonen oppover uten å bytte bort selve
+      sentrerings-mekanikken (flex deler differansen i to, så -120px gir
+      ca. 60px synlig løft). Testet med getBoundingClientRect() over
+      375-1440px bredde og 667-998px høyde: ingen kollisjon med
+      vurderingen, by-illustrasjonen eller knappene noe sted (den ene
+      uvanlige kombinasjonen, 1440×900, hadde allerede litt overlapp
+      mellom tittel og by-illustrasjonens toppkant FØR denne endringen —
+      uendret av denne fiksen, ikke noe nytt). Verifisert visuelt på
+      375/430/803px bredde, ingen konsoll-feil.
+- [x] Erstattet forrige åpne punkt om "mye space under logo" — det var IKKE
+      cache (Ricky, ekte iPhone-skjermbilde av selve rickymoe.github.io,
+      2026-09-19: "Det må jo da være vannmerke. Hvorfor kan det ikke
+      dyttes oppover?"). Målte med getBoundingClientRect(): kart-
+      vannmerket (`.hero__kart-vannmerke`) er kvadratisk og skalerer med
+      bredden (aspect-ratio:1) — på mobil (430px) blir boksen bare 366px
+      høy, mens den på desktop (803px) blir 683px. Maskens synlige
+      fokuspunkt ligger 22% ned i BOKSEN (bevisst, à la Rickys skisse —
+      mer synlig øverst). På desktop er boksen så stor at fokuspunktet
+      havner rett under vurderingen uansett (kun ~20px mellomrom, målt).
+      På mobil er boksen mye mindre, og siden den samtidig sentreres
+      vertikalt i `.hero__innhold` (kun tittel+ingress, ganske lav boks),
+      havner fokuspunktet midt i det tomme rommet MELLOM logo og
+      overskrift i stedet for rett under logoen — derav "gapet". Fix:
+      egen `@media (max-width: 40rem)`-regel som bytter
+      `translate(-50%, -50%)` til `translate(-50%, -75%)` KUN på mobil —
+      trekker hele boksen (og fokuspunktet med) opp. Målt etterpå:
+      fokuspunktet lander midt i det tidligere tomme rommet (var y=306,
+      nå y=215, midt mellom vurdering på 120 og overskrift på 314 ved
+      430px bredde). Desktop urørt og verifisert uendret. Ingen
+      konsoll-feil.
 - [x] Hero-logoen klippet av i venstre kant på mellomstore skjermer (Ricky,
       ekte skjermbilde av nedskalert nettleservindu 2026-09-13, ~803px
       bredde). Målte `.logo` sin `getBoundingClientRect()` over hele
@@ -19,16 +61,6 @@
       clamp-mønster) — ikke rammet, alltid innenfor skjermen. Verifisert
       på nytt over hele 650-1100px-spekteret etter fiksen: ingen klipping
       noe sted, ingen konsoll-feil.
-- [ ] "Ekstra mye space under logo og til vannmerke starter" (Ricky,
-      skjermbilde av localhost:8000 ved ~487px bredde, 2026-09-13) — testet
-      identisk bredde/høyde med FERSK (ucachet) kode i sandkassen og fant
-      IKKE dette gapet; innholdet fylte normalt fra logo til vannmerke som
-      forventet. Mistenker sterkt at Rickys egen localhost:8000-fane viser
-      en gammel, mellomlagret versjon av style.css — samme root cause som
-      "mye white space øverst"-runden tidligere denne sesjonen. Be Ricky
-      hard-refreshe (Ctrl+Shift+R) eller restarte serveren sin før vi evt.
-      graver videre — ingen kodeendring gjort her ennå, uklart om det
-      faktisk er en bug.
 - [x] Logo-mynt-snurringen bittelitt tregere igjen (Ricky, 2026-09-13). Fra
       700ms→780ms varighet per bokstav og 75ms→85ms forsinkelse mellom
       bokstaver (CSS `logo-snurr` + JS `BOKSTAV_VARIGHET_MS`/

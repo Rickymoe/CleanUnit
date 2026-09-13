@@ -271,7 +271,18 @@ html.js .bobler.vist .boble { opacity: 1; }
   .hero__vurdering:hover { color: var(--teal-mork); }
 }
 
-.hero__innhold { position: relative; z-index: 1; }
+/* .hero__innhold er den ENESTE elementet i .hero sin flex-strøm (by/
+   knapper/logo er alle absolutt posisjonert, utenfor), så
+   justify-content:center på .hero sentrerer den midt i hele den
+   tilgjengelige høyden — det ga mye luft mellom logo og "Renhold i Oslo
+   og Stavanger" (Ricky, 2026-09-19: "flytte innholdet ... litt oppover
+   og nærmere logoen"). negativ margin-top trekker den sentrerte
+   posisjonen oppover UTEN å bytte bort selve sentrerings-mekanikken
+   (som fortsatt trengs for balanse mot den bunnforankrede
+   by-illustrasjonen på svært høye skjermer) — flex deler differansen i
+   to, så -120px flytter innholdet ca. 60px opp i praksis (målt med
+   getBoundingClientRect() ved flere bredder/høyder). */
+.hero__innhold { position: relative; z-index: 1; margin-top: -120px; }
 .hero__kart-vannmerke {
   position: absolute; top: 50%; left: 58%; transform: translate(-50%, -50%);
   width: clamp(260px, 85vw, 1000px); aspect-ratio: 1; max-width: none;
@@ -282,6 +293,24 @@ html.js .bobler.vist .boble { opacity: 1; }
      HELE gruppen (kart + markører), så de fades sammen konsekvent. */
   mask-image: radial-gradient(ellipse 65% 85% at 50% 22%, black 15%, transparent 68%);
   -webkit-mask-image: radial-gradient(ellipse 65% 85% at 50% 22%, black 15%, transparent 68%);
+}
+/* Vannmerkets synlige kjerne (masken over) ligger 22% ned i sin egen boks —
+   siden boksen er kvadratisk og skalerer med bredden (aspect-ratio 1),
+   blir den mye mindre på mobil enn på desktop (~366px vs. ~683px høy ved
+   hhv. 430px og 803px bredde, målt med getBoundingClientRect()). Det gjør
+   at fokuspunktet havner midt i tomrommet mellom logo/vurdering og
+   overskriften på mobil, i stedet for rett under logoen — Ricky, ekte
+   iPhone-skjermbilde 2026-09-13: "Det må jo da være vannmerke. Hvorfor
+   kan det ikke dyttes oppover?" (space-følelsen mellom logo og
+   overskrift er vannmerkets nesten usynlige øvre halvdel, ikke tomt
+   rom). -75% i stedet for -50% på Y-transformen trekker HELE boksen
+   (og dermed maske-fokuset med) opp mot logoen — målt til å plassere
+   fokuspunktet midt i det tomme rommet ved 430px bredde. Kun mobil:
+   på desktop (>40rem) treffer -50%-varianten allerede fint, siden
+   boksen der er så mye større at den når nesten opp til vurderingen
+   uansett. */
+@media (max-width: 40rem) {
+  .hero__kart-vannmerke { transform: translate(-50%, -75%); }
 }
 .kart-vannmerke__kart { width: 100%; height: 100%; max-width: none; display: block; }
 /* Små bil-markører spredt på kartet — "vi kjører her". Egen, litt lavere
@@ -296,7 +325,7 @@ html.js .bobler.vist .boble { opacity: 1; }
 }
 .kart-markor {
   display: block; width: 100%; max-width: none; height: auto;
-  opacity: .55;
+  opacity: .75;
 }
 /* Stjerneglimt ved bil-markørene (kart-markor__stjerne) fjernet 2026-09-13
    på Rickys ønske — én av fire animasjoner som fyrte av i hero-hjørnet ved
