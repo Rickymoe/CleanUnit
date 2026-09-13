@@ -21,6 +21,13 @@ const BOKSTAV_FORSINKELSE_MS = 55
 const ANTALL_BOKSTAVER = 9 // CLEANUNIT
 const SNURR_TOTAL_MS = (ANTALL_BOKSTAVER - 1) * BOKSTAV_FORSINKELSE_MS + BOKSTAV_VARIGHET_MS
 
+// De tre boblene (.boble--dott/--mork/--lys i style.css) dukker opp én og
+// én via opacity-transition: siste boble (--lys) har transition-delay .5s
+// og varighet .35s, altså 850ms fra .vist legges på til alle er synlige.
+const BOBLE_SISTE_FORSINKELSE_MS = 500
+const BOBLE_VARIGHET_MS = 350
+const BOBLE_TOTAL_MS = BOBLE_SISTE_FORSINKELSE_MS + BOBLE_VARIGHET_MS
+
 function logoAnimer(reduksjon) {
   if (reduksjon) return
   const logo = document.querySelector('.hero__logo .logo')
@@ -29,7 +36,10 @@ function logoAnimer(reduksjon) {
   logo.classList.add('kjor')
   setTimeout(() => {
     if (bobler) bobler.classList.add('vist')
-    markorStjerner(reduksjon)
+    // Kart-stjerne-stafetten venter til boblene er helt ferdig med å dukke
+    // opp, ikke bare til de starter — Ricky: begynn "nå de 3 boblene ... er
+    // ferdig", ikke samtidig med dem.
+    setTimeout(() => markorStjerner(reduksjon), BOBLE_TOTAL_MS)
   }, SNURR_TOTAL_MS + 80) // liten margin så siste bokstav garantert er ferdig tegnet
 }
 
@@ -37,8 +47,11 @@ function logoAnimer(reduksjon) {
 // bil-markør på kart-vannmerket, som en klokkeviser fra kl 1 til kl 6
 // (se .kart-markor__stjerne i style.css). Én bil av gangen i en løpende
 // stafett — aldri flere samtidig — så blikket trekkes rolig nedover mot
-// kartet uten å stjele fokus fra overskrift/ingress. Kjører kontinuerlig
-// så lenge siden er åpen; reduced-motion starter den aldri.
+// kartet uten å stjele fokus fra overskrift/ingress. Kjører ÉN runde
+// gjennom alle bilene og stopper — en evig loop ble flagget i design-
+// kritikk som formålsløs bevegelse som aldri "blir ferdig", pluss at den
+// fortsatte i bakgrunnen selv etter at man hadde scrollet forbi hero'en.
+// reduced-motion starter den aldri.
 const STJERNE_VARIGHET_MS = 1600
 const STJERNE_PAUSE_MS = 350
 
@@ -51,8 +64,8 @@ function markorStjerner(reduksjon) {
     const stjerne = markorer[i]
     stjerne.classList.add('gnistrer')
     setTimeout(() => stjerne.classList.remove('gnistrer'), STJERNE_VARIGHET_MS)
-    i = (i + 1) % markorer.length
-    setTimeout(neste, STJERNE_VARIGHET_MS + STJERNE_PAUSE_MS)
+    i += 1
+    if (i < markorer.length) setTimeout(neste, STJERNE_VARIGHET_MS + STJERNE_PAUSE_MS)
   }
   neste()
 }

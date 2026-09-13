@@ -34,7 +34,7 @@ addEventListener("load", function () {
 <link rel="apple-touch-icon" sizes="180x180" href="bilder/favicon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -55,6 +55,17 @@ addEventListener("load", function () {
             <span class="boble boble--lys"  style="--x: 0.25em; --y: -0.80em;"></span>
           </span></span><span class="logo__bokstav" style="--i:8">T</span></span>
     </p>
+    <!-- Ekte vurdering fra Google Maps (Clean Unit Renhold AS, sjekket
+         2026-09-13 av Ricky: 4,8 av 5, 4 anmeldelser). Søkelenke i stedet
+         for en fast place-ID/lenke, siden vi ikke har den eksakte
+         Maps-lenken — søket lander på samme oppføring. Ren statisk visning,
+         ingen animasjon — Tuven sin fyll-/telle-opp-mekanikk ble prøvd her
+         også, men fjernet igjen (Ricky: "for mye skjer samme sted" ved
+         siden av logo-snurr/bobler/kart-stjernene rett i nærheten). -->
+    <a class="hero__vurdering" href="https://www.google.com/maps/search/?api=1&amp;query=Clean+Unit+Renhold+AS+Oslo" target="_blank" rel="noopener">
+      <span class="hero__vurdering-stjerner" aria-hidden="true">★★★★★</span>
+      <span>4,8 · 4 anmeldelser på Google</span>
+    </a>
   </div>
   <div class="wrap hero__innhold">
     <!-- Utydelig kart-vannmerke bak bil+tekst — ekte OSM-utsnitt (sentrum

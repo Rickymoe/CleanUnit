@@ -18,3 +18,10 @@
       forfatterens egen tekst, ikke bekreftet med Marit/Christopher — kun
       re-sertifiseringspunktet er allerede nevnt over. Gå gjennom alle
       `<!-- UTKAST -->`-merkede avsnitt i index.html før publisering.
+- [ ] **IKKE SLETT** `bilder/Byervinter.png`/`.webp` som "ubrukt" — det er en
+      bevisst forhåndsklargjort vinter-variant av `Byer.png` (samme mål,
+      1860×701), ment for sesongbytte senere. Ikke koblet inn i
+      index.html/CSS ennå. Når den tas i bruk: `--base`-fargen må justeres
+      (tunet mot sommerhimmelen), og Ring Oslo/Ring Stavanger-knappenes
+      posisjon må sjekkes på nytt siden bykyklyngene ikke er helt identisk
+      plassert som i sommerbildet.
