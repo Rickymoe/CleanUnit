@@ -1,5 +1,24 @@
 # Åpne punkter — CleanUnit-redesign
 
+- [x] Ekte favicon på plass — erstattet den tomme teal-placeholderen
+      (Ricky, 2026-09-19: "Nå trenger vi ikonen som vises i fanen. Noen
+      forslag?"). Laget tre alternativer og sendte en sammenligning ved
+      ekte fane-størrelser (64/32/16px) for å teste leselighet der det
+      faktisk teller: A) hvit "C"-monogram på teal, B) bare boble-
+      klyngen fra logoen alene, C) "i" med boblene over (gjenskapt fra
+      de ekte --x/--y/størrelse-verdiene til .boble--dott/--mork/--lys
+      i index.html). B falt fra ved 16px — ble en utydelig flekk uten
+      tydelig bakgrunnsboks. Ricky valgte A. Generert med Python/PIL
+      (DejaVu Sans Bold, supersamplet 8x og nedskalert med LANCZOS for
+      skarpe kanter selv ved 16px) i tre størrelser: favicon-16.png,
+      favicon-32.png (avrundede hjørner, matcher sidens --radius-
+      estetikk), favicon-180.png for apple-touch-icon (helt kvadratisk,
+      UTEN avrundede hjørner — iOS maskerer selv, baking inn egne
+      hjørner der er en vanlig favicon-fallgruve). index.html trengte
+      ingen endring, pekte allerede riktig på disse filnavnene. Verifisert
+      med fetch() at alle tre laster (200, nye byte-størrelser i stedet
+      for de gamle placeholder-filene).
+
 - [x] Flimre-bug på ekte mobil rett etter logo-snurringen (Ricky, ekte
       skjermopptak av iPhone, 2026-09-19: "'CLEANUNIT' snur fint, men så
       flimrer 'LEANUNIT' ... 4,8 - 4 anmeldelser flimrer også ... Jeg tror
