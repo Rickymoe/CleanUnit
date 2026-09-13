@@ -294,24 +294,18 @@ html.js .bobler.vist .boble { opacity: 1; }
   mask-image: radial-gradient(ellipse 65% 85% at 50% 22%, black 15%, transparent 68%);
   -webkit-mask-image: radial-gradient(ellipse 65% 85% at 50% 22%, black 15%, transparent 68%);
 }
-/* Vannmerkets synlige kjerne (masken over) ligger 22% ned i sin egen boks —
-   siden boksen er kvadratisk og skalerer med bredden (aspect-ratio 1),
-   blir den mye mindre på mobil enn på desktop (~366px vs. ~683px høy ved
-   hhv. 430px og 803px bredde, målt med getBoundingClientRect()). Det gjør
-   at fokuspunktet havner midt i tomrommet mellom logo/vurdering og
-   overskriften på mobil, i stedet for rett under logoen — Ricky, ekte
-   iPhone-skjermbilde 2026-09-13: "Det må jo da være vannmerke. Hvorfor
-   kan det ikke dyttes oppover?" (space-følelsen mellom logo og
-   overskrift er vannmerkets nesten usynlige øvre halvdel, ikke tomt
-   rom). -75% i stedet for -50% på Y-transformen trekker HELE boksen
-   (og dermed maske-fokuset med) opp mot logoen — målt til å plassere
-   fokuspunktet midt i det tomme rommet ved 430px bredde. Kun mobil:
-   på desktop (>40rem) treffer -50%-varianten allerede fint, siden
-   boksen der er så mye større at den når nesten opp til vurderingen
-   uansett. */
-@media (max-width: 40rem) {
-  .hero__kart-vannmerke { transform: translate(-50%, -75%); }
-}
+/* Vannmerkets vertikale posisjon på MOBIL settes av plasserVannmerke() i
+   js/main.js, ikke her — se kommentaren der for hvorfor: en ren CSS-
+   prosent (testet: transform-Y relativt til .hero__innhold sin egen
+   høyde) ga svært ulikt resultat på ulike skjermhøyder, fra trygg avstand
+   til direkte overlapp med de fortsatt animerende logo-bokstavene, som
+   viste seg å trigge en flimre-bug på ekte mobil (Ricky, 2026-09-19).
+   top:50%/transform:translate(-50%,-50%) over er kun DESKTOP-verdien nå
+   (uendret, fungerer fint der — boksen er så stor at den når nesten opp
+   til vurderingen uansett). Uten JS beholdes samme -50%-verdi også på
+   mobil — rent dekorativt vannmerke, ingen funksjonell brist, men på
+   svært små/gamle skjermer (uten JS) kan det fortsatt overlappe litt;
+   det er edge case-fallback, ikke hovedløsningen. */
 .kart-vannmerke__kart { width: 100%; height: 100%; max-width: none; display: block; }
 /* Små bil-markører spredt på kartet — "vi kjører her". Egen, litt lavere
    opasitet enn hovedbilen (som er skarp/tydelig i forgrunnen), for å holde
@@ -426,7 +420,14 @@ html.js .hero__tittel.tent .tittel-lys {
   content: ""; position: absolute; inset: 5px; border-radius: 50%;
   border: 1px dashed rgba(14, 124, 123, .35);
 }
-.tillit-logo { height: 2.1rem; width: auto; max-width: 68%; display: block; object-fit: contain; }
+/* Fast bredde+høyde (ikke width:auto+max-width:68%) — det ga et snevert,
+   feilberegnet bredde på PNG-logoene (Miljøfyrtårn/Virke, som er bredere
+   enn de er høye) og dyttet dem synlig til venstre i sirkelen (Ricky,
+   skjermbilde 2026-09-19: "De to logoene ... vil bare sitte til
+   venstre"). object-fit:contain på en FAST boks skalerer og sentrerer
+   alt innhold korrekt uansett kildebilde-format, uten den snevre
+   prosent-uregelmessigheten. */
+.tillit-logo { width: 2.4rem; height: 2.1rem; display: block; object-fit: contain; }
 svg.tillit-logo { color: var(--teal); }
 
 .stopp--om { padding-block: var(--seksjon-y); background: var(--teal-lys); }

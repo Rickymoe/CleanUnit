@@ -1,5 +1,66 @@
 # Åpne punkter — CleanUnit-redesign
 
+- [x] Flimre-bug på ekte mobil rett etter logo-snurringen (Ricky, ekte
+      skjermopptak av iPhone, 2026-09-19: "'CLEANUNIT' snur fint, men så
+      flimrer 'LEANUNIT' ... 4,8 - 4 anmeldelser flimrer også ... Jeg tror
+      det har noe med at vannmerket nå ligger bak logo"). Rickys mistanke
+      stemte. Målte med getBoundingClientRect(): etter forrige økts
+      mobil-fiks (`transform:translate(-50%,-75%)` på
+      `.hero__kart-vannmerke`) OG `margin-top:-120px` på `.hero__innhold`
+      sto den store maskerte kart-boksen (opptil 452px høy) nå fysisk
+      oppå de fortsatt 3D-roterende logo-bokstavene og vurderingsteksten
+      på mobil (boks-topp 74-94px, mens logoen/vurderingen ligger på
+      48-120px — full overlapp). To separate WebKit-lag (mask-image +
+      3D-transform-animasjon) som overlapper samtidig er en kjent kilde
+      til repaint-/flimre-bugs i Safari.
+      Rotårsak til at det var så vanskelig å unngå: `.hero__innhold` sin
+      EGEN posisjon (og dermed vannmerkets %-baserte topp/transform
+      relativt til den) er IKKE en stabil prosent av skjermhøyden —
+      testet 320-430px bredde × 568-932px høyde: avstanden mellom
+      `.hero__innhold` sin topp og vurderingens bunn varierte fra -12px
+      til +147px, fordi justify-content:center + min-height:88vh +
+      margin-top:-120px spiller sammen ulikt avhengig av total
+      skjermhøyde. Ingen fast CSS-prosent kan dekke det spennet trygt.
+      Fix: flyttet vannmerkets vertikale mobil-plassering fra CSS til JS
+      (`plasserVannmerke()` i js/main.js, kalt fra `initSider()` + på
+      resize). Måler de EKTE, ferdig-layoutede posisjonene til
+      `.hero__vurdering` og `.hero__innhold`, og setter vannmerkets
+      `top`/`transform` direkte sånn at boks-toppen ALDRI havner over
+      vurderingens bunn (8px trygg margin) — uansett skjermhøyde, uten å
+      gjette med prosenter. CSS-regelen i style.css er nå kun
+      DESKTOP-verdien (`top:50%; transform:translate(-50%,-50%)`,
+      uendret); uten JS faller mobil tilbake til samme desktop-verdi
+      (rent dekorativt, ingen funksjonell brist, men kan i sjeldne
+      no-JS+svært-liten-skjerm-tilfeller overlappe litt — akseptert
+      edge case).
+      Verifisert: ingen overlapp mellom vannmerke og logo/vurdering over
+      320-430px bredde × 568-932px høyde, både ved fersk sidelasting OG
+      ved resize uten reload. Ingen konsoll-feil.
+      Bifunn (IKKE fikset her, egen sak): ved 320×568 (svært gammel/liten
+      skjerm, f.eks. iPhone SE 1. gen — neppe relevant målgruppe i 2026)
+      overlapper faktisk OVERSKRIFTEN selv med vurderingen (`.hero__tittel`
+      starter FØR `.hero__vurdering` slutter) — det er `margin-top:-120px`
+      på `.hero__innhold` som trenger en høyde-bevisst grense, ikke noe
+      vannmerket er involvert i. Flagget for Ricky, ikke prioritert siden
+      375×667 (nyeste iPhone SE, fortsatt i salg) er trygt.
+- [x] Miljøfyrtårn- og Virke-logoene satt til venstre i sirkelen sin i
+      stedet for sentrert (Ricky, skjermbilde 2026-09-19: "De to logoene
+      ... vil bare sitte til venstre"). Målte med getBoundingClientRect():
+      SVG-ikonene ved siden av var perfekt sentrert (19px/19px), men PNG-
+      logoene hadde 18px venstre / 31px høyre margin — selve bildet var
+      ikke skjevt (sjekket med PIL/numpy, symmetrisk innhold i kildefilen),
+      det var CSS-boksen rundt som havnet feil. Rotårsak:
+      `.tillit-logo` brukte `height:2.1rem; width:auto; max-width:68%` —
+      for PNG-ene (bredere enn høye, 61×52) resolvet 68%-grensen mot en
+      uventet mindre verdi enn ventet og klemte bredden ned til 26.8px i
+      stedet for de riktige ~39.4px fra høyde/aspect-ratio, noe som forrykket
+      sentreringen. SVG-ikonene (kvadratiske) rammes ikke av samme
+      uregelmessighet, derfor så bare PNG-logoene gale ut. Fix: byttet til
+      fast `width: 2.4rem; height: 2.1rem` + `object-fit: contain` — en fast
+      boks skalerer og sentrerer alt innhold likt uansett kildeformat, uten
+      den snevre prosent-uregelmessigheten. Verifisert: alle fire
+      (2 SVG + 2 PNG) nå perfekt symmetriske (19px/19px), sjekket visuelt
+      i browser, ingen konsoll-feil.
 - [x] Bilene på vannmerke-kartet litt mer tydelige (Ricky, 2026-09-19).
       `.kart-markor` sin opasitet hevet fra .55 til .75 — fortsatt tydelig
       lavere enn hovedbilen i forgrunnen (skarp/full opasitet), så de

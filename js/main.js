@@ -2,7 +2,48 @@ export function initSider() {
   const reduksjon = matchMedia('(prefers-reduced-motion: reduce)').matches
   logoAnimer(reduksjon)
   kortReveal(reduksjon)
+  plasserVannmerke()
+  addEventListener('resize', debounce(plasserVannmerke, 150))
   window.__sideKjort = true
+}
+
+// Vannmerke-kartets vertikale posisjon på mobil kan IKKE regnes ut med ren
+// CSS-prosent — prøvd (top:50%/transform-Y% relativt til .hero__innhold sin
+// egen høyde), men testet med getBoundingClientRect() over flere skjerm-
+// høyder: forholdet mellom vurderingens bunn og .hero__innhold sin topp
+// varierer fra -12px til +147px avhengig av skjermhøyde (justify-
+// content:center + min-height:88vh + .hero__innhold sin margin-top spiller
+// sammen på en måte som ikke er en stabil prosent). Målte i stedet de EKTE,
+// ferdig-layoutede posisjonene og plasserer vannmerket sånn at det ALDRI
+// overlapper logo/vurdering, uansett skjermhøyde — rotårsaken til en
+// flimre-bug Ricky fant på ekte mobil, 2026-09-19: "'CLEANUNIT' snur fint,
+// men så flimrer 'LEANUNIT' ... Jeg tror det har noe med at vannmerket nå
+// ligger bak logo." (kartets maskerte boks lå delvis oppå de fortsatt
+// animerende bokstavene). Kun mobil — desktop bruker fortsatt den enkle
+// CSS-sentreringen i style.css, urørt.
+function plasserVannmerke() {
+  const vannmerke = document.querySelector('.hero__kart-vannmerke')
+  const vurdering = document.querySelector('.hero__vurdering')
+  const innhold = document.querySelector('.hero__innhold')
+  if (!vannmerke || !vurdering || !innhold) return
+  if (!matchMedia('(max-width: 40rem)').matches) {
+    vannmerke.style.top = ''
+    vannmerke.style.transform = ''
+    return
+  }
+  const innholdTop = innhold.getBoundingClientRect().top
+  const trygMargin = 8
+  const topPunkt = vurdering.getBoundingClientRect().bottom - innholdTop + trygMargin
+  vannmerke.style.top = Math.max(topPunkt, 0) + 'px'
+  vannmerke.style.transform = 'translateX(-50%)'
+}
+
+function debounce(fn, ms) {
+  let timer
+  return function (...args) {
+    clearTimeout(timer)
+    timer = setTimeout(() => fn.apply(this, args), ms)
+  }
 }
 
 // Kort dukker opp (fade + løft) etter hvert som de scrolles inn i synsfeltet
