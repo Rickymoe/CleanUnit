@@ -1,5 +1,39 @@
 # Åpne punkter — CleanUnit-redesign
 
+- [x] Cloudflare Web Analytics lagt til (Ricky, 2026-09-19). Samme delte
+      `rickymoe.github.io`-token (`3b2830d8c1b74ed68dee031783103adc`) som
+      alle andre GitHub Pages-prosjekter (HUT, Kuvaas, MonteHolmis,
+      StokkeRegnskap, Globus, Sol, reisevei) — se reference-memory om
+      Cloudflare Web Analytics. Standard-snippet limt inn rett før
+      `</body>`, etter `main.js`-scriptet. Rickys egne besøk ekskluderes
+      automatisk av den allerede satte opp uBlock Origin Lite-regelen
+      (browser-bred avtale, ikke noe nytt trengtes her) — bekreftet i
+      browser: scriptet blir blokkert med 503 lokalt (forventet), ingen
+      konsoll-feil. lagt til under team-illustrasjonen (Ricky, 2026-09-19:
+      "Bilde av de 2 første og en halvsirkel av 52 andre", korrigert
+      rett etterpå til "Er vel 50 andre") — `<figcaption>De to første –
+      og en halvsirkel av 50 kollegaer i dag</figcaption>` inni
+      `om-foto-plassholder--bred`-figuren. Arver automatisk samme stil
+      som Oslo/Stavanger-bildetekstene (`.om-foto-plassholder
+      figcaption`-regelen i style.css er ikke scoped til kun de to små
+      boksene, gjaldt allerede generisk). Ingen ny CSS trengtes.
+      Verifisert i browser, ingen konsoll-feil.
+- [x] Team-illustrasjonen (den brede plassholderen under "Fra to mopper til
+      55 ansatte" i Om oss) satt inn — Ricky la `bilder/2til52.png`
+      (1855×848, GPT-generert, matcher prompten fra tidligere denne
+      sesjonen: halvsirkel av ansatte i teal uniform med rengjørings-
+      utstyr). Generert `2til52.webp` (samme mønster som resten av
+      bildene: Pillow, kvalitet 82 — 1,28MB PNG → 82KB WEBP). Byttet ut
+      ikon-plassholderen med ekte `<picture>` (webp+png, alt-tekst,
+      width/height for å unngå layout-hopp), fjernet `aria-hidden` fra
+      figure (bildet er nå reelt innhold, ikke lenger dekorativt
+      venteskjema). `.om-foto-boks--bred` fikk `aspect-ratio` justert
+      fra 21/9 til bildets EKTE forhold (1855/848) så object-fit:cover
+      ikke trenger å beskjære noen av figurene, og `padding`/gradient-
+      bakgrunn (laget for ikon+tekst-plassholderen) fjernet siden bildet
+      nå fyller boksen selv. Verifisert i browser: WEBP lastes (200,
+      naturalSize 1855×848), ingen beskjæring av figurer, scroll-reveal
+      virker som før, ingen konsoll-feil.
 - [x] Ekte favicon på plass — erstattet den tomme teal-placeholderen
       (Ricky, 2026-09-19: "Nå trenger vi ikonen som vises i fanen. Noen
       forslag?"). Laget tre alternativer og sendte en sammenligning ved
