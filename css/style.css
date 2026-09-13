@@ -167,11 +167,35 @@ a { color: inherit; }
   left: clamp(9.5rem, 20%, 30%);
   transform: translateX(-50%); z-index: 1; text-align: center;
 }
+/* 9.5rem-gulvet over er en FAST pikselverdi, ikke en andel av bredden —
+   under ca. 760px (nesten alle telefoner) er det derfor alltid gulvet som
+   vinner, ikke en sann 50%-sentrering. Resultat: logoen sitter 40-60px
+   til venstre for faktisk midtpunkt på en vanlig telefon (Ricky,
+   iPhone-skjermbilde 2026-09-13: "Logo ikke helt sentrert på mobil").
+   Under 40rem (samme brytningspunkt som hero__knapper/min-height) sentreres
+   den derfor ekte i stedet — testet at det ikke klipper "C" ned til
+   320px bredde (logoen er ca. 240px bred i sin minste font-clamp-størrelse,
+   god margin selv på eldre/mindre telefoner). */
+@media (max-width: 40rem) {
+  .hero__logo { left: 50%; }
+}
 .logo {
   margin: 0; --persp: 700px; perspective: var(--persp);
   display: inline-flex; align-items: flex-end; position: relative;
   font: 700 clamp(2.2rem, 6.5vw, 3.6rem) "Poppins", var(--sans);
   letter-spacing: .12em; -webkit-font-smoothing: antialiased;
+  /* Fant SAMTIDIG rotårsaken til at logoen bryter til 2-3 linjer på smale
+     skjermer (flagget i design-kritikk 2026-09-13, ufikset da): .hero__logo
+     er absolutt posisjonert med kun `left` (ikke `right`), og "shrink-to-
+     fit"-bredden den da får regnes ut FØR translateX(-50%) brukes —
+     nettleseren vet ikke at boksen skal flyttes halvveis tilbake, så
+     tilgjengelig bredde fra `left`-punktet til høyre kant blir for smal og
+     tvinger .logo (inline-flex) til å bryte. white-space:nowrap her løser
+     selve bryte-problemet uten å røre .hero__logo sin bredde-beregning
+     (prøvde width:max-content på .hero__logo først — det ga i stedet
+     avkutting på desktop-bredder, trolig samme shrink-to-fit-kvirk fra en
+     annen vinkel). */
+  white-space: nowrap;
 }
 .logo__clean { color: var(--logo-tekst-gra); }
 .logo__unit { color: var(--logo-tekst-turkis); }
@@ -186,8 +210,8 @@ html.js .logo__bokstav {
   transform: rotateY(90deg); opacity: 0;
 }
 html.js .logo.kjor .logo__bokstav {
-  animation: logo-snurr 550ms cubic-bezier(.22,.9,.32,1) forwards;
-  animation-delay: calc(var(--i) * 55ms);
+  animation: logo-snurr 700ms cubic-bezier(.22,.9,.32,1) forwards;
+  animation-delay: calc(var(--i) * 75ms);
 }
 @keyframes logo-snurr {
   0%   { transform: rotateY(90deg); opacity: 0; }
@@ -265,35 +289,12 @@ html.js .bobler.vist .boble--lys  { opacity: 1; transition-delay: .5s; }
   display: block; width: 100%; max-width: none; height: auto;
   opacity: .55;
 }
-/* Kort stjerneglimt ved én bil av gangen (styrt fra js/main.js, samme
-   4-punkts sparkle-teknikk som «d»-en på Tann-legen), men her dreier den
-   som en klokkeviser — fra kl 1 til kl 6 — i stedet for det lille vippet
-   originalen bruker. Tanken: "skinnende rent" — samme glimt som kan brukes
-   andre steder på siden når noe nettopp er gjort rent. Fargen er teal, ikke
-   hvit som på Tann-legen — vannmerket ligger på en lys/nesten hvit bunn
-   (--base), så en hvit gnist druknet helt. Hvit kjerne + teal glød gir
-   samme "shine" men med kontrast mot bakgrunnen. */
-.kart-markor__stjerne {
-  position: absolute; top: -20%; right: -12%;
-  width: 60%; height: 60%; pointer-events: none;
-  transform: scale(0) rotate(30deg); transform-origin: center; opacity: 0;
-  background:
-    radial-gradient(circle at 50% 50%, #FFC93C 0%, #fff 11%, rgba(14,124,123,.55) 28%, rgba(14,124,123,0) 42%),
-    linear-gradient(to bottom, transparent 6%, var(--teal) 50%, transparent 94%) 50% 50% / 10% 100% no-repeat,
-    linear-gradient(to right,  transparent 6%, var(--teal) 50%, transparent 94%) 50% 50% / 100% 10% no-repeat;
-  filter: drop-shadow(0 0 3px rgba(14,124,123,.65));
-}
-html.js .kart-markor__stjerne.gnistrer {
-  animation: markor-stjerne-sving 1.6s cubic-bezier(.2,.8,.3,1) both;
-}
-@keyframes markor-stjerne-sving {
-  0%   { opacity: 0; transform: scale(.2) rotate(30deg); }  /* kl 1 */
-  30%  { opacity: 1; transform: scale(1) rotate(90deg); }   /* kl 3 */
-  100% { opacity: 0; transform: scale(.7) rotate(180deg); } /* kl 6 */
-}
-@media (prefers-reduced-motion: reduce) {
-  html.js .kart-markor__stjerne { animation: none !important; opacity: 0; }
-}
+/* Stjerneglimt ved bil-markørene (kart-markor__stjerne) fjernet 2026-09-13
+   på Rickys ønske — én av fire animasjoner som fyrte av i hero-hjørnet ved
+   sidelast, og den minst meningsbærende av dem (ren staffasje, i
+   motsetning til logo/tittel som bærer faktisk innhold). Se design-
+   kritikk-notatet lenger ned i denne filen om at bevegelses-mengden i
+   hero-hjørnet var i grenseland. */
 .hero__tittel { position: relative; font-size: clamp(2rem, 5vw, var(--t-3xl)); max-width: 20ch; color: var(--logo-tekst-gra); }
 /* Lys-tenning KUN på "Renhold" (Ricky, 2026-09-13: "Kun gjør det til og med
    'Renhold'") — resten av overskriften ("i Oslo og Stavanger") beholder

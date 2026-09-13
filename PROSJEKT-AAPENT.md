@@ -1,5 +1,44 @@
 # Åpne punkter — CleanUnit-redesign
 
+- [x] Logo-mynt-snurringen ("CLEANUNIT" bokstav for bokstav) gjort tregere
+      (Ricky, 2026-09-13) — varighet 550ms→700ms per bokstav, forsinkelse
+      mellom bokstaver 55ms→75ms. Holdt CSS (`logo-snurr`-animasjonen) og
+      JS (`SNURR_TOTAL_MS`-utregningen som styrer når boblene/tittel-
+      lystenningen skal starte) synkronisert — begge steder oppdatert
+      sammen, ellers ville boblene dukket opp før siste bokstav var ferdig
+      tegnet. Verifisert i browser (fanget et mellomsteg av snurringen +
+      bekreftet fullført sluttilstand), ingen konsoll-feil.
+- [x] Kart-stjerne-stafetten (glimt ved bil-markørene på vannmerket) fjernet
+      helt (Ricky, 2026-09-13) — én av flere hero-animasjoner design-
+      kritikken flagget som den minst meningsbærende. Fjernet fra alle tre
+      lag: `.kart-markor__stjerne`-spanene i index.html (7 stk, selve
+      bil-markørene står igjen), `.kart-markor__stjerne`/`@keyframes
+      markor-stjerne-sving`-reglene i style.css, og `markorStjerner()`-
+      funksjonen + kallet til den i js/main.js (tittel-lystenningen trigges
+      fortsatt etter boblene, bare uten kart-stjernene ved siden av).
+      Verifisert i browser, ingen konsoll-feil.
+- [x] Hero-logoen (CLEANUNIT) ikke helt sentrert på mobil (Ricky, ekte
+      iPhone-skjermbilde 2026-09-13). To ting fikset samtidig:
+      1) `.hero__logo`s `left: clamp(9.5rem, 20%, 30%)` har et FAST 9,5rem-
+      gulv som vinner på nesten alle telefoner (under ~760px bredde) —
+      logoen satt derfor 40-60px til venstre for ekte midtpunkt, ikke
+      proporsjonalt sentrert. Ny `@media (max-width: 40rem)` setter
+      `left: 50%` direkte der (samme brytningspunkt som hero__knapper/
+      min-height-fiksene).
+      2) Samtidig rotårsak til det gamle, uløste "logo bryter til 2-3
+      linjer på smale skjermer"-bifunnet fra design-kritikken: en absolutt
+      posisjonert boks med kun `left` (ikke `right`) får "shrink-to-fit"-
+      bredden sin regnet ut FØR `translateX(-50%)` brukes, så tilgjengelig
+      bredde fra `left`-punktet ble for smal og tvang `.logo` til å bryte.
+      Prøvde først `width: max-content` på `.hero__logo` — ga i stedet
+      avkutting (viste seg å være en font-innlastings-timing-artefakt i
+      testingen, ikke en ekte bug, men byttet likevel til en enklere/
+      tryggere løsning): `white-space: nowrap` direkte på `.logo` løser
+      bryte-problemet uten å røre `.hero__logo` sin bredde-beregning.
+      Verifisert med iframe-teknikk ved 320/375/430px (logo helt på én
+      linje, god margin begge sider) OG ved 1000px (fortsatt korrekt,
+      ingen avkutting — måtte vente lenger på font-innlasting for et
+      rettvisende skjermbilde). Ingen konsoll-feil.
 - [x] "i Oslo og Stavanger" fikk logoens grå (--logo-tekst-gra, samme som
       "CLEAN") permanent i stedet for --teal-mork (Ricky, 2026-09-13:
       bevisst farge-sammenspill med logoen — "Renhold" går fra samme grå
@@ -103,13 +142,8 @@
       dobbeltsjekke på ekte enhet/vindu at gapet faktisk er borte** — hvis
       ikke, er dette trolig fortsatt underdimensjonert og trenger en ny
       runde.
-      Bifunn, IKKE fikset (utenfor scope for denne oppgaven): `.hero__logo`
-      bryter til 2-3 linjer og/eller klippes på venstre kant på smale
-      skjermer (< ca. 430px) — `left: clamp(9.5rem, 20%, 30%)` sammen med
-      logo-fontens bredde ser ut til å mangle en tilstrekkelig smal-skjerm-
-      justering. Bør tas i en dedikert smal-layout-gjennomgang, se punktet
-      lenger ned i denne filen om at "ingen dedikert smal-layout-gjennomgang
-      [er] gjort".
+      Bifunn den gangen, IKKE fikset da: `.hero__logo` bryter til 2-3 linjer
+      på smale skjermer — se eget punkt under, fikset 2026-09-13.
 - [x] Organisasjonsnummer lagt til i footeren under begge kontor-adressene:
       Oslo (Clean Unit Renhold AS) 895 215 902, Stavanger (Clean Unit
       Stavanger AS) 929 085 019. Hentet fra cleanunit.no/kontakt og
