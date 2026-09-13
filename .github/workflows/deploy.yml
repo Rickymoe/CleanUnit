@@ -1,0 +1,54 @@
+name: Publiser til Pages (uten kommentarer)
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Kopier alt til dist
+        run: |
+          mkdir dist
+          rsync -a --exclude='.git' --exclude='.github' --exclude='dist' ./ dist/
+
+      - name: Fjern kommentarer fra HTML/CSS/JS
+        run: |
+          npx --yes html-minifier-terser --remove-comments \
+            --minify-js '{"compress":false,"mangle":false}' \
+            dist/index.html -o dist/index.html
+          npx --yes clean-css-cli -O1 --format keep-breaks \
+            -o dist/css/style.css dist/css/style.css
+          npx --yes terser dist/js/main.js -f beautify \
+            -o dist/js/main.js
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
