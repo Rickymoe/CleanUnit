@@ -82,6 +82,14 @@ a { color: inherit; }
   padding-top: clamp(3rem, 12vh, 6rem); padding-bottom: clamp(2rem, 8vh, 5rem);
   background: var(--base);
 }
+/* På smale/høye mobilskjermer sentrerer justify-content:center innholdet
+   midt i hele 100svh-flaten, langt under den toppforankrede logoen (som er
+   absolutt posisjonert, utenfor denne sentreringen) — det ga et stort, tomt
+   gap mellom logo og resten. Under 40rem forankres innholdet i stedet rett
+   under logoen. */
+@media (max-width: 40rem) {
+  .hero { min-height: 88vh; }
+}
 /* To-byer-illustrasjon (Oslo/Holmenkollbakken venstre, Stavanger/Fargegaten+
    Preikestolen høyre) — bunnforankret bakgrunn, med åpent rom i midten der
    logo/overskrift ligger oppå. Løftet opp fra selve hero-bunnen (bottom, ikke
@@ -107,7 +115,7 @@ a { color: inherit; }
    faktisk bedre ut uten" i heroen). */
 .verktoy__merke {
   position: absolute; left: 49%; top: 50%; transform: translate(-50%, -50%);
-  width: 21%; font: 700 clamp(4px, 1vw, 6px)/1 var(--sans);
+  width: 21%; font: 700 clamp(5px, 1.4vw, 8px)/1 var(--sans);
   letter-spacing: .02em; color: var(--tekst); text-align: center;
   white-space: nowrap;
 }
@@ -129,6 +137,23 @@ a { color: inherit; }
   /* .knapp:hover setter sin egen transform (løft), som ellers ville overskrevet
      translateX(-50%) helt og fått knappen til å "hoppe" til høyre. */
   .hero__knapp--oslo:hover, .hero__knapp--stavanger:hover { transform: translateX(-50%) translateY(-1px); }
+}
+/* Under ca. 34rem konvergerer 9rem-gulvet på Oslo-knappen og "100% - 9rem"-
+   taket på Stavanger-knappen så mye at knappene kolliderer midt i (Ricky,
+   skjermbilde 2026-09-13, ~430px bred telefon: "Ring Oslo" og "Ring
+   Stavanger" gled inn i hverandre). Under den bredden gir vi opp å holde
+   dem presist under hver sin by — de stables i stedet sentrert, ut av den
+   absolutte per-knapp-posisjoneringen over. */
+@media (max-width: 34rem) {
+  .hero__knapper {
+    display: flex; flex-direction: column; align-items: center; gap: var(--s-3);
+    padding-inline: 1rem;
+  }
+  .hero__knapper .knapp { position: static; }
+  .hero__knapp--oslo, .hero__knapp--stavanger { left: auto; transform: none; }
+  @media (hover: hover) {
+    .hero__knapp--oslo:hover, .hero__knapp--stavanger:hover { transform: translateY(-1px); }
+  }
 }
 /* Ute av den sentrerte innholds-flyten — plassert over Oslo-klyngen (samme
    20%-posisjon som Ring Oslo-knappen), slik at midten står fri til
@@ -216,7 +241,7 @@ html.js .bobler.vist .boble--lys  { opacity: 1; transition-delay: .5s; }
 .hero__innhold { position: relative; z-index: 1; }
 .hero__kart-vannmerke {
   position: absolute; top: 50%; left: 58%; transform: translate(-50%, -50%);
-  width: clamp(500px, 85vw, 1000px); aspect-ratio: 1; max-width: none;
+  width: clamp(260px, 85vw, 1000px); aspect-ratio: 1; max-width: none;
   z-index: -1; pointer-events: none;
   /* Radial maske — toner ut mot kantene i stedet for å vise en synlig
      firkant-grense der kartutsnittet slutter. Asymmetrisk (bredere/mer
@@ -269,7 +294,52 @@ html.js .kart-markor__stjerne.gnistrer {
 @media (prefers-reduced-motion: reduce) {
   html.js .kart-markor__stjerne { animation: none !important; opacity: 0; }
 }
-.hero__tittel { font-size: clamp(2rem, 5vw, var(--t-3xl)); max-width: 20ch; color: var(--teal-mork); }
+.hero__tittel { position: relative; font-size: clamp(2rem, 5vw, var(--t-3xl)); max-width: 20ch; color: var(--logo-tekst-gra); }
+/* Lys-tenning KUN på "Renhold" (Ricky, 2026-09-13: "Kun gjør det til og med
+   'Renhold'") — resten av overskriften ("i Oslo og Stavanger") beholder
+   logoens grå (--logo-tekst-gra, samme som "CLEAN") permanent, ingen
+   animasjon. Bevisst farge-sammenspill med logoen (Ricky): "Renhold" går
+   fra samme grå til logoens turkis (--logo-tekst-turkis, samme som "UNIT"),
+   mens resten av teksten speiler CLEAN-delen av logoen og står stille.
+   Samme teknikk som Tuven-prosjektets logo/footer-merke (2 lag + mask-
+   position-sveip med steps(), unngår @property): .tittel-grunn ("Renhold")
+   er ekte tekst, alltid lesbar, arver den samme grå fra .hero__tittel selv
+   (ingen egen fargeregel trengs). Et dekorativt, aria-hidden duplikat av
+   kun "Renhold" i turkis med et lyst glødeskjær ligger oppå og avdekkes.
+   Siden det kun er ett ord trengs ikke lenger per-ord-masking (se
+   git-historikk for den varianten, brukt da hele teksten tentes). Trigges
+   av .tent-klassen ETTER at logo+bobler er helt ferdig — samme
+   trigger-punkt som kart-stjerne-stafetten. Standardtilstanden (uten
+   html.js, eller reduced-motion) viser laget helt avdekket med en gang —
+   rett i ferdig turkis, aldri fastlåst grått. */
+.hero__tittel .tittel-lys {
+  position: absolute; left: 0; top: 0; pointer-events: none;
+  color: var(--logo-tekst-turkis);
+  filter: drop-shadow(0 0 3px rgba(135, 202, 201, .25));
+  -webkit-mask: linear-gradient(90deg, #000 50%, transparent 50%) 0 0 / 200% 100% no-repeat;
+          mask: linear-gradient(90deg, #000 50%, transparent 50%) 0 0 / 200% 100% no-repeat;
+  -webkit-mask-position: 0 0; mask-position: 0 0;
+}
+html.js .hero__tittel .tittel-lys {
+  -webkit-mask-position: 100% 0; mask-position: 100% 0;
+}
+html.js .hero__tittel.tent .tittel-lys {
+  animation-name: tittel-tenn;
+  animation-fill-mode: both;
+  /* varighet/steg-antall settes som inline stil av tittelLysTenn() i
+     js/main.js ut fra "Renhold" sin lengde — verdiene under er fallback. */
+  animation-duration: 385ms;
+  animation-timing-function: steps(7);
+}
+@keyframes tittel-tenn {
+  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+  to   { -webkit-mask-position: 0 0;    mask-position: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .hero__tittel .tittel-lys {
+    -webkit-mask-position: 0 0; mask-position: 0 0; animation: none;
+  }
+}
 .hero__ingress { max-width: 42ch; color: var(--tekst-svak); margin-top: var(--s-6); font-size: var(--t-md); }
 
 .tjeneste-grid, .tillit-liste {
@@ -296,8 +366,29 @@ html.js .kart-markor__stjerne.gnistrer {
   .tjeneste-kort:hover { transform: none; }
 }
 
+.stopp--referanser { padding-block: var(--seksjon-y); background: var(--teal-lys); }
+.stopp--referanser .sitat-liste { margin-top: var(--s-6); }
 .stopp--tillit { padding-block: var(--seksjon-y); background: var(--base); }
+.stopp--tillit h2 { text-align: center; }
+.stopp--tillit .eyebrow { text-align: center; }
 .tillit-liste h3 { color: var(--teal-mork); }
+.tillit-liste li { display: flex; flex-direction: column; align-items: center; text-align: center; }
+/* Sirkel-/stempel-ramme rundt hvert ikon/logo — Ricky syntes seksjonen
+   virket passiv/kjedelig (2026-09-13); dobbel ring gir et "offisielt segl"-
+   preg som passer siden innholdet faktisk ER sertifiseringer/medlemskap.
+   Hvit bunn (ikke --base) så den skiller seg fra sideflaten bak. */
+.tillit-stempel {
+  width: 4.75rem; height: 4.75rem; border-radius: 50%;
+  background: #fff; border: 2px solid var(--teal);
+  display: grid; place-items: center; position: relative;
+  margin-bottom: var(--s-3); flex-shrink: 0;
+}
+.tillit-stempel::before {
+  content: ""; position: absolute; inset: 5px; border-radius: 50%;
+  border: 1px dashed rgba(14, 124, 123, .35);
+}
+.tillit-logo { height: 2.1rem; width: auto; max-width: 68%; display: block; object-fit: contain; }
+svg.tillit-logo { color: var(--teal); }
 
 .stopp--om { padding-block: var(--seksjon-y); background: var(--teal-lys); }
 .stopp__lede { max-width: 60ch; margin-top: var(--s-4); color: var(--tekst-svak); }
@@ -327,18 +418,33 @@ html.js .kart-markor__stjerne.gnistrer {
 
 .stopp--jobb { padding-block: var(--seksjon-y); background: var(--base); }
 .stopp--jobb h3 { margin-top: var(--s-6); color: var(--teal-mork); }
+/* Design-kritikk 2026-09-13 gjorde først fordel-kortene avlange (fikk en
+   foreldreløs kort på siste rad, 4 i 3 kolonner). Ricky snudde: fordelene
+   fikk tilbake sin opprinnelige kort-stil (denne kommentaren markerer at
+   IKKE reverte det ikke er en forglemmelse), og samme avlange/stablede
+   behandling ble flyttet til sitat-kortene i stedet — se .sitat-liste/
+   .sitat-kort under, som nå gjelder ALLE sitater (Referanser OG denne
+   seksjonens ansatte-sitater), ikke bare Referanser. Tanken: all
+   tilbakemelding — fra kunde eller medarbeider — skal se lik ut. */
 .sitat-liste {
   list-style: none; margin: var(--s-3) 0 0; padding: 0; display: grid;
-  gap: var(--s-5); grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--s-5); grid-template-columns: 1fr;
 }
-.sitat-kort { background: #fff; border: 1px solid var(--teal-lys); border-radius: var(--radius); padding: var(--s-5); }
-.sitat-kort blockquote { margin: 0; }
+.sitat-kort {
+  background: #fff; border: 1px solid var(--teal-lys); border-radius: var(--radius); padding: var(--s-5);
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-4);
+}
+@media (min-width: 36rem) {
+  .sitat-kort { flex-direction: row; align-items: center; }
+}
+.sitat-kort blockquote { margin: 0; flex: 1; min-width: 0; }
 .sitat-kort blockquote::before {
   content: "\201C"; display: block; margin-bottom: var(--s-2);
   font: 800 3rem/1 Georgia, "Times New Roman", serif; color: var(--teal); opacity: .4;
 }
 .sitat-kort p { color: var(--tekst); font-style: italic; font-size: var(--t-sm); }
-.sitat-kort footer { margin-top: var(--s-3); font: 700 var(--t-sm)/1 var(--sans); color: var(--teal-mork); font-style: normal; }
+.sitat-kort footer { margin-top: var(--s-3); font: 700 var(--t-sm)/1.4 var(--sans); color: var(--teal-mork); font-style: normal; }
+.sitat-logo { display: block; height: 2.5rem; max-width: 9rem; margin: 0; flex-shrink: 0; }
 .stopp--jobb .knapp { margin-top: var(--s-6); }
 .side-footer { background: var(--teal-mork); color: #fff; padding-block: var(--s-8); }
 .side-footer .wrap { display: grid; gap: var(--s-6); justify-items: center; text-align: center; }
@@ -356,6 +462,7 @@ html.js .kart-markor__stjerne.gnistrer {
 }
 .side-footer__kontorer h3 { color: #fff; font-size: var(--t-lg); }
 .side-footer__kontorer p { margin-top: var(--s-1); opacity: .85; font-size: var(--t-sm); }
+.side-footer__orgnr { opacity: .6; font-size: var(--t-xs); }
 .side-footer__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); justify-content: center; margin-top: var(--s-4); }
 .side-footer .knapp { border-color: #fff; }
 .side-footer .knapp--fyll { background: #fff; color: var(--teal-mork); }
@@ -364,4 +471,26 @@ html.js .kart-markor__stjerne.gnistrer {
 @media (hover: hover) {
   .side-footer .knapp--omriss:hover { background: #fff; color: var(--teal-mork); }
   .side-footer .knapp--fyll:hover { background: var(--teal-lys); }
+}
+
+/* Scroll-reveal for kort nedover siden (js/main.js legger på .js-reveal på
+   tjeneste-kort, sitat-kort, tillit-liste-punktene og om-foto-plassholder-
+   boksene, og observerer dem med IntersectionObserver). Klassen settes KUN
+   av JS selv — hvis modulscriptet aldri kjører, får elementene aldri
+   .js-reveal og forblir dermed alltid synlige. Ingen egen nødluke trengs,
+   i motsetning til logo-snurringen (som styres av html.js alene og har sin
+   egen nødluke i index.html). Tredje/fjerde-i-rekka-forsinkelse via
+   nth-child (ikke JS) — funker uansett faktisk kolonneantall uten at vi må
+   telle opp gridet. Tidligere signaturgrep (full flate/backdrop-filter/
+   smal stripe/clip-path, fjernet 2026-09-12) forstyrret lesing; dette er
+   lokal per-kort-bevegelse mens resten av siden står helt i ro. */
+html.js .js-reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity .7s cubic-bezier(.22,.9,.32,1), transform .7s cubic-bezier(.22,.9,.32,1);
+}
+html.js .js-reveal.revealed { opacity: 1; transform: none; }
+.js-reveal:nth-child(3n+2) { transition-delay: 130ms; }
+.js-reveal:nth-child(3n+3) { transition-delay: 260ms; }
+@media (prefers-reduced-motion: reduce) {
+  html.js .js-reveal { opacity: 1; transform: none; transition: none; }
 }

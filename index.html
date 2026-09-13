@@ -107,7 +107,7 @@ addEventListener("load", function () {
         <span class="kart-markor__stjerne"></span>
       </span>
     </div>
-    <h1 class="hero__tittel">Renhold i Oslo og Stavanger</h1>
+    <h1 class="hero__tittel"><span class="tittel-grunn">Renhold</span> i Oslo og Stavanger<span class="tittel-lys" aria-hidden="true">Renhold</span></h1>
     <p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte – ingen underleverandører.</p>
   </div>
   <!-- Plassert under hver sin by i illustrasjonen (bilder/Byer.png), ikke i
@@ -174,26 +174,116 @@ addEventListener("load", function () {
     </ul>
   </div>
 </section>
+<section class="stopp--referanser" id="referanser">
+  <div class="wrap">
+    <p class="eyebrow">Referanser</p>
+    <h2>Dette sier kundene våre</h2>
+    <ul class="sitat-liste">
+      <li class="sitat-kort">
+        <picture>
+          <source srcset="bilder/logo-nvh.webp" type="image/webp">
+          <img class="sitat-logo" src="bilder/logo-nvh.png" alt="" width="136" height="100">
+        </picture>
+        <blockquote>
+          <p>Vi opplever svært god kundeservice, en blid og hyggelig renholdsarbeider/assistent, fleksibilitet og oppfølging.</p>
+          <footer>Ida Larson<br>Stiftelsen NVH barnehagen</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <picture>
+          <source srcset="bilder/logo-kanvas.webp" type="image/webp">
+          <img class="sitat-logo" src="bilder/logo-kanvas.png" alt="" width="394" height="166">
+        </picture>
+        <blockquote>
+          <p>Vi har tett dialog og opplever at Clean Unit Renhold følger opp tilbakemeldinger og har fokus på kvalitet.</p>
+          <footer>Cecilie Beck-Hansen<br>Utforskeren Kanvas-Barnehage</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <picture>
+          <source srcset="bilder/logo-kg.webp" type="image/webp">
+          <img class="sitat-logo" src="bilder/logo-kg.png" alt="" width="1140" height="237">
+        </picture>
+        <blockquote>
+          <p>I en hektisk hverdag setter vi ekstra pris på at renholderne alltid er blide og selv proaktivt oppsøker informasjon.</p>
+          <footer>Line Wermundsen Mork<br>Kristelig Gymnasium</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <picture>
+          <source srcset="bilder/logo-medistim.webp" type="image/webp">
+          <img class="sitat-logo" src="bilder/logo-medistim.png" alt="" width="1198" height="174">
+        </picture>
+        <blockquote>
+          <p>Vi opplever Clean Unit som meget profesjonelle med kvalitet og service i fokus.</p>
+          <footer>Solveig Sletten<br>Medistim</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <!-- UTKAST: cleanunit.no bruker "Barnehagenett-logo.png" for denne
+             referansen — det er logoen til nettverket/plattformen
+             barnehagenett.no, ikke Stålverkskroken barnehages egen logo.
+             Ikke lagt inn her før Ricky bekrefter om det er riktig å
+             bruke, se PROSJEKT-AAPENT.md. Uten logo faller dette kortet
+             tilbake til full bredde på teksten (se .sitat-kort i CSS). -->
+        <blockquote>
+          <p>Vi er veldig fornøyde med samarbeidet, kommunikasjonen samt rengjøringen av våre lokaler.</p>
+          <footer>Trine Hofseth<br>Stålverkskroken barnehage</footer>
+        </blockquote>
+      </li>
+    </ul>
+  </div>
+</section>
 <section class="stopp--tillit" id="hvorfor">
   <div class="wrap">
     <p class="eyebrow">Hvorfor Clean Unit</p>
     <h2>Godkjent, ansvarlig og til stede</h2>
     <ul class="tillit-liste">
       <li>
+        <div class="tillit-stempel">
+          <svg class="tillit-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="5" y="6" width="14" height="16" rx="2"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+            <circle cx="12" cy="12" r="2"/>
+            <path d="M8 18c.5-2 2-3 4-3s3.5 1 4 3"/>
+          </svg>
+        </div>
         <h3>Direkte ansatte</h3>
         <p><!-- UTKAST -->Vi bruker ikke underleverandører. Dere vet alltid hvem som utfører renholdet hos dere.</p>
       </li>
       <li>
+        <div class="tillit-stempel">
+          <picture>
+            <source srcset="bilder/logo-miljofyrtarn.webp" type="image/webp">
+            <img class="tillit-logo" src="bilder/logo-miljofyrtarn.png" alt="Miljøfyrtårn" width="61" height="52">
+          </picture>
+        </div>
         <h3>Miljøfyrtårn-sertifisert</h3>
-        <p><!-- UTKAST -->Vi er en offentlig godkjent renholdsbedrift og miljøfyrtårnsertifisert.</p>
+        <p>Vi er en offentlig godkjent renholdsbedrift og miljøfyrtårnsertifisert.</p>
       </li>
       <li>
+        <div class="tillit-stempel">
+          <picture>
+            <source srcset="bilder/logo-virke.webp" type="image/webp">
+            <img class="tillit-logo" src="bilder/logo-virke.png" alt="Virke" width="61" height="52">
+          </picture>
+        </div>
         <h3>Medlem i Virke</h3>
         <p><!-- UTKAST -->Som medlem i hovedorganisasjonen Virke overholder vi eksisterende krav og reglement.</p>
       </li>
       <li>
-        <h3>Nylig re-sertifisert</h3>
-        <p><!-- UTKAST: bekreft dato/fakta med Marit/Christopher før publisering, se PROSJEKT-AAPENT.md -->Vi fornyer sertifiseringene våre jevnlig for å holde standarden oppe.</p>
+        <div class="tillit-stempel">
+          <svg class="tillit-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/>
+            <path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.785 1.785 0 0 0 0-1.775l-1.226-2.12"/>
+            <path d="m14 16-3 3 3 3"/>
+            <path d="M8.293 13.596 7.196 9.5l-4.096 1.097"/>
+            <path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 12 3a1.83 1.83 0 0 1 1.563.916l4.096 7.09"/>
+            <path d="m13.378 9.633 4.096-1.098 1.097 4.096"/>
+          </svg>
+        </div>
+        <h3>Jevnlig re-sertifisert</h3>
+        <p><!-- UTKAST: antar fortsatt miljøsertifisert per Rickys instruks 2026-09-13, siste kjente konkrete resertifisering var januar 2021 (se PROSJEKT-AAPENT.md) -->Vi fornyer sertifiseringene våre jevnlig for å holde standarden oppe.</p>
       </li>
     </ul>
   </div>
@@ -328,6 +418,7 @@ addEventListener("load", function () {
       <div>
         <h3>Clean Unit Renhold AS</h3>
         <p>Gunnar Schjelderups vei 9, 0485 Oslo</p>
+        <p class="side-footer__orgnr">Org.nr 895 215 902</p>
         <div class="side-footer__knapper">
           <a class="knapp knapp--fyll" href="tel:+4721555680">Ring – 21 55 56 80</a>
           <a class="knapp knapp--omriss" href="mailto:renhold@cleanunit.no">Send e-post</a>
@@ -335,7 +426,11 @@ addEventListener("load", function () {
       </div>
       <div>
         <h3>Clean Unit Stavanger AS</h3>
-        <p>Bryggerikaien 16, 4014 Stavanger</p>
+        <p><!-- UTKAST: Brønnøysundregistrene oppgir registrert adresse Nedre
+             Holmegate 30, 4006 Stavanger — avviker fra denne besøksadressen
+             hentet fra cleanunit.no 2026-09-12. Bekreft hvilken som skal
+             brukes, se PROSJEKT-AAPENT.md -->Bryggerikaien 16, 4014 Stavanger</p>
+        <p class="side-footer__orgnr">Org.nr 929 085 019</p>
         <div class="side-footer__knapper">
           <a class="knapp knapp--fyll" href="tel:+4790065009">Ring – 900 65 009</a>
           <a class="knapp knapp--omriss" href="mailto:thord@cleanunit.no">Send e-post</a>
