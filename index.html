@@ -67,26 +67,37 @@ addEventListener("load", function () {
         <source srcset="bilder/hero-kart-vannmerke.webp" type="image/webp">
         <img class="kart-vannmerke__kart" src="bilder/hero-kart-vannmerke.png" alt="" width="768" height="768">
       </picture>
-      <img class="kart-markor" src="bilder/bil.png" alt="" style="--x: 15%; --y: 26%;">
-      <img class="kart-markor" src="bilder/bil.png" alt="" style="--x: 62%; --y: 18%; transform: translate(-50%,-50%) scaleX(-1);">
-      <img class="kart-markor" src="bilder/bil.png" alt="" style="--x: 35%; --y: 40%;">
-      <img class="kart-markor" src="bilder/bil.png" alt="" style="--x: 66%; --y: 42%; transform: translate(-50%,-50%) scaleX(-1);">
-      <img class="kart-markor" src="bilder/bil.png" alt="" style="--x: 42%; --y: 60%;">
-      <img class="kart-markor" src="bilder/bil.png" alt="" style="--x: 58%; --y: 68%; transform: translate(-50%,-50%) scaleX(-1);">
-      <img class="kart-markor" src="bilder/bil.png" alt="" style="--x: 25%; --y: 55%;">
+      <span class="kart-markor-wrap" style="--x: 15%; --y: 26%;">
+        <img class="kart-markor" src="bilder/bil.png" alt="">
+        <span class="kart-markor__stjerne"></span>
+      </span>
+      <span class="kart-markor-wrap" style="--x: 62%; --y: 18%;">
+        <img class="kart-markor" src="bilder/bil.png" alt="" style="transform: scaleX(-1);">
+        <span class="kart-markor__stjerne"></span>
+      </span>
+      <span class="kart-markor-wrap" style="--x: 82%; --y: 30%;">
+        <img class="kart-markor" src="bilder/bil.png" alt="">
+        <span class="kart-markor__stjerne"></span>
+      </span>
+      <span class="kart-markor-wrap" style="--x: 85%; --y: 55%;">
+        <img class="kart-markor" src="bilder/bil.png" alt="" style="transform: scaleX(-1);">
+        <span class="kart-markor__stjerne"></span>
+      </span>
+      <span class="kart-markor-wrap" style="--x: 35%; --y: 72%;">
+        <img class="kart-markor" src="bilder/bil.png" alt="">
+        <span class="kart-markor__stjerne"></span>
+      </span>
+      <span class="kart-markor-wrap" style="--x: 58%; --y: 68%;">
+        <img class="kart-markor" src="bilder/bil.png" alt="" style="transform: scaleX(-1);">
+        <span class="kart-markor__stjerne"></span>
+      </span>
+      <span class="kart-markor-wrap" style="--x: 18%; --y: 70%;">
+        <img class="kart-markor" src="bilder/bil.png" alt="">
+        <span class="kart-markor__stjerne"></span>
+      </span>
     </div>
     <h1 class="hero__tittel">Renhold i Oslo og Stavanger</h1>
     <p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte – ingen underleverandører.</p>
-  </div>
-  <!-- Hovedbilen — øvre høyre hjørne, egen posisjonert boks (ikke lenger i
-       innholds-flyten). "CLEANUNIT" er ekte tekst lagt oppå dørpanelet
-       (målt i bilder/bil.png: ~38–61% av bredden, ~40–60% av høyden). -->
-  <div class="hero__verktoy" aria-hidden="true">
-    <picture>
-      <source srcset="bilder/bil.webp" type="image/webp">
-      <img src="bilder/bil.png" alt="" width="1448" height="1086">
-    </picture>
-    <span class="verktoy__merke">CLEANUNIT</span>
   </div>
   <!-- Plassert under hver sin by i illustrasjonen (bilder/Byer.png), ikke i
        den vanlige innholds-flyten — se .hero__knapper i style.css. -->
@@ -154,6 +165,17 @@ addEventListener("load", function () {
 <footer class="side-footer">
   <div class="wrap">
     <p class="side-footer__merke">Clean Unit</p>
+    <!-- Flyttet ned fra hero øverst til høyre — Ricky: "det faktisk bedre
+         ut uten". "CLEANUNIT" er ekte tekst lagt oppå dørpanelet (samme
+         teknikk/mål som i hero: bilder/bil.png, panelet ligger omtrent
+         38–61% av bredden, 40–60% av høyden). -->
+    <div class="side-footer__bil" aria-hidden="true">
+      <picture>
+        <source srcset="bilder/bil.webp" type="image/webp">
+        <img src="bilder/bil.png" alt="" width="1448" height="1086">
+      </picture>
+      <span class="verktoy__merke">CLEANUNIT</span>
+    </div>
     <h2 class="visually-hidden">Kontakt</h2>
     <div class="side-footer__kontorer">
       <div>

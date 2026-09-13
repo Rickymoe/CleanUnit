@@ -98,21 +98,11 @@ a { color: inherit; }
   width: 100%; height: auto; max-height: 100%; object-fit: contain;
   object-position: bottom; display: block; margin-inline: auto;
 }
-/* Varebil + kost/mopp/spann — øvre høyre hjørne av heroen, egen posisjonert
-   boks (ikke i innholds-flyten sammen med overskrift/ingress). AI-generert
-   (bilder/bil.png, samme stil/prompt-tilnærming som Byer.png) for å matche
-   kvaliteten på by-illustrasjonen. Boblene (tidligere animert fra spannet)
-   er fjernet på Rickys ønske. Bredden holdes tydelig under logoens egen
-   bredde (~260px på desktop), siden den ellers ble for dominerende. */
-.hero__verktoy {
-  position: absolute; top: clamp(1.5rem, 6vh, 3rem); right: clamp(1rem, 4vw, 3rem);
-  z-index: 1; pointer-events: none;
-  width: clamp(90px, 10vw, 160px);
-}
-.hero__verktoy img { width: 100%; height: auto; display: block; }
 /* "CLEANUNIT" på dørpanelet — ekte tekst, ikke del av AI-bildet (som ikke
    kan gjengi tekst pålitelig). Målt i bilder/bil.png: panelet ligger omtrent
-   38–61% av bredden, 40–60% av høyden. */
+   38–61% av bredden, 40–60% av høyden. Brukt av .side-footer__bil under
+   (tidligere hero-plassering, .hero__verktoy, er fjernet — Ricky: "det
+   faktisk bedre ut uten" i heroen). */
 .verktoy__merke {
   position: absolute; left: 49%; top: 50%; transform: translate(-50%, -50%);
   width: 21%; font: 700 clamp(4px, 1vw, 6px)/1 var(--sans);
@@ -145,15 +135,16 @@ a { color: inherit; }
   position: absolute; top: clamp(1.5rem, 6vh, 3rem);
   /* clamp i stedet for rent 20% — på smale skjermer blir 20% et lite
      pikseltall, og sentrerings-transformen dytter logoen delvis utenfor
-     venstre kant. 7rem er et gulv som holder den innenfor uansett bredde. */
-  left: clamp(7rem, 20%, 30%);
+     venstre kant. Gulvet økt fra 7rem til 9.5rem da logo-teksten ble
+     gjort større (se .logo) — ellers klippes "C" av på smale skjermer. */
+  left: clamp(9.5rem, 20%, 30%);
   transform: translateX(-50%); z-index: 1; text-align: center;
 }
 .logo {
   margin: 0; --persp: 700px; perspective: var(--persp);
   display: inline-flex; align-items: flex-end; position: relative;
-  font: 700 clamp(1.75rem, 5vw, 2.75rem) "Poppins", var(--sans);
-  letter-spacing: .2em; -webkit-font-smoothing: antialiased;
+  font: 700 clamp(2.2rem, 6.5vw, 3.6rem) "Poppins", var(--sans);
+  letter-spacing: .12em; -webkit-font-smoothing: antialiased;
 }
 .logo__clean { color: var(--logo-tekst-gra); }
 .logo__unit { color: var(--logo-tekst-turkis); }
@@ -205,7 +196,7 @@ html.js .bobler.vist .boble--lys  { opacity: 1; transition-delay: .5s; }
 
 .hero__innhold { position: relative; z-index: 1; }
 .hero__kart-vannmerke {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  position: absolute; top: 50%; left: 58%; transform: translate(-50%, -50%);
   width: clamp(500px, 85vw, 1000px); aspect-ratio: 1; max-width: none;
   z-index: -1; pointer-events: none;
   /* Radial maske — toner ut mot kantene i stedet for å vise en synlig
@@ -218,12 +209,46 @@ html.js .bobler.vist .boble--lys  { opacity: 1; transition-delay: .5s; }
 .kart-vannmerke__kart { width: 100%; height: 100%; max-width: none; display: block; }
 /* Små bil-markører spredt på kartet — "vi kjører her". Egen, litt lavere
    opasitet enn hovedbilen (som er skarp/tydelig i forgrunnen), for å holde
-   dem tilbake som del av vannmerket, ikke konkurrere med den. */
-.kart-markor {
+   dem tilbake som del av vannmerket, ikke konkurrere med den. Posisjonen
+   ligger på wrapperen (--x/--y), slik at stjerna under kan plasseres
+   relativt til bilen uten å arve dens ev. speilvending. */
+.kart-markor-wrap {
   position: absolute; left: var(--x); top: var(--y);
-  width: 7%; max-width: none; height: auto;
   transform: translate(-50%, -50%);
+  width: 7%;
+}
+.kart-markor {
+  display: block; width: 100%; max-width: none; height: auto;
   opacity: .55;
+}
+/* Kort stjerneglimt ved én bil av gangen (styrt fra js/main.js, samme
+   4-punkts sparkle-teknikk som «d»-en på Tann-legen), men her dreier den
+   som en klokkeviser — fra kl 1 til kl 6 — i stedet for det lille vippet
+   originalen bruker. Tanken: "skinnende rent" — samme glimt som kan brukes
+   andre steder på siden når noe nettopp er gjort rent. Fargen er teal, ikke
+   hvit som på Tann-legen — vannmerket ligger på en lys/nesten hvit bunn
+   (--base), så en hvit gnist druknet helt. Hvit kjerne + teal glød gir
+   samme "shine" men med kontrast mot bakgrunnen. */
+.kart-markor__stjerne {
+  position: absolute; top: -20%; right: -12%;
+  width: 60%; height: 60%; pointer-events: none;
+  transform: scale(0) rotate(30deg); transform-origin: center; opacity: 0;
+  background:
+    radial-gradient(circle at 50% 50%, #fff 0%, rgba(255,255,255,.95) 8%, rgba(14,124,123,.55) 22%, rgba(14,124,123,0) 42%),
+    linear-gradient(to bottom, transparent 6%, var(--teal) 50%, transparent 94%) 50% 50% / 10% 100% no-repeat,
+    linear-gradient(to right,  transparent 6%, var(--teal) 50%, transparent 94%) 50% 50% / 100% 10% no-repeat;
+  filter: drop-shadow(0 0 3px rgba(14,124,123,.65));
+}
+html.js .kart-markor__stjerne.gnistrer {
+  animation: markor-stjerne-sving 1.6s cubic-bezier(.2,.8,.3,1) both;
+}
+@keyframes markor-stjerne-sving {
+  0%   { opacity: 0; transform: scale(.2) rotate(30deg); }  /* kl 1 */
+  30%  { opacity: 1; transform: scale(1) rotate(90deg); }   /* kl 3 */
+  100% { opacity: 0; transform: scale(.7) rotate(180deg); } /* kl 6 */
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .kart-markor__stjerne { animation: none !important; opacity: 0; }
 }
 .hero__tittel { font-size: clamp(2rem, 5vw, var(--t-3xl)); max-width: 20ch; color: var(--teal-mork); }
 .hero__ingress { max-width: 42ch; color: var(--tekst-svak); margin-top: var(--s-6); font-size: var(--t-md); }
@@ -250,6 +275,13 @@ html.js .bobler.vist .boble--lys  { opacity: 1; transition-delay: .5s; }
 .side-footer { background: var(--teal-mork); color: #fff; padding-block: var(--s-8); }
 .side-footer .wrap { display: grid; gap: var(--s-6); justify-items: center; text-align: center; }
 .side-footer__merke { font: 800 var(--t-2xl)/1 var(--sans); margin: 0; }
+/* Varebilen flyttet ned hit fra hero (se .verktoy__merke ovenfor). Egen
+   posisjonert boks (position:relative) kun for å gi .verktoy__merke et
+   referansepunkt — ligger ellers rett i .wrap sin grid-flyt, så
+   grid-gap-en (var(--s-6)) gir avstand til merke over og kontorer under
+   helt av seg selv. */
+.side-footer__bil { position: relative; width: clamp(130px, 15vw, 210px); }
+.side-footer__bil img { width: 100%; height: auto; display: block; }
 .side-footer__kontorer {
   display: grid; gap: var(--s-6); justify-items: center;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); width: 100%;

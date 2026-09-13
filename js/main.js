@@ -29,5 +29,30 @@ function logoAnimer(reduksjon) {
   logo.classList.add('kjor')
   setTimeout(() => {
     if (bobler) bobler.classList.add('vist')
+    markorStjerner(reduksjon)
   }, SNURR_TOTAL_MS + 80) // liten margin så siste bokstav garantert er ferdig tegnet
+}
+
+// Når logoen er ferdig: en liten stjerne glimter kort ved én og én
+// bil-markør på kart-vannmerket, som en klokkeviser fra kl 1 til kl 6
+// (se .kart-markor__stjerne i style.css). Én bil av gangen i en løpende
+// stafett — aldri flere samtidig — så blikket trekkes rolig nedover mot
+// kartet uten å stjele fokus fra overskrift/ingress. Kjører kontinuerlig
+// så lenge siden er åpen; reduced-motion starter den aldri.
+const STJERNE_VARIGHET_MS = 1600
+const STJERNE_PAUSE_MS = 350
+
+function markorStjerner(reduksjon) {
+  if (reduksjon) return
+  const markorer = document.querySelectorAll('.kart-markor__stjerne')
+  if (!markorer.length) return
+  let i = 0
+  function neste() {
+    const stjerne = markorer[i]
+    stjerne.classList.add('gnistrer')
+    setTimeout(() => stjerne.classList.remove('gnistrer'), STJERNE_VARIGHET_MS)
+    i = (i + 1) % markorer.length
+    setTimeout(neste, STJERNE_VARIGHET_MS + STJERNE_PAUSE_MS)
+  }
+  neste()
 }
