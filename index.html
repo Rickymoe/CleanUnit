@@ -6,13 +6,15 @@
 <script>
 document.documentElement.classList.add("js");
 // Nødluke: hvis js/main.js 404-er eller kaster før logoAnimer() kjører,
-// blir ordmerket (html.js .logo, klippet av clip-path) usynlig for alltid. Etter 1,2 s
-// uten flagg: vis logoen direkte, uten animasjon.
+// blir ordmerket (html.js .logo, klippet av clip-path) usynlig for alltid.
+// Etter 1,2 s uten .kjor: vis logoen. Sjekker selve .kjor-klassen (ikke bare
+// at main.js kjørte) — en gammel cachet main.js kan kjøre uten å kjenne ny
+// markup. Seksjonsoverskriftene trenger ingen nødluke: html.js-vask settes
+// først av main.js, så uten den er de alltid synlige.
 addEventListener("load", function () {
   setTimeout(function () {
-    if (window.__sideKjort) return;
     var logo = document.querySelector(".hero .logo");
-    if (logo) logo.classList.add("kjor");
+    if (logo && !logo.classList.contains("kjor")) logo.classList.add("kjor");
   }, 1200);
 });
 </script>
@@ -110,7 +112,7 @@ addEventListener("load", function () {
 <section class="stopp--tjenester" id="tjenester">
   <div class="wrap">
     <p class="eyebrow">Tjenester</p>
-    <h2>Renhold tilpasset stedet du driver</h2>
+    <div class="vask-boks"><h2 data-vask>Renhold tilpasset stedet du driver</h2></div>
     <p class="stopp__lede">I Clean Unit er fokuset på kvalitet. For oss betyr det at vi i tillegg til å vaske rent, strekker oss langt for å imøtekomme våre kunders ønsker og behov. For oss handler kvalitet om service i alle ledd, og vi er fleksible og kan skreddersy et renhold som passer din bedrift.</p>
     <ul class="tjeneste-grid">
       <li class="tjeneste-kort">
@@ -332,7 +334,7 @@ addEventListener("load", function () {
 <section class="stopp--jobb" id="jobb-hos-oss">
   <div class="wrap">
     <p class="eyebrow">Jobb hos oss</p>
-    <h2>Renholderne er de viktigste</h2>
+    <div class="vask-boks"><h2 data-vask>Renholderne er de viktigste</h2></div>
     <p class="stopp__lede"><!-- UTKAST: egen syntese av Ansatte-sitatene under, ikke bekreftet med Marit/Christopher -->Hos Clean Unit er det renholderne som gjør jobben — ikke bare en del av firmaet. Vi gir alle ansatte skikkelig opplæring, følger opp med trening og ergonomi i hverdagen, og mange av våre ansatte blir hos oss i mange år.</p>
     <ul class="tjeneste-grid">
       <li class="tjeneste-kort">

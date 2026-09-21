@@ -187,14 +187,25 @@ a { color: inherit; }
    smak). clip-path med litt margin (-.15em) så ikke bokstavtopper/-bunner
    klippes. Uten JS vises ordmerket rett fram; reduced-motion får
    sluttresultatet. Skumboblene i sveipkanten lages av js/main.js. */
-html.js .logo { clip-path: inset(-.15em 100% -.15em -.1em); }
-html.js .logo.kjor {
-  animation: logo-vask 1560ms cubic-bezier(.5, 0, .2, 1) both;
+html.js .logo, html.js-vask [data-vask] { clip-path: inset(-.15em 100% -.15em -.1em); }
+html.js .logo.kjor, html.js-vask [data-vask].kjor {
+  animation: vask-sveip var(--vask-ms, 1560ms) cubic-bezier(.5, 0, .2, 1) both;
 }
-@keyframes logo-vask {
+@keyframes vask-sveip {
   from { clip-path: inset(-.15em 100% -.15em -.1em); }
   to   { clip-path: inset(-.15em -.1em -.15em -.1em); }
 }
+/* Samme sveip + skumbobler på utvalgte seksjonsoverskrifter (data-vask på
+   h2, satt av Ricky 2026-09-21: «Tjenester» og «Jobb hos oss»; flere legges
+   til ved å sette attributtet). Utløses av scroll (IntersectionObserver i
+   main.js, som også slår på html.js-vask — uten den er overskriftene alltid
+   synlige), én gang per overskrift, litt kortere enn i heroen. Overskriften
+   klippes av clip-path og tar boblene med seg, så boblelaget må ligge
+   UTENFOR den: .vask-boks er en boks tett rundt overskriften (fit-content,
+   så sveipet går over selve teksten og ikke hele kolonnebredden) som både
+   er posisjonsanker for .bobler og er det observeren måler mot. */
+[data-vask] { --vask-ms: 950ms; }
+.vask-boks { position: relative; width: fit-content; max-width: 100%; }
 /* Skumbobler: tynn turkis ring med et lite hvitt lysglimt og lett fyll, som en
    såpeboble. Legges i .bobler (absolutt over lockupen) av logoAnimer() i
    main.js, som setter posisjon/størrelse/tempo per boble (--bdelay/--bd/
@@ -220,8 +231,8 @@ html.js .logo.kjor {
   100% { opacity: 0; transform: translate(calc(var(--dx) * -.4), calc(var(--rise) - 6px)) scale(1.4); }
 }
 @media (prefers-reduced-motion: reduce) {
-  html.js .logo { clip-path: none; }
-  html.js .logo.kjor { animation: none; }
+  html.js .logo, html.js-vask [data-vask] { clip-path: none; }
+  html.js .logo.kjor, html.js-vask [data-vask].kjor { animation: none; }
   .boble { display: none; }
 }
 
@@ -373,6 +384,7 @@ html.js .hero__tittel.tent .tittel-lys {
 
 .stopp--tjenester { padding-block: var(--seksjon-y); background: var(--flate); }
 .tjeneste-kort {
+  position: relative; /* anker for .bobler (se tjenesteBobler i main.js) */
   background: var(--teal-lys); border-radius: var(--radius); padding: var(--s-5);
   transition: transform .2s, box-shadow .2s;
 }

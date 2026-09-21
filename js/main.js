@@ -1,10 +1,11 @@
 export function initSider() {
   const reduksjon = matchMedia('(prefers-reduced-motion: reduce)').matches
   logoAnimer(reduksjon)
+  overskriftVask(reduksjon)
+  tjenesteBobler(reduksjon)
   kortReveal(reduksjon)
   plasserVannmerke()
   addEventListener('resize', debounce(plasserVannmerke, 150))
-  window.__sideKjort = true
 }
 
 // Vannmerke-kartets vertikale posisjon på mobil kan IKKE regnes ut med ren
@@ -98,7 +99,10 @@ function logoAnimer(reduksjon) {
   const logo = document.querySelector('.hero .logo')
   if (!logo) return
   logo.classList.add('kjor')
-  lagSkumBobler(logo)
+  lagSkumBobler(logo, {
+    antall: BOBLE_ANTALL, varighetMs: LOGO_VARIGHET_MS,
+    skala: parseFloat(getComputedStyle(logo).fontSize) / 96,
+  })
   // liten margin så sveipet garantert er ferdig tegnet før "Renhold" tennes
   setTimeout(() => tittelLysTenn(reduksjon), LOGO_VARIGHET_MS + 80)
 }
@@ -118,40 +122,144 @@ function sveipKurve(t) {
   return 3 * (1 - s) * (1 - s) * s * y1 + 3 * (1 - s) * s * s * y2 + s * s * s
 }
 
-// Boblene har tilfeldig størrelse/tempo/drift, skalert med ordmerkets
-// skriftstørrelse (verkstedet var satt opp for 96px). Alt legges i ett
-// .bobler-lag som fjernes igjen når den siste boblen er poppet — siden ender
-// helt rolig. Forsvinner under reduced-motion (se style.css).
-function lagSkumBobler(logo) {
-  const lockup = logo.closest('.hero__lockup')
-  if (!lockup) return
+// Skumboblene har tilfeldig størrelse/tempo/drift. Alt legges i ett .bobler-lag
+// som fjernes igjen når den siste boblen er poppet — siden ender helt rolig.
+// Forsvinner under reduced-motion (se style.css). Brukes både av heroens logo
+// og av seksjonsoverskriftene (se overskriftVask), derfor generell:
+//   kilde      elementet som sveipes (bobler plasseres langs bredden hans)
+//   antall     antall bobler
+//   varighetMs sveipets varighet (boblene dukker opp i sveipkanten underveis)
+//   skala      størrelses-/driftfaktor (verkstedet var satt opp for 96px tekst)
+// Boblelaget legges i nærmeste .hero__lockup/.vask-boks — utenfor kilden, som
+// er klippet av clip-path og ellers ville tatt boblene med seg.
+function nyBoble(x, y, storrelse, forsinkelse, varighet, rise, dx) {
+  const boble = document.createElement('span')
+  boble.className = 'boble'
+  boble.style.cssText =
+    `left:${x - storrelse / 2}px;top:${y - storrelse / 2}px;` +
+    `width:${storrelse}px;height:${storrelse}px;` +
+    `--bdelay:${forsinkelse}ms;--bd:${varighet}ms;--rise:${rise}px;--dx:${dx}px`
+  return boble
+}
+
+function lagSkumBobler(kilde, { antall, varighetMs, skala }) {
+  const boks = kilde.closest('.hero__lockup, .vask-boks')
+  if (!boks) return
   const tilfeldig = (a, b) => a + Math.random() * (b - a)
-  const l = lockup.getBoundingClientRect()
-  const o = logo.getBoundingClientRect()
-  const skala = parseFloat(getComputedStyle(logo).fontSize) / 96
+  const l = boks.getBoundingClientRect()
+  const o = kilde.getBoundingClientRect()
   const lag = document.createElement('span')
   lag.className = 'bobler'
   lag.setAttribute('aria-hidden', 'true')
   let slutt = 0
-  for (let i = 0; i < BOBLE_ANTALL; i++) {
+  for (let i = 0; i < antall; i++) {
     const t = Math.random()
     const storrelse = tilfeldig(8, 26) * skala
-    const forsinkelse = t * LOGO_VARIGHET_MS
+    const forsinkelse = t * varighetMs
     const varighet = tilfeldig(1500, 2600)
     const x = o.left - l.left + sveipKurve(t) * o.width + tilfeldig(-6, 6) * skala
     const y = o.top - l.top + tilfeldig(0.25, 0.95) * o.height
-    const boble = document.createElement('span')
-    boble.className = 'boble'
-    boble.style.cssText =
-      `left:${x - storrelse / 2}px;top:${y - storrelse / 2}px;` +
-      `width:${storrelse}px;height:${storrelse}px;` +
-      `--bdelay:${forsinkelse}ms;--bd:${varighet}ms;` +
-      `--rise:${-tilfeldig(35, 110) * skala}px;--dx:${tilfeldig(-10, 10) * skala}px`
+    const boble = nyBoble(
+      x, y, storrelse, forsinkelse, varighet,
+      -tilfeldig(35, 110) * skala, tilfeldig(-10, 10) * skala
+    )
     lag.appendChild(boble)
     slutt = Math.max(slutt, forsinkelse + varighet)
   }
-  lockup.appendChild(lag)
+  boks.appendChild(lag)
   setTimeout(() => lag.remove(), slutt + 300)
+}
+
+// Seksjonsoverskrifter med data-vask får samme sveip + skumbobler som heroens
+// logo når de scrolles inn i synsfeltet — én gang per overskrift. .kjor
+// starter CSS-sveipet (se style.css).
+//
+// VIKTIG: observeren følger .vask-boks rundt overskriften, IKKE selve h2-en.
+// h2-en er klippet av clip-path (inset ...100%) til den avsløres, og Chrome
+// regner da synlig areal som 0 (intersectionRatio 0, målt) — terskelen nås
+// aldri og overskriften ville blitt stående skjult for alltid. Boksen er like
+// stor som overskriften (fit-content) men uklippet.
+//
+// Skjulingen (html.js-vask i style.css) slås først PÅ her, når vi vet at
+// observeren faktisk kommer til å avsløre overskriften. Kjører ikke denne
+// koden (gammel cachet main.js, ingen IntersectionObserver, reduced-motion)
+// forblir overskriftene synlige — de kan aldri bli stående skjult.
+const OVERSKRIFT_VARIGHET_MS = 950
+const OVERSKRIFT_BOBLER = 7
+const OVERSKRIFT_SKALA = 0.6
+
+function overskriftVask(reduksjon) {
+  if (reduksjon || !('IntersectionObserver' in window)) return
+  const overskrifter = document.querySelectorAll('.vask-boks > [data-vask]')
+  if (!overskrifter.length) return
+  document.documentElement.classList.add('js-vask')
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return
+        const boks = entry.target
+        const el = boks.querySelector('[data-vask]')
+        observer.unobserve(boks)
+        if (!el) return
+        el.classList.add('kjor')
+        lagSkumBobler(el, {
+          antall: OVERSKRIFT_BOBLER, varighetMs: OVERSKRIFT_VARIGHET_MS,
+          skala: OVERSKRIFT_SKALA,
+        })
+      })
+    },
+    { rootMargin: '0px 0px -12% 0px', threshold: 0.6 }
+  )
+  overskrifter.forEach((el) => observer.observe(el.parentElement))
+}
+
+// Tjenestekortene: en liten byge bobler stiger opp fra ikonet når man holder
+// musen over kortet (eller trykker på det på berøringsskjerm) — som om noe
+// nettopp er vasket. KUN de seks kortene i «Tjenester» (Ricky, 2026-09-21) —
+// avgrenset med #tjenester, siden .tjeneste-kort også brukes til ansattsitatene
+// i «Jobb hos oss».
+// Mus: pointerenter. Berøring: click (ikke pointerenter/-down, som også
+// fyrer når fingeren bare starter en scrolling over kortet). En pause per
+// kort hindrer at boblene hoper seg opp ved rask frem-og-tilbake-musing.
+// Lagret fjernes når siste boble er poppet. Ingen bobler under reduced-motion
+// (skjult i CSS, og vi hopper over her for å spare arbeid).
+const KORT_BOBLER = 6
+const KORT_PAUSE_MS = 1800
+
+function tjenesteBobler(reduksjon) {
+  if (reduksjon) return
+  const tilfeldig = (a, b) => a + Math.random() * (b - a)
+  document.querySelectorAll('#tjenester .tjeneste-kort').forEach((kort) => {
+    const ikon = kort.querySelector('.tjeneste-kort__ikon')
+    if (!ikon) return
+    let pause = false
+    const byge = () => {
+      if (pause) return
+      pause = true
+      setTimeout(() => { pause = false }, KORT_PAUSE_MS)
+      const k = kort.getBoundingClientRect()
+      const i = ikon.getBoundingClientRect()
+      const lag = document.createElement('span')
+      lag.className = 'bobler'
+      lag.setAttribute('aria-hidden', 'true')
+      let slutt = 0
+      for (let n = 0; n < KORT_BOBLER; n++) {
+        const forsinkelse = tilfeldig(0, 380)
+        const varighet = tilfeldig(1300, 2200)
+        lag.appendChild(nyBoble(
+          i.left - k.left + i.width / 2 + tilfeldig(-0.7, 0.7) * i.width,
+          i.top - k.top + i.height * tilfeldig(0.1, 0.6),
+          tilfeldig(6, 16), forsinkelse, varighet,
+          -tilfeldig(45, 120), tilfeldig(-14, 14)
+        ))
+        slutt = Math.max(slutt, forsinkelse + varighet)
+      }
+      kort.appendChild(lag)
+      setTimeout(() => lag.remove(), slutt + 300)
+    }
+    kort.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') byge() })
+    kort.addEventListener('click', byge)
+  })
 }
 
 // "Renhold" i overskriften "tennes" fra grått (--logo-tekst-gra) til
