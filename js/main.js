@@ -80,43 +80,78 @@ function kortReveal(reduksjon) {
   })
 }
 
-// Logoen i heroen: først snurrer bokstavene («mynt-flip») inn én etter én.
-// Når ALLE bokstavene er ferdig, dukker tre faste bobler opp over "I"-en —
-// ingen bevegelse, bare en enkel opacity-overgang. Funnet i lab-logo.html,
-// forenklet etter Rickys ønske (den reisende boble-animasjonen er fjernet).
-// Kjører med en gang siden heroen alltid er synlig ved sidelast (ikke
-// scroll-styrt). Reduced-motion viser sluttresultatet direkte via CSS —
-// ingenting å gjøre her i så fall.
+// Logoen i heroen: hele ordmerket avsløres i ett sveip fra venstre («Vask», ren
+// CSS-animasjon på .logo.kjor — se style.css), mens noen skumbobler dukker opp
+// akkurat der sveipet er og stiger/popper. Når sveipet er ferdig, tennes
+// "Renhold" i taglinen. Kjører med en gang siden heroen alltid er synlig ved
+// sidelast (ikke scroll-styrt). Reduced-motion viser sluttresultatet direkte
+// via CSS — ingenting å gjøre her i så fall.
 //
-// Rein setTimeout mot den samme, faste tidsberegningen som CSS-en bruker
-// (ni bokstaver × 75ms forsinkelse + 700ms varighet på den siste) — ikke
+// Rein setTimeout mot samme faste varighet som CSS-animasjonen — ikke
 // animationend/Web Animations API, som viste seg upålitelig (event kunne
 // komme ute av synk, .finished-løftet kunne henge seg fast).
-const BOKSTAV_VARIGHET_MS = 780
-const BOKSTAV_FORSINKELSE_MS = 85
-const ANTALL_BOKSTAVER = 9 // CLEANUNIT
-const SNURR_TOTAL_MS = (ANTALL_BOKSTAVER - 1) * BOKSTAV_FORSINKELSE_MS + BOKSTAV_VARIGHET_MS
-
-// De tre boblene (.boble--dott/--mork/--lys i style.css) dukker opp SAMTIDIG
-// via opacity-transition (var tidligere én-og-én med stigende delay, fjernet
-// etter Ricky 2026-09-13: "de tre boblene over I, de må vises samtidig") —
-// .35s varighet, ingen forsinkelse.
-const BOBLE_VARIGHET_MS = 350
-const BOBLE_TOTAL_MS = BOBLE_VARIGHET_MS
+const LOGO_VARIGHET_MS = 1560
+const BOBLE_ANTALL = 12
 
 function logoAnimer(reduksjon) {
   if (reduksjon) return
-  const logo = document.querySelector('.hero__logo .logo')
-  const bobler = document.querySelector('.hero__logo .bobler')
+  const logo = document.querySelector('.hero .logo')
   if (!logo) return
   logo.classList.add('kjor')
-  setTimeout(() => {
-    if (bobler) bobler.classList.add('vist')
-    // Overskrift-lystenningen venter til boblene er helt ferdig med å dukke
-    // opp, ikke bare til de starter — Ricky: begynn "nå de 3 boblene ...
-    // er ferdig", ikke samtidig med dem.
-    setTimeout(() => tittelLysTenn(reduksjon), BOBLE_TOTAL_MS)
-  }, SNURR_TOTAL_MS + 80) // liten margin så siste bokstav garantert er ferdig tegnet
+  lagSkumBobler(logo)
+  // liten margin så sveipet garantert er ferdig tegnet før "Renhold" tennes
+  setTimeout(() => tittelLysTenn(reduksjon), LOGO_VARIGHET_MS + 80)
+}
+
+// Samme kurve som CSS-sveipet (cubic-bezier(.5, 0, .2, 1)): gir hvor langt
+// sveipet har kommet (0-1) etter en gitt andel av tiden — så hver boble kan
+// plasseres presist i sveipkanten i det øyeblikket den dukker opp.
+function sveipKurve(t) {
+  const x1 = 0.5, y1 = 0, x2 = 0.2, y2 = 1
+  let lo = 0, hi = 1, s = t
+  for (let i = 0; i < 30; i++) {
+    const bx = 3 * (1 - s) * (1 - s) * s * x1 + 3 * (1 - s) * s * s * x2 + s * s * s
+    if (bx < t) lo = s
+    else hi = s
+    s = (lo + hi) / 2
+  }
+  return 3 * (1 - s) * (1 - s) * s * y1 + 3 * (1 - s) * s * s * y2 + s * s * s
+}
+
+// Boblene har tilfeldig størrelse/tempo/drift, skalert med ordmerkets
+// skriftstørrelse (verkstedet var satt opp for 96px). Alt legges i ett
+// .bobler-lag som fjernes igjen når den siste boblen er poppet — siden ender
+// helt rolig. Forsvinner under reduced-motion (se style.css).
+function lagSkumBobler(logo) {
+  const lockup = logo.closest('.hero__lockup')
+  if (!lockup) return
+  const tilfeldig = (a, b) => a + Math.random() * (b - a)
+  const l = lockup.getBoundingClientRect()
+  const o = logo.getBoundingClientRect()
+  const skala = parseFloat(getComputedStyle(logo).fontSize) / 96
+  const lag = document.createElement('span')
+  lag.className = 'bobler'
+  lag.setAttribute('aria-hidden', 'true')
+  let slutt = 0
+  for (let i = 0; i < BOBLE_ANTALL; i++) {
+    const t = Math.random()
+    const storrelse = tilfeldig(8, 26) * skala
+    const forsinkelse = t * LOGO_VARIGHET_MS
+    const varighet = tilfeldig(1500, 2600)
+    const x = o.left - l.left + sveipKurve(t) * o.width + tilfeldig(-6, 6) * skala
+    const y = o.top - l.top + tilfeldig(0.25, 0.95) * o.height
+    const boble = document.createElement('span')
+    boble.className = 'boble'
+    boble.style.cssText =
+      `left:${x - storrelse / 2}px;top:${y - storrelse / 2}px;` +
+      `width:${storrelse}px;height:${storrelse}px;` +
+      `--bdelay:${forsinkelse}ms;--bd:${varighet}ms;` +
+      `--rise:${-tilfeldig(35, 110) * skala}px;--dx:${tilfeldig(-10, 10) * skala}px`
+    lag.appendChild(boble)
+    slutt = Math.max(slutt, forsinkelse + varighet)
+  }
+  lockup.appendChild(lag)
+  setTimeout(() => lag.remove(), slutt + 300)
 }
 
 // "Renhold" i overskriften "tennes" fra grått (--logo-tekst-gra) til

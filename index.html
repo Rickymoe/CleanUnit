@@ -6,15 +6,13 @@
 <script>
 document.documentElement.classList.add("js");
 // Nødluke: hvis js/main.js 404-er eller kaster før logoAnimer() kjører,
-// blir bokstavene (html.js .logo__bokstav) usynlige for alltid. Etter 1,2 s
-// uten flagg: vis logoen og boblene direkte, uten snurr.
+// blir ordmerket (html.js .logo, klippet av clip-path) usynlig for alltid. Etter 1,2 s
+// uten flagg: vis logoen direkte, uten animasjon.
 addEventListener("load", function () {
   setTimeout(function () {
     if (window.__sideKjort) return;
-    var logo = document.querySelector(".hero__logo .logo");
-    var bobler = document.querySelector(".hero__logo .bobler");
+    var logo = document.querySelector(".hero .logo");
     if (logo) logo.classList.add("kjor");
-    if (bobler) bobler.classList.add("vist");
   }, 1200);
 });
 </script>
@@ -34,7 +32,7 @@ addEventListener("load", function () {
 <link rel="apple-touch-icon" sizes="180x180" href="bilder/favicon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -45,27 +43,6 @@ addEventListener("load", function () {
       <source srcset="bilder/Byer.webp" type="image/webp">
       <img src="bilder/Byer.png" alt="" width="1860" height="701">
     </picture>
-  </div>
-  <div class="hero__logo">
-    <p class="logo" aria-label="CleanUnit">
-      <span class="logo__clean" aria-hidden="true">
-        <span class="logo__bokstav" style="--i:0">C</span><span class="logo__bokstav" style="--i:1">L</span><span class="logo__bokstav" style="--i:2">E</span><span class="logo__bokstav" style="--i:3">A</span><span class="logo__bokstav" style="--i:4">N</span></span><span class="logo__unit" aria-hidden="true"><span class="logo__bokstav" style="--i:5">U</span><span class="logo__bokstav" style="--i:6">N</span><span class="logo__i-hylse"><span class="logo__bokstav" style="--i:7">I</span><span class="bobler">
-            <span class="boble boble--dott" style="--x: 0.13em; --y: 0.08em;"></span>
-            <span class="boble boble--mork" style="--x: -0.17em; --y: -0.39em;"></span>
-            <span class="boble boble--lys"  style="--x: 0.25em; --y: -0.80em;"></span>
-          </span></span><span class="logo__bokstav" style="--i:8">T</span></span>
-    </p>
-    <!-- Ekte vurdering fra Google Maps (Clean Unit Renhold AS, sjekket
-         2026-09-13 av Ricky: 4,8 av 5, 4 anmeldelser). Søkelenke i stedet
-         for en fast place-ID/lenke, siden vi ikke har den eksakte
-         Maps-lenken — søket lander på samme oppføring. Ren statisk visning,
-         ingen animasjon — Tuven sin fyll-/telle-opp-mekanikk ble prøvd her
-         også, men fjernet igjen (Ricky: "for mye skjer samme sted" ved
-         siden av logo-snurr/bobler/kart-stjernene rett i nærheten). -->
-    <a class="hero__vurdering" href="https://www.google.com/maps/search/?api=1&amp;query=Clean+Unit+Renhold+AS+Oslo" target="_blank" rel="noopener">
-      <span class="hero__vurdering-stjerner" aria-hidden="true">★★★★★</span>
-      <span>4,8 · 4 anmeldelser på Google</span>
-    </a>
   </div>
   <div class="wrap hero__innhold">
     <!-- Utydelig kart-vannmerke bak bil+tekst — ekte OSM-utsnitt (sentrum
@@ -100,7 +77,27 @@ addEventListener("load", function () {
         <img class="kart-markor" src="bilder/bil.png" alt="">
       </span>
     </div>
-    <h1 class="hero__tittel"><span class="tittel-grunn">Renhold</span> i Oslo og Stavanger<span class="tittel-lys" aria-hidden="true">Renhold</span></h1>
+    <!-- Lockup: ordmerket «CleanUnit» og taglinen (H1) er ÉN enhet på felles
+         midtakse mellom byene. Ordmerket: "Clean" lett grå + "UNIT" halvfet
+         turkis, Quicksand. Avsløres i ett sveip fra venstre («Vask»), med
+         skumbobler i sveipkanten (lages av js/main.js) — se .logo i style.css. -->
+    <div class="hero__lockup">
+      <p class="logo" aria-label="CleanUnit">
+        <span class="logo__clean" aria-hidden="true">Clean</span><span class="logo__unit" aria-hidden="true">UNIT</span>
+      </p>
+      <h1 class="hero__tittel"><span class="tittel-grunn">Renhold</span> i Oslo og Stavanger<span class="tittel-lys" aria-hidden="true">Renhold</span></h1>
+    </div>
+    <!-- Ekte vurdering fra Google Maps (Clean Unit Renhold AS, sjekket
+         2026-09-13 av Ricky: 4,8 av 5, 4 anmeldelser). Søkelenke i stedet
+         for en fast place-ID/lenke, siden vi ikke har den eksakte
+         Maps-lenken — søket lander på samme oppføring. Ren statisk visning,
+         ingen animasjon — Tuven sin fyll-/telle-opp-mekanikk ble prøvd her
+         også, men fjernet igjen (Ricky: "for mye skjer samme sted" ved
+         siden av logo-snurr/bobler/kart-stjernene rett i nærheten). -->
+    <a class="hero__vurdering" href="https://www.google.com/maps/search/?api=1&amp;query=Clean+Unit+Renhold+AS+Oslo" target="_blank" rel="noopener">
+      <span class="hero__vurdering-stjerner" aria-hidden="true">★★★★★</span>
+      <span>4,8 · 4 anmeldelser på Google</span>
+    </a>
     <p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte – ingen underleverandører.</p>
   </div>
   <!-- Plassert under hver sin by i illustrasjonen (bilder/Byer.png), ikke i

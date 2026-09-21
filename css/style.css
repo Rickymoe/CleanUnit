@@ -27,6 +27,7 @@
      AA-grensen for stor tekst (3:1) med null margin — 4,2:1 nå. */
   --logo-tekst-gra: #757575;
   --logo-tekst-turkis: #178F86;
+  --logo-tagline-gra: #666666; /* 5,3:1 mot --base — grunnfargen i taglinen, så «Renhold»-tenningen (--teal) er tydelig */
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; overflow-x: clip; background: var(--base); }
@@ -128,7 +129,7 @@ a { color: inherit; }
   z-index: 1; pointer-events: none;
 }
 .hero__knapper .knapp { position: absolute; bottom: 0; pointer-events: auto; white-space: nowrap; }
-/* Samme clamp-gulv/-tak som logoen (se .hero__logo) — knappene er bredere
+/* Clamp-gulv/-tak (9rem / 100% - 9rem) — knappene er bredere
    (fullt telefonnummer) og enda mer utsatt for å klippes av på smale
    skjermer med rene 20%/79%-verdier. */
 .hero__knapp--oslo { left: clamp(9rem, 20%, 30%); transform: translateX(-50%); }
@@ -155,103 +156,73 @@ a { color: inherit; }
     .hero__knapp--oslo:hover, .hero__knapp--stavanger:hover { transform: translateY(-1px); }
   }
 }
-/* Ute av den sentrerte innholds-flyten — plassert over Oslo-klyngen (samme
-   20%-posisjon som Ring Oslo-knappen), slik at midten står fri til
-   overskrift/tekst (og eventuelt mer senere). */
-.hero__logo {
-  position: absolute; top: clamp(1.5rem, 6vh, 3rem);
-  /* clamp i stedet for rent 20% — på smale skjermer blir 20% et lite
-     pikseltall, og sentrerings-transformen dytter logoen delvis utenfor
-     venstre kant. Gulvet økt fra 7rem til 9.5rem da logo-teksten ble
-     gjort større (se .logo) — ellers klippes "C" av på smale skjermer. */
-  left: clamp(9.5rem, 20%, 30%);
-  transform: translateX(-50%); z-index: 1; text-align: center;
+/* Lockup: ordmerket «CleanUNIT» og taglinen «Renhold i Oslo og Stavanger» er
+   ÉN enhet på felles midtakse mellom byene. Før var de to uavhengige blokker
+   (logoen absolutt over Oslo-klyngen, overskriften sentrert i flyten) uten
+   felles akse — Ricky, 2026-09-21: "ikke balanse på Hero". Skriftstørrelsen
+   settes ÉN gang her: ordmerket er 1em og taglinen en fast andel av den, så
+   hele enheten skalerer sammen på alle bredder. Flex-kolonne med stretch gjør
+   at taglinen får nøyaktig ordmerkets bredde (se .hero__tittel). */
+.hero__lockup {
+  display: inline-flex; flex-direction: column; align-items: stretch;
+  font-size: clamp(3.1rem, 11.5vw, 5.6rem);
 }
-/* 9.5rem-gulvet over er en FAST pikselverdi, ikke en andel av bredden —
-   under ca. 760px (nesten alle telefoner) er det derfor alltid gulvet som
-   vinner, ikke en sann 50%-sentrering. Resultat: logoen sitter 40-60px
-   til venstre for faktisk midtpunkt på en vanlig telefon (Ricky,
-   iPhone-skjermbilde 2026-09-13: "Logo ikke helt sentrert på mobil").
-   Under 40rem (samme brytningspunkt som hero__knapper/min-height) sentreres
-   den derfor ekte i stedet — testet at det ikke klipper "C" ned til
-   320px bredde (logoen er ca. 240px bred i sin minste font-clamp-størrelse,
-   god margin selv på eldre/mindre telefoner).
-
-   Målt med getBoundingClientRect() over hele bredde-spekteret (Ricky,
-   skjermbilde av et nedskalert nettleservindu, 2026-09-13: logoen klippet
-   av i venstre kant ved 803px bredde) — 20%-formelen er IKKE trygg før
-   viewport når ca. 1000px: fra 700px og helt opp til 960px stikker "C"
-   ut til venstre for skjermkanten (verst rundt 850-886px, ca. 19px
-   usynlig), fordi font-size (også vw-skalert, se .logo) vokser fortere
-   enn 20vw-marginen i akkurat det spennet. Brytningspunktet for ekte
-   sentrering er derfor hevet fra 40rem til 64rem — "over Oslo-klyngen"-
-   plasseringen gjelder nå kun fra ca. 1024px og oppover, der det er
-   bekreftet trygt. hero__knapper (samme clamp-mønster) er IKKE rammet —
-   testet separat, alltid innenfor skjermen i hele spennet. */
-@media (max-width: 64rem) {
-  .hero__logo { left: 50%; }
-}
+/* Ordmerket: Quicksand (avrundet — slekt med såpebobler-temaet), "Clean" lett
+   grå + "UNIT" halvfet turkis. Valgt av Ricky 2026-09-21 etter sammenligning
+   mot Josefin Sans (finere, men tynnere og mer utsatt på mobil). */
 .logo {
-  margin: 0; --persp: 700px; perspective: var(--persp);
-  display: inline-flex; align-items: flex-end; position: relative;
-  font: 700 clamp(2.2rem, 6.5vw, 3.6rem) "Poppins", var(--sans);
-  letter-spacing: .12em; -webkit-font-smoothing: antialiased;
-  /* Fant SAMTIDIG rotårsaken til at logoen bryter til 2-3 linjer på smale
-     skjermer (flagget i design-kritikk 2026-09-13, ufikset da): .hero__logo
-     er absolutt posisjonert med kun `left` (ikke `right`), og "shrink-to-
-     fit"-bredden den da får regnes ut FØR translateX(-50%) brukes —
-     nettleseren vet ikke at boksen skal flyttes halvveis tilbake, så
-     tilgjengelig bredde fra `left`-punktet til høyre kant blir for smal og
-     tvinger .logo (inline-flex) til å bryte. white-space:nowrap her løser
-     selve bryte-problemet uten å røre .hero__logo sin bredde-beregning
-     (prøvde width:max-content på .hero__logo først — det ga i stedet
-     avkutting på desktop-bredder, trolig samme shrink-to-fit-kvirk fra en
-     annen vinkel). */
+  margin: 0; display: inline-flex; justify-content: center; align-items: flex-end;
+  font: 600 1em/1 "Quicksand", var(--sans);
+  letter-spacing: .03em; -webkit-font-smoothing: antialiased;
+  /* nowrap: .hero__lockup er inline-flex, og uten dette kan ordmerket bryte
+     til to linjer på smale skjermer. */
   white-space: nowrap;
 }
-.logo__clean { color: var(--logo-tekst-gra); }
-.logo__unit { color: var(--logo-tekst-turkis); }
-.logo__i-hylse { position: relative; display: inline-block; }
-.logo__bokstav {
-  display: inline-block; transform-style: preserve-3d; opacity: 1;
+.logo__clean { color: var(--logo-tekst-gra); font-weight: 300; }
+.logo__unit { color: var(--logo-tekst-turkis); font-weight: 600; }
+/* «Vask»: hele ordmerket avsløres i ÉN sammenhengende sveip fra venstre mot
+   høyre, som når en vindusvisker/svamp går over en flate (Ricky valgte den
+   framfor mynt-flip, løft, fokus m.fl. i verkstedet 2026-09-21; første
+   utkast var «Møtes» — bokstavene fra hver sin side — men den falt ikke i
+   smak). clip-path med litt margin (-.15em) så ikke bokstavtopper/-bunner
+   klippes. Uten JS vises ordmerket rett fram; reduced-motion får
+   sluttresultatet. Skumboblene i sveipkanten lages av js/main.js. */
+html.js .logo { clip-path: inset(-.15em 100% -.15em -.1em); }
+html.js .logo.kjor {
+  animation: logo-vask 1560ms cubic-bezier(.5, 0, .2, 1) both;
 }
-/* Snurr-inn («mynt-flip»), funnet i lab-logo.html og godkjent av Ricky som
-   ny standard. Uten JS vises bokstavene rett fram med en gang (ingen snurr) —
-   samme html.js-gating som resten av siden bruker for bevegelse. */
-html.js .logo__bokstav {
-  transform: rotateY(90deg); opacity: 0;
+@keyframes logo-vask {
+  from { clip-path: inset(-.15em 100% -.15em -.1em); }
+  to   { clip-path: inset(-.15em -.1em -.15em -.1em); }
 }
-html.js .logo.kjor .logo__bokstav {
-  animation: logo-snurr 780ms cubic-bezier(.22,.9,.32,1) forwards;
-  animation-delay: calc(var(--i) * 85ms);
-}
-@keyframes logo-snurr {
-  0%   { transform: rotateY(90deg); opacity: 0; }
-  40%  { opacity: 1; }
-  100% { transform: rotateY(0deg); opacity: 1; }
-}
-
-/* Tre faste bobler tett over "I"-en (samme plassering som det ekte logobildet)
-   — ingen bevegelse, dukker opp SAMTIDIG når siste bokstav er ferdig
-   snurret inn (styrt fra js/main.js). Uten JS/i reduced-motion vises
-   de med en gang. */
-.bobler {
-  /* left:0 = "I"-ens VENSTRE kant (ikke midten) — --x/--y under er målt
-     relativt til akkurat det hjørnet fra referansebildet. */
-  position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none;
-}
+/* Skumbobler: tynn turkis ring med et lite hvitt lysglimt og lett fyll, som en
+   såpeboble. Legges i .bobler (absolutt over lockupen) av logoAnimer() i
+   main.js, som setter posisjon/størrelse/tempo per boble (--bdelay/--bd/
+   --rise/--dx) og fjerner hele lagret igjen når de er ferdige (poppet:
+   utvider seg og forsvinner). Farger: samme turkiser som logoen
+   (#87CAC9 lys / #178F86 tekst-turkis), som rgba siden vars ikke kan
+   alfa-blandes. */
+.hero__lockup { position: relative; }
+.bobler { position: absolute; left: 0; top: 0; width: 100%; height: 0; pointer-events: none; }
 .boble {
-  position: absolute; left: 0; top: 0; border-radius: 50%; opacity: 1;
-  transform: translate(calc(-50% + var(--x, 0em)), var(--y, 0em));
+  position: absolute; border-radius: 50%; opacity: 0; pointer-events: none;
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, .95) 0 11%, rgba(255, 255, 255, 0) 12%),
+    radial-gradient(circle at 50% 50%, rgba(135, 202, 201, .08) 52%, rgba(23, 143, 134, .30) 100%);
+  border: 1.5px solid rgba(23, 143, 134, .45);
+  animation: boble var(--bd) ease-out var(--bdelay) both;
 }
-.boble--dott { width: .14em; height: .14em; background: var(--logo-turkis-lys); }
-.boble--mork { width: .35em; height: .35em; background: var(--logo-turkis-mork); }
-.boble--lys  { width: .54em; height: .54em; background: var(--logo-turkis-lys); }
-html.js .boble { opacity: 0; transition: opacity .35s ease; }
-html.js .bobler.vist .boble { opacity: 1; }
+@keyframes boble {
+  0%   { opacity: 0; transform: translate(0, 0) scale(.2); }
+  12%  { opacity: 1; transform: translate(0, -5px) scale(1); }
+  60%  { opacity: 1; transform: translate(var(--dx), calc(var(--rise) * .6)) scale(1); }
+  90%  { opacity: .85; transform: translate(calc(var(--dx) * -.4), var(--rise)) scale(1.05); }
+  100% { opacity: 0; transform: translate(calc(var(--dx) * -.4), calc(var(--rise) - 6px)) scale(1.4); }
+}
 @media (prefers-reduced-motion: reduce) {
-  html.js .logo__bokstav { animation: none !important; transform: rotateY(0deg); opacity: 1; }
-  html.js .boble { transition: none; opacity: 1; }
+  html.js .logo { clip-path: none; }
+  html.js .logo.kjor { animation: none; }
+  .boble { display: none; }
 }
 
 /* Ekte Google-vurdering under logoen (se index.html for kilde/dato).
@@ -263,7 +234,7 @@ html.js .bobler.vist .boble { opacity: 1; }
   /* margin-top brukte .6em (ad-hoc) — byttet til --s-2 (samme skala som
      resten av siden) etter design-kritikk, nærmeste token til samme avstand. */
   display: flex; align-items: center; justify-content: center; gap: .45em;
-  margin-top: var(--s-2); font: 600 clamp(.7rem, 1.3vw, .85rem)/1 var(--sans);
+  margin-top: var(--s-4); font: 600 clamp(.7rem, 1.3vw, .85rem)/1 var(--sans);
   color: var(--tekst-svak); text-decoration: none;
 }
 .hero__vurdering-stjerner { color: #C98600; letter-spacing: .05em; }
@@ -282,9 +253,12 @@ html.js .bobler.vist .boble { opacity: 1; }
    by-illustrasjonen på svært høye skjermer) — flex deler differansen i
    to, så -120px flytter innholdet ca. 60px opp i praksis (målt med
    getBoundingClientRect() ved flere bredder/høyder). */
-.hero__innhold { position: relative; z-index: 1; margin-top: -120px; }
+.hero__innhold {
+  position: relative; z-index: 1; margin-top: -120px;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
 .hero__kart-vannmerke {
-  position: absolute; top: 50%; left: 58%; transform: translate(-50%, -50%);
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: clamp(260px, 85vw, 1000px); aspect-ratio: 1; max-width: none;
   z-index: -1; pointer-events: none;
   /* Radial maske — toner ut mot kantene i stedet for å vise en synlig
@@ -327,7 +301,21 @@ html.js .bobler.vist .boble { opacity: 1; }
    motsetning til logo/tittel som bærer faktisk innhold). Se design-
    kritikk-notatet lenger ned i denne filen om at bevegelses-mengden i
    hero-hjørnet var i grenseland. */
-.hero__tittel { position: relative; font-size: clamp(2rem, 5vw, var(--t-3xl)); max-width: 20ch; color: var(--logo-tekst-gra); }
+/* Taglinen (H1) under ordmerket: versaler med bred sperring, justert til
+   ordmerkets bredde (text-align-last:justify strekker ordmellomrommene på den
+   ene linja). Stor andel av lockup-fontstørrelsen, så forholdet holder på alle
+   bredder. Målt i Chrome: .24em/.18em gir en naturlig bredde på ca. 96 % av
+   ordmerkets, så justeringen fyller bare de siste ~4 % med ordmellomrom
+   (.2em/.24em ga 86 % og dermed store hull). Grunnfarge og "Renhold"-
+   tenningen er mørknet fra logofargene (--logo-tekst-*) til
+   --logo-tagline-gra/--teal: liten tekst må ha AA (4,5:1), som de lyse
+   logofargene ikke har i denne størrelsen. */
+.hero__tittel {
+  position: relative; margin: .6em 0 0; color: var(--logo-tagline-gra);
+  font: 600 .24em/1.2 "Quicksand", var(--sans);
+  text-transform: uppercase; letter-spacing: .18em;
+  white-space: nowrap; text-align: justify; text-align-last: justify;
+}
 /* Lys-tenning KUN på "Renhold" (Ricky, 2026-09-13: "Kun gjør det til og med
    'Renhold'") — resten av overskriften ("i Oslo og Stavanger") beholder
    logoens grå (--logo-tekst-gra, samme som "CLEAN") permanent, ingen
@@ -347,7 +335,7 @@ html.js .bobler.vist .boble { opacity: 1; }
    rett i ferdig turkis, aldri fastlåst grått. */
 .hero__tittel .tittel-lys {
   position: absolute; left: 0; top: 0; pointer-events: none;
-  color: var(--logo-tekst-turkis);
+  color: var(--teal);
   filter: drop-shadow(0 0 3px rgba(135, 202, 201, .25));
   -webkit-mask: linear-gradient(90deg, #000 50%, transparent 50%) 0 0 / 200% 100% no-repeat;
           mask: linear-gradient(90deg, #000 50%, transparent 50%) 0 0 / 200% 100% no-repeat;
@@ -373,7 +361,7 @@ html.js .hero__tittel.tent .tittel-lys {
     -webkit-mask-position: 0 0; mask-position: 0 0; animation: none;
   }
 }
-.hero__ingress { max-width: 42ch; color: var(--tekst-svak); margin-top: var(--s-6); font-size: var(--t-md); }
+.hero__ingress { max-width: 42ch; color: var(--tekst-svak); margin: var(--s-5) auto 0; font-size: var(--t-md); }
 
 .tjeneste-grid, .tillit-liste {
   list-style: none; margin: var(--s-6) 0 0; padding: 0;
