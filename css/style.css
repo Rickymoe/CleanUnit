@@ -115,11 +115,23 @@ a { color: inherit; }
    (tidligere hero-plassering, .hero__verktoy, er fjernet — Ricky: "det
    faktisk bedre ut uten" i heroen). */
 .verktoy__merke {
-  position: absolute; left: 49%; top: 50%; transform: translate(-50%, -50%);
-  width: 21%; font: 700 clamp(5px, 1.4vw, 8px)/1 var(--sans);
-  letter-spacing: .02em; color: var(--tekst); text-align: center;
-  white-space: nowrap;
+  position: absolute; left: 42%; top: 50%; transform: translate(-50%, -50%);
+  width: 24%; font: 600 clamp(6px, 1.7vw, 9.5px)/1 "Quicksand", var(--sans);
+  letter-spacing: .03em; text-align: center; white-space: nowrap;
 }
+/* Det nye ordmerket «CleanUNIT» også på bildøra (Ricky, 2026-09-21): samme
+   grå + turkis som i heroen, men "Clean" i vekt 400 i stedet for 300 — 300
+   forsvinner helt i 6-9 px. Skriftstørrelsen er hevet fra 5-8px til 6-9,5px
+   fordi små bokstaver i blandet skrift er smalere enn de gamle versalene og
+   ellers ikke fyller panelet. */
+/* Skriftstørrelsen følger BILENS bredde (container query-enheter), ikke
+   skjermbredden: clamp() på vw ga tekst som var for stor i forhold til bilen
+   rundt 900px og gled inn i sidevinduet. 4,3cqw gir ca. 22 % av bilbredden
+   for "CleanUNIT". Sentrert på 42 % (bakre kroppspanel), så teksten aldri
+   krysser dørskjøten/vinduet — clamp-verdien over er fallback uten cqw. */
+@supports (font-size: 1cqw) { .verktoy__merke { font-size: 4.3cqw; } }
+.verktoy__merke .merke__clean { color: var(--logo-tekst-gra); font-weight: 400; }
+.verktoy__merke .merke__unit { color: var(--logo-tekst-turkis); font-weight: 700; }
 
 /* Knappene ligger IKKE i .hero__innhold sin sentrerte flyt — de er plassert
    direkte under hver sin by i illustrasjonen over (Oslo-klyngen sentrerer seg
@@ -535,13 +547,45 @@ svg.tillit-logo { color: var(--teal); }
 .stopp--jobb .knapp { margin-top: var(--s-6); }
 .side-footer { background: var(--teal-mork); color: #fff; padding-block: var(--s-8); }
 .side-footer .wrap { display: grid; gap: var(--s-6); justify-items: center; text-align: center; }
-.side-footer__merke { font: 800 var(--t-2xl)/1 var(--sans); margin: 0; }
+/* Kart-vannmerke i footeren — samme Oslo-utsnitt som i heroen, men laget for
+   mørk bunn: bildet er lyst med fast gjennomsiktighet, så det snus
+   (invert) til turkise linjer (sepia/hue-rotate) og blandes inn med
+   mix-blend-mode:screen, slik at bare linjene skinner svakt gjennom i
+   stedet for at hele flaten lyses opp. Verdiene er Rickys, funnet i
+   verkstedet 2026-09-21: 24 % synlighet, 170 % av footerbredden, sentrert
+   56 %/31 %, myke kanter 21 %. Ligger BAK innholdet (.wrap løftes over).
+   webp via image-set (samme fil som heroen bruker, så den er allerede
+   hurtiglastet); png som fallback. Ren dekor. */
+.side-footer { position: relative; overflow: hidden; }
+.side-footer > .wrap { position: relative; z-index: 1; }
+.side-footer::before {
+  content: ""; position: absolute; left: 56%; top: 31%;
+  width: 170%; aspect-ratio: 1; transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: url("../bilder/hero-kart-vannmerke.png") center / cover no-repeat;
+  background-image: image-set(
+    url("../bilder/hero-kart-vannmerke.webp") type("image/webp"),
+    url("../bilder/hero-kart-vannmerke.png") type("image/png"));
+  filter: invert(1) sepia(1) saturate(4) hue-rotate(125deg);
+  mix-blend-mode: screen; opacity: .24;
+  -webkit-mask-image: radial-gradient(closest-side, #000 79%, transparent 100%);
+          mask-image: radial-gradient(closest-side, #000 79%, transparent 100%);
+}
+/* Samme ordmerke som i heroen («CleanUNIT», Quicksand: Clean lett + UNIT
+   halvfet), men fargene byttet for mørk bunn: Clean hvit, UNIT i logoens
+   lyse turkis (--logo-turkis-lys, ca. 4:1 mot --teal-mork — nok for så stor
+   tekst). Ricky, 2026-09-21: «Bytt ut "CLEAN UNIT" med vår nye font». */
+.side-footer__merke {
+  margin: 0; font: 600 2.6rem/1 "Quicksand", var(--sans); letter-spacing: .03em;
+}
+.merke__clean { font-weight: 300; }
+.merke__unit { color: var(--logo-turkis-lys); }
 /* Varebilen flyttet ned hit fra hero (se .verktoy__merke ovenfor). Egen
    posisjonert boks (position:relative) kun for å gi .verktoy__merke et
    referansepunkt — ligger ellers rett i .wrap sin grid-flyt, så
    grid-gap-en (var(--s-6)) gir avstand til merke over og kontorer under
    helt av seg selv. */
-.side-footer__bil { position: relative; width: clamp(130px, 15vw, 210px); }
+.side-footer__bil { position: relative; width: clamp(130px, 15vw, 210px); container-type: inline-size; }
 .side-footer__bil img { width: 100%; height: auto; display: block; }
 .side-footer__kontorer {
   display: grid; gap: var(--s-6); justify-items: center;
