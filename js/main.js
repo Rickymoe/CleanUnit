@@ -83,14 +83,12 @@ function kortReveal(reduksjon) {
 
 // Logoen i heroen: hele ordmerket avsløres i ett sveip fra venstre («Vask», ren
 // CSS-animasjon på .logo.kjor — se style.css), mens noen skumbobler dukker opp
-// akkurat der sveipet er og stiger/popper. Når sveipet er ferdig, tennes
-// "Renhold" i taglinen. Kjører med en gang siden heroen alltid er synlig ved
-// sidelast (ikke scroll-styrt). Reduced-motion viser sluttresultatet direkte
-// via CSS — ingenting å gjøre her i så fall.
+// akkurat der sveipet er og stiger/popper. Kjører med en gang siden heroen
+// alltid er synlig ved sidelast (ikke scroll-styrt). Reduced-motion viser
+// sluttresultatet direkte via CSS — ingenting å gjøre her i så fall.
 //
-// Rein setTimeout mot samme faste varighet som CSS-animasjonen — ikke
-// animationend/Web Animations API, som viste seg upålitelig (event kunne
-// komme ute av synk, .finished-løftet kunne henge seg fast).
+// LOGO_VARIGHET_MS må være lik varigheten på CSS-animasjonen (logo-sveipet i
+// style.css), siden boblene plasseres og tidsforskyves etter den.
 const LOGO_VARIGHET_MS = 1560
 const BOBLE_ANTALL = 12
 
@@ -103,8 +101,6 @@ function logoAnimer(reduksjon) {
     antall: BOBLE_ANTALL, varighetMs: LOGO_VARIGHET_MS,
     skala: parseFloat(getComputedStyle(logo).fontSize) / 96,
   })
-  // liten margin så sveipet garantert er ferdig tegnet før "Renhold" tennes
-  setTimeout(() => tittelLysTenn(reduksjon), LOGO_VARIGHET_MS + 80)
 }
 
 // Samme kurve som CSS-sveipet (cubic-bezier(.5, 0, .2, 1)): gir hvor langt
@@ -260,29 +256,4 @@ function tjenesteBobler(reduksjon) {
     kort.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') byge() })
     kort.addEventListener('click', byge)
   })
-}
-
-// "Renhold" i overskriften "tennes" fra grått (--logo-tekst-gra) til
-// logoens turkis (--logo-tekst-turkis), med et dempet glødeskjær
-// (.tittel-lys i style.css, samme mask-position-steps()-teknikk som
-// Tuven-prosjektets logo/footer-merke). Resten av teksten ("i Oslo og
-// Stavanger") er ikke med — Ricky, 2026-09-13: "Kun gjør det til og med
-// 'Renhold'". Varighet/steg-antall skaleres med lengden på ordet (samme
-// ms per bokstav) i stedet for å hardkodes, så det følger automatisk med
-// hvis teksten i .tittel-lys noensinne endres. Ekte teksten under er
-// alltid synlig/lesbar — dette er kun et dekorativt lag oppå. Kjører én
-// gang og stopper (samme steps()-animasjon, ikke en loop).
-const TITTEL_MS_PER_BOKSTAV = 90
-
-function tittelLysTenn(reduksjon) {
-  if (reduksjon) return
-  const tittel = document.querySelector('.hero__tittel')
-  if (!tittel) return
-  const lys = tittel.querySelector('.tittel-lys')
-  if (lys) {
-    const lengde = lys.textContent.length
-    lys.style.animationDuration = `${lengde * TITTEL_MS_PER_BOKSTAV}ms`
-    lys.style.animationTimingFunction = `steps(${lengde})`
-  }
-  tittel.classList.add('tent')
 }

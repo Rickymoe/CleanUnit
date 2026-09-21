@@ -340,50 +340,17 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   text-transform: uppercase; letter-spacing: .18em;
   white-space: nowrap; text-align: justify; text-align-last: justify;
 }
-/* Lys-tenning KUN på "Renhold" (Ricky, 2026-09-13: "Kun gjør det til og med
-   'Renhold'") — resten av overskriften ("i Oslo og Stavanger") beholder
-   logoens grå (--logo-tekst-gra, samme som "CLEAN") permanent, ingen
-   animasjon. Bevisst farge-sammenspill med logoen (Ricky): "Renhold" går
-   fra samme grå til logoens turkis (--logo-tekst-turkis, samme som "UNIT"),
-   mens resten av teksten speiler CLEAN-delen av logoen og står stille.
-   Samme teknikk som Tuven-prosjektets logo/footer-merke (2 lag + mask-
-   position-sveip med steps(), unngår @property): .tittel-grunn ("Renhold")
-   er ekte tekst, alltid lesbar, arver den samme grå fra .hero__tittel selv
-   (ingen egen fargeregel trengs). Et dekorativt, aria-hidden duplikat av
-   kun "Renhold" i turkis med et lyst glødeskjær ligger oppå og avdekkes.
-   Siden det kun er ett ord trengs ikke lenger per-ord-masking (se
-   git-historikk for den varianten, brukt da hele teksten tentes). Trigges
-   av .tent-klassen ETTER at logo+bobler er helt ferdig — samme
-   trigger-punkt som kart-stjerne-stafetten. Standardtilstanden (uten
-   html.js, eller reduced-motion) viser laget helt avdekket med en gang —
-   rett i ferdig turkis, aldri fastlåst grått. */
-.hero__tittel .tittel-lys {
-  position: absolute; left: 0; top: 0; pointer-events: none;
+/* «Renhold» står i logoens turkis fra første øyeblikk (Ricky, 2026-09-21,
+   design-kritikk funn 5): en animert grå→turkis-tenning (Ricky 2026-09-13)
+   gikk samtidig med sveip og bobler rundt ordmerket og var den svakeste av de
+   tre effektene. Sluttresultatet er beholdt uendret — turkis "Renhold" med
+   et dempet glødeskjær, resten av taglinen grå (--logo-tagline-gra) — men uten
+   bevegelse og uten det dekorative duplikat-ordet som lå oppå. --teal på
+   --base gir 4,59:1 (AA for liten tekst). Bevisst farge-sammenspill med
+   ordmerket: "Renhold" = "UNIT", resten = "Clean". */
+.hero__tittel .tittel-aksent {
   color: var(--teal);
-  filter: drop-shadow(0 0 3px rgba(135, 202, 201, .25));
-  -webkit-mask: linear-gradient(90deg, #000 50%, transparent 50%) 0 0 / 200% 100% no-repeat;
-          mask: linear-gradient(90deg, #000 50%, transparent 50%) 0 0 / 200% 100% no-repeat;
-  -webkit-mask-position: 0 0; mask-position: 0 0;
-}
-html.js .hero__tittel .tittel-lys {
-  -webkit-mask-position: 100% 0; mask-position: 100% 0;
-}
-html.js .hero__tittel.tent .tittel-lys {
-  animation-name: tittel-tenn;
-  animation-fill-mode: both;
-  /* varighet/steg-antall settes som inline stil av tittelLysTenn() i
-     js/main.js ut fra "Renhold" sin lengde — verdiene under er fallback. */
-  animation-duration: 385ms;
-  animation-timing-function: steps(7);
-}
-@keyframes tittel-tenn {
-  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
-  to   { -webkit-mask-position: 0 0;    mask-position: 0 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  html.js .hero__tittel .tittel-lys {
-    -webkit-mask-position: 0 0; mask-position: 0 0; animation: none;
-  }
+  text-shadow: 0 0 3px rgba(135, 202, 201, .25);
 }
 /* Ingressen er nedjustert fra --t-md (17px) til --t-base (16px) og fra 42 til
    38 tegn bredde (Ricky, 2026-09-21, funn 4 i design-kritikken): på mobil var
