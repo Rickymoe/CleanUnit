@@ -467,8 +467,11 @@ html.js .hero__tittel.tent .tittel-lys {
 .stopp--referanser { padding-block: var(--seksjon-y); background: var(--teal-lys); }
 .stopp--referanser .sitat-liste { margin-top: var(--s-6); }
 .stopp--tillit { padding-block: var(--seksjon-y); background: var(--base); }
-.stopp--tillit h2 { text-align: center; }
-.stopp--tillit .eyebrow { text-align: center; }
+/* Eyebrow og overskrift er venstrejustert som i de andre seksjonene; kun
+   punktene (.tillit-liste) har sentrert ikon-og-tekst-oppsett (Ricky valgte
+   dette 2026-09-21, alternativ C). Før stod h2 sentrert og eyebrowen til
+   venstre: sentrerings-regelen for .eyebrow virket aldri (den er
+   inline-block). */
 .tillit-liste h3 { color: var(--teal-mork); }
 .tillit-liste li { display: flex; flex-direction: column; align-items: center; text-align: center; }
 /* Sirkel-/stempel-ramme rundt hvert ikon/logo — Ricky syntes seksjonen
