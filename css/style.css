@@ -6,6 +6,7 @@
   --flate: #FFFFFF;
   --tekst: #1E2B2B;
   --tekst-svak: #55706E;
+  --tekst-middels: #3F5453; /* mellom --tekst-svak og --tekst: 5,8:1 over rosa hjerte, 7,2:1 på --teal-lys */
   --sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --t-xs: .8125rem; --t-sm: .9rem; --t-base: 1rem; --t-md: 1.0625rem;
   --t-lg: 1.25rem; --t-2xl: 2rem; --t-3xl: 2.75rem;
@@ -384,7 +385,11 @@ html.js .hero__tittel.tent .tittel-lys {
     -webkit-mask-position: 0 0; mask-position: 0 0; animation: none;
   }
 }
-.hero__ingress { max-width: 42ch; color: var(--tekst-svak); margin: var(--s-5) auto 0; font-size: var(--t-md); }
+/* Ingressen er nedjustert fra --t-md (17px) til --t-base (16px) og fra 42 til
+   38 tegn bredde (Ricky, 2026-09-21, funn 4 i design-kritikken): på mobil var
+   ingressen større enn taglinen (H1) og dominerte heroen. Verkstedet ga
+   15,5px; holder oss på skalaen med --t-base. */
+.hero__ingress { max-width: 38ch; color: var(--tekst-svak); margin: var(--s-5) auto 0; font-size: var(--t-base); }
 
 .tjeneste-grid, .tillit-liste {
   list-style: none; margin: var(--s-6) 0 0; padding: 0;
@@ -419,6 +424,14 @@ html.js .hero__tittel.tent .tittel-lys {
   transform: translateY(-50%) rotate(12deg); opacity: .22;
 }
 .kort--hjerte > * { position: relative; }
+/* Brødteksten på dette kortet er litt mørkere (--tekst-middels i stedet for
+   --tekst-svak): rosa hjerte (22 %) bak linja "hos oss i" senket kontrasten for
+   --tekst-svak fra 4,8 til 3,9:1, under AA (design-kritikk 2026-09-21, funn 1).
+   Første valg var helt mørk --tekst (10,6:1), men den stakk for mye ut mot
+   søsknene; en mellomfarge rett over AA (#4A6261, 4,7:1) ble for subtil, så
+   Ricky landet på et trinn imellom. Bevisst avvik fra søsknene — se
+   feedback_sibling_element_conformity i minnet. */
+.kort--hjerte p { color: var(--tekst-middels); }
 
 /* Vindusramme på «Vinduspuss» (Ricky, 2026-09-21): en ytre ramme i --teal og
    en tynn indre linje 7px innenfor, som en vindusrute. Tegnet med INSET
