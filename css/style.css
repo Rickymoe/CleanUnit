@@ -6,6 +6,7 @@
   --flate: #FFFFFF;
   --tekst: #1E2B2B;
   --tekst-svak: #55706E;
+  --rosa: #EC6B95; /* kun hjerte-vannmerket (.kort--hjerte) — eneste farge utenfor turkis-paletten */
   --tekst-middels: #3F5453; /* mellom --tekst-svak og --tekst: 5,8:1 over rosa hjerte, 7,2:1 på --teal-lys */
   --sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --t-xs: .8125rem; --t-sm: .9rem; --t-base: 1rem; --t-md: 1.0625rem;
@@ -375,7 +376,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 .tjeneste-kort h3 { color: var(--teal-mork); }
 /* Hjerte-vannmerke på «Langvarige kollegaer» (Ricky, 2026-09-21) — kun dette
    kortet, satt via .kort--hjerte i markupen. Rent CSS: et stort, svakt
-   lyserødt hjerte (SVG som data-URI, fylt med rosa #EC6B95 — Ricky ba om
+   lyserødt hjerte (SVG-maske fylt med --rosa (#EC6B95) — Ricky ba om
    litt lyserødt, 2026-09-21) midt på høyre side,
    tippet litt og med ca. en fjerdedel utenfor kanten (overflow:hidden), så
    hele formen (to topper og spiss) leses, men som et vannmerke og ikke som
@@ -387,7 +388,12 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 .kort--hjerte::before {
   content: ""; position: absolute; top: 50%; right: -2.4rem;
   width: 9.5rem; aspect-ratio: 1; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23EC6B95' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
+  /* Hjertet er en maske (SVG som data-URI) fylt med --rosa i stedet for en SVG
+     med rosa hardkodet i seg: en data-URI kan ikke bruke CSS-variabler, så på
+     den måten blir fargen et ekte token og kan endres ett sted. */
+  background: var(--rosa);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
   transform: translateY(-50%) rotate(12deg); opacity: .22;
 }
 .kort--hjerte > * { position: relative; }
@@ -559,7 +565,7 @@ svg.tillit-logo { color: var(--teal); }
    lyse turkis (--logo-turkis-lys, ca. 4:1 mot --teal-mork — nok for så stor
    tekst). Ricky, 2026-09-21: «Bytt ut "CLEAN UNIT" med vår nye font». */
 .side-footer__merke {
-  margin: 0; font: 600 2.6rem/1 "Quicksand", var(--sans); letter-spacing: .03em;
+  margin: 0; font: 600 var(--t-3xl)/1 "Quicksand", var(--sans); letter-spacing: .03em;
 }
 .merke__clean { font-weight: 300; }
 .merke__unit { color: var(--logo-turkis-lys); }
@@ -576,7 +582,6 @@ svg.tillit-logo { color: var(--teal); }
 }
 .side-footer__kontorer h3 { color: #fff; font-size: var(--t-lg); }
 .side-footer__kontorer p { margin-top: var(--s-1); opacity: .85; font-size: var(--t-sm); }
-.side-footer__orgnr { opacity: .6; font-size: var(--t-xs); }
 .side-footer__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); justify-content: center; margin-top: var(--s-4); }
 .side-footer .knapp { border-color: #fff; }
 .side-footer .knapp--fyll { background: #fff; color: var(--teal-mork); }
