@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+document.documentElement.classList.add("js");
+// Nødluke: hvis js/main.js 404-er eller kaster før logoAnimer() kjører,
+// blir ordmerket (html.js .logo, klippet av clip-path) usynlig for alltid.
+// Etter 1,2 s uten .kjor: vis logoen. Sjekker selve .kjor-klassen (ikke bare
+// at main.js kjørte) — en gammel cachet main.js kan kjøre uten å kjenne ny
+// markup. Seksjonsoverskriftene trenger ingen nødluke: html.js-vask settes
+// først av main.js, så uten den er de alltid synlige.
+addEventListener("load", function () {
+  setTimeout(function () {
+    var logo = document.querySelector(".hero .logo");
+    if (logo && !logo.classList.contains("kjor")) logo.classList.add("kjor");
+  }, 1200);
+});
+</script>
+<script nomodule>document.documentElement.classList.remove("js")</script>
+<title>Clean Unit – renhold i Oslo og Stavanger</title>
+<meta name="description" content="Clean Unit Renhold AS og Clean Unit Stavanger AS. Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører.">
+<meta name="theme-color" content="#0A5C5B">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Clean Unit – renhold i Oslo og Stavanger">
+<meta property="og:description" content="Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører.">
+<meta property="og:image" content="https://rickymoe.github.io/CleanUnit/bilder/og-cleanunit.png">
+<meta property="og:url" content="https://rickymoe.github.io/CleanUnit/">
+<meta property="og:locale" content="nb_NO">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="{{rot}}bilder/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="{{rot}}bilder/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="{{rot}}bilder/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{rot}}css/style.css">
+</head>
+<body>
+<main>
+<header class="hero">
+  <div class="hero__by" aria-hidden="true">
+    <picture>
+      <source srcset="{{rot}}bilder/Byer.webp" type="image/webp">
+      <img src="{{rot}}bilder/Byer.png" alt="" width="1860" height="701">
+    </picture>
+  </div>
+  <div class="wrap hero__innhold">
+    <!-- Utydelig kart-vannmerke bak bil+tekst — ekte OSM-utsnitt (sentrum
+         Oslo), sterkt avmettet/lysnet og lav, fast alpha bakt inn i selve
+         PNG-en. Noen små bil-markører spredt utover kartet ("vi kjører her"),
+         gjenbruker samme bilde som hovedbilen. Hele gruppen fades sammen mot
+         kantene via samme maske. Rent dekorativt, under alt annet i wrap-en. -->
+    <div class="hero__kart-vannmerke" aria-hidden="true">
+      <picture>
+        <source srcset="{{rot}}bilder/hero-kart-vannmerke.webp" type="image/webp">
+        <img class="kart-vannmerke__kart" src="{{rot}}bilder/hero-kart-vannmerke.png" alt="" width="768" height="768">
+      </picture>
+      <span class="kart-markor-wrap" style="--x: 15%; --y: 26%;">
+        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="">
+      </span>
+      <span class="kart-markor-wrap" style="--x: 62%; --y: 18%;">
+        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="" style="transform: scaleX(-1);">
+      </span>
+      <span class="kart-markor-wrap" style="--x: 82%; --y: 30%;">
+        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="">
+      </span>
+      <span class="kart-markor-wrap" style="--x: 85%; --y: 55%;">
+        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="" style="transform: scaleX(-1);">
+      </span>
+      <span class="kart-markor-wrap" style="--x: 35%; --y: 72%;">
+        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="">
+      </span>
+      <span class="kart-markor-wrap" style="--x: 58%; --y: 68%;">
+        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="" style="transform: scaleX(-1);">
+      </span>
+      <span class="kart-markor-wrap" style="--x: 18%; --y: 70%;">
+        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="">
+      </span>
+    </div>
+    <!-- Lockup: ordmerket «CleanUnit» og taglinen (H1) er ÉN enhet på felles
+         midtakse mellom byene. Ordmerket: "Clean" lett grå + "UNIT" halvfet
+         turkis, Quicksand. Avsløres i ett sveip fra venstre («Vask»), med
+         skumbobler i sveipkanten (lages av js/main.js) — se .logo i style.css. -->
+    <div class="hero__lockup">
+      <p class="logo" role="img" aria-label="CleanUnit">
+        <span class="logo__clean" aria-hidden="true">Clean</span><span class="logo__unit" aria-hidden="true">UNIT</span>
+      </p>
+      <h1 class="hero__tittel"><span class="tittel-aksent">Renhold</span> i Oslo og Stavanger</h1>
+    </div>
+    <!-- Ekte vurdering fra Google Maps (Clean Unit Renhold AS, sjekket
+         2026-09-13 av Ricky: 4,8 av 5, 4 anmeldelser). Søkelenke i stedet
+         for en fast place-ID/lenke, siden vi ikke har den eksakte
+         Maps-lenken — søket lander på samme oppføring. Ren statisk visning,
+         ingen animasjon — Tuven sin fyll-/telle-opp-mekanikk ble prøvd her
+         også, men fjernet igjen (Ricky: "for mye skjer samme sted" ved
+         siden av logo-snurr/bobler/kart-stjernene rett i nærheten). -->
+    <a class="hero__vurdering" href="https://www.google.com/maps/search/?api=1&amp;query=Clean+Unit+Renhold+AS+Oslo" target="_blank" rel="noopener">
+      <span class="hero__vurdering-stjerner" aria-hidden="true">★★★★★</span>
+      <span>4,8 · 4 anmeldelser på Google</span>
+    </a>
+    <p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte&nbsp;– ingen underleverandører.</p>
+  </div>
+  <!-- Plassert under hver sin by i illustrasjonen (bilder/Byer.png), ikke i
+       den vanlige innholds-flyten — se .hero__knapper i style.css. -->
+  <div class="hero__knapper">
+    <a class="knapp knapp--fyll hero__knapp--oslo" href="tel:+4721555680">Ring Oslo – 21 55 56 80</a>
+    <a class="knapp knapp--omriss hero__knapp--stavanger" href="tel:+4790065009">Ring Stavanger – 900 65 009</a>
+  </div>
+</header>
+<section class="stopp--tjenester" id="tjenester">
+  <div class="wrap">
+    <p class="eyebrow">Tjenester</p>
+    <div class="vask-boks"><h2 data-vask>Renhold tilpasset stedet du driver</h2></div>
+    <p class="stopp__lede">I Clean Unit er fokuset på kvalitet. For oss betyr det at vi i tillegg til å vaske rent, strekker oss langt for å imøtekomme våre kunders ønsker og behov. For oss handler kvalitet om service i alle ledd, og vi er fleksible og kan skreddersy et renhold som passer din bedrift.</p>
+    <ul class="tjeneste-grid">
+      <li class="tjeneste-kort">
+        <picture>
+          <source srcset="{{rot}}bilder/ikon-barnehage.webp" type="image/webp">
+          <img class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-barnehage.png" alt="" width="401" height="320">
+        </picture>
+        <h3>Barnehagerenhold</h3>
+        <p>Clean Unit er spesialisten på rengjøring av barnehager. Vi vet hvilke krav som stilles til hygiene, innemiljø og smittevern, da om lag 90 prosent av våre oppdrag utføres hos barnehager.</p>
+      </li>
+      <li class="tjeneste-kort">
+        <picture>
+          <source srcset="{{rot}}bilder/ikon-daglig.webp" type="image/webp">
+          <img class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-daglig.png" alt="" width="359" height="320">
+        </picture>
+        <h3>Daglig renhold</h3>
+        <p>Renhold er viktig for helsen og trivselen til de ansatte på alle arbeidsplasser. Ti års erfaring fra renhold i barnehager har gitt Clean Unit gode rutiner for å holde det rent.</p>
+      </li>
+      <li class="tjeneste-kort">
+        <picture>
+          <source srcset="{{rot}}bilder/ikon-hovedrengjoring.webp" type="image/webp">
+          <img class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-hovedrengjoring.png" alt="" width="289" height="320">
+        </picture>
+        <h3>Hovedrengjøring</h3>
+        <p>Hovedrengjøring er en viktig del av det totale renholdet for mange bedrifter. Dette innbefatter grundig rengjøring av vegger, tak, lister, skap og annet som avtales.</p>
+      </li>
+      <li class="tjeneste-kort">
+        <picture>
+          <source srcset="{{rot}}bilder/ikon-hygiene.webp" type="image/webp">
+          <img class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-hygiene.png" alt="" width="358" height="320">
+        </picture>
+        <h3>Hygieneartikler</h3>
+        <p>Clean Unit kan levere de fleste merker innen hygieneartikler og dispensere. Vi både bestiller varene og etterfyller dispenserne hos flere av våre kunder.</p>
+      </li>
+      <li class="tjeneste-kort">
+        <picture>
+          <source srcset="{{rot}}bilder/ikon-gulv.webp" type="image/webp">
+          <img class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-gulv.png" alt="" width="334" height="320">
+        </picture>
+        <h3>Gulvbehandling</h3>
+        <p>Det finnes mange ulike gulv og belegg. Vi har kompetanse til å finne riktig renhold og vedlikehold for både tepper og harde gulv.</p>
+      </li>
+      <li class="tjeneste-kort kort--vindu">
+        <picture>
+          <source srcset="{{rot}}bilder/ikon-vindu.webp" type="image/webp">
+          <img class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-vindu.png" alt="" width="262" height="320">
+        </picture>
+        <h3>Vinduspuss</h3>
+        <p>Clean Unit kan utføre de fleste oppdrag innen vinduspuss, både utvendig og innvendig.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+<section class="stopp--referanser" id="referanser">
+  <div class="wrap">
+    <p class="eyebrow">Referanser</p>
+    <h2>Dette sier kundene våre</h2>
+    <ul class="sitat-liste">
+      <li class="sitat-kort">
+        <picture>
+          <source srcset="{{rot}}bilder/logo-nvh.webp" type="image/webp">
+          <img class="sitat-logo" src="{{rot}}bilder/logo-nvh.png" alt="" width="136" height="100">
+        </picture>
+        <blockquote>
+          <p>Vi opplever svært god kundeservice, en blid og hyggelig renholdsarbeider/assistent, fleksibilitet og oppfølging.</p>
+          <footer>Ida Larson<br>Stiftelsen NVH barnehagen</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <picture>
+          <source srcset="{{rot}}bilder/logo-kanvas.webp" type="image/webp">
+          <img class="sitat-logo" src="{{rot}}bilder/logo-kanvas.png" alt="" width="394" height="166">
+        </picture>
+        <blockquote>
+          <p>Vi har tett dialog og opplever at Clean Unit Renhold følger opp tilbakemeldinger og har fokus på kvalitet.</p>
+          <footer>Cecilie Beck-Hansen<br>Utforskeren Kanvas-Barnehage</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <picture>
+          <source srcset="{{rot}}bilder/logo-kg.webp" type="image/webp">
+          <img class="sitat-logo" src="{{rot}}bilder/logo-kg.png" alt="" width="1140" height="237">
+        </picture>
+        <blockquote>
+          <p>I en hektisk hverdag setter vi ekstra pris på at renholderne alltid er blide og selv proaktivt oppsøker informasjon.</p>
+          <footer>Line Wermundsen Mork<br>Kristelig Gymnasium</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <picture>
+          <source srcset="{{rot}}bilder/logo-medistim.webp" type="image/webp">
+          <img class="sitat-logo" src="{{rot}}bilder/logo-medistim.png" alt="" width="1198" height="174">
+        </picture>
+        <blockquote>
+          <p>Vi opplever Clean Unit som meget profesjonelle med kvalitet og service i fokus.</p>
+          <footer>Solveig Sletten<br>Medistim</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <!-- UTKAST: cleanunit.no bruker "Barnehagenett-logo.png" for denne
+             referansen — det er logoen til nettverket/plattformen
+             barnehagenett.no, ikke Stålverkskroken barnehages egen logo.
+             Ikke lagt inn her før Ricky bekrefter om det er riktig å
+             bruke, se PROSJEKT-AAPENT.md. Uten logo faller dette kortet
+             tilbake til full bredde på teksten (se .sitat-kort i CSS). -->
+        <blockquote>
+          <p>Vi er veldig fornøyde med samarbeidet, kommunikasjonen samt rengjøringen av våre lokaler.</p>
+          <footer>Trine Hofseth<br>Stålverkskroken barnehage</footer>
+        </blockquote>
+      </li>
+    </ul>
+  </div>
+</section>
+<section class="stopp--tillit" id="hvorfor">
+  <div class="wrap">
+    <p class="eyebrow">Hvorfor Clean Unit</p>
+    <h2>Godkjent, ansvarlig og til stede</h2>
+    <ul class="tillit-liste">
+      <li>
+        <div class="tillit-stempel">
+          <svg class="tillit-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="5" y="6" width="14" height="16" rx="2"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+            <circle cx="12" cy="12" r="2"/>
+            <path d="M8 18c.5-2 2-3 4-3s3.5 1 4 3"/>
+          </svg>
+        </div>
+        <h3>Direkte ansatte</h3>
+        <p><!-- UTKAST -->Vi bruker ikke underleverandører. Dere vet alltid hvem som utfører renholdet hos dere.</p>
+      </li>
+      <li>
+        <div class="tillit-stempel">
+          <picture>
+            <source srcset="{{rot}}bilder/logo-miljofyrtarn.webp" type="image/webp">
+            <img class="tillit-logo" src="{{rot}}bilder/logo-miljofyrtarn.png" alt="Miljøfyrtårn" width="61" height="52">
+          </picture>
+        </div>
+        <h3>Miljøfyrtårn-sertifisert</h3>
+        <p>Vi er en offentlig godkjent renholdsbedrift og miljøfyrtårnsertifisert.</p>
+      </li>
+      <li>
+        <div class="tillit-stempel">
+          <picture>
+            <source srcset="{{rot}}bilder/logo-virke.webp" type="image/webp">
+            <img class="tillit-logo" src="{{rot}}bilder/logo-virke.png" alt="Virke" width="61" height="52">
+          </picture>
+        </div>
+        <h3>Medlem i Virke</h3>
+        <p><!-- UTKAST -->Som medlem i hovedorganisasjonen Virke overholder vi eksisterende krav og reglement.</p>
+      </li>
+      <li>
+        <div class="tillit-stempel">
+          <svg class="tillit-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/>
+            <path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.785 1.785 0 0 0 0-1.775l-1.226-2.12"/>
+            <path d="m14 16-3 3 3 3"/>
+            <path d="M8.293 13.596 7.196 9.5l-4.096 1.097"/>
+            <path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 12 3a1.83 1.83 0 0 1 1.563.916l4.096 7.09"/>
+            <path d="m13.378 9.633 4.096-1.098 1.097 4.096"/>
+          </svg>
+        </div>
+        <h3>Jevnlig re-sertifisert</h3>
+        <p><!-- UTKAST: antar fortsatt miljøsertifisert per Rickys instruks 2026-09-13, siste kjente konkrete resertifisering var januar 2021 (se PROSJEKT-AAPENT.md) -->Vi fornyer sertifiseringene våre jevnlig for å holde standarden oppe.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+<section class="stopp--om" id="om-oss">
+  <div class="wrap">
+  <div class="om-layout">
+    <div class="om-tekst">
+      <p class="eyebrow">Om oss</p>
+      <h2>To kontorer, samme standard</h2>
+      <p class="stopp__lede">Clean Unit er en servicebedrift som utfører de fleste former for renhold, gulvbehandlinger og levering av hygieneartikler til bedriftsmarkedet. Kontoret i Nydalen, Oslo har i dag 55 ansatte, og vi har i tillegg et eget kontor i Stavanger. Hos oss er kunden i fokus — vi tilpasser oss kundens behov for å finne den løsningen som passer best for akkurat deres bedrift. Clean Unit er en bedrift i vekst, for stadig flere oppdager verdien av en kvalitetsfokusert renholdsleverandør.</p>
+    </div>
+  </div>
+    <!-- Plassholder for ekte kontorbilder, se PROSJEKT-AAPENT.md. Boksene
+         er rent dekorative inntil videre (svg er aria-hidden, figcaption
+         er ekte tekst så stedsnavnet ikke går tapt for skjermlesere) —
+         bytt hver til <img alt="…"> med ekte bilde når Marit/Christopher
+         skaffer dem. -->
+    <div class="om-foto-rad">
+      <figure class="om-foto-plassholder">
+        <div class="om-foto-boks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="4" y="3" width="16" height="18" rx="1"/>
+            <path d="M9 21v-4h6v4"/>
+            <path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"/>
+          </svg>
+          <p class="om-foto-hint" aria-hidden="true">Selfie av de som jobber på kontoret</p>
+        </div>
+        <figcaption>Oslo</figcaption>
+      </figure>
+      <figure class="om-foto-plassholder">
+        <div class="om-foto-boks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="4" y="3" width="16" height="18" rx="1"/>
+            <path d="M9 21v-4h6v4"/>
+            <path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"/>
+          </svg>
+          <p class="om-foto-hint" aria-hidden="true">Selfie av de som jobber på kontoret</p>
+        </div>
+        <figcaption>Stavanger</figcaption>
+      </figure>
+    </div>
+    <h3>Fra to mopper til 55 ansatte</h3>
+    <p><!-- UTKAST: grunnleggelseshistorien er hentet fra Oslo-siden av cleanunit.no, ikke bekreftet om den dekker Stavanger-kontoret også -->Vi startet Clean Unit i 2007 fordi vi så et marked som var modent for en renholdsbedrift som ville levere topp service i alle ledd. Den gangen var vi to stykker med hver vår mopp, og en felles idé om å lage landets beste servicebedrift. Vi er ikke størst, men vi jobber knallhardt for å være best — for oss er ikke renhold et nødvendig onde, det er levebrødet vårt, og det tar vi på alvor. Derfor er det viktig at alle ansatte får skikkelig opplæring, og at de deler vår visjon om å levere den beste servicen. Resultatet vi leverer, er vår garanti for å beholde dere som kunde.</p>
+  <figure class="om-foto-plassholder om-foto-plassholder--bred">
+    <div class="om-foto-boks om-foto-boks--bred">
+      <picture>
+        <source srcset="{{rot}}bilder/2til52.webp" type="image/webp">
+        <img src="{{rot}}bilder/2til52.png" alt="Illustrasjon av Clean Unit sitt team i teal-uniform, med kost, mopp, bøtte og gulvmaskin" width="1855" height="848">
+      </picture>
+    </div>
+    <figcaption>De to første – og en halvsirkel av 50 kollegaer i dag</figcaption>
+  </figure>
+  </div>
+</section>
+<section class="stopp--jobb" id="jobb-hos-oss">
+  <div class="wrap">
+    <p class="eyebrow">Jobb hos oss</p>
+    <div class="vask-boks"><h2 data-vask>Renholderne er de viktigste</h2></div>
+    <p class="stopp__lede"><!-- UTKAST: egen syntese av Ansatte-sitatene under, ikke bekreftet med Marit/Christopher -->Hos Clean Unit er det renholderne som gjør jobben — ikke bare en del av firmaet. Vi gir alle ansatte skikkelig opplæring, følger opp med trening og ergonomi i hverdagen, og mange av våre ansatte blir hos oss i mange år.</p>
+    <ul class="tjeneste-grid">
+      <li class="tjeneste-kort">
+        <h3>Skikkelig opplæring</h3>
+        <p><!-- UTKAST -->Alle får opplæring før de begynner å jobbe, og vi oppfordrer til å spørre om hjelp hvis man er usikker på noe.</p>
+      </li>
+      <li class="tjeneste-kort">
+        <h3>Trening og ergonomi</h3>
+        <p><!-- UTKAST: bekreft om SATS/ELIXIA-avtalen fra 2018 fortsatt gjelder, se PROSJEKT-AAPENT.md -->Vi har fokus på riktige teknikker i jobben, og en bedriftsavtale med SATS/ELIXIA gir alle ansatte tilbud om trening til redusert pris.</p>
+      </li>
+      <li class="tjeneste-kort">
+        <h3>Godt arbeidsmiljø</h3>
+        <p><!-- UTKAST -->Vi jobber stadig med hvordan vi kan bli bedre, og samholdet mellom renholderne og de på kontoret er viktig for oss.</p>
+      </li>
+      <li class="tjeneste-kort kort--hjerte">
+        <h3>Langvarige kollegaer</h3>
+        <p><!-- UTKAST -->Flere av våre ansatte har jobbet hos oss i mange år — noen helt siden 2013.</p>
+      </li>
+    </ul>
+    <h3>Dette sier de som jobber hos oss</h3>
+    <ul class="sitat-liste">
+      <li class="sitat-kort">
+        <blockquote>
+          <p>Mitt eventyr med Clean Unit begynte for 9 år siden. Jeg har lært mye i løpet av denne tiden. Godt miljø, en sjef som sørger om ansatte, følelse av sikkerhet og treningsmuligheter – dette er mest viktig for meg. Clean Unit har lært meg hvor viktig og ekstremt nødvendig denne jobben er.</p>
+          <footer>— Monika</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <blockquote>
+          <p>Jeg har jobbet i Clean Unit i mange år, men hadde et par års pause når jeg fikk barn. I Clean Unit blir vi oppdatert på metoder, ergonomi og hva som er viktig for at vi skal vaske rent, og for at vi skal ha det bra. Samholdet er viktig blant de som vasker, og med de på kontoret, så derfor ville jeg tilbake til Clean Unit når jeg skulle jobbe igjen.</p>
+          <footer>— Urszula</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <blockquote>
+          <p>Vår tjeneste er kunnskapsbasert og utvikler medarbeidernes kompetanse. Clean Unit er innovative og søker gode løsninger for oss medarbeidere og våre kunder. Vi vet hva vi vil og hva som skal til. Clean Unit utstråler energi og arbeidsglede.</p>
+          <footer>— Aneta</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <blockquote>
+          <p>Jeg har jobbet i Clean Unit siden 2013. Dette er det første stedet jeg jobber hvor jeg føler at renholderne er de viktigste, og ikke bare en del av firma. Vi blir motivert til å gjøre en så god jobb som mulig, og alle får opplæring før de begynner å jobbe.</p>
+          <footer>— Vilma</footer>
+        </blockquote>
+      </li>
+    </ul>
+    <!-- UTKAST: mottakeradresse for åpen søknad ikke bekreftet — gjenbruker
+         Oslo-kontorets generelle e-post inntil videre, se PROSJEKT-AAPENT.md -->
+    <a class="knapp knapp--fyll" href="mailto:renhold@cleanunit.no?subject=%C3%85pen%20s%C3%B8knad">Send oss en åpen søknad</a>
+  </div>
+</section>
+</main>
+<footer class="side-footer">
+  <div class="wrap">
+    <p class="side-footer__merke" role="img" aria-label="CleanUnit"><span class="merke__clean" aria-hidden="true">Clean</span><span class="merke__unit" aria-hidden="true">UNIT</span></p>
+    <!-- Flyttet ned fra hero øverst til høyre — Ricky: "det faktisk bedre
+         ut uten". "CLEANUNIT" er ekte tekst lagt oppå dørpanelet (samme
+         teknikk/mål som i hero: bilder/bil.png, panelet ligger omtrent
+         38–61% av bredden, 40–60% av høyden). -->
+    <div class="side-footer__bil" aria-hidden="true">
+      <picture>
+        <source srcset="{{rot}}bilder/bil.webp" type="image/webp">
+        <img src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+      </picture>
+      <span class="verktoy__merke"><span class="merke__clean">Clean</span><span class="merke__unit">UNIT</span></span>
+    </div>
+    <h2 class="visually-hidden">Kontakt</h2>
+    <div class="side-footer__kontorer">
+      <div>
+        <h3>Clean Unit Renhold AS</h3>
+        <p>Gunnar Schjelderups vei 9, 0485 Oslo</p>
+        <p class="side-footer__orgnr">Org.nr 895 215 902</p>
+        <div class="side-footer__knapper">
+          <a class="knapp knapp--fyll" href="tel:+4721555680">Ring – 21 55 56 80</a>
+          <a class="knapp knapp--omriss" href="mailto:renhold@cleanunit.no">Send e-post</a>
+        </div>
+      </div>
+      <div>
+        <h3>Clean Unit Stavanger AS</h3>
+        <p><!-- UTKAST: Brønnøysundregistrene oppgir registrert adresse Nedre
+             Holmegate 30, 4006 Stavanger — avviker fra denne besøksadressen
+             hentet fra cleanunit.no 2026-09-12. Bekreft hvilken som skal
+             brukes, se PROSJEKT-AAPENT.md -->Bryggerikaien 16, 4014 Stavanger</p>
+        <p class="side-footer__orgnr">Org.nr 929 085 019</p>
+        <div class="side-footer__knapper">
+          <a class="knapp knapp--fyll" href="tel:+4790065009">Ring – 900 65 009</a>
+          <a class="knapp knapp--omriss" href="mailto:thord@cleanunit.no">Send e-post</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<script type="module">
+  import { initSider } from '{{js_rot}}js/main.js';
+  initSider();
+</script>
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token":"3b2830d8c1b74ed68dee031783103adc"}'></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "byer": [
+    { "mappe": "", "data": { "rot": "", "js_rot": "./" } },
+    { "mappe": "stavanger", "data": { "rot": "../", "js_rot": "../" } }
+  ]
+}

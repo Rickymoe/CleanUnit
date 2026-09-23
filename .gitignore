@@ -4,3 +4,5 @@ bilder/_kilde/
 lab-*.html
 .DS_Store
 *.swp
+dist/
+test/ut/
