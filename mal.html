@@ -19,14 +19,14 @@ addEventListener("load", function () {
 });
 </script>
 <script nomodule>document.documentElement.classList.remove("js")</script>
-<title>Clean Unit – renhold i Oslo og Stavanger</title>
-<meta name="description" content="Clean Unit Renhold AS og Clean Unit Stavanger AS. Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører.">
+<title>Clean Unit – renhold i {{by}}</title>
+<meta name="description" content="{{meta_beskrivelse}}">
 <meta name="theme-color" content="#0A5C5B">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Clean Unit – renhold i Oslo og Stavanger">
+<meta property="og:title" content="Clean Unit – renhold i {{by}}">
 <meta property="og:description" content="Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører.">
 <meta property="og:image" content="https://rickymoe.github.io/CleanUnit/bilder/og-cleanunit.png">
-<meta property="og:url" content="https://rickymoe.github.io/CleanUnit/">
+<meta property="og:url" content="{{og_url}}">
 <meta property="og:locale" content="nb_NO">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="{{rot}}bilder/favicon-32.png">
@@ -37,7 +37,7 @@ addEventListener("load", function () {
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{rot}}css/style.css">
 </head>
-<body>
+<body class="{{body_klasse}}">
 <main>
 <header class="hero">
   <div class="hero__by" aria-hidden="true">
@@ -87,7 +87,7 @@ addEventListener("load", function () {
       <p class="logo" role="img" aria-label="CleanUnit">
         <span class="logo__clean" aria-hidden="true">Clean</span><span class="logo__unit" aria-hidden="true">UNIT</span>
       </p>
-      <h1 class="hero__tittel"><span class="tittel-aksent">Renhold</span> i Oslo og Stavanger</h1>
+      <h1 class="hero__tittel"><span class="tittel-aksent">Renhold</span> i {{by}}</h1>
     </div>
     <!-- Ekte vurdering fra Google Maps (Clean Unit Renhold AS, sjekket
          2026-09-13 av Ricky: 4,8 av 5, 4 anmeldelser). Søkelenke i stedet
@@ -96,17 +96,17 @@ addEventListener("load", function () {
          ingen animasjon — Tuven sin fyll-/telle-opp-mekanikk ble prøvd her
          også, men fjernet igjen (Ricky: "for mye skjer samme sted" ved
          siden av logo-snurr/bobler/kart-stjernene rett i nærheten). -->
-    <a class="hero__vurdering" href="https://www.google.com/maps/search/?api=1&amp;query=Clean+Unit+Renhold+AS+Oslo" target="_blank" rel="noopener">
-      <span class="hero__vurdering-stjerner" aria-hidden="true">★★★★★</span>
-      <span>4,8 · 4 anmeldelser på Google</span>
-    </a>
+    {{vurdering}}
     <p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte&nbsp;– ingen underleverandører.</p>
   </div>
   <!-- Plassert under hver sin by i illustrasjonen (bilder/Byer.png), ikke i
-       den vanlige innholds-flyten — se .hero__knapper i style.css. -->
+       den vanlige innholds-flyten — se .hero__knapper i style.css. Egen by:
+       ring-knapp under egen by. Andre by: omriss-knapp som lenker til den
+       andre bysiden (hero__knapp--annen). Posisjonsklassen (--oslo/
+       --stavanger) følger alltid byen i illustrasjonen, ikke hvilken side
+       vi er på. -->
   <div class="hero__knapper">
-    <a class="knapp knapp--fyll hero__knapp--oslo" href="tel:+4721555680">Ring Oslo – 21 55 56 80</a>
-    <a class="knapp knapp--omriss hero__knapp--stavanger" href="tel:+4790065009">Ring Stavanger – 900 65 009</a>
+    {{hero_knapper}}
   </div>
 </header>
 <section class="stopp--tjenester" id="tjenester">
@@ -286,7 +286,7 @@ addEventListener("load", function () {
     <div class="om-tekst">
       <p class="eyebrow">Om oss</p>
       <h2>To kontorer, samme standard</h2>
-      <p class="stopp__lede">Clean Unit er en servicebedrift som utfører de fleste former for renhold, gulvbehandlinger og levering av hygieneartikler til bedriftsmarkedet. Kontoret i Nydalen, Oslo har i dag 55 ansatte, og vi har i tillegg et eget kontor i Stavanger. Hos oss er kunden i fokus — vi tilpasser oss kundens behov for å finne den løsningen som passer best for akkurat deres bedrift. Clean Unit er en bedrift i vekst, for stadig flere oppdager verdien av en kvalitetsfokusert renholdsleverandør.</p>
+      <p class="stopp__lede">Clean Unit er en servicebedrift som utfører de fleste former for renhold, gulvbehandlinger og levering av hygieneartikler til bedriftsmarkedet. {{om_kontorer}} Hos oss er kunden i fokus — vi tilpasser oss kundens behov for å finne den løsningen som passer best for akkurat deres bedrift. Clean Unit er en bedrift i vekst, for stadig flere oppdager verdien av en kvalitetsfokusert renholdsleverandør.</p>
     </div>
   </div>
     <!-- Plassholder for ekte kontorbilder, se PROSJEKT-AAPENT.md. Boksene
@@ -411,6 +411,7 @@ addEventListener("load", function () {
           <a class="knapp knapp--fyll" href="tel:+4721555680">Ring – 21 55 56 80</a>
           <a class="knapp knapp--omriss" href="mailto:renhold@cleanunit.no">Send e-post</a>
         </div>
+        {{oslo_bylenke}}
       </div>
       <div>
         <h3>Clean Unit Stavanger AS</h3>
@@ -423,6 +424,7 @@ addEventListener("load", function () {
           <a class="knapp knapp--fyll" href="tel:+4790065009">Ring – 900 65 009</a>
           <a class="knapp knapp--omriss" href="mailto:thord@cleanunit.no">Send e-post</a>
         </div>
+        {{stavanger_bylenke}}
       </div>
     </div>
   </div>

@@ -1,6 +1,36 @@
 {
   "byer": [
-    { "mappe": "", "data": { "rot": "", "js_rot": "./" } },
-    { "mappe": "stavanger", "data": { "rot": "../", "js_rot": "../" } }
+    {
+      "mappe": "",
+      "data": {
+        "rot": "",
+        "js_rot": "./",
+        "by": "Oslo",
+        "body_klasse": "by--oslo",
+        "meta_beskrivelse": "Clean Unit Renhold AS i Oslo. Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører.",
+        "og_url": "https://rickymoe.github.io/CleanUnit/",
+        "vurdering": "<a class=\"hero__vurdering\" href=\"https://www.google.com/maps/search/?api=1&amp;query=Clean+Unit+Renhold+AS+Oslo\" target=\"_blank\" rel=\"noopener\">\n      <span class=\"hero__vurdering-stjerner\" aria-hidden=\"true\">★★★★★</span>\n      <span>4,8 · 4 anmeldelser på Google</span>\n    </a>",
+        "hero_knapper": "<a class=\"knapp knapp--fyll hero__knapp--oslo\" href=\"tel:+4721555680\">Ring Oslo – 21 55 56 80</a>\n    <a class=\"knapp knapp--omriss hero__knapp--stavanger hero__knapp--annen\" href=\"stavanger/\">Clean Unit Stavanger →</a>",
+        "om_kontorer": "Kontoret i Nydalen, Oslo har i dag 55 ansatte, og vi har i tillegg et eget kontor i Stavanger.",
+        "oslo_bylenke": "",
+        "stavanger_bylenke": "<a class=\"side-footer__bylenke\" href=\"stavanger/\">Gå til Clean Unit Stavanger →</a>"
+      }
+    },
+    {
+      "mappe": "stavanger",
+      "data": {
+        "rot": "../",
+        "js_rot": "../",
+        "by": "Stavanger",
+        "body_klasse": "by--stavanger",
+        "meta_beskrivelse": "Clean Unit Stavanger AS. Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører.",
+        "og_url": "https://rickymoe.github.io/CleanUnit/stavanger/",
+        "vurdering": "",
+        "hero_knapper": "<a class=\"knapp knapp--omriss hero__knapp--oslo hero__knapp--annen\" href=\"../\">Clean Unit Oslo →</a>\n    <a class=\"knapp knapp--fyll hero__knapp--stavanger\" href=\"tel:+4790065009\">Ring Stavanger – 900 65 009</a>",
+        "om_kontorer": "<!-- UTKAST: Stavanger-kontorets egen beskrivelse (antall ansatte m.m.) venter på Marit/Christopher -->Kontoret vårt i Stavanger er en del av Clean Unit, med hovedkontor i Nydalen, Oslo.",
+        "oslo_bylenke": "<a class=\"side-footer__bylenke\" href=\"../\">Gå til Clean Unit Oslo →</a>",
+        "stavanger_bylenke": ""
+      }
+    }
   ]
 }
