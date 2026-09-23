@@ -184,6 +184,11 @@ a { color: inherit; }
   }
   .hero__knapper .knapp { position: static; }
   .hero__knapp--oslo, .hero__knapp--stavanger { left: auto; transform: none; }
+  /* DOM-rekkefølgen har alltid Oslo-knappen først (uansett hvilken by som er
+     "egen"), så uten dette havner lenken til den andre byen øverst på
+     Stavanger-siden. Egen bys ring-knapp skal alltid være først i den
+     stablede mobil-kolonnen. */
+  .hero__knapp--annen { order: 1; }
   @media (hover: hover) {
     .hero__knapp--oslo:hover, .hero__knapp--stavanger:hover { transform: translateY(-1px); }
   }
