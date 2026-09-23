@@ -111,6 +111,19 @@ a { color: inherit; }
   width: 100%; height: auto; max-height: 100%; object-fit: contain;
   object-position: bottom; display: block; margin-inline: auto;
 }
+/* To bysider (2026-09-23): begge byene står fortsatt i illustrasjonen så
+   heroen beholder balansen, men den ANDRE byen tones ned mot bakgrunnen.
+   Et slør i --base over den halvdelen, med myk overgang midt på (der
+   lockupen står). Egen by er alltid i full farge. */
+.hero__by::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+}
+.by--oslo .hero__by::after {
+  background: linear-gradient(to right, transparent 45%, color-mix(in srgb, var(--base) 62%, transparent) 62%);
+}
+.by--stavanger .hero__by::after {
+  background: linear-gradient(to left, transparent 45%, color-mix(in srgb, var(--base) 62%, transparent) 62%);
+}
 /* "CLEANUNIT" på dørpanelet — ekte tekst, ikke del av AI-bildet (som ikke
    kan gjengi tekst pålitelig). Målt i bilder/bil.png: panelet ligger omtrent
    38–61% av bredden, 40–60% av høyden. Brukt av .side-footer__bil under
@@ -148,6 +161,11 @@ a { color: inherit; }
    skjermer med rene 20%/79%-verdier. */
 .hero__knapp--oslo { left: clamp(9rem, 20%, 30%); transform: translateX(-50%); }
 .hero__knapp--stavanger { left: clamp(55%, 79%, calc(100% - 9rem)); transform: translateX(-50%); }
+/* Knappen under den dempede byen er en lenke til den andre bysiden, ikke
+   en ring-knapp — litt dempet selv også, så egen bys ring-knapp er
+   primærhandlingen. */
+.hero__knapp--annen { opacity: .85; }
+@media (hover: hover) { .hero__knapp--annen:hover { opacity: 1; } }
 @media (hover: hover) {
   /* .knapp:hover setter sin egen transform (løft), som ellers ville overskrevet
      translateX(-50%) helt og fått knappen til å "hoppe" til høyre. */
@@ -583,6 +601,12 @@ svg.tillit-logo { color: var(--teal); }
 .side-footer__kontorer h3 { color: #fff; font-size: var(--t-lg); }
 .side-footer__kontorer p { margin-top: var(--s-1); opacity: .85; font-size: var(--t-sm); }
 .side-footer__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); justify-content: center; margin-top: var(--s-4); }
+.side-footer__bylenke {
+  display: inline-block; margin-top: var(--s-3);
+  color: var(--logo-turkis-lys); font-weight: 600; text-decoration: underline;
+  text-underline-offset: .2em;
+}
+@media (hover: hover) { .side-footer__bylenke:hover { color: #fff; } }
 .side-footer .knapp { border-color: #fff; }
 .side-footer .knapp--fyll { background: #fff; color: var(--teal-mork); }
 .side-footer .knapp--omriss { color: #fff; }
