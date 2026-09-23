@@ -24,16 +24,18 @@ jobs:
         with:
           node-version: 20
 
-      - name: Kopier alt til dist
+      - name: Test og bygg sidene fra malen
         run: |
-          mkdir dist
-          rsync -a --exclude='.git' --exclude='.github' --exclude='dist' ./ dist/
+          node --test test/*.test.js
+          node bygg.js
 
       - name: Fjern kommentarer fra HTML/CSS/JS
         run: |
-          npx --yes html-minifier-terser --remove-comments \
-            --minify-js '{"compress":false,"mangle":false}' \
-            dist/index.html -o dist/index.html
+          for f in dist/index.html dist/stavanger/index.html; do
+            npx --yes html-minifier-terser --remove-comments \
+              --minify-js '{"compress":false,"mangle":false}' \
+              "$f" -o "$f"
+          done
           npx --yes clean-css-cli -O1 --format keep-breaks \
             -o dist/css/style.css dist/css/style.css
           npx --yes terser dist/js/main.js -f beautify \
