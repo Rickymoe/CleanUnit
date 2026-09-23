@@ -353,18 +353,25 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 /* Taglinen (H1) under ordmerket: versaler med bred sperring, justert til
    ordmerkets bredde (text-align-last:justify strekker ordmellomrommene på den
    ene linja). Stor andel av lockup-fontstørrelsen, så forholdet holder på alle
-   bredder. Målt i Chrome: .24em/.18em gir en naturlig bredde på ca. 96 % av
-   ordmerkets, så justeringen fyller bare de siste ~4 % med ordmellomrom
-   (.2em/.24em ga 86 % og dermed store hull). Grunnfarge og "Renhold"-
-   tenningen er mørknet fra logofargene (--logo-tekst-*) til
-   --logo-tagline-gra/--teal: liten tekst må ha AA (4,5:1), som de lyse
-   logofargene ikke har i denne størrelsen. */
+   bredder. Teksten er nå per by («Renhold i Oslo» / «Renhold i Stavanger»),
+   ikke én felles streng («Renhold i Oslo og Stavanger») som før — de to
+   strengene har ulik naturlig bredde, så én felles sperring ga store
+   ordmellomrom-hull (~30-50 % fylt av justify). Derfor egen --tagline-sperring
+   per by via --tagline-sperring, satt på .by--*. Målt i Chrome (headless,
+   1440 og 390px bredde, samme forhold på begge): Oslo .9em gir 96,1 % av
+   ordmerkets bredde, Stavanger .5em gir 95,7 % — justeringen fyller bare
+   de siste 3-4 % med ordmellomrom. Grunnfarge og "Renhold"-tenningen er
+   mørknet fra logofargene (--logo-tekst-*) til --logo-tagline-gra/--teal:
+   liten tekst må ha AA (4,5:1), som de lyse logofargene ikke har i denne
+   størrelsen. */
 .hero__tittel {
   position: relative; margin: .6em 0 0; color: var(--logo-tagline-gra);
   font: 600 .24em/1.2 "Quicksand", var(--sans);
-  text-transform: uppercase; letter-spacing: .18em;
+  text-transform: uppercase; letter-spacing: var(--tagline-sperring, .18em);
   white-space: nowrap; text-align: justify; text-align-last: justify;
 }
+.by--oslo { --tagline-sperring: .9em; }
+.by--stavanger { --tagline-sperring: .5em; }
 /* «Renhold» står i logoens turkis fra første øyeblikk (Ricky, 2026-09-21,
    design-kritikk funn 5): en animert grå→turkis-tenning (Ricky 2026-09-13)
    gikk samtidig med sveip og bobler rundt ordmerket og var den svakeste av de
