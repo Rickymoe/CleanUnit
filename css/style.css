@@ -162,10 +162,11 @@ a { color: inherit; }
 .hero__knapp--oslo { left: clamp(9rem, 20%, 30%); transform: translateX(-50%); }
 .hero__knapp--stavanger { left: clamp(55%, 79%, calc(100% - 9rem)); transform: translateX(-50%); }
 /* Knappen under den dempede byen er en lenke til den andre bysiden, ikke
-   en ring-knapp — litt dempet selv også, så egen bys ring-knapp er
-   primærhandlingen. */
-.hero__knapp--annen { opacity: .85; }
-@media (hover: hover) { .hero__knapp--annen:hover { opacity: 1; } }
+   en ring-knapp — omriss vs. fylt viser allerede hvilken som er primær,
+   så vi demper kun kanten, ikke teksten: opacity på hele knappen tok
+   --teal-teksten under 4,5:1 (AA) mot --base — 14,4px halvfet er ikke
+   "large text" i WCAG-forstand. */
+.hero__knapp--annen { border-color: color-mix(in srgb, var(--teal) 55%, var(--base)); }
 @media (hover: hover) {
   /* .knapp:hover setter sin egen transform (løft), som ellers ville overskrevet
      translateX(-50%) helt og fått knappen til å "hoppe" til høyre. */
@@ -193,7 +194,7 @@ a { color: inherit; }
     .hero__knapp--oslo:hover, .hero__knapp--stavanger:hover { transform: translateY(-1px); }
   }
 }
-/* Lockup: ordmerket «CleanUNIT» og taglinen «Renhold i Oslo og Stavanger» er
+/* Lockup: ordmerket «CleanUNIT» og taglinen «Renhold i {by}» er
    ÉN enhet på felles midtakse mellom byene. Før var de to uavhengige blokker
    (logoen absolutt over Oslo-klyngen, overskriften sentrert i flyten) uten
    felles akse — Ricky, 2026-09-21: "ikke balanse på Hero". Skriftstørrelsen
@@ -606,12 +607,16 @@ svg.tillit-logo { color: var(--teal); }
 .side-footer__kontorer h3 { color: #fff; font-size: var(--t-lg); }
 .side-footer__kontorer p { margin-top: var(--s-1); opacity: .85; font-size: var(--t-sm); }
 .side-footer__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); justify-content: center; margin-top: var(--s-4); }
+/* Hvit, ikke --logo-turkis-lys — den lyse turkisen ga bare ~4,2:1 mot
+   --teal-mork-footeren (under AA 4,5:1). Hover-hintet må derfor være noe
+   annet enn en fargeendring til hvit (den er allerede der); en tykkere
+   understrek gir samme "her skjer det noe"-følelse uten kontrasttap. */
 .side-footer__bylenke {
   display: inline-block; margin-top: var(--s-3);
-  color: var(--logo-turkis-lys); font-weight: 600; text-decoration: underline;
+  color: #fff; font-weight: 600; text-decoration: underline;
   text-underline-offset: .2em;
 }
-@media (hover: hover) { .side-footer__bylenke:hover { color: #fff; } }
+@media (hover: hover) { .side-footer__bylenke:hover { text-decoration-thickness: 2px; } }
 .side-footer .knapp { border-color: #fff; }
 .side-footer .knapp--fyll { background: #fff; color: var(--teal-mork); }
 .side-footer .knapp--omriss { color: #fff; }

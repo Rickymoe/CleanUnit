@@ -3,7 +3,7 @@
 // strippingen. Null avhengigheter med vilje — pipelinen skal ikke trenge
 // npm install.
 import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const DELTE_MAPPER = ['css', 'js', 'bilder'];
@@ -22,7 +22,7 @@ export function byggAlle({ kilde = '.', ut = 'dist' } = {}) {
   for (const mappe of DELTE_MAPPER) {
     cpSync(join(kilde, mappe), join(ut, mappe), {
       recursive: true,
-      filter: (src) => !src.includes('_kilde'),
+      filter: (src) => basename(src) !== '_kilde',
     });
   }
   const skrevet = [];
