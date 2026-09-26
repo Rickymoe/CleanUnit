@@ -60,7 +60,11 @@ test('Hero: rutebånd med de fire kundetypene og rekkevidde-linje', () => {
   }
 });
 
-test('Hero: verken bysilhuettene eller Oslo-kartet er med lenger', () => {
+// Merk: teppet er laget av et OSM-utsnitt, men strippet til bare gater og uten
+// stedsnavn — det er altså ikke «Oslo-kartet» testen verner mot. Det den verner
+// mot er det GAMLE kartet, som hadde kontor-markører og bynavn og leste som
+// «vi holder bare til her» (se .hero__kart-vannmerke i css/style.css).
+test('Hero: verken bysilhuettene eller det navngitte bykartet er med lenger', () => {
   for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
     const h = les(f);
     assert.doesNotMatch(h, /hero__by/, f);
@@ -196,7 +200,12 @@ test('Stien: alle seksjonene den ankrer til finnes, med eyebrow', () => {
 
 test('Footer-vannmerket er samme veinett-teppe som heroen', () => {
   const css = les('css/style.css')
-  const start = css.indexOf('.side-footer::before')
+  // Let etter REGELEN, ikke første gang selectoren nevnes: en kommentar et helt
+  // annet sted i fila kan godt omtale .side-footer::before, og da leste denne
+  // testen kommentaren i stedet for regelen.
+  const regel = /\n\.side-footer::before\s*\{/
+  const start = css.search(regel)
+  assert.ok(start > -1, 'finner ikke .side-footer::before-regelen i css/style.css')
   const blokk = css.slice(start, css.indexOf('}', start))
   assert.match(blokk, /dekning-nett\.webp/)
   assert.match(blokk, /mix-blend-mode: screen/)

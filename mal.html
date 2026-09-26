@@ -41,12 +41,21 @@ addEventListener("load", function () {
 <main>
 <header class="hero">
   <div class="wrap hero__innhold">
-    <!-- Utydelig deknings-teppe bak teksten: et abstrakt veinett UTEN
-         stedsnavn (generert, se bilder/dekning-nett.png) — ikke et kart over
-         én by. Erstattet Oslo-OSM-utsnittet 2026-09-26 etter tilbakemelding
-         fra Christopher/Marit: et bykart i heroen leste som «vi holder bare
-         til her», mens de har kunder også utenfor Oslo og Stavanger. Samme
-         teppe på begge sider. Rent dekorativt, under alt annet i wrap-en. -->
+    <!-- Utydelig deknings-teppe bak teksten. Erstattet Oslo-kartet 2026-09-26
+         etter tilbakemelding fra Christopher/Marit: et bykart i heroen leste
+         som «vi holder bare til her», mens de har kunder også utenfor Oslo og
+         Stavanger. Samme teppe på begge sider.
+
+         Innholdet er ekte gater fra OpenStreetMap, men bare `highway`-linjer:
+         ingen stedsnavn, vann, grønt, jernbane eller fargekoder, og bredden
+         følger vegklassen. Så mye er skrelt bort at flaten ikke peker på noe
+         bestemt sted lenger — den leser som «en by», ikke som denne byen, og
+         den kunne like gjerne vært et helt annet sted i verden. Nettopp derfor
+         kunne kartet komme tilbake etter å ha vært fjernet: det er veinettet
+         folk kjenner igjen som «ekte», ikke byen det er hentet fra.
+
+         Tegnes av verktoy/veinett-teppe.py — ikke rediger bildet for hånd.
+         Rent dekorativt, under alt annet i wrap-en. -->
     <div class="hero__kart-vannmerke" aria-hidden="true">
       <picture>
         <source srcset="{{rot}}bilder/dekning-nett.webp" type="image/webp">

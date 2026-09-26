@@ -6,3 +6,5 @@ lab-*.html
 *.swp
 dist/
 test/ut/
+__pycache__/
+*.pyc

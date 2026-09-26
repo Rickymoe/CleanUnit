@@ -348,11 +348,12 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: clamp(320px, 92vw, 1150px); aspect-ratio: 1; max-width: none;
   z-index: -1; pointer-events: none;
-  /* Ingen mask-image lenger (2026-09-26): dekning-nett.png er ikke et
-     kartutsnitt med firkantet kant, men et generert veinett som allerede
-     er tonet ut mot kantene i selve bildet (radial alfa, maks 53/255).
-     Masken som fantes for Oslo-utsnittet er derfor overflødig — og ville
-     dessuten skjært bort mer av et teppe som allerede er svakt. */
+  /* Ingen mask-image (2026-09-26): bildet har ingen firkantet kant å skjule —
+     alfa-toningen ut mot kantene er bakt inn i selve filen (radial envelope,
+     maks 58/255, se toning() i verktoy/veinett-teppe.py). En CSS-maske ville
+     bare skåret bort mer av et teppe som allerede er svakt.
+     Bildet tegnes av det verktøyet, ikke for hånd — endrer du toningen der,
+     gjelder den både her og i footeren (.side-footer::before). */
 }
 /* Vannmerkets vertikale posisjon på MOBIL settes av plasserVannmerke() i
    js/main.js, ikke her — se kommentaren der for hvorfor: en ren CSS-
@@ -717,8 +718,9 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
 .side-footer { background: var(--teal-mork); color: #fff; padding-block: var(--s-8); }
 .side-footer .wrap { display: grid; gap: var(--s-6); justify-items: center; text-align: center; }
 /* Veinett-teppet i footeren (Ricky, 2026-09-26: «endre vannmerke i footer
-   til samme som i hero»). Samme bilde som heroen bruker — det nøytrale
-   veinettet uten stedsnavn — i stedet for Oslo-kartet, som ble laget for å
+   til samme som i hero»). Samme bilde som heroen bruker — veinettet uten
+   stedsnavn, vann, grønt eller fargekoder, strippet så langt ned at det ikke
+   peker på én by — i stedet for det gamle Oslo-kartet, som var laget for å
    vise hvor kontorene LÅ (og byene er nettopp det kunden ikke vil framheve,
    se .hero__kart-vannmerke).
 
