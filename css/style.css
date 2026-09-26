@@ -505,7 +505,7 @@ svg.tillit-logo { color: var(--teal); }
 .stopp--om { padding-block: var(--seksjon-y); background: var(--teal-lys); }
 .stopp__lede { max-width: 60ch; margin-top: var(--s-4); color: var(--tekst-svak); }
 .stopp--om h3 { margin-top: var(--s-6); color: var(--teal-mork); }
-.stopp--om h3 + p { max-width: 60ch; margin-top: var(--s-2); color: var(--tekst-svak); }
+.stopp--om h3 + p { max-width: 80ch; margin-top: var(--s-2); color: var(--tekst-svak); }
 .om-layout { display: grid; gap: var(--s-6); }
 .om-foto-rad {
   display: grid; gap: var(--s-4); margin-top: var(--s-6);
