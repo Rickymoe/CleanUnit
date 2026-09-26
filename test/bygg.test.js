@@ -22,24 +22,22 @@ test('byggAlle kjører', () => {
 
 const les = (f) => readFileSync(f, 'utf8');
 
-test('Oslo: egen tittel, ring Oslo, lenke til Stavanger', () => {
+test('Oslo: egen tittel, eget telefonnummer, lenke til Stavanger i footeren', () => {
   const h = les('test/ut/index.html');
   assert.match(h, /<title>Clean Unit – renhold i Oslo<\/title>/);
   assert.match(h, /<body class="by--oslo">/);
-  assert.match(h, /href="tel:\+4721555680">Ring Oslo – 21 55 56 80/);
-  assert.match(h, /class="knapp knapp--omriss hero__knapp--stavanger hero__knapp--annen" href="stavanger\/">Clean Unit Stavanger →/);
+  assert.match(h, /href="tel:\+4721555680">Ring oss – 21 55 56 80/);
   assert.match(h, /class="side-footer__bylenke" href="stavanger\/">Gå til Clean Unit Stavanger →/);
   assert.match(h, /<span class="tittel-aksent">Renhold<\/span> i Oslo<\/h1>/);
   assert.match(h, /og:url" content="https:\/\/rickymoe\.github\.io\/CleanUnit\/"/);
   assert.match(h, /4,8 · 4 anmeldelser på Google/);
 });
 
-test('Stavanger: egen tittel, ring Stavanger, lenke til Oslo', () => {
+test('Stavanger: egen tittel, eget telefonnummer, lenke til Oslo i footeren', () => {
   const h = les('test/ut/stavanger/index.html');
   assert.match(h, /<title>Clean Unit – renhold i Stavanger<\/title>/);
   assert.match(h, /<body class="by--stavanger">/);
-  assert.match(h, /href="tel:\+4790065009">Ring Stavanger – 900 65 009/);
-  assert.match(h, /class="knapp knapp--omriss hero__knapp--oslo hero__knapp--annen" href="\.\.\/">Clean Unit Oslo →/);
+  assert.match(h, /href="tel:\+4790065009">Ring oss – 900 65 009/);
   assert.match(h, /class="side-footer__bylenke" href="\.\.\/">Gå til Clean Unit Oslo →/);
   assert.match(h, /<span class="tittel-aksent">Renhold<\/span> i Stavanger<\/h1>/);
   assert.match(h, /og:url" content="https:\/\/rickymoe\.github\.io\/CleanUnit\/stavanger\/"/);
@@ -47,10 +45,37 @@ test('Stavanger: egen tittel, ring Stavanger, lenke til Oslo', () => {
   assert.doesNotMatch(h, /Nydalen, Oslo har i dag 55 ansatte, og vi har i tillegg/);
 });
 
+// Hero-variant «Vi kommer til deg» (2026-09-26): byene ut, kjøretøy + kundetyper inn.
+// Kunden mente bysilhuettene leste som «vi holder bare til her».
+test('Hero: rutebånd med de fire kundetypene og rekkevidde-linje', () => {
+  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
+    const h = les(f);
+    assert.match(h, /<p class="hero__rekkevidde">Kontorer i Oslo og Stavanger\. Vi kjører dit du er\.<\/p>/, f);
+    assert.match(h, /hero__rute-bil/, f);
+    for (const stopp of ['Barnehager', 'Skoler', 'Kontorer', 'Bilforhandlere']) {
+      assert.match(h, new RegExp(`hero__stopp-prikk"></span>${stopp}<`), `${f}: ${stopp}`);
+    }
+    // Båndet er rent dekorativt — kundetypene står også i ingressen
+    assert.match(h, /<div class="hero__rute" aria-hidden="true">/, f);
+  }
+});
+
+test('Hero: verken bysilhuettene eller Oslo-kartet er med lenger', () => {
+  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
+    const h = les(f);
+    assert.doesNotMatch(h, /hero__by/, f);
+    assert.doesNotMatch(h, /hero-kart-vannmerke/, f);
+    assert.match(h, /bilder\/dekning-nett\.(webp|png)/, f);
+    // Ingen gamle by-knapper igjen i heroen
+    assert.doesNotMatch(h, /hero__knapp--(oslo|stavanger)/, f);
+  }
+});
+
 test('byggAlle kopierer delte filer og lager Stavanger-siden', () => {
   assert.ok(existsSync('test/ut/css/style.css'));
   assert.ok(existsSync('test/ut/js/main.js'));
-  assert.ok(existsSync('test/ut/bilder/Byer.webp'));
+  assert.ok(existsSync('test/ut/bilder/dekning-nett.webp'));
+  assert.ok(existsSync('test/ut/bilder/bil.png'));
   assert.ok(existsSync('test/ut/stavanger/index.html'));
 });
 

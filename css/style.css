@@ -93,37 +93,9 @@ a { color: inherit; }
 @media (max-width: 40rem) {
   .hero { min-height: 88vh; }
 }
-/* To-byer-illustrasjon (Oslo/Holmenkollbakken venstre, Stavanger/Fargegaten+
-   Preikestolen høyre) — bunnforankret bakgrunn, med åpent rom i midten der
-   logo/overskrift ligger oppå. Løftet opp fra selve hero-bunnen (bottom, ikke
-   0) for å gi plass til knapperaden under. Fyller nesten hele bredden, kun
-   litt luft i kantene (venstre/høyre). Bevisst plass til flere tegninger
-   senere (Ricky: "muligvis noen flere tegninger"). */
-.hero__by {
-  position: absolute; left: 0; right: 0;
-  bottom: clamp(4.5rem, 13vh, 6.5rem); z-index: 0; pointer-events: none;
-  /* Selve bildefilen er beskjært (Python/PIL) til å fjerne det meste av den
-     tomme himmelen over landemerkene, så full bredde ikke lenger gir en
-     urimelig høy boks — object-fit:cover er ikke lenger nødvendig. */
-  max-height: 55vh;
-}
-.hero__by img {
-  width: 100%; height: auto; max-height: 100%; object-fit: contain;
-  object-position: bottom; display: block; margin-inline: auto;
-}
-/* To bysider (2026-09-23): begge byene står fortsatt i illustrasjonen så
-   heroen beholder balansen, men den ANDRE byen tones ned mot bakgrunnen.
-   Et slør i --base over den halvdelen, med myk overgang midt på (der
-   lockupen står). Egen by er alltid i full farge. */
-.hero__by::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-}
-.by--oslo .hero__by::after {
-  background: linear-gradient(to right, transparent 45%, color-mix(in srgb, var(--base) 62%, transparent) 62%);
-}
-.by--stavanger .hero__by::after {
-  background: linear-gradient(to left, transparent 45%, color-mix(in srgb, var(--base) 62%, transparent) 62%);
-}
+/* To-byer-illustrasjonen (.hero__by med bilder/Byer.png) og dempingen av
+   «den andre byen» (body.by--*-sløret) er fjernet 2026-09-26 — se rutebåndet
+   (.hero__rute) lenger ned og bilder/dekning-nett.png. */
 /* "CLEANUNIT" på dørpanelet — ekte tekst, ikke del av AI-bildet (som ikke
    kan gjengi tekst pålitelig). Målt i bilder/bil.png: panelet ligger omtrent
    38–61% av bredden, 40–60% av høyden. Brukt av .side-footer__bil under
@@ -148,51 +120,105 @@ a { color: inherit; }
 .verktoy__merke .merke__clean { color: var(--logo-tekst-gra); font-weight: 400; }
 .verktoy__merke .merke__unit { color: var(--logo-tekst-turkis); font-weight: 700; }
 
-/* Knappene ligger IKKE i .hero__innhold sin sentrerte flyt — de er plassert
-   direkte under hver sin by i illustrasjonen over (Oslo-klyngen sentrerer seg
-   rundt ~20% av bredden, Stavanger-klyngen rundt ~79%, målt i selve bildet). */
+/* Knapperaden er midtstilt i én rad, uavhengig av by (2026-09-26). Før lå
+   hver knapp absolutt plassert under sin by i silhuett-illustrasjonen
+   (--oslo ved ~20%, --stavanger ved ~79%) med en egen 34rem-kollisjonsfiks;
+   begge er borte med illustrasjonen. flex-wrap tar seg av smale skjermer. */
 .hero__knapper {
   position: absolute; left: 0; right: 0; bottom: clamp(1.5rem, 4vh, 2.5rem);
-  z-index: 1; pointer-events: none;
+  z-index: 2; pointer-events: none;
+  display: flex; gap: var(--s-3); justify-content: center; flex-wrap: wrap;
+  padding-inline: 1rem;
 }
-.hero__knapper .knapp { position: absolute; bottom: 0; pointer-events: auto; white-space: nowrap; }
-/* Clamp-gulv/-tak (9rem / 100% - 9rem) — knappene er bredere
-   (fullt telefonnummer) og enda mer utsatt for å klippes av på smale
-   skjermer med rene 20%/79%-verdier. */
-.hero__knapp--oslo { left: clamp(9rem, 20%, 30%); transform: translateX(-50%); }
-.hero__knapp--stavanger { left: clamp(55%, 79%, calc(100% - 9rem)); transform: translateX(-50%); }
-/* Knappen under den dempede byen er en lenke til den andre bysiden, ikke
-   en ring-knapp — omriss vs. fylt viser allerede hvilken som er primær,
-   så vi demper kun kanten, ikke teksten: opacity på hele knappen tok
-   --teal-teksten under 4,5:1 (AA) mot --base — 14,4px halvfet er ikke
-   "large text" i WCAG-forstand. */
-.hero__knapp--annen { border-color: color-mix(in srgb, var(--teal) 55%, var(--base)); }
-@media (hover: hover) {
-  /* .knapp:hover setter sin egen transform (løft), som ellers ville overskrevet
-     translateX(-50%) helt og fått knappen til å "hoppe" til høyre. */
-  .hero__knapp--oslo:hover, .hero__knapp--stavanger:hover { transform: translateX(-50%) translateY(-1px); }
+.hero__knapper .knapp { pointer-events: auto; white-space: nowrap; }
+
+/* Rutebåndet: varebilen på vei mot kundetypene (Barnehager · Skoler ·
+   Kontorer · Bilforhandlere). Erstattet bysilhuettene 2026-09-26: heroen
+   skulle ikke lenger si «her holder vi til», men «vi kommer til deg».
+   Bilen står stille med vilje — logo-sveipet med skumbobler er heroens
+   bevegelse, og Ricky vil ikke ha flere ting som skjer samtidig. */
+.hero__rute {
+  position: absolute; left: 0; right: 0; bottom: clamp(6rem, 16vh, 8.5rem);
+  z-index: 0; pointer-events: none;
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  padding-inline: clamp(1rem, 6vw, 5rem);
 }
-/* Under ca. 34rem konvergerer 9rem-gulvet på Oslo-knappen og "100% - 9rem"-
-   taket på Stavanger-knappen så mye at knappene kolliderer midt i (Ricky,
-   skjermbilde 2026-09-13, ~430px bred telefon: "Ring Oslo" og "Ring
-   Stavanger" gled inn i hverandre). Under den bredden gir vi opp å holde
-   dem presist under hver sin by — de stables i stedet sentrert, ut av den
-   absolutte per-knapp-posisjoneringen over. */
-@media (max-width: 34rem) {
-  .hero__knapper {
-    display: flex; flex-direction: column; align-items: center; gap: var(--s-3);
-    padding-inline: 1rem;
+/* Bildets gjennomsiktige luft er en del av boksen, så hjulene står ikke på
+   underkanten. Målt i alfa-kanalen til bilder/bil.png: nederste synlige
+   hjulpiksel ligger 249 px over bildets underkant, og bildet er 1448 px
+   bredt — hjulbunnen er altså 249/1448 = 17,2 % av BILENS BREDDE (høyden er
+   alltid 1086/1448 av bredden, så forholdet holder på alle bredder).
+   En tidligere verdi (26/1086) målte hele alfa-bbox-en, der moppen bak på
+   bilen henger ~25 px lavere enn hjulene. Den ga en bil som svevde 41 px
+   OVER den stiplede linja i stedet for å kjøre på den (målt på skjermbilde:
+   hjulbunn 684 mot linje 725,5). Den negative marginen trekker bilen ned
+   til hjulene lander på linja; den tomme lufta under hjulene havner da
+   under radens underkant, noe som er harmløst (raden er absolutt plassert). */
+.hero__rute-bil {
+  --bil-b: clamp(9rem, 21vw, 17rem);
+  width: var(--bil-b); height: auto; display: block;
+  margin-bottom: calc(1.6rem - 0.172 * var(--bil-b));
+  filter: drop-shadow(0 14px 22px rgba(14, 124, 123, .22));
+}
+.hero__stopp-rad {
+  position: relative; display: flex; align-items: flex-end;
+  gap: clamp(1.5rem, 5vw, 4rem);
+}
+/* Linja skal ligge på prikkenes SENTRUM, ikke over dem. Prikken er .6rem,
+   stoppen har .4rem gap og en etikett på var(--t-sm) med line-height 1, så
+   sentrum ligger 1.6rem over radens underkant. Bilens hjulbunn traff
+   tidligere linja, men prikkene hang 12 px under den (målt). */
+.hero__rute-linje {
+  position: absolute; left: 0; right: 0; bottom: 1.6rem;
+  border-top: 2px dashed color-mix(in srgb, var(--teal) 50%, transparent);
+}
+.hero__stopp {
+  position: relative; display: flex; flex-direction: column; align-items: center;
+  gap: .4rem; font: 600 var(--t-sm)/1 var(--sans); color: var(--teal-mork);
+  white-space: nowrap;
+}
+.hero__stopp-prikk {
+  width: .6rem; height: .6rem; border-radius: 50%; background: var(--teal);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal) 15%, transparent);
+}
+/* Rekkevidde-linja under ingressen — svaret på «må jeg ha lokaler i Oslo
+   eller Stavanger?». Teksten kommer fra byer.json ({{rekkevidde}}). */
+.hero__rekkevidde {
+  margin: var(--s-5) auto 0; max-width: 44ch;
+  font: 600 var(--t-md)/1.45 var(--sans); color: var(--teal-mork);
+}
+/* Under 48rem går rutebåndet og knappene UT av absolutt posisjonering og inn
+   i .hero sin kolonneflyt. Da kan ikke båndet kollidere med teksten over,
+   uansett hvor mange linjer ingress/rekkevidde-linja brekker til — og fire
+   stoppnavn får plass på én rad under bilen i stedet for ved siden av den.
+   Målt i 390 px (getBoundingClientRect, iframe-wrapper): innholdet slutter
+   på 357 px, rutebåndet begynner på 389 px, knappene på 608 px — ingen
+   overlapp, og heroen holder seg innenfor 88vh (se .hero over). */
+@media (max-width: 48rem) {
+  .hero__rute {
+    position: static; margin-top: var(--s-6);
+    flex-direction: column; align-items: center; gap: var(--s-4);
   }
-  .hero__knapper .knapp { position: static; }
-  .hero__knapp--oslo, .hero__knapp--stavanger { left: auto; transform: none; }
-  /* DOM-rekkefølgen har alltid Oslo-knappen først (uansett hvilken by som er
-     "egen"), så uten dette havner lenken til den andre byen øverst på
-     Stavanger-siden. Egen bys ring-knapp skal alltid være først i den
-     stablede mobil-kolonnen. */
-  .hero__knapp--annen { order: 1; }
-  @media (hover: hover) {
-    .hero__knapp--oslo:hover, .hero__knapp--stavanger:hover { transform: translateY(-1px); }
-  }
+  /* Bilen står nå OVER båndet (kolonne), ikke ved siden av det, og kan
+     derfor ikke ha hjulene midt på prikkene — den ville dekket dem. I stedet
+     legges linja på TOPPEN av stoppraden (bottom: 100 % under), så prikkene
+     henger rett under veien, og bilen kjører på den: eneste del av bilen som
+     stikker ned er moppen (~2 px, målt).
+     Formelen er den samme som på desktop, men løst for kolonneflyt. I en
+     kolonne er det NEGATIVE marginen som avgjør hvor neste element begynner,
+     så bilen trekkes ned ved å la marginen spise av gapet til stoppraden:
+     hjulbunn − linje = gap + |M| − 0,172 × bilbredde, og den skal være 0
+     → M = −(gap + 0,172 × bilbredde) = −0,9375rem − 0,172 × bilbredde.
+     (Målt i 390 px: hjulbunn 437 mot linje 468 = 31 px feil med forrige
+     formel, som hadde motsatt fortegn.) */
+  .hero__rute-bil { --bil-b: clamp(7rem, 30vw, 10rem); width: var(--bil-b);
+    margin-bottom: calc(-0.9375rem - 0.172 * var(--bil-b)); }
+  .hero__stopp-rad { position: relative; width: 100%; justify-content: space-between; gap: var(--s-2); }
+  .hero__rute-linje { bottom: 100%; }
+  .hero__stopp { font-size: var(--t-xs); }
+  .hero__rekkevidde { font-size: var(--t-base); margin-top: var(--s-4); }
+  .hero__knapper { position: static; margin-top: var(--s-6); }
 }
 /* Lockup: ordmerket «CleanUNIT» og taglinen «Renhold i {by}» er
    ÉN enhet på felles midtakse mellom byene. Før var de to uavhengige blokker
@@ -291,31 +317,38 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   .hero__vurdering:hover { color: var(--teal-mork); }
 }
 
-/* .hero__innhold er den ENESTE elementet i .hero sin flex-strøm (by/
-   knapper/logo er alle absolutt posisjonert, utenfor), så
-   justify-content:center på .hero sentrerer den midt i hele den
-   tilgjengelige høyden — det ga mye luft mellom logo og "Renhold i Oslo
-   og Stavanger" (Ricky, 2026-09-19: "flytte innholdet ... litt oppover
-   og nærmere logoen"). negativ margin-top trekker den sentrerte
-   posisjonen oppover UTEN å bytte bort selve sentrerings-mekanikken
-   (som fortsatt trengs for balanse mot den bunnforankrede
-   by-illustrasjonen på svært høye skjermer) — flex deler differansen i
-   to, så -120px flytter innholdet ca. 60px opp i praksis (målt med
-   getBoundingClientRect() ved flere bredder/høyder). */
+/* .hero__innhold er på desktop den ENESTE elementet i .hero sin
+   flex-strøm (vannmerke/rutebånd/knapper er absolutt posisjonert, utenfor),
+   så justify-content:center på .hero sentrerer den midt i hele den
+   tilgjengelige høyden — det ga mye luft mellom logo og taglinen (Ricky,
+   2026-09-19: "flytte innholdet ... litt oppover og nærmere logoen").
+   negativ margin-top trekker den sentrerte posisjonen oppover UTEN å bytte
+   bort selve sentrerings-mekanikken — flex deler differansen i to, så
+   -120px flytter innholdet ca. 60px opp i praksis (målt med
+   getBoundingClientRect() ved flere bredder/høyder). Under 48rem er
+   rutebånd og knapper IKKE lenger absolutte — de er inne i denne
+   kolonnen, se mobilblokken lenger opp. */
 .hero__innhold {
   position: relative; z-index: 1; margin-top: -120px;
   display: flex; flex-direction: column; align-items: center; text-align: center;
 }
+/* -120px balanserer mot bunnforankrede elementer på desktop. Under 48rem ER
+   rutebåndet og knappene en del av flyten, så marginen dyttet bare hele
+   stakken opp og etterlot et tomt felt på ~166 px under knappene (målt i
+   390 px). Må stå her, ikke i mobilblokken lenger opp: samme spesifisitet,
+   så den som kommer sist i filen vinner. */
+@media (max-width: 48rem) {
+  .hero__innhold { margin-top: 0; }
+}
 .hero__kart-vannmerke {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: clamp(260px, 85vw, 1000px); aspect-ratio: 1; max-width: none;
+  width: clamp(320px, 92vw, 1150px); aspect-ratio: 1; max-width: none;
   z-index: -1; pointer-events: none;
-  /* Radial maske — toner ut mot kantene i stedet for å vise en synlig
-     firkant-grense der kartutsnittet slutter. Asymmetrisk (bredere/mer
-     synlig øverst, smalner nedover) à la skissen Ricky tegnet. Ligger på
-     HELE gruppen (kart + markører), så de fades sammen konsekvent. */
-  mask-image: radial-gradient(ellipse 65% 85% at 50% 22%, black 15%, transparent 68%);
-  -webkit-mask-image: radial-gradient(ellipse 65% 85% at 50% 22%, black 15%, transparent 68%);
+  /* Ingen mask-image lenger (2026-09-26): dekning-nett.png er ikke et
+     kartutsnitt med firkantet kant, men et generert veinett som allerede
+     er tonet ut mot kantene i selve bildet (radial alfa, maks 53/255).
+     Masken som fantes for Oslo-utsnittet er derfor overflødig — og ville
+     dessuten skjært bort mer av et teppe som allerede er svakt. */
 }
 /* Vannmerkets vertikale posisjon på MOBIL settes av plasserVannmerke() i
    js/main.js, ikke her — se kommentaren der for hvorfor: en ren CSS-
@@ -330,26 +363,11 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    svært små/gamle skjermer (uten JS) kan det fortsatt overlappe litt;
    det er edge case-fallback, ikke hovedløsningen. */
 .kart-vannmerke__kart { width: 100%; height: 100%; max-width: none; display: block; }
-/* Små bil-markører spredt på kartet — "vi kjører her". Egen, litt lavere
-   opasitet enn hovedbilen (som er skarp/tydelig i forgrunnen), for å holde
-   dem tilbake som del av vannmerket, ikke konkurrere med den. Posisjonen
-   ligger på wrapperen (--x/--y), slik at stjerna under kan plasseres
-   relativt til bilen uten å arve dens ev. speilvending. */
-.kart-markor-wrap {
-  position: absolute; left: var(--x); top: var(--y);
-  transform: translate(-50%, -50%);
-  width: 7%;
-}
-.kart-markor {
-  display: block; width: 100%; max-width: none; height: auto;
-  opacity: .75;
-}
-/* Stjerneglimt ved bil-markørene (kart-markor__stjerne) fjernet 2026-09-13
-   på Rickys ønske — én av fire animasjoner som fyrte av i hero-hjørnet ved
-   sidelast, og den minst meningsbærende av dem (ren staffasje, i
-   motsetning til logo/tittel som bærer faktisk innhold). Se design-
-   kritikk-notatet lenger ned i denne filen om at bevegelses-mengden i
-   hero-hjørnet var i grenseland. */
+/* Bil-markørene (.kart-markor-wrap/.kart-markor, syv små biler spredt på
+   Oslo-utsnittet) er fjernet 2026-09-26 sammen med kartet de sto på: de ga
+   bare mening oppå et gjenkjennelig bykart. Stjerneglimtet ved dem forsvant
+   allerede 2026-09-13 (Ricky: én av fire animasjoner som fyrte av i
+   hero-hjørnet ved sidelast — se design-kritikk-notatet lenger ned). */
 /* Taglinen (H1) under ordmerket: versaler med bred sperring, justert til
    ordmerkets bredde (text-align-last:justify strekker ordmellomrommene på den
    ene linja). Stor andel av lockup-fontstørrelsen, så forholdet holder på alle

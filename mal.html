@@ -40,44 +40,18 @@ addEventListener("load", function () {
 <body class="{{body_klasse}}">
 <main>
 <header class="hero">
-  <div class="hero__by" aria-hidden="true">
-    <picture>
-      <source srcset="{{rot}}bilder/Byer.webp" type="image/webp">
-      <img src="{{rot}}bilder/Byer.png" alt="" width="1860" height="701">
-    </picture>
-  </div>
   <div class="wrap hero__innhold">
-    <!-- Utydelig kart-vannmerke bak bil+tekst — ekte OSM-utsnitt (sentrum
-         Oslo), sterkt avmettet/lysnet og lav, fast alpha bakt inn i selve
-         PNG-en. Noen små bil-markører spredt utover kartet ("vi kjører her"),
-         gjenbruker samme bilde som hovedbilen. Hele gruppen fades sammen mot
-         kantene via samme maske. Rent dekorativt, under alt annet i wrap-en. -->
+    <!-- Utydelig deknings-teppe bak teksten: et abstrakt veinett UTEN
+         stedsnavn (generert, se bilder/dekning-nett.png) — ikke et kart over
+         én by. Erstattet Oslo-OSM-utsnittet 2026-09-26 etter tilbakemelding
+         fra Christopher/Marit: et bykart i heroen leste som «vi holder bare
+         til her», mens de har kunder også utenfor Oslo og Stavanger. Samme
+         teppe på begge sider. Rent dekorativt, under alt annet i wrap-en. -->
     <div class="hero__kart-vannmerke" aria-hidden="true">
       <picture>
-        <source srcset="{{rot}}bilder/hero-kart-vannmerke.webp" type="image/webp">
-        <img class="kart-vannmerke__kart" src="{{rot}}bilder/hero-kart-vannmerke.png" alt="" width="768" height="768">
+        <source srcset="{{rot}}bilder/dekning-nett.webp" type="image/webp">
+        <img class="kart-vannmerke__kart" src="{{rot}}bilder/dekning-nett.png" alt="" width="1400" height="1400">
       </picture>
-      <span class="kart-markor-wrap" style="--x: 15%; --y: 26%;">
-        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="">
-      </span>
-      <span class="kart-markor-wrap" style="--x: 62%; --y: 18%;">
-        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="" style="transform: scaleX(-1);">
-      </span>
-      <span class="kart-markor-wrap" style="--x: 82%; --y: 30%;">
-        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="">
-      </span>
-      <span class="kart-markor-wrap" style="--x: 85%; --y: 55%;">
-        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="" style="transform: scaleX(-1);">
-      </span>
-      <span class="kart-markor-wrap" style="--x: 35%; --y: 72%;">
-        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="">
-      </span>
-      <span class="kart-markor-wrap" style="--x: 58%; --y: 68%;">
-        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="" style="transform: scaleX(-1);">
-      </span>
-      <span class="kart-markor-wrap" style="--x: 18%; --y: 70%;">
-        <img class="kart-markor" src="{{rot}}bilder/bil.png" alt="">
-      </span>
     </div>
     <!-- Lockup: ordmerket «CleanUnit» og taglinen (H1) er ÉN enhet på felles
          midtakse mellom byene. Ordmerket: "Clean" lett grå + "UNIT" halvfet
@@ -98,15 +72,29 @@ addEventListener("load", function () {
          siden av logo-snurr/bobler/kart-stjernene rett i nærheten). -->
     {{vurdering}}
     <p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte&nbsp;– ingen underleverandører.</p>
+    <p class="hero__rekkevidde">{{rekkevidde}}</p>
   </div>
-  <!-- Plassert under hver sin by i illustrasjonen (bilder/Byer.png), ikke i
-       den vanlige innholds-flyten — se .hero__knapper i style.css. Egen by:
-       ring-knapp under egen by. Andre by: omriss-knapp som lenker til den
-       andre bysiden (hero__knapp--annen). Posisjonsklassen (--oslo/
-       --stavanger) følger alltid byen i illustrasjonen, ikke hvilken side
-       vi er på. -->
+  <!-- Rutebånd: bilen på vei mot kundetypene. De fire stoppene er de samme
+       kundetypene som ingressen nevner, i flertall så de ikke kolliderer med
+       tjenestekortet «Barnehagerenhold». Båndet er aria-hidden: en
+       skjermleser får den samme informasjonen fra ingressen, og skal slippe
+       å høre de fire ordene to ganger. -->
+  <div class="hero__rute" aria-hidden="true">
+    <img class="hero__rute-bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+    <div class="hero__stopp-rad">
+      <div class="hero__rute-linje"></div>
+      <span class="hero__stopp"><span class="hero__stopp-prikk"></span>Barnehager</span>
+      <span class="hero__stopp"><span class="hero__stopp-prikk"></span>Skoler</span>
+      <span class="hero__stopp"><span class="hero__stopp-prikk"></span>Kontorer</span>
+      <span class="hero__stopp"><span class="hero__stopp-prikk"></span>Bilforhandlere</span>
+    </div>
+  </div>
+  <!-- Egen bys telefonnummer er primærknappen. Sekundærknappen kommer fra
+       byer.json og er tom til tilbudsskjemaet (Formspree) er på plass — en
+       tom verdi rendrer ingen knapp, så ingen død lenke går live. -->
   <div class="hero__knapper">
-    {{hero_knapper}}
+    <a class="knapp knapp--fyll" href="tel:{{telefon}}">Ring oss – {{telefon_visning}}</a>
+    {{hero_knapp_sekundaer}}
   </div>
 </header>
 <section class="stopp--tjenester" id="tjenester">
