@@ -320,14 +320,23 @@ addEventListener("load", function () {
          Rent dekorativ, derfor aria-hidden, ellers ville fire tomme
          alt-tekster støyet for skjermlesere.
 
-         Veilinja (.flaate__vei) er bredere enn bilene — 4 % inn fra hver
+         Veilinja (.flaate__vei) er bredere enn bilene — 3 % inn fra hver
          kant av .wrap — så den ser ut som en vei som fortsetter ut av
-         bildet i stedet for å stoppe ved bilene. -->
+         bildet i stedet for å stoppe ved bilene.
+
+         Bilene ligger i .flaate__spor (Ricky: «en animasjon når de 4 bilene
+         viser seg», 2026-09-26). Sporet er det som klipper: bilene ruller inn
+         fra venstre, og uten klipping ville de rullet innover teksten ved
+         siden av på smale skjermer. Veilinja ligger utenfor sporet, som
+         absolutt element på .flaate, så den tegnes ferdig først og blir ikke
+         klippet av bilenes bevegelse. -->
     <div class="flaate" aria-hidden="true">
-      <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
-      <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
-      <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
-      <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+      <div class="flaate__spor">
+        <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+        <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+        <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+        <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+      </div>
       <div class="flaate__vei"></div>
     </div>
   </div>

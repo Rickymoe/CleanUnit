@@ -107,6 +107,64 @@ test('Flåten i «Om oss»: fire like biler, uten tall og uten tekst', () => {
   }
 })
 
+// Flåten kjører inn (2026-09-26). Bilene ruller inn fra venstre, så de må
+// ligge i et spor som klipper — ellers ruller de innover teksten ved siden av
+// på smale skjermer. Veilinja skal ligge UTENFOR sporet, ellers blir den
+// klippet av bilenes bevegelse i stedet for å tegnes ferdig først.
+test('Flåten: bilene ligger i et klippende spor, veilinja utenfor', () => {
+  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
+    const h = les(f)
+    const start = h.indexOf('<div class="flaate"')
+    const blokk = h.slice(start, h.indexOf('</div>\n', h.indexOf('flaate__vei', start)))
+    assert.match(blokk, /<div class="flaate__spor">/, f)
+    assert.ok(blokk.indexOf('flaate__spor') < blokk.indexOf('flaate__bil'), `${f}: sporet åpnes før bilene`)
+    assert.ok(
+      blokk.indexOf('</div>', blokk.lastIndexOf('flaate__bil')) < blokk.indexOf('flaate__vei'),
+      `${f}: sporet lukkes før veilinja`
+    )
+  }
+})
+
+// Hjul-mot-veilinje-geometrien står ett sted (--flaate-heng) og brukes fire
+// steder. Endrer man én av dem uten de andre, står bilene og svever over
+// veien igjen — det skjedde da padding ble prøvd direkte på .flaate.
+test('Flåten: alle fire stedene bruker samme heng-mål', () => {
+  const css = les('css/style.css')
+  assert.match(css, /--flaate-heng: calc\(0\.172 \* var\(--flaate-b\)\)/)
+  const regel = (sel) => {
+    const s = css.indexOf(sel)
+    return css.slice(s, css.indexOf('}', s))
+  }
+  assert.match(regel('.flaate__bil {'), /margin-bottom: calc\(-1 \* var\(--flaate-heng\)\)/)
+  assert.match(regel('.flaate__spor {'), /padding-bottom: var\(--flaate-heng\)/)
+  assert.match(regel('.flaate__vei {'), /bottom: var\(--flaate-heng\)/)
+  assert.match(regel('.flaate {'), /margin-bottom: calc\(-1 \* var\(--flaate-heng\)\)/)
+})
+
+test('Flåten: skjules bare bak html.js, og vises igjen ved reduced motion', () => {
+  const css = les('css/style.css')
+  // Uten JS skal flåten stå ferdig parkert — ingen opacity: 0 i layout-regelen
+  const layout = css.slice(css.indexOf('.flaate__bil {'), css.indexOf('}', css.indexOf('.flaate__bil {')))
+  assert.doesNotMatch(layout, /opacity/)
+  assert.match(css, /html\.js \.flaate__bil \{ opacity: 0; transform: translateX\(var\(--flaate-ut\)\); \}/)
+  // Startstreken må være minst én plass bak egen plass (egen bredde + ett
+  // mellomrom), ellers kjører bilene oppå hverandre mens de ruller inn
+  assert.match(css, /--flaate-ut: calc\(-100% - var\(--flaate-gap\) - \.5rem\)/)
+  assert.match(css, /html\.js \.flaate--inne \.flaate__bil \{/)
+  assert.match(css, /html\.js \.flaate__bil \{ opacity: 1; transform: none; animation: none; \}/)
+  assert.match(css, /html\.js \.flaate__vei \{ clip-path: none; transition: none; \}/)
+  // På smal skjerm står bil 3 og 4 skjult, men de står fortsatt i køen: uten
+  // omkartleggingen ventet de to synlige på at to usynlige biler kjørte inn
+  // først (0,9 s dødtid). Regelen må ligge etter indeks-reglene, ellers vinner de.
+  const indeksSiste = css.lastIndexOf('--flaate-i: 3')
+  const omkart = css.indexOf('nth-child(2) { --flaate-i: 0; }')
+  assert.ok(omkart > indeksSiste, 'omkartleggingen for smal skjerm må stå etter indeks-reglene')
+  assert.match(css, /@media \(max-width: 48rem\) \{\s*html\.js \.flaate__bil:nth-child\(2\)/)
+  assert.match(css, /--flaate-varighet: \.74s/)
+  // og main.js må faktisk koble den på, ellers står bilene utenfor sporet
+  assert.match(les('js/main.js'), /flaateInn\(reduksjon\)/)
+})
+
 // Stien anker til eyebrow-en i hver seksjon (js/main.js). Endres id-ene eller
 // eyebrow-klassen, forsvinner nodene i stillhet — derfor denne testen.
 test('Stien: alle seksjonene den ankrer til finnes, med eyebrow', () => {

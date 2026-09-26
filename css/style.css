@@ -548,11 +548,22 @@ svg.tillit-logo { color: var(--teal); }
    SAMME bilde, samme hjul-mot-veilinje-formel (hjulbunnen ligger 17,2 % av
    bilens BREDDE over bildets underkant, se .hero__rute-bil).
 
-   Ingen padding-bottom på .flaate: flex-raden justerer bilene mot innholds-
-   boksen, og med negativ margin-bottom stikker hvert bilde 17,2 % av bredden
-   NEDENFOR den boksen — akkurat så mye at hjulene treffer linja når linja
-   ligger på bottom: 0. Legger man på padding her, flytter linja seg ned fra
-   hjulene igjen (målt: 9,6 px feil ved 10,5 rem) — derfor ingen padding.
+   --flaate-heng er det ENE stedet det tallet står: hvor langt ned bildene
+   stikker under boksen sin (17,2 % av bilens bredde, se .hero__rute-bil).
+   Fire regler må være enige om det, ellers treffer ikke hjulene veien:
+
+     .flaate__bil    henger --flaate-heng ned (negativ margin-bottom)
+     .flaate__spor   klipper --flaate-heng ned (padding-bottom, ellers
+                     klipper sporet bort hjulene når bilene ruller inn)
+     .flaate__vei    ligger --flaate-heng over sporets underkant
+     .flaate         trekker seg --flaate-heng opp igjen (negativ
+                     margin-bottom), så avstanden ned til neste innhold er
+                     nøyaktig som før
+
+   Prøvd med padding-bottom DIREKTE på .flaate i stedet: da flytter linja seg
+   ned fra hjulene (målt 9,6 px feil ved 10,5 rem). Flex-raden justerer mot
+   innholds-boksen, og en padding på samme boks dytter linja ned sammen med
+   den. Derfor et eget spor.
 
    --flaate-b er bredden på hver bil og styrer både bilene og (via formelen)
    hvor langt ned bildene stikker. Lik bredde med vilje: like store biler i rad
@@ -560,26 +571,113 @@ svg.tillit-logo { color: var(--teal); }
    én stor bil og to små leketøy. */
 .flaate {
   --flaate-b: clamp(7rem, 11.5vw, 10.5rem);
-  position: relative; display: flex; align-items: flex-end; justify-content: center;
-  gap: clamp(.25rem, 1.5vw, 1.25rem);
+  --flaate-gap: clamp(.25rem, 1.5vw, 1.25rem);
+  --flaate-heng: calc(0.172 * var(--flaate-b));
+  position: relative; display: flex; justify-content: center;
   margin-top: var(--s-6);
+  margin-bottom: calc(-1 * var(--flaate-heng));
+}
+/* Sporet klipper. Strukket 3 % ut på hver side (samme mål som veilinja), så
+   bilene dukker opp der veien begynner i stedet for i kanten av .wrap. */
+.flaate__spor {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: var(--flaate-gap);
+  margin-inline: -3%;
+  padding-bottom: var(--flaate-heng);
+  overflow: hidden;
 }
 .flaate__bil {
   display: block; width: var(--flaate-b); height: auto;
-  margin-bottom: calc(-0.172 * var(--flaate-b));
+  margin-bottom: calc(-1 * var(--flaate-heng));
 }
 /* Veilinja er bredere enn bilene, så den ser ut som en vei som fortsetter ut
    av bildet. Samme uttrykk som .hero__rute-linje (2 px, 45 % turkis). */
 .flaate__vei {
-  position: absolute; left: -3%; right: -3%; bottom: 0;
+  position: absolute; left: -3%; right: -3%; bottom: var(--flaate-heng);
   border-top: 2px dashed color-mix(in srgb, var(--teal) 45%, transparent);
 }
 /* Under 48rem er det ikke plass til fire biler (4 × 7 rem + mellomrom > 390 px
    skjermbredde, målt til 105 px vannrett overløp) — to biler holder, og de
    står på den samme linja. */
 @media (max-width: 48rem) {
-  .flaate { gap: .5rem; }
+  .flaate { --flaate-gap: .5rem; }
   .flaate__bil:nth-child(n+3) { display: none; }
+}
+
+/* ── Flåten kommer inn (Ricky 2026-09-26: «en animasjon når de 4 bilene
+   viser seg», valgte alternativ 1 av fire forslag) ──────────────────────
+   Først legges veien: veilinja avsløres fra venstre med clip-path (ikke ved å
+   animere bredden — da ville dash-mønsteret vandret i stedet for å tegnes).
+   Så ruller bilene inn og setter seg, med en liten overstyring på slutten
+   (2,2 % av bilbredden forbi — 3-4 px — og så tilbake; derfor «parkerer» de i
+   stedet for å gli rett på plass).
+
+   Ankomst-rekkefølgen er BAKFRA: bil 4 (lengst til høyre) først, bil 1 sist.
+   Det er ikke en spesiell effekt, det er det som gjør at de kan kjøre i kolonne
+   fra venstre uten å kjøre oppå hverandre: hver bil begynner litt over én
+   bilbredde til venstre for sin egen plass, altså i plassen bak seg — og den
+   plassen er fortsatt tom, fordi bilen som skal stå der kommer senere. Med
+   ankomst forfra ville bil 2 dukket opp oppå bil 1 og glidd ut av den.
+
+   Overstyringen er en ABSOLUTT lengde (2,2 % av bilbredden), ikke en andel av
+   reisen: en transition med en overshoot-bezier over hele reisen ville gitt
+   16 px forbi — en bil som kaster seg fram og tilbake, ikke en som bremser.
+   Derfor keyframes: 0 → 86 % er innbremsingen, 86 → 100 % fallet tilbake.
+
+   Alt er transform/opacity, så ingenting reflower underveis. Radene er låst
+   bak html.js: uten JS står flåten alltid ferdig parkert (samme nødluke som
+   .js-reveal). Klassen .flaate--inne settes én gang av main.js. */
+@keyframes flaate-inn {
+  from {
+    opacity: 0; transform: translateX(var(--flaate-ut));
+    animation-timing-function: cubic-bezier(.2,.85,.3,1);
+  }
+  14% { opacity: 1; }
+  86% {
+    transform: translateX(2.2%);
+    animation-timing-function: cubic-bezier(.4,0,.5,1);
+  }
+  to { opacity: 1; transform: none; }
+}
+html.js .flaate {
+  /* Verdiene er Rickys egne, funnet i glidebord-labben 2026-09-26 (_lab.html). */
+  --flaate-takt: .44s;      /* ekstra ventetid per bil */
+  --flaate-start: .10s;     /* veien får et forsprang */
+  --flaate-varighet: .74s;
+  /* Startstreken: nøyaktig én plass bak sin egen — egen bredde pluss ett
+     mellomrom, pluss en liten margin. Det er DENNE avstanden som gjør at
+     bilene ikke kjører oppå hverandre: hver bil begynner i plassen bak seg,
+     og den plassen er tom fordi bilen som skal stå der kommer senere (derfor
+     ankomst bakfra). Skulle noen skru opp mellomrommet eller bilbredden,
+     følger startstreken med — den kan ikke komme ut av takt. */
+  --flaate-ut: calc(-100% - var(--flaate-gap) - .5rem);
+}
+html.js .flaate__bil { opacity: 0; transform: translateX(var(--flaate-ut)); }
+html.js .flaate--inne .flaate__bil {
+  animation: flaate-inn var(--flaate-varighet) both;
+  animation-delay: calc(var(--flaate-start) + var(--flaate-takt) * var(--flaate-i, 0));
+}
+/* Index 0 = den bakerste bilen som skal inn FØRST (den lengst til høyre). */
+html.js .flaate__bil:nth-child(4) { --flaate-i: 0; }
+html.js .flaate__bil:nth-child(3) { --flaate-i: 1; }
+html.js .flaate__bil:nth-child(2) { --flaate-i: 2; }
+html.js .flaate__bil:nth-child(1) { --flaate-i: 3; }
+/* På smal skjerm er bil 3 og 4 skjult, men de står fortsatt i køen: bil 1 og 2
+   ventet da på at to usynlige biler skulle kjøre inn først (målt: første
+   synlige bil rørte seg ikke før ved 980 ms, mot 100 ms på desktop — 0,9 s
+   dødtid). De to synlige får derfor de to første plassene i køen. Rekkefølgen
+   er fortsatt bakfra (bil 2, den lengst til høyre, først), ellers kjører de
+   oppå hverandre. Denne regelen må stå ETTER indeks-reglene over, ellers
+   overstyrer de den (samme spesifisitet, senere vinner). */
+@media (max-width: 48rem) {
+  html.js .flaate__bil:nth-child(2) { --flaate-i: 0; }
+  html.js .flaate__bil:nth-child(1) { --flaate-i: 1; }
+}
+html.js .flaate__vei { clip-path: inset(0 100% 0 0); transition: clip-path .55s linear; }
+html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
+@media (prefers-reduced-motion: reduce) {
+  html.js .flaate__bil { opacity: 1; transform: none; animation: none; }
+  html.js .flaate__vei { clip-path: none; transition: none; }
 }
 
 .stopp--jobb { padding-block: var(--seksjon-y); background: var(--base); }

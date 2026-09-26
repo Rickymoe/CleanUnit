@@ -4,6 +4,7 @@ export function initSider() {
   overskriftVask(reduksjon)
   tjenesteBobler(reduksjon)
   kortReveal(reduksjon)
+  flaateInn(reduksjon)
   stiNedover(reduksjon)
   plasserVannmerke()
   addEventListener('resize', debounce(plasserVannmerke, 150))
@@ -80,6 +81,33 @@ function kortReveal(reduksjon) {
     el.classList.add('js-reveal')
     observer.observe(el)
   })
+}
+
+// Flåten i «Om oss» kjører inn når den er på vei inn i bildet (Ricky,
+// 2026-09-26: «en animasjon når de 4 bilene viser seg»). Selve sekvensen er
+// ren CSS (html.js .flaate--inne i style.css) — her settes bare klassen, én
+// gang, som .js-reveal gjør for kortene. Klassen MÅ komme: uten den står
+// bilene stille én bilbredde til venstre for plassen sin og hjulene treffer aldri
+// veien, så observeren kobles fra først når den har fyrt. Er flåten allerede
+// synlig ved sidelast, fyrer IntersectionObserver med en gang.
+function flaateInn(reduksjon) {
+  const flaate = document.querySelector('.flaate')
+  if (reduksjon || !flaate) return
+  if (!('IntersectionObserver' in window)) {
+    flaate.classList.add('flaate--inne')
+    return
+  }
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return
+        flaate.classList.add('flaate--inne')
+        observer.disconnect()
+      })
+    },
+    { rootMargin: '0px 0px -12% 0px', threshold: 0.25 }
+  )
+  observer.observe(flaate)
 }
 
 // Logoen i heroen: hele ordmerket avsløres i ett sveip fra venstre («Vask», ren
