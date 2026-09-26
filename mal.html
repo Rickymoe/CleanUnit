@@ -308,6 +308,28 @@ addEventListener("load", function () {
     </div>
     <h3>Fra to mopper til 55 ansatte</h3>
     <p><!-- UTKAST: grunnleggelseshistorien er hentet fra Oslo-siden av cleanunit.no, ikke bekreftet om den dekker Stavanger-kontoret også -->Vi startet Clean Unit i 2007 fordi vi så et marked som var modent for en renholdsbedrift som ville levere topp service i alle ledd. Den gangen var vi to stykker med hver vår mopp, og en felles idé om å lage landets beste servicebedrift. Vi er ikke størst, men vi jobber knallhardt for å være best — for oss er ikke renhold et nødvendig onde, det er levebrødet vårt, og det tar vi på alvor. Derfor er det viktig at alle ansatte får skikkelig opplæring, og at de deler vår visjon om å levere den beste servicen. Resultatet vi leverer, er vår garanti for å beholde dere som kunde.</p>
+
+    <!-- Flåten (Ricky, 2026-09-26): fire like biler på én vei — samme bil og
+         samme bilde som rutebåndet i heroen, som allerede har lastet
+         bilder/bil.png, så de fire koster ingen ekstra nedlasting (derfor
+         <img>, ikke <picture> med webp slik footeren bruker).
+
+         Bevisst UTEN tall og tekst: hvor mange biler de har, er ikke
+         bekreftet (siden sier 55 ansatte i dag), og flåten leser som «flere
+         enn vi kan telle her» uansett — et tall ville bare blitt feil.
+         Rent dekorativ, derfor aria-hidden, ellers ville fire tomme
+         alt-tekster støyet for skjermlesere.
+
+         Veilinja (.flaate__vei) er bredere enn bilene — 4 % inn fra hver
+         kant av .wrap — så den ser ut som en vei som fortsetter ut av
+         bildet i stedet for å stoppe ved bilene. -->
+    <div class="flaate" aria-hidden="true">
+      <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+      <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+      <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+      <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+      <div class="flaate__vei"></div>
+    </div>
   </div>
 </section>
 <section class="stopp--jobb" id="jobb-hos-oss">

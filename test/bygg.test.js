@@ -91,3 +91,42 @@ test('Stavanger-siden peker til delte filer via ../', () => {
   assert.match(html, /from '\.\.\/js\/main\.js'/);
   assert.doesNotMatch(html, /(src|srcset|href)="bilder\//);
 });
+
+// Flåten (2026-09-26): fire like biler på én vei under vekst-avsnittet.
+// Bevisst uten tall — «nesten hundre ansatte» er ikke bekreftet av
+// Marit/Christopher (siden sier 55 i dag), og et tall ville blitt feil.
+test('Flåten i «Om oss»: fire like biler, uten tall og uten tekst', () => {
+  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
+    const h = les(f)
+    assert.match(h, /<div class="flaate" aria-hidden="true">/, f)
+    assert.equal((h.match(/class="flaate__bil"/g) || []).length, 4, `${f}: antall biler`);
+    assert.match(h, /<div class="flaate__vei">/, f)
+    const start = h.indexOf('<div class="flaate"')
+    const blokk = h.slice(start, h.indexOf('</div>\n', h.indexOf('flaate__vei', start)))
+    assert.doesNotMatch(blokk, /ansatte|hundre|biler/i, `${f}: flåten skal ikke påstå et antall`)
+  }
+})
+
+// Stien anker til eyebrow-en i hver seksjon (js/main.js). Endres id-ene eller
+// eyebrow-klassen, forsvinner nodene i stillhet — derfor denne testen.
+test('Stien: alle seksjonene den ankrer til finnes, med eyebrow', () => {
+  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
+    const h = les(f)
+    for (const id of ['tjenester', 'referanser', 'hvorfor', 'om-oss', 'jobb-hos-oss']) {
+      const start = h.indexOf(`id="${id}"`)
+      assert.ok(start > -1, `${f}: mangler #${id}`)
+      const seksjon = h.slice(start, h.indexOf('</section>', start))
+      assert.match(seksjon, /class="eyebrow"/, `${f}: #${id} mangler .eyebrow (stien ankrer til den)`)
+    }
+  }
+})
+
+test('Footer-vannmerket er samme veinett-teppe som heroen', () => {
+  const css = les('css/style.css')
+  const start = css.indexOf('.side-footer::before')
+  const blokk = css.slice(start, css.indexOf('}', start))
+  assert.match(blokk, /dekning-nett\.webp/)
+  assert.match(blokk, /mix-blend-mode: screen/)
+  // Oslo-kartet skal ikke lenger brukes noe sted i CSS-en
+  assert.doesNotMatch(css, /hero-kart-vannmerke/)
+})

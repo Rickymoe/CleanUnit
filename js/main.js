@@ -4,6 +4,7 @@ export function initSider() {
   overskriftVask(reduksjon)
   tjenesteBobler(reduksjon)
   kortReveal(reduksjon)
+  stiNedover(reduksjon)
   plasserVannmerke()
   addEventListener('resize', debounce(plasserVannmerke, 150))
 }
@@ -256,4 +257,203 @@ function tjenesteBobler(reduksjon) {
     kort.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') byge() })
     kort.addEventListener('click', byge)
   })
+}
+
+/* ── Stien nedover siden ─────────────────────────────────────────────────
+   Arver grepet fra X7 (js/path.js der): én absolutt plassert SVG over hele
+   ruten, én node per seksjon, og linja tegnes etter hvert som man scroller
+   (stroke-dashoffset med «høyvann» — den tegnes aldri tilbake når man
+   scroller opp, så siden ser ut som en rute man har kjørt, ikke en
+   fremdriftsmåler som hopper). Ricky, 2026-09-26: «Vi benytter en "Sti"
+   nedover på flere sider ... Vi kan bruke det som inspirasjon.»
+
+   To ting er gjort annerledes enn i X7:
+   1) Linja starter ikke i tom luft, men PÅ veilinja i heroen: den samme
+      linja fortsetter til venstre for bilen, tar en 90° sving i
+      venstremargen og blir ryggraden ned til footer-kanten. Derfor rører
+      dette ikke .hero__rute-linje i det hele tatt — den står urørt fra
+      venstrekanten av stoppraden, og SVG-en tegner fortsettelsen bortover
+      og ned. (Ricky valgte denne varianten, «s2».)
+   2) Nodene er ekte <a href="#seksjon">-lenker inni SVG-en, ikke en
+      klikk-lytter på en sirkel. Da virker høyreklikk, midtklikk, Tab og
+      skjermleser gratis — og siden har ingen annen navigasjon.
+
+   Alt tegnes herfra: uten JS finnes det ingen SVG, ingen halvferdig sti og
+   ingenting å rydde opp. reduced-motion: linja står ferdig tegnet.
+   Geometrien måles på nytt ved resize og når fontene er klare (høydene
+   endrer seg når Quicksand bytter ut fallback-fonten). */
+const STI_SEKSJONER = [
+  ['#tjenester', 'Tjenester'],
+  ['#referanser', 'Referanser'],
+  ['#hvorfor', 'Hvorfor Clean Unit'],
+  ['#om-oss', 'Om oss'],
+  ['#jobb-hos-oss', 'Jobb hos oss'],
+]
+
+function stiNedover(reduksjon) {
+  const rad = document.querySelector('.hero__stopp-rad')
+  const linje = document.querySelector('.hero__rute-linje')
+  const hero = document.querySelector('.hero')
+  const footer = document.querySelector('.side-footer')
+  if (!rad || !linje || !hero || !footer) return
+
+  const NS = 'http://www.w3.org/2000/svg'
+  const mobil = () => innerWidth < 48 * 16
+  const svg = document.createElementNS(NS, 'svg')
+  svg.setAttribute('class', 'sti')
+  svg.setAttribute('role', 'navigation')
+  svg.setAttribute('aria-label', 'Hopp til seksjon')
+  document.body.appendChild(svg)
+
+  let bane = null, lengde = 0, hoyvann = 0, topp = 0, bunn = 0, noder = []
+
+  // Vertikal plassering: desktop begynner stien på veilinja i heroen (der
+  // hjørnet er), mobil rett under heroen. På mobil ligger nemlig veilinja
+  // MIDT i heroen (over stoppraden, se .hero__rute-linje), og en sti derfra
+  // ville gått tvers gjennom «Ring oss»-knappen.
+  const startY = (linjeRekt, heroRekt) =>
+    mobil() ? heroRekt.bottom + 8 : linjeRekt.top + linjeRekt.height / 2
+
+  // X: 26 px til venstre for der seksjonsteksten begynner — det er margen som
+  // faktisk finnes. Målt mot eyebrow-en (samme element nodene ankrer til), ikke
+  // mot .wrap: ved 768–1024 px er .wrap like bredt som vinduet, så wrap.left
+  // alene ga x = 4,7 px og bare ~5 px klaring til teksten. Gulvet på 9 px
+  // gjelder mobil, der .wrap har 16–19 px padding og ingen marg utenfor.
+  function xSti() {
+    const rubrikk = document.querySelector('#tjenester .eyebrow')
+    if (!rubrikk) return 24
+    return Math.max(9, Math.min(150, Math.round(rubrikk.getBoundingClientRect().left) - 26))
+  }
+
+  function bygg() {
+    const scroll = scrollY
+    const ruteRekt = rad.getBoundingClientRect()
+    const linjeRekt = linje.getBoundingClientRect()
+    const heroRekt = hero.getBoundingClientRect()
+    const footerRekt = footer.getBoundingClientRect()
+    topp = Math.round(startY(linjeRekt, heroRekt) + scroll)
+    bunn = Math.round(footerRekt.top + scroll)
+    const x = xSti()
+    const tynn = mobil()          // tynnere strek og mindre prikker på mobil
+    const rPrikk = tynn ? 3.5 : 6
+
+    // Hvor ligger SVG-ens eget nullpunkt? (body er ikke posisjonert, så det
+    // er dokumentets topp — men vi måler i stedet for å anta, så stien treffer
+    // veilinja uansett hva som måtte endre seg.)
+    svg.style.top = '0px'
+    const nullpunkt = svg.getBoundingClientRect().top + scroll
+    svg.style.top = (topp - nullpunkt) + 'px'
+    svg.style.height = (bunn - topp) + 'px'
+    const bredde = Math.round(svg.getBoundingClientRect().width)
+    svg.setAttribute('viewBox', `0 0 ${bredde} ${bunn - topp}`)
+    svg.replaceChildren()
+
+    // Nodene festes til eyebrow-en i hver seksjon — den står først i hver av
+    // dem, og er der øyet allerede lander når man kommer dit.
+    noder = STI_SEKSJONER.map(([sel, navn]) => {
+      const rubrikk = document.querySelector(sel + ' .eyebrow')
+      if (!rubrikk) return null
+      const r = rubrikk.getBoundingClientRect()
+      return { y: Math.round(r.top + scroll + r.height / 2), navn, sel }
+    }).filter(Boolean)
+
+    // Mild meander mot venstre mellom nodene — samme grep som X7. Bulken
+    // skalerer med avstanden til kanten, så stien ikke svinger bredere enn
+    // det er plass til.
+    const bulk = Math.max(9, Math.min(40, x * 0.38))
+    let d, fy
+    if (tynn) {
+      d = `M ${x} 0`
+      fy = 0
+    } else {
+      // Hjørnet: fra der heroens veilinje begynner (stoppradens venstrekant),
+      // bortover til margen og ned. Møtes i samme punkt, så det ser ut som
+      // én linje — dash-mønsteret kan ha litt ulik fase i skjøten.
+      d = `M ${Math.round(ruteRekt.left)} 0 L ${x + 8} 0 Q ${x} 0 ${x} 14`
+      fy = 14
+    }
+    for (const n of noder) {
+      const dy = n.y - fy
+      d += ` C ${x - bulk} ${fy + dy * 0.35}, ${x - bulk} ${fy + dy * 0.65}, ${x} ${n.y}`
+      fy = n.y
+    }
+
+    bane = document.createElementNS(NS, 'path')
+    bane.setAttribute('class', 'sti__linje')
+    bane.setAttribute('d', d)
+    bane.setAttribute('stroke-width', tynn ? 1.5 : 2)
+    svg.appendChild(bane)
+    lengde = bane.getTotalLength()
+
+    for (const n of noder) {
+      const a = document.createElementNS(NS, 'a')
+      a.setAttribute('class', 'sti__lenke')
+      a.setAttribute('href', n.sel)
+      a.setAttribute('aria-label', n.navn)
+      const tittel = document.createElementNS(NS, 'title')
+      tittel.textContent = n.navn
+      const treff = document.createElementNS(NS, 'circle')   // usynlig, 36 px treff-flate
+      treff.setAttribute('class', 'sti__treff')
+      treff.setAttribute('cx', x)
+      treff.setAttribute('cy', n.y)
+      treff.setAttribute('r', 18)
+      const prikk = document.createElementNS(NS, 'circle')
+      prikk.setAttribute('class', 'sti__node')
+      prikk.setAttribute('cx', x)
+      prikk.setAttribute('cy', n.y)
+      prikk.setAttribute('r', rPrikk)
+      const navn = document.createElementNS(NS, 'text')       // vises kun ved tastaturfokus
+      navn.setAttribute('class', 'sti__navn')
+      navn.setAttribute('x', x + 14)
+      navn.setAttribute('y', n.y + 4)
+      navn.textContent = n.navn
+      a.append(tittel, treff, prikk, navn)
+      svg.appendChild(a)
+      n.el = prikk
+    }
+    tegn()
+  }
+
+  function tegn() {
+    if (!bane) return
+    const vindu = innerHeight
+    const spenn = Math.max(1, bunn - topp)
+    if (reduksjon) {
+      hoyvann = 1
+    } else {
+      // Vist bunn = 2/3 ned i vinduet: linja er tegnet dit man har kommet,
+      // ikke dit man ser.
+      let framdrift = (scrollY + vindu * 0.66 - topp) / spenn
+      // Første etappe tegnes alltid, ellers ville stien mangle helt på
+      // toppen av siden og dukke opp først ved første scroll — da henger
+      // den ikke sammen med veilinja i heroen.
+      const forsteNode = noder.length ? noder[0].y / spenn : 0
+      framdrift = Math.max(0, Math.min(1, framdrift), forsteNode)
+      hoyvann = Math.max(hoyvann, framdrift)
+    }
+    bane.style.strokeDashoffset = (lengde * (1 - hoyvann)) + 'px'
+
+    // Aktuell seksjon = den noden som er nærmest midten av vinduet.
+    const midt = scrollY + vindu / 2
+    let nermest = null, minst = Infinity
+    for (const n of noder) {
+      const avstand = Math.abs(topp + n.y - midt)
+      if (avstand < minst) { minst = avstand; nermest = n }
+    }
+    for (const n of noder) {
+      if (n.el) n.el.classList.toggle('sti__node--aktiv', n === nermest)
+    }
+  }
+
+  bygg()
+  let venter = false
+  addEventListener('scroll', () => {
+    if (venter) return
+    venter = true
+    requestAnimationFrame(() => { venter = false; tegn() })
+  }, { passive: true })
+  addEventListener('resize', debounce(() => { hoyvann = reduksjon ? 1 : 0; bygg() }, 150))
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { hoyvann = reduksjon ? 1 : 0; bygg() })
+  }
 }

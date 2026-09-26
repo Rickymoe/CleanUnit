@@ -543,6 +543,45 @@ svg.tillit-logo { color: var(--teal); }
   margin-top: var(--s-2); font: 600 var(--t-sm)/1 var(--sans); color: var(--tekst-svak); text-align: center;
 }
 
+/* Flåten: fire like biler på én vei, rett under vekst-avsnittet (Ricky,
+   2026-09-26 — «vi bør få frem flåten av biler»). Arver rutebåndet i heroen:
+   SAMME bilde, samme hjul-mot-veilinje-formel (hjulbunnen ligger 17,2 % av
+   bilens BREDDE over bildets underkant, se .hero__rute-bil).
+
+   Ingen padding-bottom på .flaate: flex-raden justerer bilene mot innholds-
+   boksen, og med negativ margin-bottom stikker hvert bilde 17,2 % av bredden
+   NEDENFOR den boksen — akkurat så mye at hjulene treffer linja når linja
+   ligger på bottom: 0. Legger man på padding her, flytter linja seg ned fra
+   hjulene igjen (målt: 9,6 px feil ved 10,5 rem) — derfor ingen padding.
+
+   --flaate-b er bredden på hver bil og styrer både bilene og (via formelen)
+   hvor langt ned bildene stikker. Lik bredde med vilje: like store biler i rad
+   leser som «flåte», mens en størrelsestrapp (8/12/17 rem, prøvd) leste som
+   én stor bil og to små leketøy. */
+.flaate {
+  --flaate-b: clamp(7rem, 11.5vw, 10.5rem);
+  position: relative; display: flex; align-items: flex-end; justify-content: center;
+  gap: clamp(.25rem, 1.5vw, 1.25rem);
+  margin-top: var(--s-6);
+}
+.flaate__bil {
+  display: block; width: var(--flaate-b); height: auto;
+  margin-bottom: calc(-0.172 * var(--flaate-b));
+}
+/* Veilinja er bredere enn bilene, så den ser ut som en vei som fortsetter ut
+   av bildet. Samme uttrykk som .hero__rute-linje (2 px, 45 % turkis). */
+.flaate__vei {
+  position: absolute; left: -3%; right: -3%; bottom: 0;
+  border-top: 2px dashed color-mix(in srgb, var(--teal) 45%, transparent);
+}
+/* Under 48rem er det ikke plass til fire biler (4 × 7 rem + mellomrom > 390 px
+   skjermbredde, målt til 105 px vannrett overløp) — to biler holder, og de
+   står på den samme linja. */
+@media (max-width: 48rem) {
+  .flaate { gap: .5rem; }
+  .flaate__bil:nth-child(n+3) { display: none; }
+}
+
 .stopp--jobb { padding-block: var(--seksjon-y); background: var(--base); }
 .stopp--jobb h3 { margin-top: var(--s-6); color: var(--teal-mork); }
 /* Design-kritikk 2026-09-13 gjorde først fordel-kortene avlange (fikk en
@@ -575,29 +614,35 @@ svg.tillit-logo { color: var(--teal); }
 .stopp--jobb .knapp { margin-top: var(--s-6); }
 .side-footer { background: var(--teal-mork); color: #fff; padding-block: var(--s-8); }
 .side-footer .wrap { display: grid; gap: var(--s-6); justify-items: center; text-align: center; }
-/* Kart-vannmerke i footeren — samme Oslo-utsnitt som i heroen, men laget for
-   mørk bunn: bildet er lyst med fast gjennomsiktighet, så det snus
-   (invert) til turkise linjer (sepia/hue-rotate) og blandes inn med
-   mix-blend-mode:screen, slik at bare linjene skinner svakt gjennom i
-   stedet for at hele flaten lyses opp. Verdiene er Rickys, funnet i
-   verkstedet 2026-09-21: 24 % synlighet, 170 % av footerbredden, sentrert
-   56 %/31 %, myke kanter 21 %. Ligger BAK innholdet (.wrap løftes over).
-   webp via image-set (samme fil som heroen bruker, så den er allerede
-   hurtiglastet); png som fallback. Ren dekor. */
+/* Veinett-teppet i footeren (Ricky, 2026-09-26: «endre vannmerke i footer
+   til samme som i hero»). Samme bilde som heroen bruker — det nøytrale
+   veinettet uten stedsnavn — i stedet for Oslo-kartet, som ble laget for å
+   vise hvor kontorene LÅ (og byene er nettopp det kunden ikke vil framheve,
+   se .hero__kart-vannmerke).
+
+   Behandlingen må snus for mørk bunn: bildet er lyst med turkise linjer, så
+   invert(1) gjør bakgrunnen nesten svart (usynlig under screen-blandingen) og
+   linjene lyse; hue-rotate(180deg) henter dem tilbake til en kald turkis.
+   mix-blend-mode:screen lar bare linjene skinne gjennom i stedet for å lyse
+   opp hele flaten.
+
+   Ingen maske lenger: uttoningen mot kantene ligger i bildet selv (radial
+   alfa), akkurat som i heroen — en ekstra radial-gradient ville skåret bort
+   mer av et teppe som allerede er svakt. Bredden følger heroens bredde, så
+   veinettet har samme målestokk begge steder; webp via image-set (samme fil
+   som heroen, altså allerede hentet); png som fallback. Ren dekor. */
 .side-footer { position: relative; overflow: hidden; }
 .side-footer > .wrap { position: relative; z-index: 1; }
 .side-footer::before {
   content: ""; position: absolute; left: 56%; top: 31%;
-  width: 170%; aspect-ratio: 1; transform: translate(-50%, -50%);
+  width: clamp(320px, 92vw, 1150px); aspect-ratio: 1; transform: translate(-50%, -50%);
   pointer-events: none;
-  background: url("../bilder/hero-kart-vannmerke.png") center / cover no-repeat;
+  background: url("../bilder/dekning-nett.png") center / cover no-repeat;
   background-image: image-set(
-    url("../bilder/hero-kart-vannmerke.webp") type("image/webp"),
-    url("../bilder/hero-kart-vannmerke.png") type("image/png"));
-  filter: invert(1) sepia(1) saturate(4) hue-rotate(125deg);
-  mix-blend-mode: screen; opacity: .24;
-  -webkit-mask-image: radial-gradient(closest-side, #000 79%, transparent 100%);
-          mask-image: radial-gradient(closest-side, #000 79%, transparent 100%);
+    url("../bilder/dekning-nett.webp") type("image/webp"),
+    url("../bilder/dekning-nett.png") type("image/png"));
+  filter: invert(1) hue-rotate(180deg);
+  mix-blend-mode: screen; opacity: .55;
 }
 /* Samme ordmerke som i heroen («CleanUNIT», Quicksand: Clean lett + UNIT
    halvfet), men fargene byttet for mørk bunn: Clean hvit, UNIT i logoens
@@ -662,3 +707,46 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   html.js .js-reveal { opacity: 1; transform: none; transition: none; }
 }
+
+/* ── Stien nedover siden ───────────────────────────────────────────────
+   Arver grepet fra X7 (js/path.js): ÉN absolutt plassert SVG over hele
+   ruten, med en mild meander mellom én node per seksjon, og linja tegnes
+   etter hvert som man scroller (stroke-dashoffset med «høyvann» — den
+   tegnes aldri tilbake når man scroller opp). Ricky, 2026-09-26: «Vi
+   benytter en "Sti" nedover på flere sider ... Vi kan bruke det som
+   inspirasjon.»
+
+   Forskjellen fra X7: der starter stien i tomme lufta over første seksjon;
+   her er den en fortsettelse av veilinja i heroen — den samme linja
+   fortsetter til venstre for bilen, tar en 90° sving i venstremargen og
+   blir ryggraden ned til footer-kanten (Ricky valgte denne, «s2»).
+
+   Alt tegnes av stiNedover() i js/main.js; uten JS finnes det ingen SVG og
+   ingen CSS å rydde opp i. Node-høyden (cy) settes av JS, derfor alle
+   posisjoneringer i attributter og ikke i denne fila. */
+.sti {
+  position: absolute; left: 0; top: 0; width: 100%;
+  z-index: 3;               /* over seksjonenes bakgrunner, se .hero__rute */
+  pointer-events: none;
+}
+.sti__linje {
+  fill: none; stroke: var(--teal); stroke-width: 2; stroke-linecap: round;
+  stroke-dasharray: 7 7; opacity: .5;
+}
+/* Nodene ER navigasjonen: <a> inni SVG-en, ikke en klikk-lytter på en
+   sirkel (X7) — da virker høyreklikk, midtklikk og tastatur (Tab) gratis.
+   Den synlige prikken er liten; .sti__treff er en usynlig, større sirkel
+   oppå som gir 36 px treff-flate, også for fingre. */
+.sti__node { fill: var(--base); stroke: var(--teal); stroke-width: 2.5; transition: fill .25s; }
+.sti__node--aktiv { fill: var(--teal); }
+.sti__treff { fill: transparent; }
+.sti__lenke { cursor: pointer; }
+.sti__lenke:focus-visible { outline: none; }
+.sti__lenke:focus-visible .sti__node { fill: var(--teal); stroke-width: 4; }
+/* Nodens navn for skjermlesere — synlig kun ved tastaturfokus, som en
+   liten brikke ved siden av prikken. */
+.sti__navn {
+  font: 600 12px/1 var(--sans); fill: var(--teal-mork);
+  opacity: 0; transition: opacity .15s;
+}
+.sti__lenke:focus-visible .sti__navn { opacity: 1; }
