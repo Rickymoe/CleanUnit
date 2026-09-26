@@ -344,7 +344,13 @@ addEventListener("load", function () {
 <section class="stopp--jobb" id="jobb-hos-oss">
   <div class="wrap">
     <p class="eyebrow">Jobb hos oss</p>
-    <div class="vask-boks"><h2 data-vask>Renholderne er de viktigste</h2></div>
+    <!-- Uten data-vask (Ricky, 2026-09-26: «ta bort animasjon på Renholderne er
+         de viktigste»). Denne overskriften står rett under flåten, og to
+         animasjoner etter hverandre på samme sted ble for mye — sveipet og
+         skumboblene er derfor bare på «Renhold tilpasset stedet du driver».
+         Uten .vask-boks rundt seg er overskriften dessuten aldri klippet, så
+         den kan ikke bli stående skjult om main.js ikke kjører. -->
+    <h2>Renholderne er de viktigste</h2>
     <p class="stopp__lede"><!-- UTKAST: egen syntese av Ansatte-sitatene under, ikke bekreftet med Marit/Christopher -->Hos Clean Unit er det renholderne som gjør jobben — ikke bare en del av firmaet. Vi gir alle ansatte skikkelig opplæring, følger opp med trening og ergonomi i hverdagen, og mange av våre ansatte blir hos oss i mange år.</p>
     <ul class="tjeneste-grid">
       <li class="tjeneste-kort">

@@ -165,6 +165,21 @@ test('Flåten: skjules bare bak html.js, og vises igjen ved reduced motion', () 
   assert.match(les('js/main.js'), /flaateInn\(reduksjon\)/)
 })
 
+// «Renholderne er de viktigste» mistet vaskesveipet (Ricky, 2026-09-26: den
+// står rett under flåten, og to animasjoner etter hverandre der ble for mye).
+// Testen låser at sveipet bare er på «Tjenester»-overskriften, så en
+// gjeninnsetting må være bevisst.
+test('Bare «Tjenester»-overskriften har vaskesveip', () => {
+  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
+    const h = les(f)
+    // Bare h2-elementer teller — ordet står også i en kommentar i kilden
+    assert.equal((h.match(/<h2 data-vask/g) || []).length, 1, `${f}: antall h2 med data-vask`)
+    assert.match(h, /<h2 data-vask>Renhold tilpasset stedet du driver<\/h2>/, f)
+    assert.match(h, /<h2>Renholderne er de viktigste<\/h2>/, f)
+    assert.doesNotMatch(h, /vask-boks"><h2[^>]*>Renholderne/, f)
+  }
+})
+
 // Stien anker til eyebrow-en i hver seksjon (js/main.js). Endres id-ene eller
 // eyebrow-klassen, forsvinner nodene i stillhet — derfor denne testen.
 test('Stien: alle seksjonene den ankrer til finnes, med eyebrow', () => {

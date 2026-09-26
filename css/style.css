@@ -261,7 +261,11 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 }
 /* Samme sveip + skumbobler på utvalgte seksjonsoverskrifter (data-vask på
    h2, satt av Ricky 2026-09-21: «Tjenester» og «Jobb hos oss»; flere legges
-   til ved å sette attributtet). Utløses av scroll (IntersectionObserver i
+   til ved å sette attributtet). 2026-09-26: «Jobb hos oss»-overskriften
+   («Renholderne er de viktigste») mistet sveipet — den står rett under
+   flåten, og to animasjoner etter hverandre der ble for mye. Igjen: ÉN
+   overskrift, «Renhold tilpasset stedet du driver».
+   Utløses av scroll (IntersectionObserver i
    main.js, som også slår på html.js-vask — uten den er overskriftene alltid
    synlige), én gang per overskrift, litt kortere enn i heroen. Overskriften
    klippes av clip-path og tar boblene med seg, så boblelaget må ligge
