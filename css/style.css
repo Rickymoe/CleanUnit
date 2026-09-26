@@ -139,7 +139,16 @@ a { color: inherit; }
    bevegelse, og Ricky vil ikke ha flere ting som skjer samtidig. */
 .hero__rute {
   position: absolute; left: 0; right: 0; bottom: clamp(6rem, 16vh, 8.5rem);
-  z-index: 0; pointer-events: none;
+  /* z-index MÅ ligge over .hero__innhold (1), ikke under. Vannmerket har
+     z-index:-1, men det ligger INNI .hero__innhold, og en negativ z-index
+     rømmer ikke forelderens stablekontekst: med 0 her la hele innholdsboksen
+     — vannmerket inkludert — seg oppå rutebåndet, og veilinjene gikk tvers
+     over bilens karosseri (Ricky, 2026-09-26: «kan man se veinettet igjennom
+     bilen»). Målt på skjermbilde som vannmerke-piksler innenfor bilens opake
+     kropp (alfa >= 248 i bilder/bil.png): 1011 px med z-index 0 mot 28 px her,
+     og 0 etter 2 px erosjon. Samme nivå som .hero__knapper, den andre
+     bunnforankrede raden. */
+  z-index: 2; pointer-events: none;
   display: flex; align-items: flex-end; justify-content: center;
   gap: clamp(1.5rem, 5vw, 4rem);
   padding-inline: clamp(1rem, 6vw, 5rem);
@@ -159,6 +168,11 @@ a { color: inherit; }
   --bil-b: clamp(9rem, 21vw, 17rem);
   width: var(--bil-b); height: auto; display: block;
   margin-bottom: calc(1.6rem - 0.172 * var(--bil-b));
+  /* Bildet har en myk kant: alfa kravler fra 0 til 255 over ~40 px i kilden
+     (~4 px på skjermen). Der en veilinje krysser den, holder linja seg synlig
+     helt inn til silhuetten. Etter z-index-fiksen over er dette alt som
+     gjenstår — målt 28 px vannmerke inni kroppen, maks styrke 7 av 255 — og
+     det er ikke verdt å skjære bort bilens myke overgang for. */
   filter: drop-shadow(0 14px 22px rgba(14, 124, 123, .22));
 }
 .hero__stopp-rad {
@@ -197,7 +211,21 @@ a { color: inherit; }
    overlapp, og heroen holder seg innenfor 88vh (se .hero over). */
 @media (max-width: 48rem) {
   .hero__rute {
-    position: static; margin-top: var(--s-6);
+    /* relative, ikke static: ellers er z-index-en over inert, og vannmerket
+       (inne i .hero__innhold) maler igjen over bilen — samme feil som på
+       desktop. Målt mot et skjult vannmerke, med samme layout i begge
+       varianter og bilkroppen som maske (alfa >= 248 i bilder/bil.png):
+       med z-index 0 lekker det 53 px (maks 22) i 414x896, 906 px (maks 36)
+       i 600x900 og 828 px (maks 46) i 768x1024; med z-index 2 står det igjen
+       0, 40 px (maks 8) og 26 px (maks 11) — samme myke kant som på desktop.
+       I 360x640, 390x700 og 390x844 er det 0 px i begge varianter, fordi
+       vannmerket ikke rekker ned til bilen der. Regelen må derfor stå selv om
+       den ikke gjør noe på de smaleste skjermene.
+       bottom: auto er ikke pynt: båndet er absolutt posisjonert på desktop
+       med bottom: clamp(6rem, 16vh, 8.5rem), og for en relativt posisjonert
+       boks forskyver bottom elementet oppover. Uten denne flyttet båndet seg
+       135 px opp (målt: bilens dekk y 487 -> 352). */
+    position: relative; bottom: auto; margin-top: var(--s-6);
     flex-direction: column; align-items: center; gap: var(--s-4);
   }
   /* Bilen står nå OVER båndet (kolonne), ikke ved siden av det, og kan
