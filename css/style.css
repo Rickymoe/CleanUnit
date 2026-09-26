@@ -524,16 +524,6 @@ svg.tillit-logo { color: var(--teal); }
 .om-foto-plassholder figcaption {
   margin-top: var(--s-2); font: 600 var(--t-sm)/1 var(--sans); color: var(--tekst-svak); text-align: center;
 }
-.om-foto-plassholder--bred { margin: var(--s-6) 0 0; }
-/* Ekte team-illustrasjon (2til52.png, lagt til av Ricky 2026-09-19) erstatter
-   ikon-plassholderen — samme sideforhold som selve bildet (1855x848), så
-   object-fit:cover ikke trenger å beskjære noe. padding/gradient-bakgrunn
-   fra .om-foto-boks (laget for ikon+hint-plassholderne over) fjernes her,
-   siden bildet nå skal fylle boksen helt. */
-.om-foto-boks--bred { aspect-ratio: 1855 / 848; padding: 0; background: none; }
-.om-foto-boks--bred picture, .om-foto-boks--bred img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-}
 
 .stopp--jobb { padding-block: var(--seksjon-y); background: var(--base); }
 .stopp--jobb h3 { margin-top: var(--s-6); color: var(--teal-mork); }
