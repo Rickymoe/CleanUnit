@@ -85,7 +85,12 @@ a { color: inherit; }
   position: relative; overflow: hidden;
   min-height: 100svh; display: flex; flex-direction: column; justify-content: center;
   padding-top: clamp(3rem, 12vh, 6rem); padding-bottom: clamp(2rem, 8vh, 5rem);
-  background: var(--base);
+  /* Fargevalg C, Ricky 2026-09-27 (valgte C + D i fargelabben): en svak
+     teal-glød bak lockupen som falmer ned i --base på 62 %. Siden heroen
+     hadde --base flatt før, var første skjerm helt nøytral grå; gløden gir
+     et fargeholdepunkt øverst uten å gjøre flaten mørk. Endepunktet er
+     --base, så overgangen til neste seksjon (Tjenester, --flate) er usynlig. */
+  background: radial-gradient(115% 85% at 50% 30%, #E4F6F5 0%, var(--base) 62%);
 }
 /* På smale/høye mobilskjermer sentrerer justify-content:center innholdet
    midt i hele 100svh-flaten, langt under den toppforankrede logoen (som er
@@ -181,22 +186,28 @@ a { color: inherit; }
   position: relative; display: flex; align-items: flex-end;
   gap: clamp(1.5rem, 5vw, 4rem);
 }
-/* Linja skal ligge på prikkenes SENTRUM, ikke over dem. Prikken er .6rem,
-   stoppen har .4rem gap og en etikett på var(--t-sm) med line-height 1, så
-   sentrum ligger 1.6rem over radens underkant. Bilens hjulbunn traff
-   tidligere linja, men prikkene hang 12 px under den (målt). */
+/* Linja skal ligge på prikkenes SENTRUM, ikke over dem. Prikken er .8rem
+   (var .6rem før fargevalg C), stoppen har .4rem gap og en etikett på
+   var(--t-sm) med line-height 1, så prikkens sentrum ligger 1,7rem over
+   radens underkant — mot linjas 1,6rem. Den større prikken flyttet altså
+   sentrum 1,6 px nærmere linja, ikke bort fra den. Målt i 1440x900 etter
+   endringen: prikkens sentrum 656 px, linjas 656 px (linja er 3 px høy,
+   fra 654 til 657, så prikken lander inni den), bilens hjulbunn 1 px under. */
 .hero__rute-linje {
   position: absolute; left: 0; right: 0; bottom: 1.6rem;
-  border-top: 2px dashed color-mix(in srgb, var(--teal) 50%, transparent);
+  /* Fargevalg C (2026-09-27): hel --teal i stedet for 50 % blanding, og 3 px
+     i stedet for 2 px. Ruta skal leses som et rutetilbud, ikke som en
+     hjelpelinje. Kontrast mot --base: 4,59:1 (målt). */
+  border-top: 3px dashed var(--teal);
 }
 .hero__stopp {
   position: relative; display: flex; flex-direction: column; align-items: center;
-  gap: .4rem; font: 600 var(--t-sm)/1 var(--sans); color: var(--teal-mork);
+  gap: .4rem; font: 600 var(--t-sm)/1 var(--sans); color: var(--teal);
   white-space: nowrap;
 }
 .hero__stopp-prikk {
-  width: .6rem; height: .6rem; border-radius: 50%; background: var(--teal);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal) 15%, transparent);
+  width: .8rem; height: .8rem; border-radius: 50%; background: var(--teal);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--teal) 22%, transparent);
 }
 /* Rekkevidde-linja under ingressen — svaret på «må jeg ha lokaler i Oslo
    eller Stavanger?». Teksten kommer fra byer.json ({{rekkevidde}}). */
@@ -378,6 +389,11 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: clamp(320px, 92vw, 1150px); aspect-ratio: 1; max-width: none;
   z-index: -1; pointer-events: none;
+  /* Fargevalg C (2026-09-27): veinettet ligger på maks 58/255 i kilden og
+     forsvant nesten mot den nye gløden. Filteret drar opp metningen og
+     kontrasten i selve tegningen, så veinettet holder seg lesbart — det
+     legges på dette elementet alene, ikke på flaten rundt. */
+  filter: saturate(1.7) contrast(1.12);
   /* Ingen mask-image (2026-09-26): bildet har ingen firkantet kant å skjule —
      alfa-toningen ut mot kantene er bakt inn i selve filen (radial envelope,
      maks 58/255, se toning() i verktoy/veinett-teppe.py). En CSS-maske ville
@@ -523,13 +539,28 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 
 .stopp--referanser { padding-block: var(--seksjon-y); background: var(--teal-lys); }
 .stopp--referanser .sitat-liste { margin-top: var(--s-6); }
-.stopp--tillit { padding-block: var(--seksjon-y); background: var(--base); }
+/* Fargevalg D, Ricky 2026-09-27: «Hvorfor Clean Unit» er sidens midtanker.
+   Uten det gikk hele midtpartiet lyst og grått fra heroen og ned til
+   footeren; nå har siden teal øverst, en mørk stripe i midten og mørk teal
+   nederst, med lyse partier imellom. Samme flate som footeren (--teal-mork),
+   så de to mørke blokkene rammer inn siden.
+   Alle tekstfargene under må settes eksplisitt: de arver ellers fra h2/p
+   (--tekst #1E2B2B), som er nesten usynlig på --teal-mork.
+   Kontrast målt mot #0A5C5B: eyebrow 4,77:1, h2/h3 7,79:1, brødtekst
+   5,62:1. Eyebrowen er bevisst ikke --logo-turkis-lys (#87CAC9): den er
+   låst til logoen og ga 4,2:1, under de 4,5:1 småtekst skal ha. #9BD5D3 er
+   samme turkis, ett hakk lysere, og blir den best lesbare eyebrowen på
+   siden. */
+.stopp--tillit { padding-block: var(--seksjon-y); background: var(--teal-mork); }
+.stopp--tillit .eyebrow { color: #9BD5D3; }
+.stopp--tillit h2 { color: #fff; }
 /* Eyebrow og overskrift er venstrejustert som i de andre seksjonene; kun
    punktene (.tillit-liste) har sentrert ikon-og-tekst-oppsett (Ricky valgte
    dette 2026-09-21, alternativ C). Før stod h2 sentrert og eyebrowen til
    venstre: sentrerings-regelen for .eyebrow virket aldri (den er
    inline-block). */
-.tillit-liste h3 { color: var(--teal-mork); }
+.tillit-liste h3 { color: #fff; }
+.tillit-liste p { color: #CBDFDE; }
 .tillit-liste li { display: flex; flex-direction: column; align-items: center; text-align: center; }
 /* Sirkel-/stempel-ramme rundt hvert ikon/logo — Ricky syntes seksjonen
    virket passiv/kjedelig (2026-09-13); dobbel ring gir et "offisielt segl"-
@@ -881,6 +912,14 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
    liten brikke ved siden av prikken. */
 .sti__navn {
   font: 600 12px/1 var(--sans); fill: var(--teal-mork);
+  /* Lys kontur rundt bokstavene, ikke pynt: stien ligger i <body>, ikke inne
+     i seksjonene, så etiketten kan ikke farges per seksjon. Da «Hvorfor Clean
+     Unit» ble en --teal-mork flate (fargevalg D, 2026-09-27) ble etiketten
+     der --teal-mork på --teal-mork og forsvant helt for tastaturbrukere
+     (målt: ingen synlig piksel ved fokus). paint-order tegner konturen først
+     og fyllet oppå, så teksten beholder fargen sin og får en --base-halo som
+     er usynlig på lyse flater og lesbar på mørke. */
+  paint-order: stroke; stroke: var(--base); stroke-width: 3px; stroke-linejoin: round;
   opacity: 0; transition: opacity .15s;
 }
 .sti__lenke:focus-visible .sti__navn { opacity: 1; }
