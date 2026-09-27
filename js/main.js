@@ -122,6 +122,25 @@ function flaateInn(reduksjon) {
 const LOGO_VARIGHET_MS = 1560
 const BOBLE_ANTALL = 12
 
+// Christopher ville at noen av de siste boblene — de som dukker opp rundt «T»-en
+// i UNIT — skal fortsette litt høyere opp enn resten (2026-09-27). Løftet rampes
+// inn over de siste 85 % av sveipet, slik at stigningen øker jevnt mot høyre i
+// ordmerket i stedet for å hoppe. Verdiene er valgt av Ricky i en slider-lab:
+// ved full rampe stiger de største boblene 3,0x — målt 100–198 px mot 33–103 px
+// før, i et vindu på ~900 px høyde (taket under gjør forskjellen mindre i lave
+// vinduer), med 550 ms ekstra levetid så de rekker å vises før de popper.
+//
+// Taket er lufta over ordmerket ganger 0,8: heroen har overflow:hidden, og en
+// boble som stiger forbi toppen blir kuttet midt på. Taket skalerer med
+// vindushøyden (målt 131 px ved 726 px vindu, 203 px ved 913, 361 px ved 1313),
+// så en høy skjerm gir mer å gå på. Det skal aldri gjøre en boble KORTERE enn
+// den er i dag — derfor Math.max(grunn, tak): på et lavt vindu hvor taket er
+// mindre enn dagens stigning, står boblen stille i stedet for å krympe.
+const BOBLE_LOFT = 2.0        // ekstra stigning ved t = 1 (2.0 = 3,0x)
+const BOBLE_LOFT_FRA = 0.15   // rampen starter her (0.15 = de siste 85 %)
+const BOBLE_EKSTRA_MS = 550   // de løftede boblene lever så mye lenger
+const BOBLE_LOFT_TAK = 0.8    // andel av lufta over ordmerket som kan brukes
+
 function logoAnimer(reduksjon) {
   if (reduksjon) return
   const logo = document.querySelector('.hero .logo')
@@ -158,6 +177,10 @@ function sveipKurve(t) {
 //   skala      størrelses-/driftfaktor (verkstedet var satt opp for 96px tekst)
 // Boblelaget legges i nærmeste .hero__lockup/.vask-boks — utenfor kilden, som
 // er klippet av clip-path og ellers ville tatt boblene med seg.
+//
+// Løftet (BOBLE_LOFT) gjelder bare i heroen: det er der ordmerket med «T»-en
+// står, og bare der er det luft over boblen å stige i. Seksjonsoverskriftene
+// beholder dagens oppførsel.
 function nyBoble(x, y, storrelse, forsinkelse, varighet, rise, dx) {
   const boble = document.createElement('span')
   boble.className = 'boble'
@@ -177,17 +200,23 @@ function lagSkumBobler(kilde, { antall, varighetMs, skala }) {
   const lag = document.createElement('span')
   lag.className = 'bobler'
   lag.setAttribute('aria-hidden', 'true')
+  const hero = kilde.closest('.hero')
+  const romOver = hero ? l.top - hero.getBoundingClientRect().top : 0
+  const tak = romOver * BOBLE_LOFT_TAK
   let slutt = 0
   for (let i = 0; i < antall; i++) {
     const t = Math.random()
     const storrelse = tilfeldig(8, 26) * skala
     const forsinkelse = t * varighetMs
-    const varighet = tilfeldig(1500, 2600)
+    const rampe = hero ? Math.max(0, (t - BOBLE_LOFT_FRA) / (1 - BOBLE_LOFT_FRA)) : 0
+    const grunn = tilfeldig(35, 110) * skala
+    const stigning = Math.min(grunn * (1 + BOBLE_LOFT * rampe), Math.max(grunn, tak))
+    const varighet = tilfeldig(1500, 2600) + BOBLE_EKSTRA_MS * rampe
     const x = o.left - l.left + sveipKurve(t) * o.width + tilfeldig(-6, 6) * skala
     const y = o.top - l.top + tilfeldig(0.25, 0.95) * o.height
     const boble = nyBoble(
       x, y, storrelse, forsinkelse, varighet,
-      -tilfeldig(35, 110) * skala, tilfeldig(-10, 10) * skala
+      -stigning, tilfeldig(-10, 10) * skala
     )
     lag.appendChild(boble)
     slutt = Math.max(slutt, forsinkelse + varighet)
