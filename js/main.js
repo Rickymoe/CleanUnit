@@ -6,6 +6,7 @@ export function initSider() {
   kortReveal(reduksjon)
   flaateInn(reduksjon)
   stiNedover(reduksjon)
+  tilbudSkjema()
   plasserVannmerke()
   addEventListener('resize', debounce(plasserVannmerke, 150))
 }
@@ -316,6 +317,7 @@ const STI_SEKSJONER = [
   ['#hvorfor', 'Hvorfor Clean Unit'],
   ['#om-oss', 'Om oss'],
   ['#jobb-hos-oss', 'Jobb hos oss'],
+  ['#tilbud', 'Be om tilbud'],
 ]
 
 function stiNedover(reduksjon) {
@@ -484,4 +486,67 @@ function stiNedover(reduksjon) {
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => { hoyvann = reduksjon ? 1 : 0; bygg() })
   }
+}
+
+/* Tilbudsskjemaet (2026-09-27). Skjemaet er `hidden` i markup med vilje:
+   kilden har %%FORMSPREE_ID%% som plassholder, og deploy-workflowen bytter den
+   mot en ekte ID fra secrets (FORMSPREE_ID_OSLO / _FORMSPREE_ID_STAVANGER).
+   Er plassholderen fortsatt der — lokal kjøring, eller en deploy der hemmelig-
+   heten ikke er satt — finnes det ingen mottaker, og da skal skjemaet ikke
+   vises i det hele tatt. Seksjonen står igjen med ring/e-post, som er en full-
+   god vei inn. Derfor skjules det i markup og ÅPNES av JS, ikke omvendt: ble
+   det vist først og skjult her, ville en død form blinket forbi på vei til å
+   bli borte. Uten JS forblir den altså skjult, som er riktig side å feile på.
+
+   Selve innsendingen følger mønsteret fra Kuvaas: POST til Formspree med
+   FormData og Accept: application/json, tre tilstander (skjema / kvittering /
+   feilboks med ring-og-e-post-fallback). Formspree bruker feltet som heter
+   «email» som svar-til-adresse, derfor heter e-postfeltet det og ikke «epost». */
+function tilbudSkjema() {
+  const skjema = document.getElementById('tilbud-skjema')
+  if (!skjema) return
+
+  const endepunkt = skjema.dataset.endpoint || ''
+  if (!endepunkt || endepunkt.includes('%%FORMSPREE_ID%%')) return
+
+  const knapp = skjema.querySelector('button[type="submit"]')
+  const feil = document.getElementById('tilbud-feil')
+  const kvittering = document.getElementById('tilbud-kvittering')
+  if (!knapp || !feil || !kvittering) return
+  const knappTekst = knapp.textContent
+
+  skjema.hidden = false
+  knapp.disabled = false
+  // Varselet om at abonnementet mangler er en intern melding som bare skal
+  // stå så lenge skjemaet ikke virker. Nå virker det, så da går den ut.
+  const varsel = document.getElementById('tilbud-varsel')
+  if (varsel) varsel.hidden = true
+
+  skjema.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    knapp.disabled = true
+    knapp.textContent = 'Sender …'
+    feil.hidden = true
+
+    try {
+      const svar = await fetch(endepunkt, {
+        method: 'POST',
+        body: new FormData(skjema),
+        headers: { Accept: 'application/json' },
+      })
+      if (!svar.ok) throw new Error('server')
+
+      skjema.hidden = true
+      feil.hidden = true
+      kvittering.hidden = false
+      // Flytt fokus til kvitteringen, ellers står fokus igjen på en knapp som
+      // nettopp forsvant. role="status" sørger for at den leses opp.
+      kvittering.tabIndex = -1
+      kvittering.focus()
+    } catch {
+      knapp.disabled = false
+      knapp.textContent = knappTekst
+      feil.hidden = false
+    }
+  })
 }

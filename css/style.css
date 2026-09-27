@@ -882,3 +882,63 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   opacity: 0; transition: opacity .15s;
 }
 .sti__lenke:focus-visible .sti__navn { opacity: 1; }
+
+/* ── Tilbudsskjemaet ───────────────────────────────────────────────────
+   Siste stopp før footeren (Ricky valgte «egen #tilbud-seksjon», 2026-09-27).
+   Bakgrunnen er --teal-lys fordi seksjonen over (#jobb-hos-oss) slutter på
+   --base: sidens veksling er flate / teal-lys / base / teal-lys / base, og
+   den må fortsette, ellers smelter to seksjoner sammen.
+
+   Skjemaet er `hidden` i markup og åpnes av js/main.js først når en ekte
+   Formspree-ID finnes. Det er hele poenget med [hidden]-regelen nederst:
+   setter noen en display-verdi på .tilbud-skjema, vinner den over UA-regelen
+   og den døde formen står synlig likevel. */
+.stopp--tilbud { padding-block: var(--seksjon-y); background: var(--teal-lys); }
+.tilbud-layout { display: grid; gap: var(--s-6); margin-top: var(--s-5); }
+@media (min-width: 56rem) {
+  .tilbud-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 30rem); gap: var(--s-8); align-items: start; }
+}
+.tilbud__direkte { margin-top: var(--s-4); color: var(--tekst-svak); }
+.tilbud__direkte a { color: var(--teal-mork); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Skjemakortet. Feltene står i én kolonne også på desktop — kortet er bare
+   ~30rem bredt, og to felt ved siden av hverandre der ville blitt for trangt
+   (en container-media-query ville dessuten ikke hjulpet, siden bredden kommer
+   fra grid-kolonnen og ikke fra vinduet). */
+.tilbud-skjema { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(10, 92, 91, .08); }
+.tilbud-skjema > * + * { margin-top: var(--s-4); }
+.skjema-rad { display: grid; gap: var(--s-4); }
+.skjema-felt label { display: block; margin-bottom: var(--s-2); font: 700 var(--t-sm)/1.2 var(--sans); color: var(--tekst); }
+.skjema-valgfri { font-weight: 500; color: var(--tekst-svak); }
+.tilbud-skjema input,
+.tilbud-skjema select,
+.tilbud-skjema textarea {
+  width: 100%; padding: 12px 14px; border: 1px solid #C7D8D7; border-radius: 10px;
+  background: var(--flate); color: var(--tekst); font: 400 var(--t-base)/1.4 var(--sans);
+}
+.tilbud-skjema textarea { resize: vertical; }
+.tilbud-skjema input:focus-visible,
+.tilbud-skjema select:focus-visible,
+.tilbud-skjema textarea:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; border-color: var(--teal); }
+.tilbud-skjema button[type="submit"] { width: 100%; }
+.skjema-notat { color: var(--tekst-svak); font-size: var(--t-sm); text-align: center; }
+
+/* Plassholderen som står i skjemaets grid-kolonne så lenge skjemaet er skjult
+   (ingen Formspree-ID). Samme kort-behandling som skjemakortet, så kolonnen
+   ser lik ut enten det står skjema eller varsel der. js/main.js skjuler den
+   når skjemaet åpnes — den er intern og skal ikke bli stående på den ferdige
+   siden. */
+.skjema-varsel { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(10, 92, 91, .08); }
+.skjema-varsel > * + * { margin-top: var(--s-3); }
+.skjema-varsel p { color: var(--tekst-svak); }
+.skjema-varsel strong { color: var(--teal-mork); }
+.skjema-varsel a { color: var(--teal-mork); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+.skjema-feil { margin-top: var(--s-4); padding: var(--s-3) var(--s-4); border-radius: 10px; background: #FDECEF; color: #8A1F35; font-size: var(--t-sm); }
+.skjema-feil a { color: inherit; }
+.skjema-kvittering { margin-top: var(--s-4); padding: var(--s-5) var(--s-4); background: var(--flate); border-radius: var(--radius); text-align: center; box-shadow: 0 1px 3px rgba(10, 92, 91, .08); }
+.skjema-kvittering h3 { color: var(--teal-mork); }
+.skjema-kvittering p { margin-top: var(--s-2); color: var(--tekst-svak); }
+
+/* Må ligge sist: samme spesifisitet som en klasse, så rekkefølgen avgjør. */
+[hidden] { display: none; }

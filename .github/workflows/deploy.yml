@@ -29,6 +29,30 @@ jobs:
           node --test test/*.test.js
           node bygg.js
 
+      # Ett Formspree-skjema per by (Oslo -> renhold@, Stavanger -> thord@), så
+      # hvert kontor får bare sin egen post. ID-ene ligger i secrets og havner
+      # aldri i git-historikken — kilden har %%FORMSPREE_ID%% som plassholder.
+      #
+      # Er en secret tom, må plassholderen stå igjen: bytter vi den mot en tom
+      # streng, står endepunktet igjen uten skjema-ID, og da lurer gatingen i
+      # js/main.js seg selv til å tro at ID-en finnes og viser et skjema som
+      # ikke kan sende. Derfor sjekker vi at den har innhold først.
+      - name: Sett inn Formspree-ID-ene
+        env:
+          ID_OSLO: ${{ secrets.FORMSPREE_ID_OSLO }}
+          ID_STAVANGER: ${{ secrets.FORMSPREE_ID_STAVANGER }}
+        run: |
+          injiser() {
+            if [ -z "$2" ]; then
+              echo "::warning::$1: ingen Formspree-ID satt — skjemaet forblir skjult"
+              return 0
+            fi
+            sed -i "s|%%FORMSPREE_ID%%|$2|g" "$1"
+            echo "$1: Formspree-ID satt inn"
+          }
+          injiser dist/index.html "$ID_OSLO"
+          injiser dist/stavanger/index.html "$ID_STAVANGER"
+
       - name: Fjern kommentarer fra HTML/CSS/JS
         run: |
           for f in dist/index.html dist/stavanger/index.html; do

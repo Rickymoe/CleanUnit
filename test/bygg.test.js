@@ -189,7 +189,7 @@ test('Bare «Tjenester»-overskriften har vaskesveip', () => {
 test('Stien: alle seksjonene den ankrer til finnes, med eyebrow', () => {
   for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
     const h = les(f)
-    for (const id of ['tjenester', 'referanser', 'hvorfor', 'om-oss', 'jobb-hos-oss']) {
+    for (const id of ['tjenester', 'referanser', 'hvorfor', 'om-oss', 'jobb-hos-oss', 'tilbud']) {
       const start = h.indexOf(`id="${id}"`)
       assert.ok(start > -1, `${f}: mangler #${id}`)
       const seksjon = h.slice(start, h.indexOf('</section>', start))
@@ -211,4 +211,136 @@ test('Footer-vannmerket er samme veinett-teppe som heroen', () => {
   assert.match(blokk, /mix-blend-mode: screen/)
   // Oslo-kartet skal ikke lenger brukes noe sted i CSS-en
   assert.doesNotMatch(css, /hero-kart-vannmerke/)
+})
+
+// Tilbudsskjemaet (2026-09-27). Ett Formspree-skjema per by, så hvert kontor
+// får bare sin egen post — Oslo til renhold@, Stavanger til thord@. Begge
+// sider bygges fra samme mal.html, så forskjellene må komme fra byer.json.
+// Formspree-abonnementet er ennå ikke anskaffet (Christopher): kilden har
+// %%FORMSPREE_ID%% som plassholder, og deploy-workflowen bytter den mot
+// secrets.FORMSPREE_ID_OSLO / _STAVANGER. Den første testen her verner om at
+// ingen ekte ID noen gang havner i git-historikken.
+const TILBUD_BYER = [
+  ['test/ut/index.html', 'Oslo', 'renhold@cleanunit.no'],
+  ['test/ut/stavanger/index.html', 'Stavanger', 'thord@cleanunit.no'],
+]
+
+const tilbudSeksjon = (h) => {
+  const start = h.indexOf('id="tilbud"')
+  return start < 0 ? '' : h.slice(start, h.indexOf('</section>', start))
+}
+
+test('Tilbud: ingen ekte Formspree-ID er committet', () => {
+  const filer = ['mal.html', '.github/workflows/deploy.yml', 'byer.json',
+    'test/ut/index.html', 'test/ut/stavanger/index.html']
+  for (const f of filer) {
+    assert.doesNotMatch(les(f), /formspree\.io\/f\/(?!%%FORMSPREE_ID%%)/, `${f}: ekte Formspree-ID i kilden`)
+  }
+})
+
+test('Tilbud: skjemaet er skjult i markup og knappen låst til ID-en finnes', () => {
+  for (const [f] of TILBUD_BYER) {
+    const seksjon = tilbudSeksjon(les(f))
+    assert.ok(seksjon, `${f}: mangler #tilbud`)
+    // Skjult i MARKUP, ikke av JS: ble den vist først og skjult av JS, ville en
+    // død form blinket forbi på sider der ID-en ikke er satt ennå.
+    assert.match(seksjon, /<form class="tilbud-skjema" id="tilbud-skjema" hidden/, `${f}: skjemaet må være hidden i markup`)
+    assert.match(seksjon, /data-endpoint="https:\/\/formspree\.io\/f\/%%FORMSPREE_ID%%"/, `${f}: plassholder-endepunkt`)
+    assert.match(seksjon, /<button type="submit"[^>]*\bdisabled\b/, `${f}: send-knappen må være disabled i markup`)
+  }
+})
+
+test('Tilbud: alle feltene har label koblet til id', () => {
+  for (const [f] of TILBUD_BYER) {
+    const seksjon = tilbudSeksjon(les(f))
+    for (const id of ['tilbud-navn', 'tilbud-epost', 'tilbud-telefon',
+      'tilbud-virksomhet', 'tilbud-gjelder', 'tilbud-melding']) {
+      assert.match(seksjon, new RegExp(`for="${id}"`), `${f}: mangler <label for="${id}">`)
+      assert.match(seksjon, new RegExp(`id="${id}"`), `${f}: mangler feltet #${id}`)
+    }
+    // Formspree bruker feltet som heter «email» som svar-til-adresse
+    assert.match(seksjon, /id="tilbud-epost" name="email"/, `${f}: e-postfeltet må hete email`)
+  }
+})
+
+test('Tilbud: «Hva gjelder det» speiler heroens fire kundetyper', () => {
+  for (const [f] of TILBUD_BYER) {
+    const seksjon = tilbudSeksjon(les(f))
+    for (const type of ['Barnehage', 'Skole', 'Kontor', 'Bilforhandler', 'Annet']) {
+      assert.match(seksjon, new RegExp(`<option value="[a-z]+">${type}</option>`), `${f}: mangler ${type}`)
+    }
+  }
+})
+
+test('Tilbud: hver by har sin egen mottaker i fallback og emne', () => {
+  const alle = ['renhold@cleanunit.no', 'thord@cleanunit.no']
+  for (const [f, by, epost] of TILBUD_BYER) {
+    const seksjon = tilbudSeksjon(les(f))
+    assert.match(seksjon, new RegExp(`mailto:${epost.replace('.', '\\.')}`), `${f}: feilboksens fallback`)
+    assert.match(seksjon, new RegExp(`name="_subject" value="Ny tilbudsforespørsel – ${by}"`), `${f}: emnefeltet`)
+    // Feilboksens fallback må peke på EGET kontor — at Stavanger havner hos Oslo
+    // er nettopp det hele to-skjemaer-oppsettet skal unngå.
+    for (const annen of alle.filter((e) => e !== epost)) {
+      assert.doesNotMatch(seksjon, new RegExp(`mailto:${annen.replace('.', '\\.')}`), `${f}: låner ${annen}`)
+    }
+  }
+})
+
+test('Tilbud: heroens sekundærknapp peker på #tilbud i begge byer', () => {
+  for (const [f] of TILBUD_BYER) {
+    assert.match(les(f), /<a class="knapp knapp--omriss" href="#tilbud">Be om tilbud<\/a>/, f)
+  }
+})
+
+test('Tilbud: skjemaet har kvittering og feilboks', () => {
+  for (const [f] of TILBUD_BYER) {
+    const seksjon = tilbudSeksjon(les(f))
+    assert.match(seksjon, /id="tilbud-kvittering"[^>]*hidden/, `${f}: kvitteringen`)
+    assert.match(seksjon, /id="tilbud-feil"[^>]*role="alert"[^>]*hidden/, `${f}: feilboksen`)
+  }
+})
+
+test('Tilbud: varselet om manglende Formspree-abonnement står synlig i skjemakortet', () => {
+  for (const [f, , epost] of TILBUD_BYER) {
+    const seksjon = tilbudSeksjon(les(f))
+    const tag = seksjon.match(/<div class="skjema-varsel" id="tilbud-varsel"[^>]*>/)
+    assert.ok(tag, `${f}: varselet mangler`)
+    // Varselet er det eneste i seksjonen som er synlig mens skjemaet er skjult,
+    // så det må ikke ha hidden-attributtet selv.
+    assert.doesNotMatch(tag[0], /hidden/, `${f}: varselet skal være synlig i markup`)
+    assert.match(seksjon, /Formspree-abonnement/, `${f}: teksten nevner ikke abonnementet`)
+    assert.ok(seksjon.includes(`mailto:${epost}`), `${f}: varselet mangler ${epost}`)
+  }
+})
+
+test('Tilbud: varselet skjules i samme slengen som skjemaet vises', () => {
+  const js = les('js/main.js')
+  const kropp = js.slice(js.indexOf('function tilbudSkjema'))
+  assert.match(kropp, /tilbud-varsel/, 'main.js kjenner ikke varselet')
+  assert.match(kropp, /varsel\.hidden = true/, 'varselet skjules ikke når skjemaet tas i bruk')
+})
+
+test('Tilbud: stien får en node for seksjonen, og skriptet kobles på', () => {
+  const js = les('js/main.js')
+  assert.match(js, /\['#tilbud', 'Be om tilbud'\]/, 'sti-noden mangler')
+  assert.match(js, /tilbudSkjema\(\)/, 'tilbudSkjema kalles ikke fra initSider()')
+  // Gatingen: står plassholderen igjen, finnes ingen ID — da skal skjemaet
+  // forbli skjult og seksjonen vise ring/e-post i stedet.
+  assert.match(js, /includes\('%%FORMSPREE_ID%%'\)/, 'gatingen mot plassholderen mangler')
+})
+
+test('Tilbud: seksjonen fortsetter bakgrunnsvekslingen og har skjemastil', () => {
+  const css = les('css/style.css')
+  // #jobb-hos-oss slutter på --base, så neste seksjon skal være --teal-lys —
+  // samme veksling som resten av siden (flate / teal-lys / base / teal-lys / base).
+  assert.match(css, /\n\.stopp--tilbud \{ padding-block: var\(--seksjon-y\); background: var\(--teal-lys\); \}/)
+  assert.match(css, /\.tilbud-layout \{/, 'layout-grid mangler')
+  assert.match(css, /\.skjema-felt label \{/)
+  assert.match(css, /\.tilbud-skjema input,/, 'feltstilen mangler')
+  assert.match(css, /\.skjema-varsel \{/)
+  assert.match(css, /\.skjema-feil \{/)
+  assert.match(css, /\.skjema-kvittering \{/)
+  // hidden-attributtet må faktisk skjule: setter man display på disse
+  // selektorene, overstyrer det UA-regelen og den døde formen vises likevel.
+  assert.match(css, /\[hidden\] \{ display: none; \}/)
 })
