@@ -418,18 +418,16 @@ addEventListener("load", function () {
 
      Kilden har %%FORMSPREE_ID%% som plassholder. Deploy-workflowen bytter den
      mot secrets.FORMSPREE_ID_OSLO / _STAVANGER, så ID-en aldri havner i
-     git-historikken. Står plassholderen igjen (f.eks. lokalt), lar main.js
-     skjemaet være skjult og seksjonen viser bare ring/e-post — det går aldri
-     en død form live.
+     git-historikken.
 
      NB: Formspree-abonnementet er IKKE anskaffet ennå. Christopher må skaffe
      et Formspree-abonnement og opprette to skjemaer, ett per kontor, før
-     skjemaet kan tas i bruk. Fram til da står seksjonen uten skjema, med ring
-     og e-post som eneste vei inn. Se .github/workflows/deploy.yml.
+     skjemaet kan tas i bruk. Se .github/workflows/deploy.yml.
 
-     Ricky ba om at det står synlig på siden (2026-09-27), ikke bare her i
-     kilden: se .skjema-varsel lenger ned i seksjonen. Det er en intern
-     melding, så det skjuler seg selv så snart skjemaet tas i bruk. -->
+     Skjemaet står synlig også før ID-en finnes (Ricky, 2026-09-27), med låst
+     send-knapp og .skjema-varsel øverst i kortet som forklarer hvorfor.
+     main.js lar være å koble på innsendingen så lenge plassholderen står, så
+     ingenting kan sendes dit det ikke finnes noe mottak. -->
 <section class="stopp--tilbud" id="tilbud">
   <div class="wrap">
     <p class="eyebrow">Be om tilbud</p>
@@ -441,8 +439,16 @@ addEventListener("load", function () {
         <p class="stopp__lede">Fortell oss litt om lokalene og behovet deres, så kommer vi tilbake med et tilbud. Vi vasker for barnehager, skoler, kontorer og bilforhandlere — og tilpasser opplegget etter hvordan dere jobber.</p>
         <p class="tilbud__direkte">Går det fortere å snakkes? Ring <a href="tel:{{telefon}}">{{telefon_visning}}</a>, eller send e-post til <a href="mailto:{{tilbud_epost}}">{{tilbud_epost}}</a>.</p>
       </div>
-      <form class="tilbud-skjema" id="tilbud-skjema" hidden
+      <form class="tilbud-skjema" id="tilbud-skjema"
             data-endpoint="https://formspree.io/f/%%FORMSPREE_ID%%">
+        <!-- Varselet står øverst i kortet, ikke under knappen: da ser kunden
+             at skjemaet ikke er i bruk før den har fylt ut seks felt og trykket
+             på en knapp som ikke gjør noe. js/main.js skjuler det i samme
+             slengen som skjemaet tas i bruk. -->
+        <div class="skjema-varsel" id="tilbud-varsel">
+          <p><strong>Skjemaet er ikke tatt i bruk ennå.</strong> Christopher må skaffe et Formspree-abonnement og opprette ett skjema per kontor før forespørsler kan sendes inn herfra.</p>
+          <p>Inntil videre: ring <a href="tel:{{telefon}}">{{telefon_visning}}</a>, eller send e-post til <a href="mailto:{{tilbud_epost}}">{{tilbud_epost}}</a>.</p>
+        </div>
         <div class="skjema-rad">
           <div class="skjema-felt">
             <label for="tilbud-navn">Navn</label>
@@ -482,14 +488,6 @@ addEventListener("load", function () {
         <button type="submit" class="knapp knapp--fyll" disabled>Send forespørsel</button>
         <p class="skjema-notat">Vi svarer som regel innen én arbeidsdag.</p>
       </form>
-      <!-- Varselet står i skjemaets plass i grid-en så lenge skjemaet er skjult,
-           og forsvinner i samme slengen som js/main.js åpner skjemaet. Det er
-           med vilje: meldingen er intern og skal ikke stå på den ferdige siden
-           når skjemaet først virker. -->
-      <div class="skjema-varsel" id="tilbud-varsel">
-        <p><strong>Skjemaet er ikke tatt i bruk ennå.</strong> Christopher må skaffe et Formspree-abonnement og opprette ett skjema per kontor før forespørsler kan sendes inn herfra.</p>
-        <p>Inntil videre: ring <a href="tel:{{telefon}}">{{telefon_visning}}</a>, eller send e-post til <a href="mailto:{{tilbud_epost}}">{{tilbud_epost}}</a>.</p>
-      </div>
     </div>
     <p class="skjema-feil" id="tilbud-feil" role="alert" hidden>Noe gikk galt. Prøv igjen, eller ring <a href="tel:{{telefon}}">{{telefon_visning}}</a> — eller send e-post til <a href="mailto:{{tilbud_epost}}">{{tilbud_epost}}</a>.</p>
     <div class="skjema-kvittering" id="tilbud-kvittering" role="status" hidden>

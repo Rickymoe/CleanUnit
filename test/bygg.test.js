@@ -238,13 +238,16 @@ test('Tilbud: ingen ekte Formspree-ID er committet', () => {
   }
 })
 
-test('Tilbud: skjemaet er skjult i markup og knappen låst til ID-en finnes', () => {
+test('Tilbud: skjemaet står synlig, men knappen er låst til ID-en finnes', () => {
   for (const [f] of TILBUD_BYER) {
     const seksjon = tilbudSeksjon(les(f))
     assert.ok(seksjon, `${f}: mangler #tilbud`)
-    // Skjult i MARKUP, ikke av JS: ble den vist først og skjult av JS, ville en
-    // død form blinket forbi på sider der ID-en ikke er satt ennå.
-    assert.match(seksjon, /<form class="tilbud-skjema" id="tilbud-skjema" hidden/, `${f}: skjemaet må være hidden i markup`)
+    // Ricky 2026-09-27: seksjonen skal se ferdig ut også før abonnementet er
+    // på plass, så skjemaet vises. Det som hindrer en tapt henvendelse er
+    // derfor ikke lenger hidden, men den låste knappen + at main.js ikke
+    // kobler på innsendingen så lenge plassholderen står.
+    assert.match(seksjon, /<form class="tilbud-skjema" id="tilbud-skjema"/, `${f}: skjemaet`)
+    assert.doesNotMatch(seksjon, /id="tilbud-skjema"[^>]*\bhidden\b/, `${f}: skjemaet skal ikke være hidden`)
     assert.match(seksjon, /data-endpoint="https:\/\/formspree\.io\/f\/%%FORMSPREE_ID%%"/, `${f}: plassholder-endepunkt`)
     assert.match(seksjon, /<button type="submit"[^>]*\bdisabled\b/, `${f}: send-knappen må være disabled i markup`)
   }
@@ -305,9 +308,11 @@ test('Tilbud: varselet om manglende Formspree-abonnement står synlig i skjemako
     const seksjon = tilbudSeksjon(les(f))
     const tag = seksjon.match(/<div class="skjema-varsel" id="tilbud-varsel"[^>]*>/)
     assert.ok(tag, `${f}: varselet mangler`)
-    // Varselet er det eneste i seksjonen som er synlig mens skjemaet er skjult,
-    // så det må ikke ha hidden-attributtet selv.
     assert.doesNotMatch(tag[0], /hidden/, `${f}: varselet skal være synlig i markup`)
+    // Det skal ligge inne i skjemakortet, ellers står det utenfor kortet det
+    // forklarer, og det ville blitt en tredje grid-kolonne i .tilbud-layout.
+    assert.ok(seksjon.indexOf('id="tilbud-varsel"') < seksjon.indexOf('</form>'),
+      `${f}: varselet må ligge inne i skjemaet`)
     assert.match(seksjon, /Formspree-abonnement/, `${f}: teksten nevner ikke abonnementet`)
     assert.ok(seksjon.includes(`mailto:${epost}`), `${f}: varselet mangler ${epost}`)
   }
@@ -318,6 +323,16 @@ test('Tilbud: varselet skjules i samme slengen som skjemaet vises', () => {
   const kropp = js.slice(js.indexOf('function tilbudSkjema'))
   assert.match(kropp, /tilbud-varsel/, 'main.js kjenner ikke varselet')
   assert.match(kropp, /varsel\.hidden = true/, 'varselet skjules ikke når skjemaet tas i bruk')
+})
+
+test('Tilbud: uten ID kobles innsendingen ikke på, og Enter laster ikke siden', () => {
+  const js = les('js/main.js')
+  const kropp = js.slice(js.indexOf('function tilbudSkjema'))
+  assert.match(kropp, /const klar = endepunkt !== '' && !endepunkt\.includes\('%%FORMSPREE_ID%%'\)/,
+    'klar-sjekken mangler')
+  const ikkeKlar = kropp.slice(kropp.indexOf('if (!klar)'), kropp.indexOf('knapp.disabled = false'))
+  assert.match(ikkeKlar, /preventDefault/, 'innsendingen stoppes ikke når endepunktet mangler')
+  assert.match(ikkeKlar, /return/, 'innsendingen kobles på selv uten endepunkt')
 })
 
 test('Tilbud: stien får en node for seksjonen, og skriptet kobles på', () => {
@@ -338,6 +353,10 @@ test('Tilbud: seksjonen fortsetter bakgrunnsvekslingen og har skjemastil', () =>
   assert.match(css, /\.skjema-felt label \{/)
   assert.match(css, /\.tilbud-skjema input,/, 'feltstilen mangler')
   assert.match(css, /\.skjema-varsel \{/)
+  // Den låste knappen må se låst ut: uten en :disabled-regel står den i full
+  // solid teal og ser trykkbar ut mens den ikke gjør noe.
+  assert.match(css, /\.tilbud-skjema button\[type="submit"\]:disabled \{[^}]*opacity/)
+  assert.match(css, /\.knapp:not\(:disabled\):hover/, 'den låste knappen løfter seg på hover')
   assert.match(css, /\.skjema-feil \{/)
   assert.match(css, /\.skjema-kvittering \{/)
   // hidden-attributtet må faktisk skjule: setter man display på disse

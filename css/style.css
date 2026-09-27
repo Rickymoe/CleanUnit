@@ -64,7 +64,9 @@ a { color: inherit; }
 @media (hover: hover) {
   .knapp--fyll:hover { background: var(--teal-mork); border-color: var(--teal-mork); }
   .knapp--omriss:hover { background: var(--teal); color: #fff; }
-  .knapp:hover { transform: translateY(-1px); }
+  /* :not(:disabled) fordi en låst <button class="knapp"> ellers løfter seg
+     under pekeren som om den var klikkbar. <a class="knapp"> rammes ikke. */
+  .knapp:not(:disabled):hover { transform: translateY(-1px); }
 }
 :where(a, button):focus-visible {
   outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 4px;
@@ -889,10 +891,13 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
    --base: sidens veksling er flate / teal-lys / base / teal-lys / base, og
    den må fortsette, ellers smelter to seksjoner sammen.
 
-   Skjemaet er `hidden` i markup og åpnes av js/main.js først når en ekte
-   Formspree-ID finnes. Det er hele poenget med [hidden]-regelen nederst:
-   setter noen en display-verdi på .tilbud-skjema, vinner den over UA-regelen
-   og den døde formen står synlig likevel. */
+   Skjemaet står synlig også før Formspree-ID-en finnes (Ricky, 2026-09-27).
+   Send-knappen er da `disabled` i markup og js/main.js kobler ikke på
+   innsendingen, så en forespørsel kan ikke forsvinne ut i tomme luft.
+
+   [hidden]-regelen nederst må fortsatt ligge sist: den deler spesifisitet med
+   en klasse, så rekkefølgen avgjør om .skjema-varsel, .skjema-feil og
+   .skjema-kvittering faktisk blir skjult når skriptet setter hidden på dem. */
 .stopp--tilbud { padding-block: var(--seksjon-y); background: var(--teal-lys); }
 .tilbud-layout { display: grid; gap: var(--s-6); margin-top: var(--s-5); }
 @media (min-width: 56rem) {
@@ -921,16 +926,21 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .tilbud-skjema select:focus-visible,
 .tilbud-skjema textarea:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; border-color: var(--teal); }
 .tilbud-skjema button[type="submit"] { width: 100%; }
+/* Låst send-knapp: skjemaet vises før Formspree-ID-en finnes (Ricky,
+   2026-09-27), og da er knappen `disabled` i markup. Uten denne så den
+   fullt trykkbar ut — solid teal, ingen demping — og da ser det ut som en
+   feil på siden når ingenting skjer. Samme grep som Kuvaas. */
+.tilbud-skjema button[type="submit"]:disabled { opacity: .6; cursor: not-allowed; }
 .skjema-notat { color: var(--tekst-svak); font-size: var(--t-sm); text-align: center; }
 
-/* Plassholderen som står i skjemaets grid-kolonne så lenge skjemaet er skjult
-   (ingen Formspree-ID). Samme kort-behandling som skjemakortet, så kolonnen
-   ser lik ut enten det står skjema eller varsel der. js/main.js skjuler den
-   når skjemaet åpnes — den er intern og skal ikke bli stående på den ferdige
-   siden. */
-.skjema-varsel { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(10, 92, 91, .08); }
-.skjema-varsel > * + * { margin-top: var(--s-3); }
-.skjema-varsel p { color: var(--tekst-svak); }
+/* Varselet om at Formspree-abonnementet mangler. Det ligger inne i det hvite
+   kortet, så det får en svak teal-flate i stedet for kortstilen — ellers ble
+   det hvitt på hvitt. Det er en melding, ikke en feil, så den holder seg i
+   paletten og låner ikke rødfargen fra .skjema-feil. js/main.js skjuler det
+   når skjemaet tas i bruk. */
+.skjema-varsel { padding: var(--s-3) var(--s-4); border-radius: 10px; background: var(--teal-lys); }
+.skjema-varsel > * + * { margin-top: var(--s-2); }
+.skjema-varsel p { color: var(--tekst-svak); font-size: var(--t-sm); }
 .skjema-varsel strong { color: var(--teal-mork); }
 .skjema-varsel a { color: var(--teal-mork); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 

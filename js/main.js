@@ -488,15 +488,16 @@ function stiNedover(reduksjon) {
   }
 }
 
-/* Tilbudsskjemaet (2026-09-27). Skjemaet er `hidden` i markup med vilje:
-   kilden har %%FORMSPREE_ID%% som plassholder, og deploy-workflowen bytter den
-   mot en ekte ID fra secrets (FORMSPREE_ID_OSLO / _FORMSPREE_ID_STAVANGER).
-   Er plassholderen fortsatt der — lokal kjøring, eller en deploy der hemmelig-
-   heten ikke er satt — finnes det ingen mottaker, og da skal skjemaet ikke
-   vises i det hele tatt. Seksjonen står igjen med ring/e-post, som er en full-
-   god vei inn. Derfor skjules det i markup og ÅPNES av JS, ikke omvendt: ble
-   det vist først og skjult her, ville en død form blinket forbi på vei til å
-   bli borte. Uten JS forblir den altså skjult, som er riktig side å feile på.
+/* Tilbudsskjemaet (2026-09-27). Kilden har %%FORMSPREE_ID%% som plassholder, og
+   deploy-workflowen bytter den mot en ekte ID fra secrets (FORMSPREE_ID_OSLO /
+   FORMSPREE_ID_STAVANGER). Er plassholderen fortsatt der — lokal kjøring, eller
+   en deploy der hemmeligheten ikke er satt — finnes det ingen mottaker.
+
+   Skjemaet VISES likevel (Ricky, 2026-09-27: seksjonen skal se ferdig ut før
+   abonnementet er på plass). Da må ingenting kunne sendes: send-knappen er
+   `disabled` i markup, varselet øverst i kortet forklarer hvorfor, og vi
+   kobler ikke på innsendingen i det hele tatt før ID-en finnes. Vi fanger
+   likevel submit og stopper den, så Enter i et felt ikke laster siden på nytt.
 
    Selve innsendingen følger mønsteret fra Kuvaas: POST til Formspree med
    FormData og Accept: application/json, tre tilstander (skjema / kvittering /
@@ -506,20 +507,27 @@ function tilbudSkjema() {
   const skjema = document.getElementById('tilbud-skjema')
   if (!skjema) return
 
-  const endepunkt = skjema.dataset.endpoint || ''
-  if (!endepunkt || endepunkt.includes('%%FORMSPREE_ID%%')) return
-
   const knapp = skjema.querySelector('button[type="submit"]')
   const feil = document.getElementById('tilbud-feil')
   const kvittering = document.getElementById('tilbud-kvittering')
   if (!knapp || !feil || !kvittering) return
   const knappTekst = knapp.textContent
+  const varsel = document.getElementById('tilbud-varsel')
 
-  skjema.hidden = false
+  const endepunkt = skjema.dataset.endpoint || ''
+  const klar = endepunkt !== '' && !endepunkt.includes('%%FORMSPREE_ID%%')
+
+  if (!klar) {
+    // Ingen mottaker: skjemaet står synlig, men knappen forblir låst og
+    // varselet står. Vi stopper innsendingen uansett, så Enter i et felt ikke
+    // laster siden på nytt med skjemafelt som query-streng.
+    skjema.addEventListener('submit', (e) => e.preventDefault())
+    return
+  }
+
   knapp.disabled = false
   // Varselet om at abonnementet mangler er en intern melding som bare skal
   // stå så lenge skjemaet ikke virker. Nå virker det, så da går den ut.
-  const varsel = document.getElementById('tilbud-varsel')
   if (varsel) varsel.hidden = true
 
   skjema.addEventListener('submit', async (e) => {
