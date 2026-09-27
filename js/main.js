@@ -408,6 +408,21 @@ function stiNedover(reduksjon) {
       fy = n.y
     }
 
+    // Siste etappe: forbi siste node og helt ned til footer-kanten. Linja
+    // sluttet før på eyebrow-en til siste seksjon, men SVG-en er høy til
+    // footerens overkant — så det siste stykket ble aldri tegnet. Det var
+    // usynlig så lenge «Jobb hos oss» var siste node (kort avstand ned til
+    // footeren), men da #tilbud med skjemaet kom i mellom (Ricky,
+    // 2026-09-27), ble gapet 1067 px: stien hang løst i lufta midt i en tom
+    // venstremarg. Målt likt på 981/1100/1280/1440/1912 px (1066–1067 px) og
+    // større på mobil (1321 px ved 500 px), altså uavhengig av bredde. Samme
+    // kurveform som mellom nodene, så rytmen i meanderen holdes.
+    const slutt = bunn - topp
+    if (slutt > fy) {
+      const dy = slutt - fy
+      d += ` C ${x - bulk} ${fy + dy * 0.35}, ${x - bulk} ${fy + dy * 0.65}, ${x} ${slutt}`
+    }
+
     bane = document.createElementNS(NS, 'path')
     bane.setAttribute('class', 'sti__linje')
     bane.setAttribute('d', d)
