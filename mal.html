@@ -89,7 +89,18 @@ addEventListener("load", function () {
        skjermleser får den samme informasjonen fra ingressen, og skal slippe
        å høre de fire ordene to ganger. -->
   <div class="hero__rute" aria-hidden="true">
-    <img class="hero__rute-bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+    <!-- Bilen og speilbildet av den i bakken. Speilet er en egen boks og ikke
+         bare et speilvendt bilde, fordi bilens hjulbunn ligger et stykke over
+         bildets underkant (se .hero__rute-bil-boks i style.css): speilet må
+         forankres i hjullinja for at hjulene skal møtes i speilet. Hele
+         båndet er aria-hidden, så speilet er et bilde uten innhold for en
+         skjermleser uansett — det får ingen egen alt-tekst å lese opp. -->
+    <div class="hero__rute-bil-boks">
+      <img class="hero__rute-bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+      <span class="hero__rute-speil">
+        <img src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+      </span>
+    </div>
     <div class="hero__stopp-rad">
       <div class="hero__rute-linje"></div>
       <span class="hero__stopp"><span class="hero__stopp-prikk"></span>Barnehager</span>

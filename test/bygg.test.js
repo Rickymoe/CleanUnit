@@ -22,6 +22,13 @@ test('byggAlle kjører', () => {
 
 const les = (f) => readFileSync(f, 'utf8');
 
+// Kroppen til initSider() alene. Uten dette er «kalles X fra initSider()»
+// en test som ikke kan feile: mønsteret /x\(\)/ matcher også selve
+// definisjonen `function x()`, så den består selv om kallet er borte.
+// (Oppdaget 2026-09-30 ved å bryte hvert vern og se om testene feilet —
+// glansSveip-kallet lot seg fjerne uten at noen test sa fra.)
+const initKropp = (js) => js.slice(js.indexOf('export function initSider'), js.indexOf('\n}', js.indexOf('export function initSider')));
+
 test('Oslo: egen tittel, eget telefonnummer, lenke til Stavanger i footeren', () => {
   const h = les('test/ut/index.html');
   assert.match(h, /<title>Clean Unit – renhold i Oslo<\/title>/);
@@ -58,6 +65,81 @@ test('Hero: rutebånd med de fire kundetypene og rekkevidde-linje', () => {
     // Båndet er rent dekorativt — kundetypene står også i ingressen
     assert.match(h, /<div class="hero__rute" aria-hidden="true">/, f);
   }
+});
+
+// Glansen (Ricky 2026-09-30). Tre behandlinger som alle legger hvitt lys på
+// flater som allerede finnes — se --glans-*-tokensene i css/style.css. Testen
+// finnes fordi ingen av dem har innhold å telle: forsvinner en av dem, feiler
+// ingenting, siden ser bare annerledes ut. Det er samme stillhet som gjorde at
+// de døde sti-lenkene kunne ligge uoppdaget i fire dager.
+test('Glans: de tre behandlingene finnes i CSS-en', () => {
+  const css = les('css/style.css');
+  // Vindusglasset: refleksen ligger inni kortets egen ramme (8,5 px), så den
+  // måler seg etter rammen og ikke etter kortet. Innholdet må være løftet over
+  // den — ellers maler det posisjonerte pseudo-elementet oppå teksten, som var
+  // den dyreste feilen i laben («Vinduspuss» ble vasket ut).
+  assert.match(css, /\.kort--vindu::before \{/, 'refleksen i vindusglasset mangler');
+  assert.match(css, /\.kort--vindu > picture,[\s\S]*?z-index: 1; \}/,
+    'innholdet på vinduskortet løftes ikke over refleksen');
+  assert.match(css, /inset: 8\.5px; border-radius: 5\.5px/,
+    'glansen følger ikke vindusrammen (8,5 px innrykk, 5,5 px radius)');
+  // Speilet i bakken: -17,2 % er hjullinja uttrykt som prosent-margin mot
+  // bilens bredde — samme konstant som boksens negative margin bruker.
+  assert.match(css, /\.hero__rute-speil \{[\s\S]*?margin-top: -17\.2%;[\s\S]*?\}/,
+    'speilet under bilen mangler forankringen i hjullinja');
+  // Snuingen må ligge på bildet og masken på boksen rundt. Ligger begge på
+  // samme element, speilvendes masken også, og speilet dør oppover i stedet
+  // for nedover (målt i laben).
+  assert.match(css, /\.hero__rute-speil img \{[^}]*scaleY\(-1\)/,
+    'speilvendingen ligger ikke på bildet inni speilboksen');
+  assert.match(css, /\.hero__rute-speil \{[^}]*mask-image/,
+    'masken ligger ikke på speilboksen');
+  // Den våte kanten øverst på den mørke flaten.
+  assert.match(css, /\.stopp--tillit \{ padding-block: var\(--seksjon-y\); background: var\(--teal-mork\);/,
+    'den mørke seksjonen er endret — glansen under må sjekkes på nytt');
+  assert.match(css, /\.stopp--tillit::before \{/, 'den våte kanten mangler');
+  assert.match(css, /\.stopp--tillit \.wrap \{ position: relative; z-index: 1; \}/,
+    'innholdet løftes ikke over kanten — et hvitt slør ville spist av eyebrow-kontrasten');
+});
+
+test('Glans: speilet i heroen er en egen boks rundt bilen', () => {
+  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
+    const h = les(f);
+    // Boksen må finnes: speilet forankres i hjullinja inne i den, og uten den
+    // ville speilet hengt fra bilens underkant — 17,2 % av bilbredden for lavt.
+    assert.match(h, /<div class="hero__rute-bil-boks">/, f);
+    // Bredden og den negative marginen flyttet fra bilen til boksen, så
+    // geometrien må fortsatt ligge der den plasserer bilen på linja.
+    assert.match(les('css/style.css'), /\.hero__rute-bil-boks \{[\s\S]*?margin-bottom: calc\(1\.6rem - 0\.172 \* var\(--bil-b\)\)/,
+      'bilens plassering på linja ligger ikke på boksen');
+    const hero = h.slice(h.indexOf('<div class="hero__rute"'), h.indexOf('hero__stopp-rad'));
+    const biler = [...hero.matchAll(/src="([^"]*bil\.png)"/g)].map((m) => m[1]);
+    assert.equal(biler.length, 2, `${f}: heroen skal ha bilen og ett speil`);
+    // Speilet er en kopi av bilen — ingen ny nettverkshenting — men det MÅ
+    // være samme fil: byttes bildet i den ene og ikke den andre, står det et
+    // speil av en annen bil under den.
+    assert.equal(biler[0], biler[1], `${f}: speilet viser ikke samme bilde som bilen`);
+    const speil = hero.slice(hero.indexOf('hero__rute-speil'), hero.indexOf('hero__stopp-rad'));
+    // Hele båndet er aria-hidden, så speilet skal ikke ha noe å lese opp.
+    assert.match(speil, /alt=""/, f);
+    assert.doesNotMatch(speil, /aria-label|alt="[^"]+/, `${f}: speilet har fått et innhold`);
+  }
+});
+
+test('Glans: sveipet går én gang, og bare når bevegelse er greit', () => {
+  const js = les('js/main.js');
+  assert.match(initKropp(js), /glansSveip\(reduksjon\)/, 'glansSveip kalles ikke fra initSider()');
+  const kropp = js.slice(js.indexOf('function glansSveip'), js.indexOf('function glansSveip') + 900);
+  assert.match(kropp, /if \(reduksjon \|\| !kort\) return/, 'sveipet gates ikke på redusert bevegelse');
+  // Uten disconnect ville sveipet gått på nytt hver gang kortet kom inn i
+  // bildet igjen — altså en løkke, som er nøyaktig det vi valgte bort.
+  assert.match(kropp, /observer\.disconnect\(\)/, 'sveipet kobles ikke fra etter første gang');
+  const css = les('css/style.css');
+  // Klassen settes ved sidelast, men medie-queryen leses fortløpende: slår
+  // brukeren på redusert bevegelse etter at siden er lastet, er det CSS-en og
+  // ikke JS-en som må stoppe sveipet.
+  assert.match(css, /prefers-reduced-motion: reduce\) \{\s*\.kort--vindu\.glans-sveip::after \{ animation: none; \}/,
+    'CSS-en fanger ikke redusert bevegelse satt etter sidelast');
 });
 
 // Merk: teppet er laget av et OSM-utsnitt, men strippet til bare gater og uten
@@ -338,7 +420,7 @@ test('Tilbud: uten ID kobles innsendingen ikke på, og Enter laster ikke siden',
 test('Tilbud: stien får en node for seksjonen, og skriptet kobles på', () => {
   const js = les('js/main.js')
   assert.match(js, /\['#tilbud', 'Be om tilbud'\]/, 'sti-noden mangler')
-  assert.match(js, /tilbudSkjema\(\)/, 'tilbudSkjema kalles ikke fra initSider()')
+  assert.match(initKropp(js), /tilbudSkjema\(\)/, 'tilbudSkjema kalles ikke fra initSider()')
   // Gatingen: står plassholderen igjen, finnes ingen ID — da skal skjemaet
   // forbli skjult og seksjonen vise ring/e-post i stedet.
   assert.match(js, /includes\('%%FORMSPREE_ID%%'\)/, 'gatingen mot plassholderen mangler')

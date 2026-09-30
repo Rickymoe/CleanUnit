@@ -30,6 +30,28 @@
   --logo-tekst-gra: #757575;
   --logo-tekst-turkis: #178F86;
   --logo-tagline-gra: #666666; /* 5,3:1 mot --base — grunnfargen i taglinen, så «Renhold»-tenningen (--teal) er tydelig */
+  /* Glansen (Ricky 2026-09-30: «jeg savner noe glossy på siden»). Glans er
+     tolket som BEVIS og ikke som pynt: de tre behandlingene under legger
+     lys på flater som allerede finnes — vindusglasset på tjenestekortet
+     (.kort--vindu), bakken under bilen i heroen (.hero__rute-speil) og
+     overkanten av den mørke flaten (.stopp--tillit). Ingen nye flater, ingen
+     nye farger utenfor paletten: alt er hvitt lys med varierende styrke.
+     Alle tallene står her så de kan justeres på ett sted. Verdiene er valgt
+     av Ricky i lab-glans.html (et kast-av-dokument, ikke i repoet). */
+  --glans-v: 115deg;         /* refleksens vinkel på vindusglasset */
+  --glans-b: 30%;            /* det brede båndets halve bredde */
+  --glans-bred: .28;         /* styrken på det brede båndet */
+  --glans-skarp: .5;         /* styrken på den skarpe kanten inne i refleksen */
+  --glans-sveip: .95;        /* tørkesveipets styrke — se merknaden i regelen */
+  --glans-topp: .45;         /* lyset som faller ned fra overkanten av ruta */
+  --glans-speil: .45;        /* speilbildet av bilen i bakken */
+  --glans-speil-fade: 60%;   /* hvor langt ned speilbildet rekker før det dør */
+  --glans-speil-blur: 1px;
+  --glans-kant: .12;         /* den våte kanten øverst på den mørke flaten */
+  /* Klemt til 5rem OG ikke bare 16 %: den mørke seksjonen er nesten tre
+     ganger så høy som den var i laben, og et rent prosenttall ville lagt et
+     15-20 rem høyt slør over eyebrowen og overskriften i stedet for en kant. */
+  --glans-kant-hoyde: min(16%, 5rem);
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; overflow-x: clip; background: var(--base); }
@@ -170,11 +192,20 @@ a { color: inherit; }
    OVER den stiplede linja i stedet for å kjøre på den (målt på skjermbilde:
    hjulbunn 684 mot linje 725,5). Den negative marginen trekker bilen ned
    til hjulene lander på linja; den tomme lufta under hjulene havner da
-   under radens underkant, noe som er harmløst (raden er absolutt plassert). */
-.hero__rute-bil {
+   under radens underkant, noe som er harmløst (raden er absolutt plassert).
+
+   Boksen rundt bilen (2026-09-30): den negative marginen og bredden lå på
+   bilen selv, men speilbildet under den må forankres i HJULLINJA og ikke i
+   bildets underkant. Derfor bærer boksen plasseringen og bilen bare fyller
+   den. Geometrien er uendret — boksen er den samme boksen som bilen var. */
+.hero__rute-bil-boks {
   --bil-b: clamp(9rem, 21vw, 17rem);
-  width: var(--bil-b); height: auto; display: block;
+  position: relative;
+  width: var(--bil-b);
   margin-bottom: calc(1.6rem - 0.172 * var(--bil-b));
+}
+.hero__rute-bil {
+  width: 100%; height: auto; display: block;
   /* Bildet har en myk kant: alfa kravler fra 0 til 255 over ~40 px i kilden
      (~4 px på skjermen). Der en veilinje krysser den, holder linja seg synlig
      helt inn til silhuetten. Etter z-index-fiksen over er dette alt som
@@ -182,6 +213,29 @@ a { color: inherit; }
      det er ikke verdt å skjære bort bilens myke overgang for. */
   filter: drop-shadow(0 14px 22px rgba(14, 124, 123, .22));
 }
+/* Speilbildet av bilen i bakken (Ricky 2026-09-30). Bilen står på en stille
+   vei — speilet sier at underlaget er nyvasket, og det er den eneste av de
+   tre glansene som forteller noe om UTFØRELSEN og ikke om resultatet.
+   Avstanden opp til hjullinja er den samme 17,2 %-konstanten som over, men
+   her MÅ den skrives som en prosent-margin: en prosent-margin på et absolutt
+   posisjonert element løses mot containing block-ens BREDDE, altså mot
+   bilens bredde — nøyaktig samme tall som boksens negative margin bruker,
+   uten å gjenta clamp()-en.
+   Masken ligger på dette elementet og snuingen på bildet inni, og det er
+   ikke vilkårlig: en maske følger elementets eget koordinatsystem, så hadde
+   begge ligget på samme element, ville speilvendingen også snudd masken og
+   latt speilet dø oppover i stedet for nedover (målt i laben).
+   filter: blur() demper pikselstøyen i den skarpe bilen; uten den leses
+   speilet som en andre bil og ikke som et speil. */
+.hero__rute-speil {
+  position: absolute; left: 0; top: 100%; width: 100%;
+  margin-top: -17.2%;
+  opacity: var(--glans-speil); filter: blur(var(--glans-speil-blur));
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent var(--glans-speil-fade));
+          mask-image: linear-gradient(to bottom, #000 0%, transparent var(--glans-speil-fade));
+}
+.hero__rute-speil img { width: 100%; height: auto; display: block; transform: scaleY(-1); }
 .hero__stopp-rad {
   position: relative; display: flex; align-items: flex-end;
   gap: clamp(1.5rem, 5vw, 4rem);
@@ -253,7 +307,7 @@ a { color: inherit; }
      → M = −(gap + 0,172 × bilbredde) = −0,9375rem − 0,172 × bilbredde.
      (Målt i 390 px: hjulbunn 437 mot linje 468 = 31 px feil med forrige
      formel, som hadde motsatt fortegn.) */
-  .hero__rute-bil { --bil-b: clamp(7rem, 30vw, 10rem); width: var(--bil-b);
+  .hero__rute-bil-boks { --bil-b: clamp(7rem, 30vw, 10rem); width: var(--bil-b);
     margin-bottom: calc(-0.9375rem - 0.172 * var(--bil-b)); }
   .hero__stopp-rad { position: relative; width: 100%; justify-content: space-between; gap: var(--s-2); }
   .hero__rute-linje { bottom: 100%; }
@@ -527,6 +581,77 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
       0 12px 24px -12px rgba(10, 92, 91, .35);
   }
 }
+/* Refleks i vindusglasset på «Vinduspuss» (Ricky 2026-09-30).
+   Kortet har allerede en vindusramme (inset 8,5 px), så glansen er ikke et
+   nytt lag utenpå kortet — den ligger INNI ruta. Innrykket og radien er
+   derfor ikke valgt fritt: 8,5 px er den innerste rammelinja, og 5,5 px er
+   kortets egen --radius (14 px) minus innrykket, altså den radien ruta
+   faktisk har akkurat der. Flyttes rammen, må disse følge.
+   Lyset er tre lineære gradienter og ikke én: en svak lysning som faller ned
+   fra overkanten, ett bredt og mykt bånd, og ett smalt og skarpt bånd
+   forskjøvet inni det brede. Med bare det brede båndet (målt i laben, 34 %
+   halvbredde) dekket refleksen over to tredeler av ruta og leste som dugg,
+   ikke som glass.
+   Den ligger på ::before og ikke ::after fordi et posisjonert pseudo-element
+   males OVER statisk innhold i samme element: en «::after» la seg oppå ordet
+   «Vinduspuss» og vasket ut teksten (sett på skjermbilde i laben). Innholdet
+   løftes derfor under — samme grep .kort--hjerte bruker for hjertet sitt.
+   Kontrast: hvit glans under mørk tekst kan bare øke kontrasten, og glansen
+   legger ingen ny flate under noen av tegnene. */
+.kort--vindu::before {
+  content: ""; position: absolute; inset: 8.5px; border-radius: 5.5px;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgb(255 255 255 / var(--glans-topp)) 0, transparent 16%),
+    linear-gradient(var(--glans-v),
+      transparent calc(50% + var(--glans-b) * .45),
+      rgb(255 255 255 / var(--glans-skarp)) calc(50% + var(--glans-b) * .62),
+      transparent calc(50% + var(--glans-b) * .78)),
+    linear-gradient(var(--glans-v),
+      transparent calc(50% - var(--glans-b)),
+      rgb(255 255 255 / var(--glans-bred)) 50%,
+      transparent calc(50% + var(--glans-b)));
+}
+.kort--vindu > picture,
+.kort--vindu > h3,
+.kort--vindu > p { position: relative; z-index: 1; }
+
+/* Tørkesveipet: glasset tørkes over én gang når kortet kommer inn i bildet,
+   og blir så stående stille. Klassen settes av glansSveip() i main.js, som
+   observerer kortet — ikke av en CSS-regel alene, fordi det skal skje ÉN
+   gang og på det tidspunktet kortet faktisk ses.
+   Én gang og ikke i løkke: to evige sveip (vinduet og seglet) var det jeg
+   bygget i laben, og Ricky droppet seglet. Et sveip som går én gang leser
+   dessuten som noe som ble GJORT RENT, som er hele poenget med glansen her,
+   mens et sveip som går hvert tredje sekund leser som en fidget på en side
+   som allerede har fjernet scroll-avsløringen fordi den forstyrret lesingen.
+   Uten JS står den stille refleksen igjen alene — altså hele behandlingen
+   minus bevegelsen, ikke et ødelagt kort. */
+.kort--vindu::after {
+  content: ""; position: absolute; inset: 8.5px; border-radius: 5.5px;
+  pointer-events: none;
+  /* Styrken er målt, ikke gjettet. Kortet er --teal-lys (#E6F5F4), altså
+     nesten hvitt, så et hvitt sveip har et TAK på 25 av 255 i rødkanalen
+     (255 − 230) — det finnes ikke mer å hente. Med labens 0,55 nådde båndet
+     bare +14 av de 25 (målt i en tekstfri sone av kortet), og på skjermbilder
+     var sveipet praktisk talt usynlig. 0,95 henter inn resten av taket, og
+     båndet er gjort smalere (20 % mot 26 %) så det leser som en linje som
+     farer over ruta og ikke som et slør som legger seg på den. */
+  background: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / var(--glans-sveip)) 50%, transparent 100%);
+  background-size: 20% 100%;
+  background-repeat: no-repeat;
+  /* Båndet står utenfor ruta i begge ender, så «ingen animasjon» og
+     «animasjonen er ferdig» er samme usynlige tilstand. */
+  background-position: -140% 0;
+}
+.kort--vindu.glans-sveip::after { animation: glans-tork 3000ms ease-in-out forwards; }
+@keyframes glans-tork {
+  0%   { background-position: -140% 0; }
+  100% { background-position: 240% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kort--vindu.glans-sveip::after { animation: none; }
+}
 .tjeneste-kort__ikon { height: 2.75rem; width: auto; margin-bottom: var(--s-3); transition: transform .2s; }
 @media (hover: hover) {
   .tjeneste-kort:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(10,92,91,.35); }
@@ -551,9 +676,37 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    låst til logoen og ga 4,2:1, under de 4,5:1 småtekst skal ha. #9BD5D3 er
    samme turkis, ett hakk lysere, og blir den best lesbare eyebrowen på
    siden. */
-.stopp--tillit { padding-block: var(--seksjon-y); background: var(--teal-mork); }
+.stopp--tillit { padding-block: var(--seksjon-y); background: var(--teal-mork);
+  position: relative; }
 .stopp--tillit .eyebrow { color: #9BD5D3; }
 .stopp--tillit h2 { color: #fff; }
+/* Den våte kanten øverst på den mørke flaten (Ricky 2026-09-30): en smal
+   lysning som faller ned fra overkanten, pluss en 1 px linje helt på toppen
+   der flaten møter den lyse seksjonen over. Det er den eneste av de tre
+   glansene som ikke forestiller noe — den sier bare at flaten er en flate
+   og ikke et hull i siden. Uten den sluttet den mørke blokken tvert.
+   Høyden er klemt til 5 rem (se --glans-kant-hoyde): denne seksjonen er
+   nesten tre ganger så høy som den mørke flaten i laben, så et rent 16 %
+   slør ville lagt seg over eyebrowen og overskriften i stedet for å legge
+   seg på kanten.
+   Innholdet løftes over begge lagene, av samme grunn som på vinduskortet:
+   et posisjonert pseudo-element males over statisk innhold. Uten det ville
+   et hvitt slør ligget oppå eyebrowen (#9BD5D3 på #0A5C5B, målt 4,77:1) og
+   spist av kontrasten. Nå kan glansen bare ligge bak teksten. */
+.stopp--tillit .wrap { position: relative; z-index: 1; }
+.stopp--tillit::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0;
+  height: var(--glans-kant-hoyde); pointer-events: none;
+  background: linear-gradient(to bottom, #fff 0%, transparent 100%);
+  opacity: var(--glans-kant);
+}
+/* Egen 1 px linje i stedet for et hardt stopp i gradienten over: en gradient
+   kan ikke love én piksel på tvers av skjermtettheter, og kanten er hele
+   poenget med denne glansen. */
+.stopp--tillit::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: #fff; opacity: var(--glans-kant); pointer-events: none;
+}
 /* Eyebrow og overskrift er venstrejustert som i de andre seksjonene; kun
    punktene (.tillit-liste) har sentrert ikon-og-tekst-oppsett (Ricky valgte
    dette 2026-09-21, alternativ C). Før stod h2 sentrert og eyebrowen til
