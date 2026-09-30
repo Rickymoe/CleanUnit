@@ -358,26 +358,15 @@ function stiNedover(reduksjon) {
 
   const NS = 'http://www.w3.org/2000/svg'
   const mobil = () => innerWidth < 48 * 16
-  const svg = document.createElementNS(NS, 'svg')
-  svg.setAttribute('class', 'sti')
-  svg.setAttribute('role', 'navigation')
-  svg.setAttribute('aria-label', 'Hopp til seksjon')
-  document.body.appendChild(svg)
+  let svg = null
 
   let bane = null, lengde = 0, hoyvann = 0, topp = 0, bunn = 0, noder = []
-
-  // Vertikal plassering: desktop begynner stien på veilinja i heroen (der
-  // hjørnet er), mobil rett under heroen. På mobil ligger nemlig veilinja
-  // MIDT i heroen (over stoppraden, se .hero__rute-linje), og en sti derfra
-  // ville gått tvers gjennom «Ring oss»-knappen.
-  const startY = (linjeRekt, heroRekt) =>
-    mobil() ? heroRekt.bottom + 8 : linjeRekt.top + linjeRekt.height / 2
 
   // X: 26 px til venstre for der seksjonsteksten begynner — det er margen som
   // faktisk finnes. Målt mot eyebrow-en (samme element nodene ankrer til), ikke
   // mot .wrap: ved 768–1024 px er .wrap like bredt som vinduet, så wrap.left
-  // alene ga x = 4,7 px og bare ~5 px klaring til teksten. Gulvet på 9 px
-  // gjelder mobil, der .wrap har 16–19 px padding og ingen marg utenfor.
+  // alene ga x = 4,7 px og bare ~5 px klaring til teksten. Gulvet på 9 px tar
+  // de smaleste desktop-breddene (rundt 768–900 px), der margen er tynn.
   function xSti() {
     const rubrikk = document.querySelector('#tjenester .eyebrow')
     if (!rubrikk) return 24
@@ -385,16 +374,36 @@ function stiNedover(reduksjon) {
   }
 
   function bygg() {
+    // Stien er droppet på mobil (Ricky, 2026-09-30). Grunnen er målt, ikke
+    // smak: under 48rem finnes det ingen margin å tegne i. .wrap har 16–19 px
+    // padding, så stien lå på x = 9 (kurven svingte ut til 2–8 og ble klippet
+    // av skjermkanten) mens kortene begynte på x = 16. 1,5 px strek på 50 %
+    // opasitet ga 2:1 kontrast på lyst og 1,25:1 på den mørke «Hvorfor»-flaten,
+    // og treff-sirkelen på 36 px lå 9 px utenfor skjermen. Den bar altså ingen
+    // navigasjon der — bare en hårstrek i det som er kortenes pusterom.
+    // Vi lager den ikke i det hele tatt, så det ikke står igjen en tom SVG.
+    if (mobil()) {
+      if (svg) { svg.remove(); svg = null }
+      bane = null; lengde = 0; noder = []
+      return
+    }
+    if (!svg) {
+      svg = document.createElementNS(NS, 'svg')
+      svg.setAttribute('class', 'sti')
+      svg.setAttribute('role', 'navigation')
+      svg.setAttribute('aria-label', 'Hopp til seksjon')
+      document.body.appendChild(svg)
+    }
     const scroll = scrollY
     const ruteRekt = rad.getBoundingClientRect()
     const linjeRekt = linje.getBoundingClientRect()
-    const heroRekt = hero.getBoundingClientRect()
     const footerRekt = footer.getBoundingClientRect()
-    topp = Math.round(startY(linjeRekt, heroRekt) + scroll)
+    // Stien begynner på veilinja i heroen (der hjørnet er) — den fortsetter
+    // den, i stedet for å starte i tomme lufta over første seksjon.
+    topp = Math.round(linjeRekt.top + linjeRekt.height / 2 + scroll)
     bunn = Math.round(footerRekt.top + scroll)
     const x = xSti()
-    const tynn = mobil()          // tynnere strek og mindre prikker på mobil
-    const rPrikk = tynn ? 3.5 : 6
+    const rPrikk = 6
 
     // Hvor ligger SVG-ens eget nullpunkt? (body er ikke posisjonert, så det
     // er dokumentets topp — men vi måler i stedet for å anta, så stien treffer
@@ -420,17 +429,11 @@ function stiNedover(reduksjon) {
     // skalerer med avstanden til kanten, så stien ikke svinger bredere enn
     // det er plass til.
     const bulk = Math.max(9, Math.min(40, x * 0.38))
-    let d, fy
-    if (tynn) {
-      d = `M ${x} 0`
-      fy = 0
-    } else {
-      // Hjørnet: fra der heroens veilinje begynner (stoppradens venstrekant),
-      // bortover til margen og ned. Møtes i samme punkt, så det ser ut som
-      // én linje — dash-mønsteret kan ha litt ulik fase i skjøten.
-      d = `M ${Math.round(ruteRekt.left)} 0 L ${x + 8} 0 Q ${x} 0 ${x} 14`
-      fy = 14
-    }
+    // Hjørnet: fra der heroens veilinje begynner (stoppradens venstrekant),
+    // bortover til margen og ned. Møtes i samme punkt, så det ser ut som
+    // én linje — dash-mønsteret kan ha litt ulik fase i skjøten.
+    let d = `M ${Math.round(ruteRekt.left)} 0 L ${x + 8} 0 Q ${x} 0 ${x} 14`
+    let fy = 14
     for (const n of noder) {
       const dy = n.y - fy
       d += ` C ${x - bulk} ${fy + dy * 0.35}, ${x - bulk} ${fy + dy * 0.65}, ${x} ${n.y}`
@@ -455,7 +458,7 @@ function stiNedover(reduksjon) {
     bane = document.createElementNS(NS, 'path')
     bane.setAttribute('class', 'sti__linje')
     bane.setAttribute('d', d)
-    bane.setAttribute('stroke-width', tynn ? 1.5 : 2)
+    bane.setAttribute('stroke-width', 2)
     svg.appendChild(bane)
     lengde = bane.getTotalLength()
 

@@ -888,7 +888,12 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 
    Alt tegnes av stiNedover() i js/main.js; uten JS finnes det ingen SVG og
    ingen CSS å rydde opp i. Node-høyden (cy) settes av JS, derfor alle
-   posisjoneringer i attributter og ikke i denne fila. */
+   posisjoneringer i attributter og ikke i denne fila.
+
+   Under 48rem tegnes den ikke i det hele tatt (droppet 2026-09-30, Ricky:
+   «Vi dropper den på mobil»). Der finnes det ingen marg å tegne i — stien
+   lå på x = 9 med kortene på x = 16 og ble klippet av skjermkanten. Målingene
+   står i bygg() i js/main.js. Reglene under gjelder altså fra 48rem og opp. */
 .sti {
   position: absolute; left: 0; top: 0; width: 100%;
   z-index: 3;               /* over seksjonenes bakgrunner, se .hero__rute */
