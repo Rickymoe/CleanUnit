@@ -40,6 +40,11 @@ addEventListener("load", function () {
 <body class="{{body_klasse}}">
 <main>
 <header class="hero">
+  <!-- Sol oppe til venstre (Ricky 2026-10-01: cleanunit.no har en sol i heroen).
+       Verdiene er hans egne fra en slider-labb: 90 px, 18 % / 16 %, synlighet
+       77 %, fargetone 42°, 14 stråler à 31, glød 73 %, strålene roterer sakte.
+       Rent dekorativ og under alt annet; skjult på mobil sammen med byene. -->
+  <div class="hero__sol" aria-hidden="true"><svg viewBox="-120 -120 240 240" xmlns="http://www.w3.org/2000/svg" focusable="false"><defs><radialGradient id="sol-glod" cx="0" cy="0" r="120" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="hsla(42,95%,70%,.4015)"/><stop offset=".45" stop-color="hsla(42,95%,70%,.1606)"/><stop offset="1" stop-color="hsla(42,95%,70%,0)"/></radialGradient><linearGradient id="sol-straale" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="hsl(42,92%,76%)" stop-opacity=".95"/><stop offset="1" stop-color="hsl(42,92%,76%)" stop-opacity="0"/></linearGradient></defs><circle r="120" fill="url(#sol-glod)"/><g class="hero__sol-straaler" fill="url(#sol-straale)"><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(0.0000)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(25.7143)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(51.4286)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(77.1429)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(102.8571)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(128.5714)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(154.2857)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(180.0000)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(205.7143)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(231.4286)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(257.1429)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(282.8571)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(308.5714)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(334.2857)"/></g><circle r="44" fill="hsl(42,88%,62%)"/></svg></div>
   <!-- Byene som svak bakgrunn bak hele heroen (Ricky 2026-10-01): Oslo til
        venstre, Stavanger til høyre. Var ute 2026-09-26 og er tilbake som
        stemning bak teksten, ikke et «her holder vi til»: rekkevidde-linja

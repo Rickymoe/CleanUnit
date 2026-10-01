@@ -518,6 +518,19 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 @media (max-width: 48rem) {
   .hero__by { display: none; }
 }
+/* Solen i heroen: absolutt i heroens hjørne, bak byene (kommer før dem i
+   markupen) og alt annet. translate(-50%,-50%) legger midtpunktet på
+   18 % / 16 %, slik som i labben. Strålene roterer én runde på to minutter;
+   under prefers-reduced-motion står de stille. */
+.hero__sol {
+  position: absolute; left: 18%; top: 16%; width: 90px; height: 90px;
+  transform: translate(-50%, -50%); opacity: .77; pointer-events: none;
+}
+.hero__sol svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.hero__sol-straaler { transform-origin: 0 0; animation: sol-spinn 120s linear infinite; }
+@keyframes sol-spinn { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .hero__sol-straaler { animation: none; } }
+@media (max-width: 48rem) { .hero__sol { display: none; } }
 .hero__ingress, .hero__rekkevidde, .hero__stopp-rad { position: relative; }
 .hero__ingress::before, .hero__rekkevidde::before {
   content: ""; position: absolute; z-index: -1; inset: -.5em -1.2em; pointer-events: none;
