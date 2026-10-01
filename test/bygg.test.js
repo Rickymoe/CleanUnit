@@ -49,7 +49,7 @@ test('Stavanger: egen tittel, eget telefonnummer, lenke til Oslo i footeren', ()
   assert.match(h, /<span class="tittel-aksent">Renhold<\/span> i Stavanger<\/h1>/);
   assert.match(h, /og:url" content="https:\/\/rickymoe\.github\.io\/CleanUnit\/stavanger\/"/);
   assert.doesNotMatch(h, /anmeldelser på Google/);
-  assert.doesNotMatch(h, /Nydalen, Oslo har i dag 55 ansatte, og vi har i tillegg/);
+  assert.doesNotMatch(h, /Nydalen, Oslo har i dag over 100 ansatte, og vi har i tillegg/);
 });
 
 // Hero-variant «Vi kommer til deg» (2026-09-26): byene ut, kjøretøy + kundetyper inn.
