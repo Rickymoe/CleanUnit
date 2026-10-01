@@ -505,23 +505,13 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
                       linear-gradient(to left, #000 0, #000 90%, transparent 100%);
 }
 .hero__by-halv--stavanger img { right: 0; width: 250%; }
-/* Mobil: i 390 px er hele bildet bare ~147 px høyt og blir et rotete bånd
-   bak ingressen. Boksen gjøres høyere (--by-h) og bildet beskjæres på
-   sidene (object-fit: cover, sentrert), så begge byer fortsatt er med, bare
-   litt trangere. Verdien er et utsnitt, ikke en skalering av teksten. */
+/* Ingen byer på mobil (Ricky, 2026-10-01: «vi fjerner byene på mobilvisning»):
+   i 390 px er bildet bare ~147 px høyt og ble enten et rotete bånd bak
+   ingressen eller, bunnforankret, havnet det bak rutebåndet (sett på ekte
+   iPhone). Heroen står uten bakgrunnsbilde under 48rem; markupen er den
+   samme, den vises bare ikke. */
 @media (max-width: 48rem) {
-  .hero__by {
-    --by-h: 17rem; top: auto; bottom: 0; height: var(--by-h); transform: none; opacity: .5; display: block;
-  }
-  /* Bare den første kopien, i full bredde: på mobil vises begge byer i ett utsnitt. */
-  .hero__by-halv--stavanger { display: none; }
-  .hero__by-halv--oslo {
-    width: 100%; height: 100%; aspect-ratio: auto; margin: 0; overflow: visible;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
-            mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
-  }
-  .hero__by-halv--oslo img { position: static; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
-}
+  .hero__by { display: none; }
 }
 .hero__ingress, .hero__rekkevidde, .hero__stopp-rad { position: relative; }
 .hero__ingress::before, .hero__rekkevidde::before {
