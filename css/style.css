@@ -208,6 +208,7 @@ a { color: inherit; }
    bildets underkant. Derfor bærer boksen plasseringen og bilen bare fyller
    den. Geometrien er uendret — boksen er den samme boksen som bilen var. */
 .hero__rute-bil-boks {
+  container-type: inline-size; /* gir .verktoy__merke størrelsen sin i cqw, som i footeren */
   /* Til høyre for stoppene (Ricky, 2026-10-01: «speilvende bilen og vise den på
      høyre side»): order 1 setter den etter stoppraden, og bildet speilvendes
      så den kjører mot venstre, mot kundene. Mobil (kolonne) overstyrer order
@@ -217,6 +218,11 @@ a { color: inherit; }
   width: var(--bil-b);
   margin-bottom: calc(1.6rem - 0.172 * var(--bil-b));
 }
+/* Bilen er speilvendt, så dørpanelet ligger på 58 % (100 - 42) i stedet for 42 %.
+   Teksten er et eget element over bildet og speilvendes ikke. For liten til å
+   leses på mobil (bilen er 64 px bred der), så den skjules under 48rem. */
+.hero__rute-merke { left: 58%; }
+@media (max-width: 48rem) { .hero__rute-merke { display: none; } }
 .hero__rute-bil {
   width: 100%; height: auto; display: block; transform: scaleX(-1);
   /* Bildet har en myk kant: alfa kravler fra 0 til 255 over ~40 px i kilden
