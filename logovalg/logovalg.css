@@ -1,0 +1,257 @@
+/* Velg logo — frittstående side, bevisst uten avhengighet av css/style.css
+   (den har hero-animasjoner og klippemasker som ikke hører hjemme her).
+   Tokens er kopiert fra nettsidens palett så knapper og flater ser like ut. */
+:root {
+  --teal: #0E7C7B;
+  --teal-mork: #0A5C5B;
+  --teal-lys: #E6F5F4;
+  --base: #F3F5F7;
+  --tekst: #1E2B2B;
+  --tekst-svak: #55706E;
+  --linje: #D5DEDD;
+  --sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --rund: "Quicksand", var(--sans);
+  --radius: 14px;
+}
+* { box-sizing: border-box; }
+html { overflow-x: clip; }
+body {
+  margin: 0; background: var(--base); color: var(--tekst);
+  font: 400 1rem/1.6 var(--sans); -webkit-font-smoothing: antialiased;
+}
+.wrap { width: min(100% - 2rem, 68rem); margin-inline: auto; }
+h1, h2 { line-height: 1.2; margin: 0; }
+.topp { background: var(--teal-mork); color: #fff; padding-block: 2rem 2.25rem; }
+.topp h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); font-weight: 800; }
+.velkomst { margin: .75rem 0 0; max-width: 42rem; font-size: 1.0625rem; opacity: .95; }
+main { padding-block: 2rem 4rem; }
+
+/* ---------- Logoene ----------
+   Alle fire styres av --bredde (en fast lengde). A og D er tekst og får
+   skriftstørrelsen utledet fra bredden (målt: «CleanUNIT» i Quicksand er
+   5,2 em bred), så alle fire kan settes inn med samme tall og se like store ut.
+   Fargene ligger som variabler, så samme markup brukes på lys og mørk bunn
+   (.mork) uten å dupliseres. */
+.lg { display: block; width: var(--bredde, 14rem); max-width: 100%; height: auto; }
+.lg--a, .lg--d, .lg--g {
+  font: 600 1em/1 var(--rund); letter-spacing: .03em; white-space: nowrap;
+  font-size: calc(var(--bredde, 14rem) / 5.2);
+  --lg-clean: #757575; --lg-unit: #178F86;
+}
+.lg--c, .lg--f, .lg--h { --lg-clean: #8E9595; --lg-unit: #87CAC9; }
+/* E: tydeligere UNIT — vår teal #178F86 (3,96:1 på hvit) og en litt mørkere
+   mellomgrå (#7F8686, 3,9:1). */
+.lg--e { --lg-clean: #7F8686; --lg-unit: #178F86; }
+/* H er høyere enn de andre ved samme bredde; smalere boks gir samme visuelle vekt. */
+.lg--h { width: calc(var(--bredde, 14rem) * .62); }
+.lg__clean { color: var(--lg-clean); font-weight: 300; }
+.lg__unit { color: var(--lg-unit); font-weight: 600; }
+.lg--c text, .lg--e text, .lg--h text { font: 500 100px "Jost", "Futura", "Century Gothic", sans-serif; }
+.lg--f text { font: 600 100px "Quicksand", sans-serif; }
+.lg--c .lg__clean, .lg--e .lg__clean, .lg--f .lg__clean, .lg--h .lg__clean { fill: var(--lg-clean); }
+/* tspan-ene arver vekten fra <text>; ellers gjør .lg__clean (300) F tynn i stedet for 600. */
+.lg--c tspan, .lg--e tspan, .lg--f tspan, .lg--h tspan { font-weight: inherit; }
+.lg--c .lg__unit, .lg--e .lg__unit, .lg--f .lg__unit, .lg--h .lg__unit { fill: var(--lg-unit); }
+.lg__b1 { fill: #87CAC9; }
+.lg__b2 { fill: #008789; }
+.lg__b3 { fill: #AED1D1; }
+/* D: boblene sitter på T-en. Bokseplass reserveres over teksten, ellers
+   havner boblene oppå det som står over logoen. */
+.lg--d, .lg--g { padding-top: .5em; }
+.lg__t { position: relative; display: inline-block; }
+.lg__bobler {
+  position: absolute; left: 50%; width: .72em; height: auto; margin-left: -.36em;
+  bottom: calc(100% - .02em); overflow: visible; pointer-events: none;
+}
+/* Mørk bunn (footeren, #0A5C5B): «Clean» hvit, «UNIT» lys aqua. Den mørke
+   teal-boblen forsvinner mot flaten (1,5:1), så den får en lysere teal her. */
+.mork .lg { --lg-clean: #FFFFFF; --lg-unit: #87CAC9; }
+.mork .lg__b2 { fill: #3DB8B5; }
+/* B er et bilde med faste farger og får ingen mørk variant: et lysere filter
+   gjorde aqua til neon (målt), så bildet vises uendret også her. */
+
+/* ---------- Valgkort ---------- */
+.valg { border: 0; margin: 0; padding: 0; min-width: 0; }
+.valg__tittel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+.valg__rutenett { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+/* 2 per rad på mobil, 4 per rad fra 62rem (sju kort: 4 + 3). Det enslige
+   sjuende kortet på mobil spenner over begge kolonnene så raden ikke blir halvtom. */
+.kortvrap:last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (min-width: 62rem) { .kortvrap:last-child:nth-child(odd) { grid-column: auto; } }
+@media (min-width: 62rem) { .valg__rutenett { grid-template-columns: repeat(4, 1fr); gap: 1rem; } }
+.kortvrap { position: relative; display: flex; }
+.kort { display: block; position: relative; cursor: pointer; flex: 1; min-width: 0; }
+/* Liten «spill av»-knapp over kortet. Ligger utenfor <label> (ellers havner
+   teksten i radioknappens navn) og utenfor tabrekkefølgen (tabindex=-1): én
+   radiogruppe skal være ETT tabstopp, ikke åtte med knapper imellom. Tastatur
+   bruker «Spill av igjen» øverst i «Slik ser det ut». */
+.spill-knapp {
+  position: absolute; z-index: 3; top: .45rem; left: .45rem; width: 1.9rem; height: 1.9rem; padding: 0;
+  border-radius: 50%; border: 1.5px solid var(--linje); background: #fff; color: var(--teal);
+  font: 700 1rem/1 var(--sans); cursor: pointer; display: grid; place-items: center;
+}
+.spill-knapp:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+@media (hover: hover) { .spill-knapp:hover { border-color: var(--teal); background: var(--teal-lys); } }
+/* Selve radioknappen er skjult visuelt men fokuserbar (ikke display:none),
+   så piltaster og skjermleser virker som for vanlige radioknapper. */
+.kort input {
+  position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer;
+}
+.kort__boks {
+  display: flex; flex-direction: column; height: 100%; background: #fff;
+  border: 2px solid var(--linje); border-radius: var(--radius); overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+}
+@media (hover: hover) { .kort:hover .kort__boks { border-color: var(--teal); } }
+.kort input:checked + .kort__boks { border-color: var(--teal); box-shadow: 0 0 0 2px var(--teal); }
+.kort input:focus-visible + .kort__boks { outline: 3px solid var(--tekst); outline-offset: 3px; }
+.kort__logo {
+  position: relative; container-type: inline-size; display: flex; align-items: center; justify-content: center;
+  min-height: 7.5rem; padding: 1.25rem .75rem; background: #fff;
+  --bredde: 78cqw;
+}
+.kort__tekst { display: grid; align-content: start; gap: .2rem; padding: .75rem .85rem .9rem; background: var(--teal-lys); font-size: .8125rem; line-height: 1.4; color: var(--tekst-svak); flex: 1; }
+.kort__tekst strong { color: var(--tekst); font-size: .9375rem; line-height: 1.25; }
+.kort__bokstav {
+  width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--teal); color: #fff;
+  font: 800 .875rem/1.6rem var(--sans); text-align: center; margin-bottom: .2rem;
+}
+.kort input:checked + .kort__boks .kort__bokstav { background: var(--tekst); }
+.kort input:checked + .kort__boks .kort__bokstav::after { content: " ✓"; }
+.kort__bokstav { white-space: nowrap; width: auto; min-width: 1.6rem; padding-inline: .1rem; justify-self: start; }
+
+/* ---------- Slik ser det ut ---------- */
+.forhand { margin-top: 2.5rem; }
+.forhand h2 { font-size: clamp(1.4rem, 4vw, 1.75rem); font-weight: 800; }
+.forhand__topp { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; }
+.knapp.knapp--liten { font-size: .875rem; padding: 10px 18px; background: #fff; color: var(--teal); }
+@media (hover: hover) { .knapp.knapp--liten:hover { background: var(--teal-lys); color: var(--teal-mork); } }
+.forhand__ingress { margin: .4rem 0 1.25rem; color: var(--tekst-svak); }
+.ramme { margin: 0 0 1.25rem; }
+.ramme figcaption { font: 700 .8125rem/1 var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--tekst-svak); margin-bottom: .5rem; }
+.ramme__flate { border: 1px solid var(--linje); border-radius: var(--radius); overflow: hidden; container-type: inline-size; }
+.forhand__par { display: grid; gap: 0 1.25rem; }
+@media (min-width: 62rem) { .forhand__par { grid-template-columns: 1fr 1fr; align-items: start; } }
+
+/* Tom tilstand: før noe er valgt står en hjelpetekst der logoen skal være. */
+.slot:empty::before {
+  content: "Velg en logo ovenfor, så ser du den her."; display: block;
+  font: 500 .9375rem/1.4 var(--sans); color: var(--tekst-svak); padding-block: .5rem;
+}
+.mork .slot:empty::before { color: rgba(255,255,255,.8); }
+.slot { display: flex; position: relative; }
+
+.hero { background: var(--base); padding: clamp(2rem, 8cqw, 4rem) 1.25rem; text-align: center; display: grid; justify-items: center; gap: 1.75rem; }
+.hero__lockup { display: grid; justify-items: center; width: var(--bredde); --bredde: min(30rem, 74cqw); }
+.hero .slot { justify-content: center; }
+/* Taglinen følger heroens regler i hovedsiden: stor sperring, justert til
+   logoens bredde, «Renhold» i turkis. */
+.hero__tagline {
+  margin: .9rem 0 0; width: 100%; font: 600 calc(var(--bredde) * .052)/1.2 var(--rund);
+  text-transform: uppercase; color: #666; white-space: nowrap;
+  text-align: center; letter-spacing: .72em; padding-left: .72em;
+}
+.hero__tagline span { color: var(--teal); }
+.hero__lockup:not(:has(.lg)) .hero__tagline { display: none; }
+.hero__knapper { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; }
+.knappbilde {
+  font: 700 .9rem/1 var(--sans); padding: 13px 20px; border-radius: 999px; border: 2px solid var(--teal);
+}
+.knappbilde--fyll { background: var(--teal); color: #fff; }
+.knappbilde--omriss { color: var(--teal); }
+
+.fot { background: var(--teal-mork); color: #fff; padding: 2rem 1.25rem; display: grid; gap: 1.25rem; justify-items: center; text-align: center; --bredde: min(13rem, 70cqw); }
+.fot .slot { justify-content: center; }
+.fot__kontorer { display: grid; gap: .9rem; font-size: .8125rem; line-height: 1.45; }
+.fot__kontorer p { margin: 0; opacity: .85; }
+.fot__kontorer strong { display: block; opacity: 1; font-size: .9375rem; color: #fff; }
+
+.rammer { background: #fff; }
+.meny { display: flex; align-items: center; justify-content: flex-start; gap: 1rem; padding: .9rem 1.25rem; min-height: 4.25rem; }
+.meny--data { --bredde: 140px; border-bottom: 1px solid var(--linje); }
+.meny--mobil { --bredde: 90px; }
+.meny .slot { min-width: 0; }
+.meny .slot:empty::before { font-size: .8125rem; }
+
+/* Kvadratisk ramme: logoen sentrert i to kvadrater, lys og mørk (bilmerke/profilbilde). */
+.firkanter { display: flex; gap: 1rem; padding: 1rem; background: #fff; flex-wrap: wrap; container-type: normal; }
+.firkant { width: 11rem; aspect-ratio: 1; border: 1px solid var(--linje); border-radius: 12px; display: grid; place-items: center; padding: .6rem; --bredde: 9rem; background: #fff; overflow: hidden; }
+.firkant.mork { background: var(--teal-mork); border-color: var(--teal-mork); }
+.firkant .slot { justify-content: center; text-align: center; }
+.firkant .slot:empty::before { font-size: .75rem; }
+
+.knapp {
+  font: 700 1rem/1 var(--sans); padding: 15px 24px; border-radius: 999px; cursor: pointer;
+  border: 2px solid var(--teal); background: var(--teal); color: #fff; transition: background-color .2s, transform .2s;
+}
+@media (hover: hover) { .knapp:hover { background: var(--teal-mork); border-color: var(--teal-mork); color: #fff; } }
+.knapp:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
+
+/* Avslutningslinje: ren tekst, ingen felter eller knapper. */
+.avslutning { margin: 2rem 0 0; padding: 1.25rem 1.5rem; background: #fff; border: 1px solid var(--linje); border-radius: var(--radius); color: var(--tekst-svak); font-size: 1rem; }
+
+/* ---------- Bevegelse ----------
+   Samme idé som logoen i heroen på nettsiden: først et sveip fra venstre
+   («Vask», clip-path), så boblene. Standardtilstanden (uten .spill) er den
+   ferdige logoen, så siden er riktig uten JS. JS legger på .spill for å
+   spille av; --start forskyver per kort. Alt er clip-path/transform, så ingenting
+   flytter layout. Sveipets varighet (1300 ms) står også i logovalg.js. */
+.lg { --sveip-ms: 1300ms; --b0: 1000ms; }
+.lg--g { --b0: 650ms; } /* boblene sitter midt i ordet: starter når sveipet har passert N */
+.lg__bobler { --stig: 60px; --amp: 10px; }
+.lg--c, .lg--e, .lg--f, .lg--h { --stig: 24px; --amp: 2.4px; }
+/* Vertikal marg -100 %: boblene ligger utenfor logoboksen og skal ikke klippes. */
+.lg.spill { animation: lg-sveip var(--sveip-ms) cubic-bezier(.5, 0, .2, 1) var(--start, 0ms) both; }
+@keyframes lg-sveip {
+  from { clip-path: inset(-100% 100% -100% -5%); }
+  to   { clip-path: inset(-100% -100% -100% -100%); }
+}
+.lg__b1 { --i: 0; --flyt: 6.4s; }
+.lg__b2 { --i: 1; --flyt: 5.2s; }
+.lg__b3 { --i: 2; --flyt: 6.9s; }
+/* Stor, mellom, liten: vokser inn med et lite overskyt (spring) og stiger fra ordet. Så en
+   svært rolig flyt (individuell translate-egenskap, så den kan gå i
+   parallell med transform-animasjonen). */
+.lg.spill .lg__b1, .lg.spill .lg__b2, .lg.spill .lg__b3 {
+  transform-box: fill-box; transform-origin: 50% 50%;
+  animation:
+    lg-vokse 750ms cubic-bezier(.34, 1.56, .64, 1) calc(var(--start, 0ms) + var(--b0) + var(--i) * 170ms) both,
+    lg-flyt var(--flyt) ease-in-out calc(var(--start, 0ms) + var(--b0) + var(--i) * 170ms + 850ms) infinite alternate;
+}
+@keyframes lg-vokse {
+  from { transform: translateY(var(--stig)) scale(0); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+@keyframes lg-flyt {
+  from { translate: 0 calc(var(--amp) * -1); }
+  to   { translate: 0 var(--amp); }
+}
+/* A har ingen egne bobler: noen skumbobler stiger forbi (lagd av logovalg.js),
+   som i heroen. */
+.skum-lag { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+.skum {
+  position: absolute; border-radius: 50%; opacity: 0; pointer-events: none;
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255,255,255,.95) 0 11%, rgba(255,255,255,0) 12%),
+    radial-gradient(circle at 50% 50%, rgba(135,202,201,.08) 52%, rgba(23,143,134,.30) 100%);
+  border: 1.5px solid rgba(23,143,134,.45);
+  animation: skum-stig var(--bd) ease-out var(--bdelay) both;
+}
+.mork .skum { border-color: rgba(135,202,201,.8); }
+@keyframes skum-stig {
+  0%   { opacity: 0; transform: translate(0, 0) scale(.2); }
+  12%  { opacity: 1; transform: translate(0, -4px) scale(1); }
+  60%  { opacity: 1; transform: translate(var(--dx), calc(var(--rise) * .6)) scale(1); }
+  90%  { opacity: .85; transform: translate(calc(var(--dx) * -.4), var(--rise)) scale(1.05); }
+  100% { opacity: 0; transform: translate(calc(var(--dx) * -.4), calc(var(--rise) - 6px)) scale(1.4); }
+}
+@keyframes lg-tone { from { opacity: 0; } to { opacity: 1; } }
+
+/* Redusert bevegelse: ferdig logo uten transform/clip-animasjon. «Spill av
+   igjen» gir da bare en rolig fade (.fade, kun opacity). */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+  .lg.spill, .lg.spill .lg__b1, .lg.spill .lg__b2, .lg.spill .lg__b3 { animation: none; }
+  .skum-lag { display: none; }
+  .lg.fade { animation: lg-tone .8s ease both; }
+}

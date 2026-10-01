@@ -448,3 +448,55 @@ test('Tilbud: seksjonen fortsetter bakgrunnsvekslingen og har skjemastil', () =>
   // selektorene, overstyrer det UA-regelen og den døde formen vises likevel.
   assert.match(css, /\[hidden\] \{ display: none; \}/)
 })
+
+test('Velg logo-labben bygges til dist/logovalg med alle åtte valg (A–H)', () => {
+  byggAlle({ kilde: '.', ut: 'test/ut' });
+  const h = les('test/ut/logovalg/index.html');
+  assert.match(h, /<meta name="robots" content="noindex, nofollow">/);
+  for (const v of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']) {
+    assert.match(h, new RegExp(`<input type="radio" name="logo" value="${v}"`), `valg ${v} mangler`);
+  }
+  // Ingen «Mitt valg»-boks (kopier/kommentar) lenger: siden slutter etter «Slik ser det ut».
+  assert.doesNotMatch(h, /Mitt valg|id="kopier"|id="kommentar"/);
+  // Ingen forhåndsavkrysset logo: valget skal være kundens.
+  assert.doesNotMatch(h, /<input[^>]*\bchecked\b/);
+  assert.match(h, /src="\.\.\/bilder\/logo-cleanunit-original\.png"/);
+  assert.ok(existsSync('test/ut/bilder/logo-cleanunit-original.png'), 'originallogoen finnes ikke i bygget');
+  assert.ok(existsSync('test/ut/logovalg/logovalg.js'));
+  assert.ok(existsSync('test/ut/logovalg/logovalg.css'));
+  // Ingen e-postadresse eller mailto i labben (kunden svarer på e-posten).
+  assert.doesNotMatch(h + les('test/ut/logovalg/logovalg.js'), /mailto:|@[a-z0-9-]+\.[a-z]{2,}/i);
+});
+
+test('Velg logo: alle åtte logoer har animasjonshenger, og redusert bevegelse er respektert', () => {
+  byggAlle({ kilde: '.', ut: 'test/ut' });
+  const h = les('test/ut/logovalg/index.html');
+  const css = les('test/ut/logovalg/logovalg.css');
+  const js = les('test/ut/logovalg/logovalg.js');
+  for (const v of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']) {
+    assert.match(h, new RegExp(`class="lg lg--${v}" data-anim="(skum|sveip|bobler)"`), `logo ${v} mangler data-anim`);
+  }
+  assert.equal((h.match(/data-spill="[A-H]"/g) || []).length, 8, 'hvert kort skal ha spill-knapp');
+  assert.match(h, /id="spill-alle"/);
+  // Under redusert bevegelse skal ingen av animasjonene kjøre (bare fade).
+  const rm = css.slice(css.indexOf('@media (prefers-reduced-motion: reduce)'));
+  assert.match(rm, /\.lg\.spill[^{]*\{ animation: none; \}/);
+  assert.match(rm, /\.lg\.fade \{ animation: lg-tone/);
+  assert.match(js, /prefers-reduced-motion: reduce/);
+  // Animasjonen skal ikke flytte layout: bare clip-path/transform/translate/opacity.
+  const anim = css.slice(css.indexOf('/* ---------- Bevegelse'), css.indexOf('/* Redusert bevegelse'));
+  assert.doesNotMatch(anim, /(?<![-\w])(width|height|top|left|margin)\s*:\s*[^;]*;?\s*(?=\n\s*(to|from|\d+%))/);
+});
+
+test('Velg logo: hover spiller av animasjonen, gated på ekte mus, uten å velge', () => {
+  byggAlle({ kilde: '.', ut: 'test/ut' });
+  const js = les('test/ut/logovalg/logovalg.js');
+  assert.match(js, /\(hover: hover\) and \(pointer: fine\)/);
+  assert.match(js, /pointerenter/);
+  assert.match(js, /e\.pointerType !== 'mouse'/);
+  assert.match(js, /:focus-visible/);
+  assert.match(js, /HOVER_ETTER_MS/);
+  // Hover skal bare spille av: hoverSpill-kroppen må ikke røre checked/click.
+  const kropp = js.slice(js.indexOf('function hoverSpill'), js.indexOf('function kobleHover'));
+  assert.doesNotMatch(kropp, /checked|click\(/);
+});

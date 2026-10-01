@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A5C5B">
+<title>Velg logo – Clean Unit</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../bilder/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&family=Manrope:wght@400;500;600;700;800&family=Quicksand:wght@300;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="logovalg.css">
+</head>
+<body>
+<header class="topp">
+  <div class="wrap">
+    <h1>Velg logo</h1>
+    <p class="velkomst">Hei Marit! Du ba om at logoen i hovedsak videreføres. Her er åtte muligheter. Trykk på den du liker best — du ser den med en gang slik den ser ut på nettsiden vår.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Ingen radioknapp er forhåndsavkrysset: valget skal være hennes. -->
+  <form id="skjema" onsubmit="return false">
+    <fieldset class="valg">
+      <legend class="valg__tittel">Åtte muligheter</legend>
+      <div class="valg__rutenett">
+
+        <div class="kortvrap"><label class="kort">
+          <input type="radio" name="logo" value="A" data-navn="Vår «CleanUNIT»">
+          <span class="kort__boks">
+            <span class="kort__logo">
+              <span class="lg lg--a" data-anim="skum" aria-hidden="true"><span class="lg__clean">Clean</span><span class="lg__unit">UNIT</span></span>
+            </span>
+            <span class="kort__tekst">
+              <span class="kort__bokstav" aria-hidden="true">A</span>
+              <strong>Vår «CleanUNIT»</strong>
+              <span>Slik står navnet på nettsiden vår nå, i avrundet skrift.</span>
+            </span>
+          </span>
+        </label>
+        <button type="button" class="spill-knapp" tabindex="-1" data-spill="A" aria-label="Spill av logo A igjen" title="Spill av igjen">&#8635;</button>
+        </div>
+
+        <div class="kortvrap"><label class="kort">
+          <input type="radio" name="logo" value="B" data-navn="Deres logo slik den er">
+          <span class="kort__boks">
+            <span class="kort__logo">
+              <img class="lg lg--b" data-anim="sveip" src="../bilder/logo-cleanunit-original.png" width="700" height="203" alt="" aria-hidden="true">
+            </span>
+            <span class="kort__tekst">
+              <span class="kort__bokstav" aria-hidden="true">B</span>
+              <strong>Deres logo slik den er</strong>
+              <span>Logoen deres helt uendret.</span>
+            </span>
+          </span>
+        </label>
+        <button type="button" class="spill-knapp" tabindex="-1" data-spill="B" aria-label="Spill av logo B igjen" title="Spill av igjen">&#8635;</button>
+        </div>
+
+        <div class="kortvrap"><label class="kort">
+          <input type="radio" name="logo" value="C" data-navn="Deres logo, forsiktig modernisert">
+          <span class="kort__boks">
+            <span class="kort__logo">
+              <!-- Tegnet på nytt som SVG: samme oppbygning som originalen
+                   (store bokstaver, bred sperring, tre bobler over «IT»).
+                   textLength låser bredden, så boblene ligger riktig selv om
+                   Jost ikke rekker å laste og nettleseren bruker en reservefont. -->
+              <svg class="lg lg--c" data-anim="bobler" viewBox="0 -40 626 192" aria-hidden="true" focusable="false">
+                <circle class="lg__b1" cx="584" cy="-8" r="26"/>
+                <circle class="lg__b2" cx="545" cy="29" r="17"/>
+                <circle class="lg__b3" cx="562" cy="58" r="9"/>
+                <text x="0" y="150" textLength="626" lengthAdjust="spacing"><tspan class="lg__clean">CLEAN</tspan><tspan class="lg__unit">UNIT</tspan></text>
+              </svg>
+            </span>
+            <span class="kort__tekst">
+              <span class="kort__bokstav" aria-hidden="true">C</span>
+              <strong>Deres logo, forsiktig modernisert</strong>
+              <span>Samme oppbygning og farger, men tegnet opp på nytt med skarpere bokstaver og rene bobler.</span>
+            </span>
+          </span>
+        </label>
+        <button type="button" class="spill-knapp" tabindex="-1" data-spill="C" aria-label="Spill av logo C igjen" title="Spill av igjen">&#8635;</button>
+        </div>
+        <div class="kortvrap"><label class="kort">
+          <input type="radio" name="logo" value="D" data-navn="Vår «CleanUNIT» med deres bobler">
+          <span class="kort__boks">
+            <span class="kort__logo">
+              <span class="lg lg--d" data-anim="bobler" aria-hidden="true"><span class="lg__clean">Clean</span><span class="lg__unit">UNI<span class="lg__t">T<svg class="lg__bobler" viewBox="552 -4 104 118" focusable="false"><circle class="lg__b1" cx="625" cy="26" r="29"/><circle class="lg__b2" cx="583" cy="68" r="19"/><circle class="lg__b3" cx="607" cy="101" r="10"/></svg></span></span></span>
+            </span>
+            <span class="kort__tekst">
+              <span class="kort__bokstav" aria-hidden="true">D</span>
+              <strong>Vår «CleanUNIT» med deres bobler</strong>
+              <span>Vår skrift, men med de tre boblene deres over T-en.</span>
+            </span>
+          </span>
+        </label>
+        <button type="button" class="spill-knapp" tabindex="-1" data-spill="D" aria-label="Spill av logo D igjen" title="Spill av igjen">&#8635;</button>
+        </div>
+
+        <div class="kortvrap"><label class="kort">
+          <input type="radio" name="logo" value="E" data-navn="Deres logo, tydeligere UNIT">
+          <span class="kort__boks">
+            <span class="kort__logo">
+              <svg class="lg lg--e" data-anim="bobler" viewBox="0 -40 626 192" aria-hidden="true" focusable="false">
+                <circle class="lg__b1" cx="584" cy="-8" r="26"/>
+                <circle class="lg__b2" cx="545" cy="29" r="17"/>
+                <circle class="lg__b3" cx="562" cy="58" r="9"/>
+                <text x="0" y="150" textLength="626" lengthAdjust="spacing"><tspan class="lg__clean">CLEAN</tspan><tspan class="lg__unit">UNIT</tspan></text>
+              </svg>
+            </span>
+            <span class="kort__tekst">
+              <span class="kort__bokstav" aria-hidden="true">E</span>
+              <strong>Deres logo, tydeligere UNIT</strong>
+              <span>Samme oppbygning og bobler, men UNIT i vår mørkere teal så det leses lettere, og CLEAN i en mellomgrå.</span>
+            </span>
+          </span>
+        </label>
+        <button type="button" class="spill-knapp" tabindex="-1" data-spill="E" aria-label="Spill av logo E igjen" title="Spill av igjen">&#8635;</button>
+        </div>
+
+        <div class="kortvrap"><label class="kort">
+          <input type="radio" name="logo" value="F" data-navn="Deres logo i rundere skrift">
+          <span class="kort__boks">
+            <span class="kort__logo">
+              <!-- Quicksand er smalere rundt I og T enn Jost, så boblene er flyttet ca. 9 enheter mot venstre (målt). -->
+              <svg class="lg lg--f" data-anim="bobler" viewBox="0 -40 626 192" aria-hidden="true" focusable="false">
+                <circle class="lg__b1" cx="575" cy="-8" r="26"/>
+                <circle class="lg__b2" cx="536" cy="29" r="17"/>
+                <circle class="lg__b3" cx="553" cy="58" r="9"/>
+                <text x="0" y="150" textLength="626" lengthAdjust="spacing"><tspan class="lg__clean">CLEAN</tspan><tspan class="lg__unit">UNIT</tspan></text>
+              </svg>
+            </span>
+            <span class="kort__tekst">
+              <span class="kort__bokstav" aria-hidden="true">F</span>
+              <strong>Deres logo i rundere skrift</strong>
+              <span>Som C, men i en avrundet skrift som er i slekt med boblene.</span>
+            </span>
+          </span>
+        </label>
+        <button type="button" class="spill-knapp" tabindex="-1" data-spill="F" aria-label="Spill av logo F igjen" title="Spill av igjen">&#8635;</button>
+        </div>
+
+        <div class="kortvrap"><label class="kort">
+          <input type="radio" name="logo" value="G" data-navn="Vår «CleanUNIT», bobler midt i ordet">
+          <span class="kort__boks">
+            <span class="kort__logo">
+              <span class="lg lg--g" data-anim="bobler" aria-hidden="true"><span class="lg__clean">Clean</span><span class="lg__unit">U<span class="lg__t">N<svg class="lg__bobler" viewBox="552 -4 104 118" focusable="false"><circle class="lg__b1" cx="625" cy="26" r="29"/><circle class="lg__b2" cx="583" cy="68" r="19"/><circle class="lg__b3" cx="607" cy="101" r="10"/></svg></span>IT</span></span>
+            </span>
+            <span class="kort__tekst">
+              <span class="kort__bokstav" aria-hidden="true">G</span>
+              <strong>Vår «CleanUNIT», bobler midt i ordet</strong>
+              <span>Som A, men boblene stiger opp fra N-en midt i UNIT i stedet for helt til høyre.</span>
+            </span>
+          </span>
+        </label>
+        <button type="button" class="spill-knapp" tabindex="-1" data-spill="G" aria-label="Spill av logo G igjen" title="Spill av igjen">&#8635;</button>
+        </div>
+
+        <div class="kortvrap"><label class="kort">
+          <input type="radio" name="logo" value="H" data-navn="Stablet: CLEAN over UNIT">
+          <span class="kort__boks">
+            <span class="kort__logo">
+              <!-- Stablet: CLEAN låses til 362 enheter, UNIT får samme sperring (ca. .1em) og blir kortere, venstrejustert. Boblene sitter over enden av CLEAN. -->
+              <svg class="lg lg--h" data-anim="bobler" viewBox="0 -122 364 296" aria-hidden="true" focusable="false">
+                <circle class="lg__b1" cx="338" cy="-92" r="26"/>
+                <circle class="lg__b2" cx="299" cy="-57" r="17"/>
+                <circle class="lg__b3" cx="316" cy="-28" r="9"/>
+                <text x="0" y="70" textLength="362" lengthAdjust="spacing"><tspan class="lg__clean">CLEAN</tspan></text>
+                <text x="0" y="170" textLength="252" lengthAdjust="spacing"><tspan class="lg__unit">UNIT</tspan></text>
+              </svg>
+            </span>
+            <span class="kort__tekst">
+              <span class="kort__bokstav" aria-hidden="true">H</span>
+              <strong>Stablet: CLEAN over UNIT</strong>
+              <span>CLEAN og UNIT over hverandre, boblene øverst til høyre. Passer i kvadratiske rammer som profilbilde og bilmerke.</span>
+            </span>
+          </span>
+        </label>
+        <button type="button" class="spill-knapp" tabindex="-1" data-spill="H" aria-label="Spill av logo H igjen" title="Spill av igjen">&#8635;</button>
+        </div>
+
+      </div>
+    </fieldset>
+  </form>
+
+  <section class="forhand" aria-labelledby="forhand-tittel" aria-live="polite">
+    <div class="forhand__topp">
+      <h2 id="forhand-tittel">Slik ser det ut</h2>
+      <button type="button" id="spill-alle" class="knapp knapp--liten">&#8635; Spill av igjen</button>
+    </div>
+    <p class="forhand__ingress">Her ser du logoen du har valgt, i fire sammenhenger. Logoen beveger seg slik når siden åpnes.</p>
+
+    <figure class="ramme">
+      <figcaption>1. Forsiden</figcaption>
+      <div class="ramme__flate hero" data-slot>
+        <div class="hero__lockup">
+          <div class="slot"></div>
+          <p class="hero__tagline" aria-hidden="true"><span>Renhold</span> i Oslo</p>
+        </div>
+        <div class="hero__knapper" aria-hidden="true">
+          <span class="knappbilde knappbilde--fyll">Ring oss</span>
+          <span class="knappbilde knappbilde--omriss">Be om tilbud</span>
+        </div>
+      </div>
+    </figure>
+
+    <div class="forhand__par">
+      <figure class="ramme">
+        <figcaption>2. Bunnen av siden</figcaption>
+        <div class="ramme__flate fot mork" data-slot>
+          <div class="slot"></div>
+          <div class="fot__kontorer" aria-hidden="true">
+            <p><strong>Clean Unit Renhold AS</strong>Gunnar Schjelderups vei 9, 0485 Oslo</p>
+            <p><strong>Clean Unit Stavanger AS</strong>Bryggerikaien 16, 4014 Stavanger</p>
+          </div>
+        </div>
+      </figure>
+
+      <figure class="ramme">
+        <figcaption>3. Liten størrelse</figcaption>
+        <div class="ramme__flate rammer">
+          <div class="meny meny--data" data-slot aria-hidden="true">
+            <div class="slot"></div>
+          </div>
+          <div class="meny meny--mobil" data-slot aria-hidden="true">
+            <div class="slot"></div>
+          </div>
+        </div>
+      </figure>
+    </div>
+
+    <figure class="ramme">
+      <figcaption>4. Kvadratisk ramme (profilbilde, bilmerke)</figcaption>
+      <div class="ramme__flate firkanter">
+        <div class="firkant" data-slot><div class="slot"></div></div>
+        <div class="firkant mork" data-slot><div class="slot"></div></div>
+      </div>
+    </figure>
+  </section>
+
+  <p class="avslutning">Svar på e-posten du fikk lenken i og skriv hvilken logo du liker best.</p>
+</main>
+
+<script src="logovalg.js"></script>
+</body>
+</html>
