@@ -449,17 +449,20 @@ test('Tilbud: seksjonen fortsetter bakgrunnsvekslingen og har skjemastil', () =>
   assert.match(css, /\[hidden\] \{ display: none; \}/)
 })
 
-test('Velg logo-labben bygges til dist/logovalg med alle åtte valg (A–H)', () => {
+test('Velg logo-labben bygges til dist/logovalg med sammenhengende valg fra A', () => {
   byggAlle({ kilde: '.', ut: 'test/ut' });
   const h = les('test/ut/logovalg/index.html');
   assert.match(h, /<meta name="robots" content="noindex, nofollow">/);
-  for (const v of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']) {
-    assert.match(h, new RegExp(`<input type="radio" name="logo" value="${v}"`), `valg ${v} mangler`);
-  }
-  // Ingen «Mitt valg»-boks (kopier/kommentar) lenger: siden slutter etter «Slik ser det ut».
-  assert.doesNotMatch(h, /Mitt valg|id="kopier"|id="kommentar"/);
+  const valg = [...h.matchAll(/<input type="radio" name="logo" value="([A-Z])"/g)].map((m) => m[1]);
+  assert.ok(valg.length >= 2, 'for få valg');
+  // Bokstavene skal være A, B, C … uten hull, uansett hvor mange valg det er.
+  assert.deepEqual(valg, valg.map((_, i) => String.fromCharCode(65 + i)), 'bokstavene er ikke sammenhengende fra A');
+  // B er deres uendrede logo og skal alltid være med (bildet er referert og finnes).
+  assert.ok(valg.includes('B'));
   // Ingen forhåndsavkrysset logo: valget skal være kundens.
   assert.doesNotMatch(h, /<input[^>]*\bchecked\b/);
+  // Ingen «Mitt valg»-boks (kopier/kommentar): siden slutter etter «Slik ser det ut».
+  assert.doesNotMatch(h, /Mitt valg|id="kopier"|id="kommentar"/);
   assert.match(h, /src="\.\.\/bilder\/logo-cleanunit-original\.png"/);
   assert.ok(existsSync('test/ut/bilder/logo-cleanunit-original.png'), 'originallogoen finnes ikke i bygget');
   assert.ok(existsSync('test/ut/logovalg/logovalg.js'));
@@ -468,15 +471,14 @@ test('Velg logo-labben bygges til dist/logovalg med alle åtte valg (A–H)', ()
   assert.doesNotMatch(h + les('test/ut/logovalg/logovalg.js'), /mailto:|@[a-z0-9-]+\.[a-z]{2,}/i);
 });
 
-test('Velg logo: alle åtte logoer har animasjonshenger, og redusert bevegelse er respektert', () => {
+test('Velg logo: alle logoer har animasjonshenger, og redusert bevegelse er respektert', () => {
   byggAlle({ kilde: '.', ut: 'test/ut' });
   const h = les('test/ut/logovalg/index.html');
   const css = les('test/ut/logovalg/logovalg.css');
   const js = les('test/ut/logovalg/logovalg.js');
-  for (const v of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']) {
-    assert.match(h, new RegExp(`class="lg lg--${v}" data-anim="(skum|sveip|bobler)"`), `logo ${v} mangler data-anim`);
-  }
-  assert.equal((h.match(/data-spill="[A-H]"/g) || []).length, 8, 'hvert kort skal ha spill-knapp');
+  const n = (h.match(/<input type="radio" name="logo"/g) || []).length;
+  assert.equal((h.match(/class="lg lg--[a-z]" data-anim="(skum|sveip|bobler)"/g) || []).length, n, 'hver logo skal ha data-anim');
+  assert.equal((h.match(/data-spill="[A-Z]"/g) || []).length, n, 'hvert kort skal ha spill-knapp');
   assert.match(h, /id="spill-alle"/);
   // Under redusert bevegelse skal ingen av animasjonene kjøre (bare fade).
   const rm = css.slice(css.indexOf('@media (prefers-reduced-motion: reduce)'));
@@ -486,6 +488,14 @@ test('Velg logo: alle åtte logoer har animasjonshenger, og redusert bevegelse e
   // Animasjonen skal ikke flytte layout: bare clip-path/transform/translate/opacity.
   const anim = css.slice(css.indexOf('/* ---------- Bevegelse'), css.indexOf('/* Redusert bevegelse'));
   assert.doesNotMatch(anim, /(?<![-\w])(width|height|top|left|margin)\s*:\s*[^;]*;?\s*(?=\n\s*(to|from|\d+%))/);
+});
+
+test('Velg logo: boblene i D, C, E og F følger originalens geometri (liten over I-en)', () => {
+  byggAlle({ kilde: '.', ut: 'test/ut' });
+  const h = les('test/ut/logovalg/index.html');
+  // D: boblene ligger inni I-ens egen boks (.lg__t rundt «I»), ikke rundt T eller N.
+  assert.match(h, /UN<span class="lg__t">I<svg class="lg__bobler"/);
+  assert.doesNotMatch(h, /lg__t">[NT]</);
 });
 
 test('Velg logo: hover spiller av animasjonen, gated på ekte mus, uten å velge', () => {

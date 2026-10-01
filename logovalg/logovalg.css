@@ -33,35 +33,39 @@ main { padding-block: 2rem 4rem; }
    Fargene ligger som variabler, så samme markup brukes på lys og mørk bunn
    (.mork) uten å dupliseres. */
 .lg { display: block; width: var(--bredde, 14rem); max-width: 100%; height: auto; }
-.lg--a, .lg--d, .lg--g {
+.lg--a, .lg--d {
   font: 600 1em/1 var(--rund); letter-spacing: .03em; white-space: nowrap;
   font-size: calc(var(--bredde, 14rem) / 5.2);
   --lg-clean: #757575; --lg-unit: #178F86;
 }
-.lg--c, .lg--f, .lg--h { --lg-clean: #8E9595; --lg-unit: #87CAC9; }
+.lg--c, .lg--f { --lg-clean: #8E9595; --lg-unit: #87CAC9; }
 /* E: tydeligere UNIT — vår teal #178F86 (3,96:1 på hvit) og en litt mørkere
    mellomgrå (#7F8686, 3,9:1). */
 .lg--e { --lg-clean: #7F8686; --lg-unit: #178F86; }
-/* H er høyere enn de andre ved samme bredde; smalere boks gir samme visuelle vekt. */
-.lg--h { width: calc(var(--bredde, 14rem) * .62); }
 .lg__clean { color: var(--lg-clean); font-weight: 300; }
 .lg__unit { color: var(--lg-unit); font-weight: 600; }
-.lg--c text, .lg--e text, .lg--h text { font: 500 100px "Jost", "Futura", "Century Gothic", sans-serif; }
+.lg--c text, .lg--e text { font: 500 100px "Jost", "Futura", "Century Gothic", sans-serif; }
 .lg--f text { font: 600 100px "Quicksand", sans-serif; }
-.lg--c .lg__clean, .lg--e .lg__clean, .lg--f .lg__clean, .lg--h .lg__clean { fill: var(--lg-clean); }
+.lg--c .lg__clean, .lg--e .lg__clean, .lg--f .lg__clean { fill: var(--lg-clean); }
 /* tspan-ene arver vekten fra <text>; ellers gjør .lg__clean (300) F tynn i stedet for 600. */
-.lg--c tspan, .lg--e tspan, .lg--f tspan, .lg--h tspan { font-weight: inherit; }
-.lg--c .lg__unit, .lg--e .lg__unit, .lg--f .lg__unit, .lg--h .lg__unit { fill: var(--lg-unit); }
+.lg--c tspan, .lg--e tspan, .lg--f tspan { font-weight: inherit; }
+.lg--c .lg__unit, .lg--e .lg__unit, .lg--f .lg__unit { fill: var(--lg-unit); }
 .lg__b1 { fill: #87CAC9; }
 .lg__b2 { fill: #008789; }
 .lg__b3 { fill: #AED1D1; }
-/* D: boblene sitter på T-en. Bokseplass reserveres over teksten, ellers
-   havner boblene oppå det som står over logoen. */
-.lg--d, .lg--g { padding-top: .5em; }
-.lg__t { position: relative; display: inline-block; }
+/* D: boblene sitter som en forlengelse av I-en i UNIT, med samme geometri som i
+   originallogoen (liten bobble rett over I-stammen, de to andre oppover i
+   samme sti). Geometrien er målt i piksler mot originalbildet: bokstavhøyde
+   78 px, I-stamme sentrert x = 606,5 og oververkant y = 125 i 700 x 203. SVG-en
+   bruker originalens koordinater (viewBox 552..662 x -4..125, nederkant =
+   oververkant av I), og --k skalerer dem til Quicksands versalhøyde
+   (.707 em / 78 = .009066 em per enhet). Boksplass reserveres over teksten. */
+.lg--d { padding-top: 1.2em; }
+.lg__t { position: relative; display: inline-block; --k: .009066em; }
 .lg__bobler {
-  position: absolute; left: 50%; width: .72em; height: auto; margin-left: -.36em;
-  bottom: calc(100% - .02em); overflow: visible; pointer-events: none;
+  position: absolute; left: 50%; width: calc(110 * var(--k)); height: calc(129 * var(--k));
+  margin-left: calc(-54.5 * var(--k) + var(--ml, -.0187em));
+  bottom: calc(100% - var(--kapp, .1677em)); overflow: visible; pointer-events: none;
 }
 /* Mørk bunn (footeren, #0A5C5B): «Clean» hvit, «UNIT» lys aqua. Den mørke
    teal-boblen forsvinner mot flaten (1,5:1), så den får en lysere teal her. */
@@ -74,11 +78,8 @@ main { padding-block: 2rem 4rem; }
 .valg { border: 0; margin: 0; padding: 0; min-width: 0; }
 .valg__tittel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
 .valg__rutenett { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
-/* 2 per rad på mobil, 4 per rad fra 62rem (sju kort: 4 + 3). Det enslige
-   sjuende kortet på mobil spenner over begge kolonnene så raden ikke blir halvtom. */
-.kortvrap:last-child:nth-child(odd) { grid-column: 1 / -1; }
-@media (min-width: 62rem) { .kortvrap:last-child:nth-child(odd) { grid-column: auto; } }
-@media (min-width: 62rem) { .valg__rutenett { grid-template-columns: repeat(4, 1fr); gap: 1rem; } }
+/* 2 per rad på mobil, 3 per rad (3 + 3) fra 62rem. */
+@media (min-width: 62rem) { .valg__rutenett { grid-template-columns: repeat(3, 1fr); gap: 1rem; } }
 .kortvrap { position: relative; display: flex; }
 .kort { display: block; position: relative; cursor: pointer; flex: 1; min-width: 0; }
 /* Liten «spill av»-knapp over kortet. Ligger utenfor <label> (ellers havner
@@ -173,13 +174,6 @@ main { padding-block: 2rem 4rem; }
 .meny .slot { min-width: 0; }
 .meny .slot:empty::before { font-size: .8125rem; }
 
-/* Kvadratisk ramme: logoen sentrert i to kvadrater, lys og mørk (bilmerke/profilbilde). */
-.firkanter { display: flex; gap: 1rem; padding: 1rem; background: #fff; flex-wrap: wrap; container-type: normal; }
-.firkant { width: 11rem; aspect-ratio: 1; border: 1px solid var(--linje); border-radius: 12px; display: grid; place-items: center; padding: .6rem; --bredde: 9rem; background: #fff; overflow: hidden; }
-.firkant.mork { background: var(--teal-mork); border-color: var(--teal-mork); }
-.firkant .slot { justify-content: center; text-align: center; }
-.firkant .slot:empty::before { font-size: .75rem; }
-
 .knapp {
   font: 700 1rem/1 var(--sans); padding: 15px 24px; border-radius: 999px; cursor: pointer;
   border: 2px solid var(--teal); background: var(--teal); color: #fff; transition: background-color .2s, transform .2s;
@@ -197,9 +191,8 @@ main { padding-block: 2rem 4rem; }
    spille av; --start forskyver per kort. Alt er clip-path/transform, så ingenting
    flytter layout. Sveipets varighet (1300 ms) står også i logovalg.js. */
 .lg { --sveip-ms: 1300ms; --b0: 1000ms; }
-.lg--g { --b0: 650ms; } /* boblene sitter midt i ordet: starter når sveipet har passert N */
-.lg__bobler { --stig: 60px; --amp: 10px; }
-.lg--c, .lg--e, .lg--f, .lg--h { --stig: 24px; --amp: 2.4px; }
+.lg__bobler { --stig: 45px; --amp: 8px; }
+.lg--c, .lg--e, .lg--f { --stig: 24px; --amp: 2.4px; }
 /* Vertikal marg -100 %: boblene ligger utenfor logoboksen og skal ikke klippes. */
 .lg.spill { animation: lg-sveip var(--sveip-ms) cubic-bezier(.5, 0, .2, 1) var(--start, 0ms) both; }
 @keyframes lg-sveip {
