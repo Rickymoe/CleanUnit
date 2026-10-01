@@ -2,7 +2,6 @@ export function initSider() {
   const reduksjon = matchMedia('(prefers-reduced-motion: reduce)').matches
   logoAnimer(reduksjon)
   overskriftVask(reduksjon)
-  tjenesteBobler(reduksjon)
   kortReveal(reduksjon)
   flaateInn(reduksjon)
   glansSveip(reduksjon)
@@ -264,55 +263,6 @@ function overskriftVask(reduksjon) {
     { rootMargin: '0px 0px -12% 0px', threshold: 0.6 }
   )
   overskrifter.forEach((el) => observer.observe(el.parentElement))
-}
-
-// Tjenestekortene: en liten byge bobler stiger opp fra ikonet når man holder
-// musen over kortet (eller trykker på det på berøringsskjerm) — som om noe
-// nettopp er vasket. KUN de seks kortene i «Tjenester» (Ricky, 2026-09-21) —
-// avgrenset med #tjenester, siden .tjeneste-kort også brukes til ansattsitatene
-// i «Jobb hos oss».
-// Mus: pointerenter. Berøring: click (ikke pointerenter/-down, som også
-// fyrer når fingeren bare starter en scrolling over kortet). En pause per
-// kort hindrer at boblene hoper seg opp ved rask frem-og-tilbake-musing.
-// Lagret fjernes når siste boble er poppet. Ingen bobler under reduced-motion
-// (skjult i CSS, og vi hopper over her for å spare arbeid).
-const KORT_BOBLER = 6
-const KORT_PAUSE_MS = 1800
-
-function tjenesteBobler(reduksjon) {
-  if (reduksjon) return
-  const tilfeldig = (a, b) => a + Math.random() * (b - a)
-  document.querySelectorAll('#tjenester .tjeneste-kort').forEach((kort) => {
-    const ikon = kort.querySelector('.tjeneste-kort__ikon')
-    if (!ikon) return
-    let pause = false
-    const byge = () => {
-      if (pause) return
-      pause = true
-      setTimeout(() => { pause = false }, KORT_PAUSE_MS)
-      const k = kort.getBoundingClientRect()
-      const i = ikon.getBoundingClientRect()
-      const lag = document.createElement('span')
-      lag.className = 'bobler'
-      lag.setAttribute('aria-hidden', 'true')
-      let slutt = 0
-      for (let n = 0; n < KORT_BOBLER; n++) {
-        const forsinkelse = tilfeldig(0, 380)
-        const varighet = tilfeldig(1300, 2200)
-        lag.appendChild(nyBoble(
-          i.left - k.left + i.width / 2 + tilfeldig(-0.7, 0.7) * i.width,
-          i.top - k.top + i.height * tilfeldig(0.1, 0.6),
-          tilfeldig(6, 16), forsinkelse, varighet,
-          -tilfeldig(45, 120), tilfeldig(-14, 14)
-        ))
-        slutt = Math.max(slutt, forsinkelse + varighet)
-      }
-      kort.appendChild(lag)
-      setTimeout(() => lag.remove(), slutt + 300)
-    }
-    kort.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') byge() })
-    kort.addEventListener('click', byge)
-  })
 }
 
 /* ── Stien nedover siden ─────────────────────────────────────────────────

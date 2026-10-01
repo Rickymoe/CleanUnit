@@ -590,7 +590,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 
 .stopp--tjenester { padding-block: var(--seksjon-y); background: var(--flate); }
 .tjeneste-kort {
-  position: relative; /* anker for .bobler (se tjenesteBobler i main.js) */
+  position: relative; /* anker for refleksen/sveipet på .kort--vindu og for innholdet som løftes over den */
   background: var(--teal-lys); border-radius: var(--radius); padding: var(--s-5);
   transition: transform .2s, box-shadow .2s;
 }
@@ -719,7 +719,11 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 @media (prefers-reduced-motion: reduce) {
   .kort--vindu.glans-sveip::after { animation: none; }
 }
-.tjeneste-kort__ikon { height: 2.75rem; width: auto; margin-bottom: var(--s-3); transition: transform .2s; }
+/* Tjenestemerkene er runde, flate SVG-merker med lang skygge i kundens egen stil
+   (verktoy/symboler.py; Ricky 2026-10-01: «vi bygger symboler selv fra bunn»).
+   Deres egne merker er store, og detaljene forsvinner under ~60 px, så de står
+   i 4,75rem (76 px) og ikke de 2,75rem de gamle strekikonene hadde. */
+.tjeneste-kort__ikon { height: 4.75rem; width: auto; margin-bottom: var(--s-3); transition: transform .2s; }
 @media (hover: hover) {
   .tjeneste-kort:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(10,92,91,.35); }
   .tjeneste-kort:hover .tjeneste-kort__ikon { transform: scale(1.08); }
