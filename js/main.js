@@ -222,9 +222,10 @@ function lagSkumBobler(kilde, { antall, varighetMs, skala }) {
   setTimeout(() => lag.remove(), slutt + 300)
 }
 
-// Seksjonsoverskrifter med data-vask får samme sveip + skumbobler som heroens
-// logo når de scrolles inn i synsfeltet — én gang per overskrift. .kjor
-// starter CSS-sveipet (se style.css).
+// Seksjonsoverskrifter med data-vask får samme sveip som heroens logo når de
+// scrolles inn i synsfeltet — én gang per overskrift, men UTEN skumbobler
+// (Ricky, 2026-10-01: boblene er for moderne for kunden; heroens logo har dem
+// fortsatt). .kjor starter CSS-sveipet (se style.css).
 //
 // VIKTIG: observeren følger .vask-boks rundt overskriften, IKKE selve h2-en.
 // h2-en er klippet av clip-path (inset ...100%) til den avsløres, og Chrome
@@ -236,10 +237,6 @@ function lagSkumBobler(kilde, { antall, varighetMs, skala }) {
 // observeren faktisk kommer til å avsløre overskriften. Kjører ikke denne
 // koden (gammel cachet main.js, ingen IntersectionObserver, reduced-motion)
 // forblir overskriftene synlige — de kan aldri bli stående skjult.
-const OVERSKRIFT_VARIGHET_MS = 950
-const OVERSKRIFT_BOBLER = 7
-const OVERSKRIFT_SKALA = 0.6
-
 function overskriftVask(reduksjon) {
   if (reduksjon || !('IntersectionObserver' in window)) return
   const overskrifter = document.querySelectorAll('.vask-boks > [data-vask]')
@@ -254,10 +251,6 @@ function overskriftVask(reduksjon) {
         observer.unobserve(boks)
         if (!el) return
         el.classList.add('kjor')
-        lagSkumBobler(el, {
-          antall: OVERSKRIFT_BOBLER, varighetMs: OVERSKRIFT_VARIGHET_MS,
-          skala: OVERSKRIFT_SKALA,
-        })
       })
     },
     { rootMargin: '0px 0px -12% 0px', threshold: 0.6 }

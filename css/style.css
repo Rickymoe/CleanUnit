@@ -377,7 +377,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   from { clip-path: inset(-.15em 100% -.15em -.1em); }
   to   { clip-path: inset(-.15em -.1em -.15em -.1em); }
 }
-/* Samme sveip + skumbobler på utvalgte seksjonsoverskrifter (data-vask på
+/* Samme sveip (uten skumbobler, se overskriftVask i js/main.js) på utvalgte seksjonsoverskrifter (data-vask på
    h2, satt av Ricky 2026-09-21: «Tjenester» og «Jobb hos oss»; flere legges
    til ved å sette attributtet). 2026-09-26: «Jobb hos oss»-overskriften
    («Renholderne er de viktigste») mistet sveipet — den står rett under
@@ -386,10 +386,9 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    Utløses av scroll (IntersectionObserver i
    main.js, som også slår på html.js-vask — uten den er overskriftene alltid
    synlige), én gang per overskrift, litt kortere enn i heroen. Overskriften
-   klippes av clip-path og tar boblene med seg, så boblelaget må ligge
-   UTENFOR den: .vask-boks er en boks tett rundt overskriften (fit-content,
-   så sveipet går over selve teksten og ikke hele kolonnebredden) som både
-   er posisjonsanker for .bobler og er det observeren måler mot. */
+   klippes av clip-path, så observeren må måle mot .vask-boks, en boks tett
+   rundt overskriften (fit-content, så sveipet går over selve teksten og ikke
+   hele kolonnebredden) som ikke er klippet. */
 [data-vask] { --vask-ms: 950ms; }
 .vask-boks { position: relative; width: fit-content; max-width: 100%; }
 /* Skumbobler: tynn turkis ring med et lite hvitt lysglimt og lett fyll, som en
