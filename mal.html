@@ -40,28 +40,27 @@ addEventListener("load", function () {
 <body class="{{body_klasse}}">
 <main>
 <header class="hero">
+  <!-- Byene som svak bakgrunn bak hele heroen (Ricky 2026-10-01): Oslo til
+       venstre, Stavanger til høyre. Var ute 2026-09-26 og er tilbake som
+       stemning bak teksten, ikke et «her holder vi til»: rekkevidde-linja
+       under ingressen sier at de kjører dit kunden er. Erstatter
+       veinett-teppet i heroen (teppet brukes fortsatt i footeren). Samme
+       bilde på begge bysider. Rent dekorativt, under alt annet. -->
+  <div class="hero__by" aria-hidden="true">
+    <!-- Samme bilde to ganger, hver vist som sin halvdel (se .hero__by-halv i
+         style.css): Oslo forankret i venstre kant, Stavanger i høyre, så byene
+         kan flyttes ut til sidene og midten holdes åpen for ordmerket. Bildet
+         lastes én gang (samme URL). På mobil vises bare den første, i full bredde. -->
+    <picture class="hero__by-halv hero__by-halv--oslo">
+      <source srcset="{{rot}}bilder/Byer.webp" type="image/webp">
+      <img src="{{rot}}bilder/Byer.png" alt="" width="1860" height="701">
+    </picture>
+    <picture class="hero__by-halv hero__by-halv--stavanger">
+      <source srcset="{{rot}}bilder/Byer.webp" type="image/webp">
+      <img src="{{rot}}bilder/Byer.png" alt="" width="1860" height="701">
+    </picture>
+  </div>
   <div class="wrap hero__innhold">
-    <!-- Utydelig deknings-teppe bak teksten. Erstattet Oslo-kartet 2026-09-26
-         etter tilbakemelding fra Christopher/Marit: et bykart i heroen leste
-         som «vi holder bare til her», mens de har kunder også utenfor Oslo og
-         Stavanger. Samme teppe på begge sider.
-
-         Innholdet er ekte gater fra OpenStreetMap, men bare `highway`-linjer:
-         ingen stedsnavn, vann, grønt, jernbane eller fargekoder, og bredden
-         følger vegklassen. Så mye er skrelt bort at flaten ikke peker på noe
-         bestemt sted lenger — den leser som «en by», ikke som denne byen, og
-         den kunne like gjerne vært et helt annet sted i verden. Nettopp derfor
-         kunne kartet komme tilbake etter å ha vært fjernet: det er veinettet
-         folk kjenner igjen som «ekte», ikke byen det er hentet fra.
-
-         Tegnes av verktoy/veinett-teppe.py — ikke rediger bildet for hånd.
-         Rent dekorativt, under alt annet i wrap-en. -->
-    <div class="hero__kart-vannmerke" aria-hidden="true">
-      <picture>
-        <source srcset="{{rot}}bilder/dekning-nett.webp" type="image/webp">
-        <img class="kart-vannmerke__kart" src="{{rot}}bilder/dekning-nett.png" alt="" width="1400" height="1400">
-      </picture>
-    </div>
     <!-- Lockup: ordmerket «CleanUnit» og taglinen (H1) er ÉN enhet på felles
          midtakse mellom byene. Ordmerket: "Clean" lett grå + "UNIT" halvfet
          turkis, Quicksand. Avsløres i ett sveip fra venstre («Vask»), med

@@ -142,16 +142,19 @@ test('Glans: sveipet går én gang, og bare når bevegelse er greit', () => {
     'CSS-en fanger ikke redusert bevegelse satt etter sidelast');
 });
 
-// Merk: teppet er laget av et OSM-utsnitt, men strippet til bare gater og uten
-// stedsnavn — det er altså ikke «Oslo-kartet» testen verner mot. Det den verner
-// mot er det GAMLE kartet, som hadde kontor-markører og bynavn og leste som
-// «vi holder bare til her» (se .hero__kart-vannmerke i css/style.css).
-test('Hero: verken bysilhuettene eller det navngitte bykartet er med lenger', () => {
+// Byillustrasjonen (bilder/Byer.png) er tilbake som svak bakgrunn 2026-10-01
+// (se .hero__by i css/style.css). Veinett-teppet (dekning-nett) er ute av
+// heroen og lever bare i footeren; det gamle navngitte Oslo-kartet med
+// kontor-markører skal fortsatt ikke komme tilbake.
+test('Hero: byillustrasjonen er svak bakgrunn, uten veinett-teppe og navngitt bykart', () => {
   for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
     const h = les(f);
-    assert.doesNotMatch(h, /hero__by/, f);
+    const hero = h.slice(h.indexOf('<header class="hero">'), h.indexOf('</header>'));
+    assert.match(hero, /<div class="hero__by" aria-hidden="true">/, f);
+    assert.match(hero, /bilder\/Byer\.(webp|png)/, f);
+    assert.doesNotMatch(hero, /dekning-nett/, f);
+    assert.doesNotMatch(h, /hero__kart-vannmerke/, f);
     assert.doesNotMatch(h, /hero-kart-vannmerke/, f);
-    assert.match(h, /bilder\/dekning-nett\.(webp|png)/, f);
     // Ingen gamle by-knapper igjen i heroen
     assert.doesNotMatch(h, /hero__knapp--(oslo|stavanger)/, f);
   }
