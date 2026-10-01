@@ -308,7 +308,7 @@ a { color: inherit; }
        med bottom: clamp(6rem, 16vh, 8.5rem), og for en relativt posisjonert
        boks forskyver bottom elementet oppover. Uten denne flyttet båndet seg
        135 px opp (målt: bilens dekk y 487 -> 352). */
-    position: relative; bottom: auto; margin-top: var(--s-6);
+    position: relative; bottom: auto; margin-top: var(--s-8); /* 4,5rem: mer luft mellom knappene og bilen (Ricky 2026-10-01, etter at byene ble borte på mobil) */
     flex-direction: column; align-items: center; gap: var(--s-4);
   }
   /* Bilen står nå OVER båndet (kolonne), ikke ved siden av det, og kan
