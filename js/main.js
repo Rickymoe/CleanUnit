@@ -262,7 +262,10 @@ function stiNedover(reduksjon) {
       const rubrikk = document.querySelector(sel + ' .eyebrow')
       if (!rubrikk) return null
       const r = rubrikk.getBoundingClientRect()
-      return { y: Math.round(r.top + scroll + r.height / 2), navn, sel }
+      // Relativt til SVG-ens topp (topp): SVG-en er flyttet ned til veilinja, og alt under
+      // (banen, nodene, aktiv-node-valget) regner fra dens egen nullpunkt. Uten fratrekket
+      // lå alle nodene `topp` (ca. 837 px) for langt nede (design-kritikk, 2026-10-02).
+      return { y: Math.round(r.top + scroll + r.height / 2) - topp, navn, sel }
     }).filter(Boolean)
 
     // Mild meander mot venstre mellom nodene — samme grep som X7. Bulken

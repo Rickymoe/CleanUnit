@@ -113,6 +113,9 @@ a { color: inherit; }
 /* Steg 3: Hero */
 .hero {
   --rute-nede: clamp(1.5rem, 4vh, 2.5rem);
+  /* Logoens skriftstørrelse (lockupens 1em). Logoen er 5,2em bred, og ingressen får samme
+     bredde via denne variabelen, så de to følger hverandre på alle bredder (#3). */
+  --logo-skrift: clamp(3.1rem, 11.5vw, 5.6rem);
   position: relative; overflow: hidden;
   min-height: 100svh; display: flex; flex-direction: column; justify-content: center;
   padding-top: clamp(3rem, 12vh, 6rem); padding-bottom: clamp(2rem, 8vh, 5rem);
@@ -122,6 +125,12 @@ a { color: inherit; }
      et fargeholdepunkt øverst uten å gjøre flaten mørk. Endepunktet er
      --base, så overgangen til neste seksjon (Tjenester, --flate) er usynlig. */
   background: radial-gradient(115% 85% at 50% 30%, var(--teal-lys) 0%, var(--base) 62%);
+}
+/* Desktop: rutebåndet er absolutt plassert nederst, så heroen holder av plassen til det
+   (rute-nede + båndets egen høyde 7,5rem + litt luft) som bunn-padding. Teksten og knappene
+   sentreres da i resten (design-kritikk #1). Under 48rem ligger båndet i flyten. */
+@media (min-width: 48rem) {
+  .hero { padding-bottom: calc(var(--rute-nede) + 7.5rem + var(--s-5)); }
 }
 /* På smale/høye mobilskjermer sentrerer justify-content:center innholdet
    midt i hele 100svh-flaten, langt under den toppforankrede logoen (som er
@@ -153,12 +162,15 @@ a { color: inherit; }
    under knappene»). Knappene sitter derfor over bånd-høyden: 7,5rem er
    båndets egen høyde (bilen 6,4rem over linja pluss stoppnavnene under). */
 .hero__knapper {
-  position: absolute; left: 0; right: 0; bottom: calc(var(--rute-nede) + 7.5rem);
-  z-index: 2; pointer-events: none;
+  /* I flyten, rett under teksten (design-kritikk #1, Ricky 2026-10-02): knappene var absolutt
+     plassert fra bunnen, mens teksten sentreres uavhengig av dem, så avstanden dem imellom
+     var tilfeldig: -12 px (de lå oppå rekkevidde-linja) ved 1280x620, -20 px ved 1366x600
+     og 208 px ved 1920x1080. Nå sentreres tekst og knapper som én gruppe, og heroens
+     bunn-padding (under) holder av plassen til rutebåndet. */
+  position: relative; z-index: 2; margin-top: var(--s-6);
   display: flex; gap: var(--s-3); justify-content: center; flex-wrap: wrap;
   padding-inline: 1rem;
 }
-.hero__knapper .knapp { pointer-events: auto; white-space: nowrap; }
 
 /* Rutebåndet: varebilen på vei mot kundetypene (Barnehager · Skoler ·
    Kontorer · Bilforhandlere). Erstattet bysilhuettene 2026-09-26: heroen
@@ -282,8 +294,8 @@ a { color: inherit; }
 /* Rekkevidde-linja under ingressen — svaret på «må jeg ha lokaler i Oslo
    eller Stavanger?». Teksten kommer fra byer.json ({{rekkevidde}}). */
 .hero__rekkevidde {
-  margin: var(--s-5) auto 0; max-width: 44ch;
-  font: 600 var(--t-md)/1.45 var(--sans); color: var(--teal-mork);
+  margin: var(--s-2) auto 0; max-width: 44ch;
+  font: 600 .9375rem/1.45 var(--sans); color: var(--teal-mork);
 }
 /* Under 48rem går rutebåndet og knappene UT av absolutt posisjonering og inn
    i .hero sin kolonneflyt. Da kan ikke båndet kollidere med teksten over,
@@ -328,8 +340,7 @@ a { color: inherit; }
   .hero__stopp-rad { position: relative; width: 100%; justify-content: space-between; gap: var(--s-2); }
   .hero__rute-linje { bottom: 100%; right: 0; }
   .hero__stopp { font-size: var(--t-xs); }
-  .hero__rekkevidde { font-size: var(--t-base); margin-top: var(--s-4); }
-  .hero__knapper { position: static; margin-top: var(--s-6); order: 1; }
+  .hero__knapper { margin-top: var(--s-6); order: 1; }
   .hero__rute { order: 2; }
 }
 /* Lockup: ordmerket «CleanUNIT» og taglinen «Renhold i {by}» er
@@ -341,7 +352,7 @@ a { color: inherit; }
    at taglinen får nøyaktig ordmerkets bredde (se .hero__tittel). */
 .hero__lockup {
   display: inline-flex; flex-direction: column; align-items: stretch;
-  font-size: clamp(3.1rem, 11.5vw, 5.6rem);
+  font-size: var(--logo-skrift);
 }
 /* Logoen (C i logovalget, Ricky 2026-10-02): vektorbilde, ikke tekst. Bredden er i em av
    lockupens skriftstørrelse, så logo og tagline skalerer sammen som før; 5,2em gir ca. samme
@@ -438,7 +449,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    rutebånd og knapper IKKE lenger absolutte — de er inne i denne
    kolonnen, se mobilblokken lenger opp. */
 .hero__innhold {
-  position: relative; z-index: 1; margin-top: -120px;
+  position: relative; z-index: 1; margin-top: 0;
   display: flex; flex-direction: column; align-items: center; text-align: center;
 }
 /* -120px balanserer mot bunnforankrede elementer på desktop. Under 48rem ER
@@ -574,7 +585,20 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    38 tegn bredde (Ricky, 2026-09-21, funn 4 i design-kritikken): på mobil var
    ingressen større enn taglinen (H1) og dominerte heroen. Verkstedet ga
    15,5px; holder oss på skalaen med --t-base. */
-.hero__ingress { max-width: 38ch; color: var(--tekst-svak); margin: var(--s-5) auto 0; font-size: var(--t-base); }
+/* Ingressen er IKKE bredere enn logoen (design-kritikk #3, Ricky 2026-10-02: «for stor»):
+   16 px / 3 linjer / 371 px var tyngre enn taglinen og stakk ut forbi logoen på mobil. Nå
+   15 px, bredde = logoens (5,2 x 5,6rem = 29,1rem), balansert i to linjer, og rekkevidde-linja
+   i samme størrelse rett under som én enhet (vekten skiller dem, ikke størrelsen). */
+.hero__ingress { max-width: calc(5.2 * var(--logo-skrift)); color: var(--tekst-svak); margin: var(--s-4) auto 0;
+  font-size: .9375rem; line-height: 1.55; text-wrap: balance; }
+/* Mobil: logoen øker (3,6rem i stedet for 3,1rem, 258 -> 300 px) og ingress/rekkevidde går ned
+   til --t-sm med bredde lik logoen (19rem = 304 px). Ligger HER, etter grunnreglene for
+   .hero__lockup og .hero__ingress: en media-blokk høyere opp i filen taper mot dem. */
+@media (max-width: 48rem) {
+  .hero { --logo-skrift: clamp(3.6rem, 11.5vw, 5.6rem); }
+  .hero__ingress { font-size: var(--t-sm); }
+  .hero__rekkevidde { font-size: var(--t-sm); margin-top: var(--s-2); }
+}
 
 .tjeneste-grid, .tillit-liste {
   list-style: none; margin: var(--s-6) 0 0; padding: 0;
