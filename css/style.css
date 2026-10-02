@@ -1004,6 +1004,10 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
 .sitat-liste {
   list-style: none; margin: var(--s-3) 0 0; padding: 0; display: grid;
   gap: var(--s-5); grid-template-columns: 1fr;
+  /* Ikke bredere enn at kortene fylles (design-kritikk #7/#8): ved full wrap-bredde (1088 px)
+     ble ett sitat på 100 tegn stående i et stort, nesten tomt kort, og ansattsitatene fikk
+     ca. 147 tegn per linje. Gjelder begge listene, så all tilbakemelding fortsatt ser lik ut. */
+  max-width: 54rem;
 }
 .sitat-kort {
   background: #fff; border: 1px solid var(--teal-lys); border-radius: var(--radius); padding: var(--s-5);
@@ -1017,9 +1021,19 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
   content: "\201C"; display: block; margin-bottom: var(--s-2);
   font: 800 3rem/1 Georgia, "Times New Roman", serif; color: var(--burgunder); opacity: .55; /* burgunder som i Marits mockup (2026-10-02); dekor, ikke tekst */
 }
-.sitat-kort p { color: var(--tekst); font-style: italic; font-size: var(--t-sm); }
+/* Sitatene er sidens sterkeste bevis, så de er satt i --t-md (17 px), ikke kortbrødtekstens
+   14,4 px, og med linjelengde 45-75 tegn (62ch) (design-kritikk #7/#8). */
+.sitat-kort p { color: var(--tekst); font-style: italic; font-size: var(--t-md); line-height: 1.6; max-width: 62ch; }
+@media (max-width: 36rem) { .sitat-kort p { font-size: var(--t-base); } } /* 16 px på telefon: 17 ga 8-9 linjer på ansattsitatene */
 .sitat-kort footer { margin-top: var(--s-3); font: 700 var(--t-sm)/1.4 var(--sans); color: var(--teal-mork); font-style: normal; }
 .sitat-logo { display: block; height: 2.5rem; max-width: 9rem; margin: 0; flex-shrink: 0; }
+/* Fast logokolonne på desktop, så sitatteksten starter på samme x i alle kortene (den startet
+   ved 401, 409 og 249 px etter logoens bredde). Kortet uten logo (Stålverkskroken) får samme
+   innrykk, så venstrekanten er rett. */
+@media (min-width: 36rem) {
+  .sitat-kort > picture { flex: 0 0 9.5rem; display: flex; align-items: center; }
+  .stopp--referanser .sitat-kort:not(:has(> picture)) { padding-left: calc(var(--s-5) + 9.5rem + var(--s-4)); }
+}
 .stopp--jobb .knapp { margin-top: var(--s-6); }
 .side-footer { background: var(--teal-mork); color: #fff; padding-block: var(--s-8); }
 .side-footer .wrap { display: grid; gap: var(--s-6); justify-items: center; text-align: center; }
