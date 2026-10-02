@@ -33,19 +33,10 @@
   --s-6: 2rem; --s-8: 4.5rem; --seksjon-y: 6rem;
   --wrap: 68rem;
   --radius: 14px;
-  /* Logoens egne farger — hentet fra Marit/Christophers ekte merke, låst
-     og adskilt fra sidens --teal-tokens (samme prinsipp som Team-klinikkens
-     --bla-hero: dette elementet følger IKKE en generell fargeoppussing). */
-  --logo-gra: #B6B6B6;
-  --logo-turkis-lys: #87CAC9;
-  --logo-turkis-mork: #008789;
-  /* Bokstavene trengte tydeligere farger enn selve logobildet hadde — disse
-     to er bevisst mørkere/mer mettet enn originalen (Ricky: "vi tar sjansen"),
-     mens boble-fargene over beholdes uendret. --logo-tekst-gra mørknet én
-     gang til (8A->75) etter design-kritikk: 3,16:1 mot --base lå rett over
-     AA-grensen for stor tekst (3:1) med null margin — 4,2:1 nå. */
-  --logo-tekst-gra: #757575;
-  --logo-tekst-turkis: #178F86;
+  /* Logoen (C i logovalget) har sine egne farger i bilder/logo-cleanunit*.svg og følger IKKE
+     sidens tokens: deres grønne er --gronn-* ovenfor, grå er #8E9595 (C-varianten er
+     bevisst mørkere enn merkets #B6B6B6 for å leses; 3,05:1 mot hvit). De gamle
+     --logo-gra, --logo-turkis-* og --logo-tekst-* hørte til tekst-ordmerket og er fjernet. */
   --logo-tagline-gra: #666666; /* 5,3:1 mot --base — grunnfargen i taglinen, så «Renhold»-tenningen (--teal) er tydelig */
   /* Glansen (Ricky 2026-09-30: «jeg savner noe glossy på siden»). Glans er
      tolket som BEVIS og ikke som pynt: de tre behandlingene under legger
@@ -150,22 +141,8 @@ a { color: inherit; }
    faktisk bedre ut uten" i heroen). */
 .verktoy__merke {
   position: absolute; left: 42%; top: 50%; transform: translate(-50%, -50%);
-  width: 24%; font: 600 clamp(6px, 1.7vw, 9.5px)/1 "Quicksand", var(--sans);
-  letter-spacing: .03em; text-align: center; white-space: nowrap;
+  width: 24%; height: auto;
 }
-/* Det nye ordmerket «CleanUNIT» også på bildøra (Ricky, 2026-09-21): samme
-   grå + turkis som i heroen, men "Clean" i vekt 400 i stedet for 300 — 300
-   forsvinner helt i 6-9 px. Skriftstørrelsen er hevet fra 5-8px til 6-9,5px
-   fordi små bokstaver i blandet skrift er smalere enn de gamle versalene og
-   ellers ikke fyller panelet. */
-/* Skriftstørrelsen følger BILENS bredde (container query-enheter), ikke
-   skjermbredden: clamp() på vw ga tekst som var for stor i forhold til bilen
-   rundt 900px og gled inn i sidevinduet. 4,3cqw gir ca. 22 % av bilbredden
-   for "CleanUNIT". Sentrert på 42 % (bakre kroppspanel), så teksten aldri
-   krysser dørskjøten/vinduet — clamp-verdien over er fallback uten cqw. */
-@supports (font-size: 1cqw) { .verktoy__merke { font-size: 4.3cqw; } }
-.verktoy__merke .merke__clean { color: var(--logo-tekst-gra); font-weight: 400; }
-.verktoy__merke .merke__unit { color: var(--logo-tekst-turkis); font-weight: 700; }
 
 /* Knapperaden er midtstilt i én rad, uavhengig av by (2026-09-26). Før lå
    hver knapp absolutt plassert under sin by i silhuett-illustrasjonen
@@ -186,7 +163,7 @@ a { color: inherit; }
 /* Rutebåndet: varebilen på vei mot kundetypene (Barnehager · Skoler ·
    Kontorer · Bilforhandlere). Erstattet bysilhuettene 2026-09-26: heroen
    skulle ikke lenger si «her holder vi til», men «vi kommer til deg».
-   Bilen står stille med vilje — logo-sveipet med skumbobler er heroens
+   Bilen står stille med vilje — logo-sveipet er heroens
    bevegelse, og Ricky vil ikke ha flere ting som skjer samtidig. */
 .hero__rute {
   position: absolute; left: 0; right: 0; bottom: var(--rute-nede);
@@ -366,26 +343,19 @@ a { color: inherit; }
   display: inline-flex; flex-direction: column; align-items: stretch;
   font-size: clamp(3.1rem, 11.5vw, 5.6rem);
 }
-/* Ordmerket: Quicksand (avrundet — slekt med såpebobler-temaet), "Clean" lett
-   grå + "UNIT" halvfet turkis. Valgt av Ricky 2026-09-21 etter sammenligning
-   mot Josefin Sans (finere, men tynnere og mer utsatt på mobil). */
-.logo {
-  margin: 0; display: inline-flex; justify-content: center; align-items: flex-end;
-  font: 600 1em/1 "Quicksand", var(--sans);
-  letter-spacing: .03em; -webkit-font-smoothing: antialiased;
-  /* nowrap: .hero__lockup er inline-flex, og uten dette kan ordmerket bryte
-     til to linjer på smale skjermer. */
-  white-space: nowrap;
-}
-.logo__clean { color: var(--logo-tekst-gra); font-weight: 300; }
-.logo__unit { color: var(--logo-tekst-turkis); font-weight: 600; }
+/* Logoen (C i logovalget, Ricky 2026-10-02): vektorbilde, ikke tekst. Bredden er i em av
+   lockupens skriftstørrelse, så logo og tagline skalerer sammen som før; 5,2em gir ca. samme
+   tyngde som det gamle tekst-ordmerket (bokstavhøyden i C er lavere enn Quicksands). Den
+   gamle Quicksand-varianten (Rickys valg 2026-09-21) er erstattet. */
+.logo { margin: 0; display: flex; justify-content: center; }
+.logo img { display: block; width: 5.2em; max-width: 100%; height: auto; }
 /* «Vask»: hele ordmerket avsløres i ÉN sammenhengende sveip fra venstre mot
    høyre, som når en vindusvisker/svamp går over en flate (Ricky valgte den
    framfor mynt-flip, løft, fokus m.fl. i verkstedet 2026-09-21; første
    utkast var «Møtes» — bokstavene fra hver sin side — men den falt ikke i
    smak). clip-path med litt margin (-.15em) så ikke bokstavtopper/-bunner
    klippes. Uten JS vises ordmerket rett fram; reduced-motion får
-   sluttresultatet. Skumboblene i sveipkanten lages av js/main.js. */
+   sluttresultatet. */
 html.js .logo, html.js-vask [data-vask] { clip-path: inset(-.15em 100% -.15em -.1em); }
 html.js .logo.kjor, html.js-vask [data-vask].kjor {
   animation: vask-sveip var(--vask-ms, 1560ms) cubic-bezier(.5, 0, .2, 1) both;
@@ -394,7 +364,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   from { clip-path: inset(-.15em 100% -.15em -.1em); }
   to   { clip-path: inset(-.15em -.1em -.15em -.1em); }
 }
-/* Samme sveip (uten skumbobler, se overskriftVask i js/main.js) på utvalgte seksjonsoverskrifter (data-vask på
+/* Samme sveip (se overskriftVask i js/main.js) på utvalgte seksjonsoverskrifter (data-vask på
    h2, satt av Ricky 2026-09-21: «Tjenester» og «Jobb hos oss»; flere legges
    til ved å sette attributtet). 2026-09-26: «Jobb hos oss»-overskriften
    («Renholderne er de viktigste») mistet sveipet — den står rett under
@@ -408,34 +378,9 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    hele kolonnebredden) som ikke er klippet. */
 [data-vask] { --vask-ms: 950ms; }
 .vask-boks { position: relative; width: fit-content; max-width: 100%; }
-/* Skumbobler: tynn turkis ring med et lite hvitt lysglimt og lett fyll, som en
-   såpeboble. Legges i .bobler (absolutt over lockupen) av logoAnimer() i
-   main.js, som setter posisjon/størrelse/tempo per boble (--bdelay/--bd/
-   --rise/--dx) og fjerner hele lagret igjen når de er ferdige (poppet:
-   utvider seg og forsvinner). Farger: samme turkiser som logoen
-   (#87CAC9 lys / #178F86 tekst-turkis), som rgba siden vars ikke kan
-   alfa-blandes. */
-.hero__lockup { position: relative; }
-.bobler { position: absolute; left: 0; top: 0; width: 100%; height: 0; pointer-events: none; }
-.boble {
-  position: absolute; border-radius: 50%; opacity: 0; pointer-events: none;
-  background:
-    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, .95) 0 11%, rgba(255, 255, 255, 0) 12%),
-    radial-gradient(circle at 50% 50%, rgba(135, 202, 201, .08) 52%, rgba(23, 143, 134, .30) 100%);
-  border: 1.5px solid rgba(23, 143, 134, .45);
-  animation: boble var(--bd) ease-out var(--bdelay) both;
-}
-@keyframes boble {
-  0%   { opacity: 0; transform: translate(0, 0) scale(.2); }
-  12%  { opacity: 1; transform: translate(0, -5px) scale(1); }
-  60%  { opacity: 1; transform: translate(var(--dx), calc(var(--rise) * .6)) scale(1); }
-  90%  { opacity: .85; transform: translate(calc(var(--dx) * -.4), var(--rise)) scale(1.05); }
-  100% { opacity: 0; transform: translate(calc(var(--dx) * -.4), calc(var(--rise) - 6px)) scale(1.4); }
-}
 @media (prefers-reduced-motion: reduce) {
   html.js .logo, html.js-vask [data-vask] { clip-path: none; }
   html.js .logo.kjor, html.js-vask [data-vask].kjor { animation: none; }
-  .boble { display: none; }
 }
 
 /* Ekte Google-vurdering under logoen (se index.html for kilde/dato).
@@ -576,7 +521,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    1440 og 390px bredde, samme forhold på begge): Oslo .9em gir 96,1 % av
    ordmerkets bredde, Stavanger .5em gir 95,7 % — justeringen fyller bare
    de siste 3-4 % med ordmellomrom. Grunnfarge og "Renhold"-tenningen er
-   mørknet fra logofargene (--logo-tekst-*) til --logo-tagline-gra/--teal:
+   mørknet fra de gamle logofargene til --logo-tagline-gra/--teal:
    liten tekst må ha AA (4,5:1), som de lyse logofargene ikke har i denne
    størrelsen. */
 .hero__tittel {
@@ -589,8 +534,8 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 .by--stavanger { --tagline-sperring: .5em; }
 /* «Renhold» står i logoens turkis fra første øyeblikk (Ricky, 2026-09-21,
    design-kritikk funn 5): en animert grå→turkis-tenning (Ricky 2026-09-13)
-   gikk samtidig med sveip og bobler rundt ordmerket og var den svakeste av de
-   tre effektene. Sluttresultatet er beholdt uendret — turkis "Renhold" med
+   gikk samtidig med sveip og bobler rundt ordmerket (boblene er nå fjernet) og var den
+   svakeste av de tre effektene. Sluttresultatet er beholdt uendret — turkis "Renhold" med
    et dempet glødeskjær, resten av taglinen grå (--logo-tagline-gra) — men uten
    bevegelse og uten det dekorative duplikat-ordet som lå oppå. --teal på
    --base gir 4,59:1 (AA for liten tekst). Bevisst farge-sammenspill med
@@ -1058,15 +1003,11 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
   filter: invert(1) hue-rotate(180deg);
   mix-blend-mode: screen; opacity: .55;
 }
-/* Samme ordmerke som i heroen («CleanUNIT», Quicksand: Clean lett + UNIT
-   halvfet), men fargene byttet for mørk bunn: Clean hvit, UNIT i logoens
-   lyse turkis (--logo-turkis-lys, ca. 4:1 mot --teal-mork — nok for så stor
-   tekst). Ricky, 2026-09-21: «Bytt ut "CLEAN UNIT" med vår nye font». */
-.side-footer__merke {
-  margin: 0; font: 600 var(--t-3xl)/1 "Quicksand", var(--sans); letter-spacing: .03em;
-}
-.merke__clean { font-weight: 300; }
-.merke__unit { color: var(--logo-turkis-lys); }
+/* Samme logo som i heroen, i varianten for mørk bunn (bilder/logo-cleanunit-lys.svg:
+   bokstavene hvite, UNIT og bobler i lysere turkis; den mørke bobla er lysnet fra #008789
+   til #3DB8B5 fordi den forsvant mot --teal-mork, 1,9:1). */
+.side-footer__merke { margin: 0; }
+.side-footer__merke img { display: block; width: clamp(14rem, 30vw, 20rem); height: auto; }
 /* Varebilen flyttet ned hit fra hero (se .verktoy__merke ovenfor). Egen
    posisjonert boks (position:relative) kun for å gi .verktoy__merke et
    referansepunkt — ligger ellers rett i .wrap sin grid-flyt, så
@@ -1074,6 +1015,8 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
    helt av seg selv. */
 .side-footer__bil { position: relative; width: clamp(130px, 15vw, 210px); container-type: inline-size; }
 .side-footer__bil img { width: 100%; height: auto; display: block; }
+/* Logoen på bildøra er også et <img> inne i .side-footer__bil, og regelen over ga den hele bilbredden. */
+.side-footer__bil img.verktoy__merke { width: 24%; }
 .side-footer__kontorer {
   display: grid; gap: var(--s-6); justify-items: center;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); width: 100%;

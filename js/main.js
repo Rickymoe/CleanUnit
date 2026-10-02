@@ -108,124 +108,23 @@ function glansSveip(reduksjon) {
   observer.observe(kort)
 }
 
-// Logoen i heroen: hele ordmerket avsløres i ett sveip fra venstre («Vask», ren
-// CSS-animasjon på .logo.kjor — se style.css), mens noen skumbobler dukker opp
-// akkurat der sveipet er og stiger/popper. Kjører med en gang siden heroen
-// alltid er synlig ved sidelast (ikke scroll-styrt). Reduced-motion viser
+// Logoen i heroen: hele logoen avsløres i ett sveip fra venstre («Vask», ren
+// CSS-animasjon på .logo.kjor — se style.css). De tilfeldige skumboblene som tidligere
+// fulgte sveipet er fjernet (Ricky, 2026-10-02: «vi kan fjerne boblene fra logoen»; han
+// mente ikke logoens egne tre bobler, som er en del av selve logoen). Kjører med en gang
+// siden heroen alltid er synlig ved sidelast (ikke scroll-styrt). Reduced-motion viser
 // sluttresultatet direkte via CSS — ingenting å gjøre her i så fall.
-//
-// LOGO_VARIGHET_MS må være lik varigheten på CSS-animasjonen (logo-sveipet i
-// style.css), siden boblene plasseres og tidsforskyves etter den.
-const LOGO_VARIGHET_MS = 1560
-const BOBLE_ANTALL = 12
-
-// Christopher ville at noen av de siste boblene — de som dukker opp rundt «T»-en
-// i UNIT — skal fortsette litt høyere opp enn resten (2026-09-27). Løftet rampes
-// inn over de siste 85 % av sveipet, slik at stigningen øker jevnt mot høyre i
-// ordmerket i stedet for å hoppe. Verdiene er valgt av Ricky i en slider-lab:
-// ved full rampe stiger de største boblene 3,0x — målt 100–198 px mot 33–103 px
-// før, i et vindu på ~900 px høyde (taket under gjør forskjellen mindre i lave
-// vinduer), med 550 ms ekstra levetid så de rekker å vises før de popper.
-//
-// Taket er lufta over ordmerket ganger 0,8: heroen har overflow:hidden, og en
-// boble som stiger forbi toppen blir kuttet midt på. Taket skalerer med
-// vindushøyden (målt 131 px ved 726 px vindu, 203 px ved 913, 361 px ved 1313),
-// så en høy skjerm gir mer å gå på. Det skal aldri gjøre en boble KORTERE enn
-// den er i dag — derfor Math.max(grunn, tak): på et lavt vindu hvor taket er
-// mindre enn dagens stigning, står boblen stille i stedet for å krympe.
-const BOBLE_LOFT = 2.0        // ekstra stigning ved t = 1 (2.0 = 3,0x)
-const BOBLE_LOFT_FRA = 0.15   // rampen starter her (0.15 = de siste 85 %)
-const BOBLE_EKSTRA_MS = 550   // de løftede boblene lever så mye lenger
-const BOBLE_LOFT_TAK = 0.8    // andel av lufta over ordmerket som kan brukes
-
 function logoAnimer(reduksjon) {
   if (reduksjon) return
   const logo = document.querySelector('.hero .logo')
   if (!logo) return
   logo.classList.add('kjor')
-  lagSkumBobler(logo, {
-    antall: BOBLE_ANTALL, varighetMs: LOGO_VARIGHET_MS,
-    skala: parseFloat(getComputedStyle(logo).fontSize) / 96,
-  })
-}
-
-// Samme kurve som CSS-sveipet (cubic-bezier(.5, 0, .2, 1)): gir hvor langt
-// sveipet har kommet (0-1) etter en gitt andel av tiden — så hver boble kan
-// plasseres presist i sveipkanten i det øyeblikket den dukker opp.
-function sveipKurve(t) {
-  const x1 = 0.5, y1 = 0, x2 = 0.2, y2 = 1
-  let lo = 0, hi = 1, s = t
-  for (let i = 0; i < 30; i++) {
-    const bx = 3 * (1 - s) * (1 - s) * s * x1 + 3 * (1 - s) * s * s * x2 + s * s * s
-    if (bx < t) lo = s
-    else hi = s
-    s = (lo + hi) / 2
-  }
-  return 3 * (1 - s) * (1 - s) * s * y1 + 3 * (1 - s) * s * s * y2 + s * s * s
-}
-
-// Skumboblene har tilfeldig størrelse/tempo/drift. Alt legges i ett .bobler-lag
-// som fjernes igjen når den siste boblen er poppet — siden ender helt rolig.
-// Forsvinner under reduced-motion (se style.css). Brukes både av heroens logo
-// og av seksjonsoverskriftene (se overskriftVask), derfor generell:
-//   kilde      elementet som sveipes (bobler plasseres langs bredden hans)
-//   antall     antall bobler
-//   varighetMs sveipets varighet (boblene dukker opp i sveipkanten underveis)
-//   skala      størrelses-/driftfaktor (verkstedet var satt opp for 96px tekst)
-// Boblelaget legges i nærmeste .hero__lockup/.vask-boks — utenfor kilden, som
-// er klippet av clip-path og ellers ville tatt boblene med seg.
-//
-// Løftet (BOBLE_LOFT) gjelder bare i heroen: det er der ordmerket med «T»-en
-// står, og bare der er det luft over boblen å stige i. Seksjonsoverskriftene
-// beholder dagens oppførsel.
-function nyBoble(x, y, storrelse, forsinkelse, varighet, rise, dx) {
-  const boble = document.createElement('span')
-  boble.className = 'boble'
-  boble.style.cssText =
-    `left:${x - storrelse / 2}px;top:${y - storrelse / 2}px;` +
-    `width:${storrelse}px;height:${storrelse}px;` +
-    `--bdelay:${forsinkelse}ms;--bd:${varighet}ms;--rise:${rise}px;--dx:${dx}px`
-  return boble
-}
-
-function lagSkumBobler(kilde, { antall, varighetMs, skala }) {
-  const boks = kilde.closest('.hero__lockup, .vask-boks')
-  if (!boks) return
-  const tilfeldig = (a, b) => a + Math.random() * (b - a)
-  const l = boks.getBoundingClientRect()
-  const o = kilde.getBoundingClientRect()
-  const lag = document.createElement('span')
-  lag.className = 'bobler'
-  lag.setAttribute('aria-hidden', 'true')
-  const hero = kilde.closest('.hero')
-  const romOver = hero ? l.top - hero.getBoundingClientRect().top : 0
-  const tak = romOver * BOBLE_LOFT_TAK
-  let slutt = 0
-  for (let i = 0; i < antall; i++) {
-    const t = Math.random()
-    const storrelse = tilfeldig(8, 26) * skala
-    const forsinkelse = t * varighetMs
-    const rampe = hero ? Math.max(0, (t - BOBLE_LOFT_FRA) / (1 - BOBLE_LOFT_FRA)) : 0
-    const grunn = tilfeldig(35, 110) * skala
-    const stigning = Math.min(grunn * (1 + BOBLE_LOFT * rampe), Math.max(grunn, tak))
-    const varighet = tilfeldig(1500, 2600) + BOBLE_EKSTRA_MS * rampe
-    const x = o.left - l.left + sveipKurve(t) * o.width + tilfeldig(-6, 6) * skala
-    const y = o.top - l.top + tilfeldig(0.25, 0.95) * o.height
-    const boble = nyBoble(
-      x, y, storrelse, forsinkelse, varighet,
-      -stigning, tilfeldig(-10, 10) * skala
-    )
-    lag.appendChild(boble)
-    slutt = Math.max(slutt, forsinkelse + varighet)
-  }
-  boks.appendChild(lag)
-  setTimeout(() => lag.remove(), slutt + 300)
 }
 
 // Seksjonsoverskrifter med data-vask får samme sveip som heroens logo når de
-// scrolles inn i synsfeltet — én gang per overskrift, men UTEN skumbobler
-// (Ricky, 2026-10-01: boblene er for moderne for kunden; heroens logo har dem
-// fortsatt). .kjor starter CSS-sveipet (se style.css).
+// scrolles inn i synsfeltet — én gang per overskrift, uten skumbobler (Ricky,
+// 2026-10-01: boblene er for moderne for kunden; fjernet fra heroens logo også
+// 2026-10-02). .kjor starter CSS-sveipet (se style.css).
 //
 // VIKTIG: observeren følger .vask-boks rundt overskriften, IKKE selve h2-en.
 // h2-en er klippet av clip-path (inset ...100%) til den avsløres, og Chrome
