@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-hidden="true" data-navn="vindu">
 <defs><clipPath id="k-vindu"><circle cx="100" cy="100" r="98"/></clipPath></defs>
 <circle cx="100" cy="100" r="98" fill="#76355D"/>
-<g clip-path="url(#k-vindu)"><g fill="#3F1F37"><path d="M54.0 44.0 L146.0 44.0 L252.1 150.1 L252.1 240.1 L160.1 240.1 L54.0 134.0Z"/><path d="M80.0 118.0 L150.0 118.0 L256.1 224.1 L256.1 236.1 L186.1 236.1 L80.0 130.0Z"/><path d="M110.0 130.0 L120.0 130.0 L226.1 236.1 L226.1 268.1 L216.1 268.1 L110.0 162.0Z"/></g>
+<g clip-path="url(#k-vindu)">
 <path d="M54.0 44.0 L146.0 44.0 L146.0 134.0 L54.0 134.0Z" fill="#F4F7F8"/><path d="M62.0 52.0 L138.0 52.0 L138.0 126.0 L62.0 126.0Z" fill="#96CDD0"/><path d="M98.0 52.0 L102.0 52.0 L102.0 126.0 L98.0 126.0Z" fill="#F4F7F8"/><path d="M62.0 86.0 L138.0 86.0 L138.0 90.0 L62.0 90.0Z" fill="#F4F7F8"/><path d="M66.0 56.0 L84.0 56.0 L84.0 60.0 L66.0 60.0Z" fill="#B7DCDD"/><path d="M66.0 64.0 L74.0 64.0 L74.0 68.0 L66.0 68.0Z" fill="#B7DCDD"/><path d="M80.0 118.0 L150.0 118.0 L150.0 130.0 L80.0 130.0Z" fill="#5CE0D4"/><path d="M110.0 130.0 L120.0 130.0 L120.0 162.0 L110.0 162.0Z" fill="#D9C3D3"/></g></svg>

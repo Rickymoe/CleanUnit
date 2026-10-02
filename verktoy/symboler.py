@@ -1,12 +1,14 @@
-# Genererer de seks tjenestemerkene (bilder/ikon-*.svg): flate, runde, med lang
-# diagonal skygge, i fargene fra cleanunit.no (aqua + plomme). Kjør: python3 verktoy/symboler.py
-# Skyggen er hver (konvekse) del feid langs en retning; alt klippet til sirkelen.
-# Skyggen er hver (konvekse) del feid langs en retning; alt klippet til sirkelen.
+# Genererer de seks tjenestemerkene (bilder/ikon-*.svg): flate, runde, i fargene fra
+# cleanunit.no (aqua + plomme). Kjør: python3 verktoy/symboler.py
+# SKYGGE=False (Marit, 2026-10-02: «Skyggene i symboler kan godt fjernes»): symbolene tegnes
+# uten den lange diagonale skyggen. Skyggekoden er beholdt (hver konvekse del feid langs en
+# retning, klippet til sirkelen) så den kan slås på igjen med SKYGGE=True.
 import math, os
 
 AQUA='#96CDD0'; AQUA_D='#70A8A9'; AQUA_L='#B7DCDD'
 PLUM='#76355D'; PLUM_D='#552E4B'; PLUM_DD='#3F1F37'; PLUM_L='#9A5C84'
 MINT='#5CE0D4'; MINT_D='#3FBFB3'; WHITE='#F4F7F8'; LILAC='#D9C3D3'; GREY='#8F859E'
+SKYGGE=False        # lang diagonal skygge på/av (av etter Marits ønske)
 DIR=(1,1)           # skyggeretning (ned mot høyre)
 LEN=150
 
@@ -45,12 +47,12 @@ def path(pts): return 'M'+' L'.join(f'{x:.1f} {y:.1f}' for x,y in pts)+'Z'
 def badge(name,bg,shadow,parts,casts=None):
     """parts: [(pts,fill)] i tegnerekkefølge. casts: hvilke deler som kaster skygge (alle som standard)."""
     casts=range(len(parts)) if casts is None else casts
-    sh=''.join(f'<path d="{path(sweep(parts[i][0]))}"/>' for i in casts)
+    sh=''.join(f'<path d="{path(sweep(parts[i][0]))}"/>' for i in casts) if SKYGGE else ''
     body=''.join(f'<path d="{path(p)}" fill="{f}"/>' for p,f in parts)
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-hidden="true" data-navn="{name}">
 <defs><clipPath id="k-{name}"><circle cx="100" cy="100" r="98"/></clipPath></defs>
 <circle cx="100" cy="100" r="98" fill="{bg}"/>
-<g clip-path="url(#k-{name})"><g fill="{shadow}">{sh}</g>
+<g clip-path="url(#k-{name})">{f'<g fill="{shadow}">{sh}</g>' if SKYGGE else ''}
 {body}</g></svg>'''
 
 icons={}
