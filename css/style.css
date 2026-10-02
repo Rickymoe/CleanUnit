@@ -1205,14 +1205,19 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .tilbud-skjema input,
 .tilbud-skjema select,
 .tilbud-skjema textarea {
-  width: 100%; padding: 12px 14px; border: 1px solid #C7D8D7; border-radius: 10px;
+  /* Kanten er det eneste som viser at dette er et felt: #C7D8D7 ga 1,48:1 mot hvit, under kravet
+     på 3:1 for grafikk som bærer informasjon (WCAG 1.4.11, design-kritikk #6). #7A9593 er samme
+     grønngrå tone og gir 3,2:1. */
+  width: 100%; padding: 12px 14px; border: 1px solid #7A9593; border-radius: 10px;
   background: var(--flate); color: var(--tekst); font: 400 var(--t-base)/1.4 var(--sans);
 }
 .tilbud-skjema textarea { resize: vertical; }
 .tilbud-skjema input:focus-visible,
 .tilbud-skjema select:focus-visible,
 .tilbud-skjema textarea:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; border-color: var(--teal); }
-.tilbud-skjema button[type="submit"] { width: 100%; }
+/* justify-content: knappen er inline-flex, og uten den stod teksten til venstre i den brede
+   pillen (design-kritikk #5). */
+.tilbud-skjema button[type="submit"] { width: 100%; justify-content: center; }
 /* Låst send-knapp: skjemaet vises før Formspree-ID-en finnes (Ricky,
    2026-09-27), og da er knappen `disabled` i markup. Uten denne så den
    fullt trykkbar ut — solid teal, ingen demping — og da ser det ut som en
