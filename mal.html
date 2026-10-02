@@ -109,9 +109,9 @@ addEventListener("load", function () {
          båndet er aria-hidden, så speilet er et bilde uten innhold for en
          skjermleser uansett — det får ingen egen alt-tekst å lese opp. -->
     <div class="hero__rute-bil-boks">
-      <img class="hero__rute-bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+      <img class="hero__rute-bil" src="{{rot}}bilder/bil.webp" alt="" width="1448" height="1086">
       <span class="hero__rute-speil">
-        <img src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+        <img src="{{rot}}bilder/bil.webp" alt="" width="1448" height="1086">
       </span>
       <!-- «CleanUNIT» på siden, som på varebilen i footeren (Ricky, 2026-10-01):
            ekte tekst lagt over dørpanelet, ikke bakt inn i bildet. Bilen er
@@ -331,8 +331,12 @@ addEventListener("load", function () {
 
     <!-- Flåten (Ricky, 2026-09-26): fire like biler på én vei — samme bil og
          samme bilde som rutebåndet i heroen, som allerede har lastet
-         bilder/bil.png, så de fire koster ingen ekstra nedlasting (derfor
-         <img>, ikke <picture> med webp slik footeren bruker).
+         bilder/bil.webp, så de fire koster ingen ekstra nedlasting. Bilen er WebP
+         (107 KB) rett i src her og i heroen, ikke PNG (607 KB): alfakanalen er identisk
+         (målt piksel for piksel), og WebP støttes i alle nettlesere siden 2020. Derfor
+         <img>, ikke <picture>: .flaate__bil:nth-child() teller søsken, og en <picture>
+         rundt hver ville gjort hver til første barn. Footeren bruker <picture> med
+         PNG som reserve og lastes da bare som WebP. Designkritikk #4, 2026-10-02.
 
          Bevisst UTEN tall og tekst: hvor mange biler de har, er ikke
          bekreftet (siden sier over 100 ansatte i dag), og flåten leser som «flere
@@ -352,10 +356,10 @@ addEventListener("load", function () {
          klippet av bilenes bevegelse. -->
     <div class="flaate" aria-hidden="true">
       <div class="flaate__spor">
-        <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
-        <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
-        <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
-        <img class="flaate__bil" src="{{rot}}bilder/bil.png" alt="" width="1448" height="1086">
+        <img class="flaate__bil" src="{{rot}}bilder/bil.webp" alt="" width="1448" height="1086">
+        <img class="flaate__bil" src="{{rot}}bilder/bil.webp" alt="" width="1448" height="1086">
+        <img class="flaate__bil" src="{{rot}}bilder/bil.webp" alt="" width="1448" height="1086">
+        <img class="flaate__bil" src="{{rot}}bilder/bil.webp" alt="" width="1448" height="1086">
       </div>
       <div class="flaate__vei"></div>
     </div>

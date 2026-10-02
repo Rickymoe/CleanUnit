@@ -113,7 +113,7 @@ test('Glans: speilet i heroen er en egen boks rundt bilen', () => {
     assert.match(les('css/style.css'), /\.hero__rute-bil-boks \{[\s\S]*?margin-bottom: calc\(1\.6rem - 0\.172 \* var\(--bil-b\)\)/,
       'bilens plassering på linja ligger ikke på boksen');
     const hero = h.slice(h.indexOf('<div class="hero__rute"'), h.indexOf('hero__stopp-rad'));
-    const biler = [...hero.matchAll(/src="([^"]*bil\.png)"/g)].map((m) => m[1]);
+    const biler = [...hero.matchAll(/src="([^"]*bil\.(?:png|webp))"/g)].map((m) => m[1]);
     assert.equal(biler.length, 2, `${f}: heroen skal ha bilen og ett speil`);
     // Speilet er en kopi av bilen — ingen ny nettverkshenting — men det MÅ
     // være samme fil: byttes bildet i den ene og ikke den andre, står det et
