@@ -1,12 +1,29 @@
 :root {
-  --teal: #0E7C7B;
-  --teal-mork: #0A5C5B;
-  --teal-lys: #E6F5F4;
+  /* DERES PALETT (Marit, 2026-10-02): «Disse fargene er gjenganger i mye av det vi lager,
+     sammen med burgunder.» Web-verdiene er målt i logofilen (bilder/logo-cleanunit-original.png),
+     ikke omregnet fra PMS/CMYK: det er de pikslene kundene faktisk ser.
+       Grå          PMS Cool Grey 5U  CMYK 0,0,0,30      #B6B6B6
+       Mørk grønn   PMS 327U          CMYK 90,5,45,0     #008789
+       Mellomgrønn  PMS 7472U         CMYK 45,3,20,0     #87CAC9
+       Lys grønn    PMS 7472U 50 %    CMYK 27,2,13,0     #AED1D1
+       Burgunder    RGB 117,53,93                         #75355D
+     Disse fem er merkefargene og brukes slik de er til flater, ikon og stor grafikk.
+     Under dem ligger tre AVLEDEDE verdier som er mørkere enn merkefargen, fordi tekst og
+     knapper må ha 4,5:1 (merkegrønn #008789 gir 4,35:1 mot hvit, #87CAC9 og #AED1D1 under
+     2:1): de beholder merkets fargetone (181°) og endrer bare lysheten. */
+  --gra: #B6B6B6;
+  --gronn-mork: #008789;
+  --gronn-mellom: #87CAC9;
+  --gronn-lys: #AED1D1;
+  --burgunder: #75355D;
+  --teal: #007A7C;        /* handling og tekst: merkegrønn, mørknet til 5,2:1 mot hvit */
+  --teal-mork: #00595B;   /* mørk flate (tillitsblokk, footer): 8,1:1 mot hvit tekst */
+  --teal-lys: #E7F4F4;    /* lys flate: 20 % mellomgrønn mot hvit */
   --base: #F3F5F7; /* matcher himmelfargen i to-byer-illustrasjonen (bilder/Byer.png) */
   --flate: #FFFFFF;
   --tekst: #1E2B2B;
   --tekst-svak: #55706E;
-  --rosa: #EC6B95; /* kun hjerte-vannmerket (.kort--hjerte) — eneste farge utenfor turkis-paletten */
+  --rosa: #75355D; /* hjerte-vannmerket (.kort--hjerte): nå burgunder (Marit), var lyserødt #EC6B95 */
   --tekst-middels: #3F5453; /* mellom --tekst-svak og --tekst: 5,8:1 over rosa hjerte, 7,2:1 på --teal-lys */
   --sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --t-xs: .8125rem; --t-sm: .9rem; --t-base: 1rem; --t-md: 1.0625rem;
@@ -113,7 +130,7 @@ a { color: inherit; }
      hadde --base flatt før, var første skjerm helt nøytral grå; gløden gir
      et fargeholdepunkt øverst uten å gjøre flaten mørk. Endepunktet er
      --base, så overgangen til neste seksjon (Tjenester, --flate) er usynlig. */
-  background: radial-gradient(115% 85% at 50% 30%, #E4F6F5 0%, var(--base) 62%);
+  background: radial-gradient(115% 85% at 50% 30%, var(--teal-lys) 0%, var(--base) 62%);
 }
 /* På smale/høye mobilskjermer sentrerer justify-content:center innholdet
    midt i hele 100svh-flaten, langt under den toppforankrede logoen (som er
@@ -230,7 +247,7 @@ a { color: inherit; }
      helt inn til silhuetten. Etter z-index-fiksen over er dette alt som
      gjenstår — målt 28 px vannmerke inni kroppen, maks styrke 7 av 255 — og
      det er ikke verdt å skjære bort bilens myke overgang for. */
-  filter: drop-shadow(0 14px 22px rgba(14, 124, 123, .22));
+  filter: drop-shadow(0 14px 22px rgba(0, 122, 124, .22));
 }
 /* Speilbildet av bilen i bakken (Ricky 2026-09-30). Bilen står på en stille
    vei — speilet sier at underlaget er nyvasket, og det er den eneste av de
@@ -605,8 +622,8 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 .tjeneste-kort h3 { color: var(--teal-mork); }
 /* Hjerte-vannmerke på «Langvarige kollegaer» (Ricky, 2026-09-21) — kun dette
    kortet, satt via .kort--hjerte i markupen. Rent CSS: et stort, svakt
-   lyserødt hjerte (SVG-maske fylt med --rosa (#EC6B95) — Ricky ba om
-   litt lyserødt, 2026-09-21) midt på høyre side,
+   hjerte (SVG-maske fylt med --rosa, nå burgunder #75355D som Marit ønsker; var
+   lyserødt #EC6B95 — Ricky ba om litt lyserødt, 2026-09-21) midt på høyre side,
    tippet litt og med ca. en fjerdedel utenfor kanten (overflow:hidden), så
    hele formen (to topper og spiss) leses, men som et vannmerke og ikke som
    et ikon. Ligger BAK teksten (::before, teksten
@@ -623,7 +640,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   background: var(--rosa);
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
-  transform: translateY(-50%) rotate(12deg); opacity: .22;
+  transform: translateY(-50%) rotate(12deg); opacity: .16; /* burgunder (Marit 2026-10-02): .22 i lyserødt, men burgunder er mørkere; .16 gir 5,5:1 for --tekst-middels bak hjertet */
 }
 .kort--hjerte > * { position: relative; }
 /* Brødteksten på dette kortet er litt mørkere (--tekst-middels i stedet for
@@ -645,15 +662,15 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   box-shadow:
     inset 0 0 0 2px var(--teal),
     inset 0 0 0 7px var(--teal-lys),
-    inset 0 0 0 8.5px rgba(14, 124, 123, .4);
+    inset 0 0 0 8.5px rgba(0, 122, 124, .4);
 }
 @media (hover: hover) {
   .kort--vindu:hover {
     box-shadow:
       inset 0 0 0 2px var(--teal),
       inset 0 0 0 7px var(--teal-lys),
-      inset 0 0 0 8.5px rgba(14, 124, 123, .4),
-      0 12px 24px -12px rgba(10, 92, 91, .35);
+      inset 0 0 0 8.5px rgba(0, 122, 124, .4),
+      0 12px 24px -12px rgba(0, 89, 91, .35);
   }
 }
 /* Refleks i vindusglasset på «Vinduspuss» (Ricky 2026-09-30).
@@ -705,7 +722,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 .kort--vindu::after {
   content: ""; position: absolute; inset: 8.5px; border-radius: 5.5px;
   pointer-events: none;
-  /* Styrken er målt, ikke gjettet. Kortet er --teal-lys (#E6F5F4), altså
+  /* Styrken er målt, ikke gjettet. Kortet er --teal-lys (#E7F4F4), altså
      nesten hvitt, så et hvitt sveip har et TAK på 25 av 255 i rødkanalen
      (255 − 230) — det finnes ikke mer å hente. Med labens 0,55 nådde båndet
      bare +14 av de 25 (målt i en tekstfri sone av kortet), og på skjermbilder
@@ -733,7 +750,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    i 4,75rem (76 px) og ikke de 2,75rem de gamle strekikonene hadde. */
 .tjeneste-kort__ikon { height: 4.75rem; width: auto; margin-bottom: var(--s-3); transition: transform .2s; }
 @media (hover: hover) {
-  .tjeneste-kort:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(10,92,91,.35); }
+  .tjeneste-kort:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0, 89, 91,.35); }
   .tjeneste-kort:hover .tjeneste-kort__ikon { transform: scale(1.08); }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -750,14 +767,14 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    så de to mørke blokkene rammer inn siden.
    Alle tekstfargene under må settes eksplisitt: de arver ellers fra h2/p
    (--tekst #1E2B2B), som er nesten usynlig på --teal-mork.
-   Kontrast målt mot #0A5C5B: eyebrow 4,77:1, h2/h3 7,79:1, brødtekst
-   5,62:1. Eyebrowen er bevisst ikke --logo-turkis-lys (#87CAC9): den er
+   Kontrast målt mot --teal-mork (#00595B): eyebrow 4,98:1, h2/h3 8,14:1, brødtekst
+   ca. 5,9:1. Eyebrowen er bevisst ikke --logo-turkis-lys (#87CAC9): den er
    låst til logoen og ga 4,2:1, under de 4,5:1 småtekst skal ha. #9BD5D3 er
    samme turkis, ett hakk lysere, og blir den best lesbare eyebrowen på
    siden. */
 .stopp--tillit { padding-block: var(--seksjon-y); background: var(--teal-mork);
   position: relative; }
-.stopp--tillit .eyebrow { color: #9BD5D3; }
+.stopp--tillit .eyebrow { color: var(--gronn-lys); }
 .stopp--tillit h2 { color: #fff; }
 /* Den våte kanten øverst på den mørke flaten (Ricky 2026-09-30): en smal
    lysning som faller ned fra overkanten, pluss en 1 px linje helt på toppen
@@ -770,7 +787,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    seg på kanten.
    Innholdet løftes over begge lagene, av samme grunn som på vinduskortet:
    et posisjonert pseudo-element males over statisk innhold. Uten det ville
-   et hvitt slør ligget oppå eyebrowen (#9BD5D3 på #0A5C5B, målt 4,77:1) og
+   et hvitt slør ligget oppå eyebrowen (--gronn-lys #AED1D1 på #00595B, målt 4,98:1) og
    spist av kontrasten. Nå kan glansen bare ligge bak teksten. */
 .stopp--tillit .wrap { position: relative; z-index: 1; }
 .stopp--tillit::before {
@@ -806,7 +823,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 }
 .tillit-stempel::before {
   content: ""; position: absolute; inset: 5px; border-radius: 50%;
-  border: 1px dashed rgba(14, 124, 123, .35);
+  border: 1px dashed rgba(0, 122, 124, .35);
 }
 /* Fast bredde+høyde (ikke width:auto+max-width:68%) — det ga et snevert,
    feilberegnet bredde på PNG-logoene (Miljøfyrtårn/Virke, som er bredere
@@ -1002,7 +1019,7 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
 .sitat-kort blockquote { margin: 0; flex: 1; min-width: 0; }
 .sitat-kort blockquote::before {
   content: "\201C"; display: block; margin-bottom: var(--s-2);
-  font: 800 3rem/1 Georgia, "Times New Roman", serif; color: var(--teal); opacity: .4;
+  font: 800 3rem/1 Georgia, "Times New Roman", serif; color: var(--burgunder); opacity: .55; /* burgunder som i Marits mockup (2026-10-02); dekor, ikke tekst */
 }
 .sitat-kort p { color: var(--tekst); font-style: italic; font-size: var(--t-sm); }
 .sitat-kort footer { margin-top: var(--s-3); font: 700 var(--t-sm)/1.4 var(--sans); color: var(--teal-mork); font-style: normal; }
@@ -1186,7 +1203,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
    ~30rem bredt, og to felt ved siden av hverandre der ville blitt for trangt
    (en container-media-query ville dessuten ikke hjulpet, siden bredden kommer
    fra grid-kolonnen og ikke fra vinduet). */
-.tilbud-skjema { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(10, 92, 91, .08); }
+.tilbud-skjema { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(0, 89, 91, .08); }
 .tilbud-skjema > * + * { margin-top: var(--s-4); }
 .skjema-rad { display: grid; gap: var(--s-4); }
 .skjema-felt label { display: block; margin-bottom: var(--s-2); font: 700 var(--t-sm)/1.2 var(--sans); color: var(--tekst); }
@@ -1222,7 +1239,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 
 .skjema-feil { margin-top: var(--s-4); padding: var(--s-3) var(--s-4); border-radius: 10px; background: #FDECEF; color: #8A1F35; font-size: var(--t-sm); }
 .skjema-feil a { color: inherit; }
-.skjema-kvittering { margin-top: var(--s-4); padding: var(--s-5) var(--s-4); background: var(--flate); border-radius: var(--radius); text-align: center; box-shadow: 0 1px 3px rgba(10, 92, 91, .08); }
+.skjema-kvittering { margin-top: var(--s-4); padding: var(--s-5) var(--s-4); background: var(--flate); border-radius: var(--radius); text-align: center; box-shadow: 0 1px 3px rgba(0, 89, 91, .08); }
 .skjema-kvittering h3 { color: var(--teal-mork); }
 .skjema-kvittering p { margin-top: var(--s-2); color: var(--tekst-svak); }
 
