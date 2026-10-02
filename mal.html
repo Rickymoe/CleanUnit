@@ -297,12 +297,12 @@ addEventListener("load", function () {
       <p class="stopp__lede">Clean Unit er en servicebedrift som utfører de fleste former for renhold, gulvbehandlinger og levering av hygieneartikler til bedriftsmarkedet. {{om_kontorer}} Hos oss er kunden i fokus — vi tilpasser oss kundens behov for å finne den løsningen som passer best for akkurat deres bedrift. Clean Unit er en bedrift i vekst, for stadig flere oppdager verdien av en kvalitetsfokusert renholdsleverandør.</p>
     </div>
   </div>
-    <!-- Plassholder for ekte kontorbilder. Boksene
-         er rent dekorative inntil videre (svg er aria-hidden, figcaption
-         er ekte tekst så stedsnavnet ikke går tapt for skjermlesere) —
-         bytt hver til <img alt="…"> med ekte bilde når Marit/Christopher
-         skaffer dem. -->
-    <div class="om-foto-rad">
+    <!-- Plassholder for ekte kontorbilder. SKJULT (hidden) inntil bildene finnes
+         (design-kritikk #11, Ricky 2026-10-02): boksene viste «Selfie av de som jobber på
+         kontoret», en intern beskjed, til alle besøkende, i to store tomme flater. Når
+         bildene kommer: fjern hidden og bytt hver boks til <img alt="…"> (svg er aria-hidden,
+         figcaption er ekte tekst så stedsnavnet ikke går tapt for skjermlesere). -->
+    <div class="om-foto-rad" hidden>
       <figure class="om-foto-plassholder">
         <div class="om-foto-boks">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -461,8 +461,7 @@ addEventListener("load", function () {
              på en knapp som ikke gjør noe. js/main.js skjuler det i samme
              slengen som skjemaet tas i bruk. -->
         <div class="skjema-varsel" id="tilbud-varsel">
-          <p><strong>Skjemaet er ikke tatt i bruk ennå.</strong> CleanUnit må skaffe et Formspree-abonnement og opprette ett skjema per kontor før forespørsler kan sendes inn herfra.</p>
-          <p>Inntil videre: ring <a href="tel:{{telefon}}">{{telefon_visning}}</a>, eller send e-post til <a href="mailto:{{tilbud_epost}}">{{tilbud_epost}}</a>.</p>
+          <p><strong>Skjemaet åpner snart.</strong> Inntil videre: ring <a href="tel:{{telefon}}">{{telefon_visning}}</a>, eller send e-post til <a href="mailto:{{tilbud_epost}}">{{tilbud_epost}}</a>, så hjelper vi deg.</p>
         </div>
         <div class="skjema-rad">
           <div class="skjema-felt">

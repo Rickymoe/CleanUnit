@@ -388,7 +388,7 @@ test('Tilbud: skjemaet har kvittering og feilboks', () => {
   }
 })
 
-test('Tilbud: varselet om manglende Formspree-abonnement står synlig i skjemakortet', () => {
+test('Tilbud: varselet om at skjemaet ikke er i bruk står synlig i skjemakortet, uten interne navn', () => {
   for (const [f, , epost] of TILBUD_BYER) {
     const seksjon = tilbudSeksjon(les(f))
     const tag = seksjon.match(/<div class="skjema-varsel" id="tilbud-varsel"[^>]*>/)
@@ -398,8 +398,14 @@ test('Tilbud: varselet om manglende Formspree-abonnement står synlig i skjemako
     // forklarer, og det ville blitt en tredje grid-kolonne i .tilbud-layout.
     assert.ok(seksjon.indexOf('id="tilbud-varsel"') < seksjon.indexOf('</form>'),
       `${f}: varselet må ligge inne i skjemaet`)
-    assert.match(seksjon, /Formspree-abonnement/, `${f}: teksten nevner ikke abonnementet`)
-    assert.ok(seksjon.includes(`mailto:${epost}`), `${f}: varselet mangler ${epost}`)
+    // Besøkende skal ikke se interne huskelapper (leverandør, personnavn): varselet sier at
+    // skjemaet åpner snart og gir telefon og e-post (design-kritikk #12, 2026-10-02).
+    const start = seksjon.indexOf('id="tilbud-varsel"');
+    const varsel = seksjon.slice(start, seksjon.indexOf('</div>', start));
+    assert.match(varsel, /Skjemaet åpner snart/, `${f}: varselet sier ikke at skjemaet åpner snart`)
+    assert.doesNotMatch(varsel, /Formspree|Christopher|abonnement/i, `${f}: varselet viser en intern beskjed`)
+    assert.ok(varsel.includes(`mailto:${epost}`), `${f}: varselet mangler ${epost}`)
+    assert.match(varsel, /href="tel:/, `${f}: varselet mangler telefonlenke`)
   }
 })
 
