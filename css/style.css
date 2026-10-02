@@ -840,7 +840,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 .tillit-logo { width: 2.4rem; height: 2.1rem; display: block; object-fit: contain; }
 svg.tillit-logo { color: var(--teal); }
 
-.stopp--om { padding-block: var(--seksjon-y); background: var(--teal-lys); }
+.stopp--om { padding-block: var(--seksjon-y); background: var(--flate); } /* var teal-lys; Referanser (teal-lys) står nå rett over, så Om oss er hvit for å bryte rekka */
 .stopp__lede { max-width: 60ch; margin-top: var(--s-4); color: var(--tekst-svak); }
 .stopp--om h3 { margin-top: var(--s-6); color: var(--teal-mork); }
 .stopp--om h3 + p { max-width: 80ch; margin-top: var(--s-2); color: var(--tekst-svak); }
@@ -1268,3 +1268,167 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 
 /* Må ligge sist: samme spesifisitet som en klasse, så rekkefølgen avgjør. */
 [hidden] { display: none; }
+
+/* Toppmeny: fast øverst, lenker nedover på siden (Ricky 2026-10-02). Sticky i flyten (ikke fixed),
+   så den tar sin egen plass og ikke dekker heroen. Mobil: logo + «Be om tilbud» + menyknapp, og
+   menyen åpner som en absolutt panel rett under raden (ikke fixed: backdrop-filter ville gjort
+   headeren til containing block). Uten JS ligger lenkene alltid åpne (html.js styrer skjulingen). */
+.hopp-til-innhold {
+  position: absolute; left: var(--s-3); top: -4rem; z-index: 60; padding: var(--s-2) var(--s-4);
+  background: var(--teal-mork); color: #fff; border-radius: 0 0 8px 8px; font: 700 var(--t-sm)/1.2 var(--sans);
+}
+.hopp-til-innhold:focus { top: 0; }
+.side-nav {
+  position: sticky; top: -1px; z-index: 50; background: rgba(255, 255, 255, .97);
+  border-bottom: 1px solid var(--teal-lys); box-shadow: 0 1px 6px rgba(0, 89, 91, .06);
+}
+.side-nav__rad { display: flex; align-items: center; gap: var(--s-4); min-height: 3.75rem; position: relative; }
+.side-nav__logo { display: block; flex: none; }
+.side-nav__logo img { display: block; height: 2rem; width: auto; }
+.side-nav__bryter { display: none; }
+.side-nav__meny { display: flex; align-items: center; gap: var(--s-4); flex: 1; min-width: 0; }
+.side-nav__meny ul { list-style: none; margin: 0 auto 0 var(--s-5); padding: 0; display: flex; gap: var(--s-1); flex-wrap: wrap; }
+.side-nav__lenke {
+  display: block; padding: .6rem .75rem; border-radius: 8px; color: var(--tekst);
+  font: 600 var(--t-sm)/1.2 var(--sans); text-decoration: none;
+}
+.side-nav__lenke[aria-current="true"] { color: var(--teal-mork); box-shadow: inset 0 -2px 0 var(--teal); border-radius: 8px 8px 0 0; }
+.side-nav__by { color: var(--teal-mork); font: 600 var(--t-sm)/1.2 var(--sans); text-decoration: none; white-space: nowrap; padding: .6rem .5rem; }
+.side-nav__tilbud { flex: none; padding: 11px 18px; }
+@media (hover: hover) {
+  .side-nav__lenke:hover { background: var(--teal-lys); color: var(--teal-mork); }
+  .side-nav__by:hover { text-decoration: underline; text-underline-offset: 3px; }
+}
+.side-nav a:focus-visible, .side-nav__bryter:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+#tjenester, #referanser, #om-oss, #hvorfor, #miljo, #jobb-hos-oss, #tilbud, #kontakt { scroll-margin-top: 3.75rem; }
+@media (max-width: 62rem) {
+  .side-nav__rad { gap: var(--s-3); }
+  .side-nav__tilbud { margin-left: auto; order: 2; }
+  .side-nav__bryter { order: 3; }
+  html.js .side-nav__bryter {
+    display: inline-flex; flex: none; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem;
+    border: 1px solid #7A9593; border-radius: 10px; background: #fff; cursor: pointer; color: var(--teal-mork);
+  }
+  .side-nav__bryter-ikon, .side-nav__bryter-ikon::before, .side-nav__bryter-ikon::after {
+    display: block; width: 1.15rem; height: 2px; background: currentColor; border-radius: 2px; content: ""; transition: transform .2s, opacity .2s;
+  }
+  .side-nav__bryter-ikon { position: relative; }
+  .side-nav__bryter-ikon::before { position: absolute; top: -6px; left: 0; }
+  .side-nav__bryter-ikon::after { position: absolute; top: 6px; left: 0; }
+  .side-nav__bryter[aria-expanded="true"] .side-nav__bryter-ikon { background: transparent; }
+  .side-nav__bryter[aria-expanded="true"] .side-nav__bryter-ikon::before { transform: translateY(6px) rotate(45deg); }
+  .side-nav__bryter[aria-expanded="true"] .side-nav__bryter-ikon::after { transform: translateY(-6px) rotate(-45deg); }
+  .side-nav__meny {
+    position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: stretch; gap: 0;
+    background: #fff; border-bottom: 1px solid var(--teal-lys); box-shadow: 0 8px 16px rgba(0, 89, 91, .08);
+    padding: var(--s-2) clamp(1rem, 4vw, 3rem) var(--s-4);
+  }
+  html.js .side-nav__meny[hidden] { display: none; }
+  .side-nav__meny ul { flex-direction: column; margin: 0; gap: 0; }
+  .side-nav__lenke { padding: .85rem .5rem; font-size: var(--t-base); }
+  .side-nav__lenke[aria-current="true"] { box-shadow: inset 3px 0 0 var(--teal); border-radius: 0; background: var(--teal-lys); }
+  .side-nav__by { padding: .85rem .5rem; font-size: var(--t-base); }
+}
+@media (max-width: 26rem) {
+  .side-nav__logo img { height: 1.6rem; }
+  .side-nav__tilbud { padding: 10px 14px; }
+}
+
+/* ===== Innhold fra Maritts dokument «Oppsett ny nettside» (2026-10-02), Oslo-siden ===== */
+.hero__ingress strong { color: var(--teal-mork); font-weight: 700; }
+.stopp__lede--flere { max-width: 68ch; }
+.stopp__lede--flere > p + p { margin-top: var(--s-3); }
+
+/* Tillitsrad rett under heroen */
+.tillitsrad { background: var(--flate); border-bottom: 1px solid var(--teal-lys); }
+.tillitsrad__liste {
+  list-style: none; margin: 0; padding: var(--s-5) 0; display: grid;
+  grid-template-columns: repeat(2, 1fr); gap: var(--s-4) var(--s-5);
+}
+.tillitsrad__liste li { display: flex; align-items: center; gap: var(--s-3); }
+.tillitsrad__liste svg { flex: none; width: 2.25rem; height: 2.25rem; color: var(--teal); }
+.tillitsrad__liste span { font: 500 var(--t-sm)/1.25 var(--sans); color: var(--tekst-svak); }
+.tillitsrad__liste strong { display: block; color: var(--teal-mork); font-weight: 800; font-size: var(--t-md); }
+@media (min-width: 48rem) {
+  .tillitsrad__liste { grid-template-columns: repeat(4, 1fr); }
+  .tillitsrad__liste li + li { padding-left: var(--s-5); border-left: 1px solid var(--teal-lys); }
+}
+
+/* «Derfor velger kundene …» */
+.stopp--derfor { padding-block: var(--s-8); background: var(--base); }
+.derfor-liste {
+  list-style: none; margin: var(--s-6) 0 0; padding: 0; display: grid; gap: var(--s-5); grid-template-columns: 1fr;
+}
+.derfor-liste li { border-top: 3px solid var(--gronn-mellom); padding-top: var(--s-3); }
+.derfor-liste h3 { color: var(--teal-mork); font-size: var(--t-lg); }
+.derfor-liste p { margin-top: var(--s-2); color: var(--tekst-svak); font-size: var(--t-sm); }
+@media (min-width: 36rem) { .derfor-liste { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 64rem) { .derfor-liste { grid-template-columns: repeat(4, 1fr); } }
+
+/* Sju tjenester: 1 kolonne → 2 → 3, og de brede kortene (første og siste) fyller rekkene slik at
+   ingen står alene (jf. #9). «Les mer» viser resten av Maritts tekst uten å gjøre kortene høye. */
+.tjeneste-grid--sju { align-items: start; grid-template-columns: 1fr; }
+@media (min-width: 36rem) { .tjeneste-grid--sju { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 36rem) and (max-width: 55.99rem) {
+  .tjeneste-grid--sju > .tjeneste-kort--bred:first-child { grid-column: 1 / -1; }
+}
+@media (min-width: 56rem) {
+  .tjeneste-grid--sju { grid-template-columns: repeat(3, 1fr); }
+  .tjeneste-grid--sju > .tjeneste-kort--bred { grid-column: span 2; }
+}
+.tjeneste-mer { margin-top: var(--s-3); }
+.tjeneste-mer summary {
+  cursor: pointer; padding: .4rem 0; font: 700 var(--t-sm)/1.2 var(--sans); color: var(--teal-mork);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.tjeneste-mer summary:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+.tjeneste-mer[open] summary { margin-bottom: var(--s-1); }
+
+/* Om oss: Slik jobber vi, Møt oss, Stavanger */
+.slik-liste { list-style: none; margin: var(--s-4) 0 0; padding: 0; max-width: 56rem; }
+.slik-liste li { display: grid; gap: var(--s-1) var(--s-5); grid-template-columns: 1fr; padding: var(--s-4) 0; border-top: 1px solid var(--teal-lys); }
+.slik-liste li:last-child { border-bottom: 1px solid var(--teal-lys); }
+.slik-liste h4, .team-liste h4 { margin: 0; font: 700 var(--t-md)/1.3 var(--sans); color: var(--teal-mork); }
+.slik-liste p { color: var(--tekst-svak); font-size: var(--t-sm); }
+@media (min-width: 40rem) { .slik-liste li { grid-template-columns: minmax(11rem, 17rem) 1fr; } }
+.team-liste { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: var(--s-4); grid-template-columns: 1fr; }
+@media (min-width: 48rem) { .team-liste { grid-template-columns: repeat(3, 1fr); } }
+.team-liste li { display: flex; gap: var(--s-4); padding: var(--s-4); border: 1px solid var(--teal-lys); border-radius: var(--radius); background: var(--flate); }
+.team-initialer {
+  flex: none; display: grid; place-items: center; width: 3.25rem; height: 3.25rem; border-radius: 50%;
+  background: var(--teal-lys); color: var(--teal-mork); font: 800 var(--t-md)/1 var(--sans); letter-spacing: .04em;
+}
+.team-liste p { margin-top: var(--s-1); color: var(--tekst-svak); font-size: var(--t-sm); }
+.team-liste .team-rolle { color: var(--teal); font-weight: 700; margin-top: 0; }
+.om-stavanger { margin-top: var(--s-6); padding: var(--s-5); border-radius: var(--radius); background: var(--teal-lys); max-width: 44rem; }
+.stopp--om .om-stavanger h3 { margin-top: 0; }
+.stopp--om .om-stavanger h3 + p { margin-bottom: var(--s-4); }
+
+/* Jobb hos oss: Ansatte (tekst og gruppebilde) */
+.ansatte { display: grid; gap: var(--s-5); margin-top: var(--s-6); }
+.ansatte__bilde { margin: 0; }
+.ansatte__bilde img { display: block; width: 100%; height: auto; border-radius: var(--radius); }
+.stopp--jobb .ansatte h3 { margin-top: 0; }
+.ansatte__tekst p { margin-top: var(--s-3); color: var(--tekst-svak); max-width: 60ch; }
+@media (min-width: 56rem) { .ansatte { grid-template-columns: 1.15fr 1fr; align-items: center; gap: var(--s-6); } }
+
+/* Miljø og seriøsitet: Maritts fire tekstblokker på hvite kort under rutene */
+.miljo-detaljer { margin-top: var(--s-8); display: grid; gap: var(--s-5); grid-template-columns: 1fr; align-items: start; }
+@media (min-width: 48rem) { .miljo-detaljer { grid-template-columns: repeat(2, 1fr); } }
+.miljo-kort { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); color: var(--tekst-svak); }
+.miljo-kort h3 { color: var(--teal-mork); margin-bottom: var(--s-2); }
+.miljo-kort p { margin-top: var(--s-2); font-size: var(--t-sm); }
+.miljo-kort p strong { color: var(--tekst); }
+.miljo-kort ul { margin: var(--s-2) 0 0; padding-left: 1.2rem; font-size: var(--t-sm); }
+.miljo-kort li { margin-top: var(--s-1); }
+.miljo-kort__logo { display: block; height: 3rem; width: auto; max-width: 9rem; object-fit: contain; margin-bottom: var(--s-3); }
+.miljo-kort__logo--bred { height: 3.25rem; max-width: 11rem; }
+
+/* Kontakt i footeren (Oslo): ingress og kontaktpersoner */
+.side-footer h2 { color: #fff; }
+.side-footer__ingress { max-width: 56ch; color: #CBDFDE; }
+.side-footer__personer { display: grid; gap: var(--s-5); grid-template-columns: repeat(2, 1fr); width: 100%; max-width: 48rem; padding-top: var(--s-5); border-top: 1px solid rgba(255, 255, 255, .2); }
+@media (min-width: 48rem) { .side-footer__personer { grid-template-columns: repeat(4, 1fr); } }
+.side-footer__personer h3 { color: #fff; font-size: var(--t-base); }
+.side-footer__personer p { margin-top: var(--s-1); font-size: var(--t-sm); color: #CBDFDE; }
+.side-footer__personer a { color: #fff; text-underline-offset: 3px; }

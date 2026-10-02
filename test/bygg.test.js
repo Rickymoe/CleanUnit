@@ -149,7 +149,8 @@ test('Glans: sveipet går én gang, og bare når bevegelse er greit', () => {
 test('Hero: byillustrasjonen er svak bakgrunn, uten veinett-teppe og navngitt bykart', () => {
   for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
     const h = les(f);
-    const hero = h.slice(h.indexOf('<header class="hero">'), h.indexOf('</header>'));
+    const start = h.indexOf('<header class="hero">');
+    const hero = h.slice(start, h.indexOf('</header>', start));
     assert.match(hero, /<div class="hero__by" aria-hidden="true">/, f);
     assert.match(hero, /bilder\/Byer\.(webp|png)/, f);
     assert.doesNotMatch(hero, /dekning-nett/, f);
@@ -454,3 +455,50 @@ test('Tilbud: seksjonen fortsetter bakgrunnsvekslingen og har skjemastil', () =>
   // selektorene, overstyrer det UA-regelen og den døde formen vises likevel.
   assert.match(css, /\[hidden\] \{ display: none; \}/)
 })
+
+test('fyllMal: betingede blokker tas med bare når nøkkelen har verdi', () => {
+  assert.equal(fyllMal('a{{#oslo}}X{{by}}{{/oslo}}b', { oslo: '1', by: 'Oslo' }), 'aXOslob');
+  assert.equal(fyllMal('a{{#oslo}}X{{by}}{{/oslo}}b', { oslo: '', by: 'Oslo' }), 'ab');
+  assert.throws(() => fyllMal('{{#oslo}}X{{/oslo}}', {}), /Mangler verdi for \{\{#oslo\}\}/);
+});
+
+test('Toppmeny: lenkene i Maritts rekkefølge peker på ankre som finnes, med den andre byen og «Be om tilbud»', () => {
+  for (const [f, andre] of [['test/ut/index.html', 'Stavanger'], ['test/ut/stavanger/index.html', 'Oslo']]) {
+    const h = les(f);
+    const nav = h.slice(h.indexOf('<header class="side-nav"'), h.indexOf('</header>'));
+    const lenker = [...nav.matchAll(/class="side-nav__lenke" href="#([a-z-]+)">([^<]+)</g)].map((m) => [m[1], m[2]]);
+    assert.deepEqual(lenker.map((l) => l[1]),
+      ['Tjenester', 'Referanser', 'Om oss', 'Miljø og seriøsitet', 'Kontakt'], `${f}: menyrekkefølgen`);
+    for (const [id] of lenker) assert.match(h, new RegExp(`id="${id}"`), `${f}: mangler #${id}`);
+    assert.match(nav, new RegExp(`class="side-nav__by" href="[^"]+">${andre} `), `${f}: lenke til ${andre}`);
+    assert.match(nav, /class="knapp knapp--fyll side-nav__tilbud" href="#tilbud"/, f);
+    assert.match(h, /id="tilbud"/, f);
+  }
+});
+
+test('Maritts innhold (Oppsett ny nettside) står på Oslo-siden: sju tjenester, referanser, team, miljøblokker og kontaktpersoner', () => {
+  const h = les('test/ut/index.html');
+  for (const t of ['Fast daglig renhold', 'Renhold av barnehager', 'Hovedrengjøring', 'Teppe- og møbelrens',
+    'Gulvvedlikehold', 'Vindusvask', 'Hygieneartikler']) {
+    assert.match(h, new RegExp(`<h3>${t}</h3>`), `tjeneste: ${t}`);
+  }
+  assert.equal((h.match(/class="tjeneste-kort/g) || []).length >= 7 + 4, true, 'sju tjenestekort + fire fordelskort');
+  for (const t of ['BSN – Boligstiftelsen Nydalen', 'Dr. Brandt', 'Vilma', 'Marit Byfuglien', 'Mari Pedersen',
+    'Guro Klingenberg Schei', 'Slik jobber vi', 'Møt oss', 'Miljøfyrtårn siden 2011',
+    'Medlem av Virke og tariffbundet', 'Offentlig godkjent renholdsbedrift', 'Hvorfor vi velger bort underleverandører',
+    'Trenger dere en ny renholdsleverandør?']) {
+    assert.ok(h.includes(t), `mangler «${t}»`);
+  }
+  for (const [tlf] of [['+4797195993'], ['+4747298445']]) assert.ok(h.includes(`href="tel:${tlf}"`), tlf);
+  assert.ok(h.includes('mailto:jobb@cleanunit.no'));
+  assert.match(h, /<div class="om-foto-rad" hidden>/, 'fotoplassholderen skal fortsatt være skjult');
+});
+
+test('Stavanger-siden får ikke Oslo-kontorets tekster, men beholder sine egne', () => {
+  const h = les('test/ut/stavanger/index.html');
+  for (const t of ['Marit Byfuglien', 'Slik jobber vi', 'Guro Klingenberg', 'tjeneste-grid--sju', 'Boligstiftelsen Nydalen', 'derfor-liste']) {
+    assert.ok(!h.includes(t), `Oslo-teksten «${t}» lekker inn i Stavanger-siden`);
+  }
+  assert.ok(h.includes('Hva koster renhold for dere?'));
+  assert.ok(h.includes('To kontorer, samme standard'));
+});

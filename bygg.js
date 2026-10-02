@@ -8,7 +8,14 @@ import { fileURLToPath } from 'node:url';
 
 const DELTE_MAPPER = ['css', 'js', 'bilder'];
 
+// Betingede blokker: {{#nøkkel}}…{{/nøkkel}} tas med bare når data[nøkkel] er en ikke-tom
+// streng, {{^nøkkel}}…{{/nøkkel}} bare når den er tom. Brukt for innhold som bare gjelder ett
+// kontor (Oslo-teksten fra Marit), så det ikke ligger i Stavanger-siden og blir skjult med CSS.
 export function fyllMal(mal, data) {
+  mal = mal.replace(/\{\{([#^])([a-z_]+)\}\}([\s\S]*?)\{\{\/\2\}\}/g, (_, tegn, nokkel, innhold) => {
+    if (!(nokkel in data)) throw new Error(`Mangler verdi for {{${tegn}${nokkel}}}`);
+    return (tegn === '#') === Boolean(data[nokkel]) ? innhold : '';
+  });
   return mal.replace(/\{\{([a-z_]+)\}\}/g, (_, nokkel) => {
     if (!(nokkel in data)) throw new Error(`Mangler verdi for {{${nokkel}}}`);
     return data[nokkel];

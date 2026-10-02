@@ -7,6 +7,7 @@ export function initSider() {
   glansSveip(reduksjon)
   stiNedover(reduksjon)
   tilbudSkjema()
+  sideNav()
 }
 
 function debounce(fn, ms) {
@@ -183,9 +184,9 @@ function overskriftVask(reduksjon) {
 const STI_SEKSJONER = [
   ['#tjenester', 'Tjenester'],
   ['#referanser', 'Referanser'],
-  ['#hvorfor', 'Hvorfor Clean Unit'],
   ['#om-oss', 'Om oss'],
   ['#jobb-hos-oss', 'Jobb hos oss'],
+  ['#hvorfor', 'Miljø og seriøsitet'],
   ['#tilbud', 'Be om tilbud'],
 ]
 
@@ -447,4 +448,46 @@ function tilbudSkjema() {
       feil.hidden = false
     }
   })
+}
+
+// Toppmeny: mobilmenyen åpnes av knappen (lukkes av Escape, et trykk på en lenke eller et trykk
+// utenfor), og lenken til seksjonen man er i markeres med aria-current. Uten JS er lenkene alltid synlige.
+function sideNav() {
+  const nav = document.querySelector('.side-nav')
+  if (!nav) return
+  const bryter = nav.querySelector('.side-nav__bryter')
+  const meny = nav.querySelector('.side-nav__meny')
+  const smal = matchMedia('(max-width: 62rem)')
+  const sett = (apen) => {
+    bryter.setAttribute('aria-expanded', String(apen))
+    meny.hidden = smal.matches && !apen
+  }
+  sett(false)
+  smal.addEventListener('change', () => sett(false))
+  bryter.addEventListener('click', () => sett(bryter.getAttribute('aria-expanded') !== 'true'))
+  meny.addEventListener('click', (e) => { if (e.target.closest('a')) sett(false) })
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && bryter.getAttribute('aria-expanded') === 'true') { sett(false); bryter.focus() }
+  })
+  document.addEventListener('click', (e) => {
+    if (bryter.getAttribute('aria-expanded') === 'true' && !nav.contains(e.target)) sett(false)
+  })
+
+  // Aktiv seksjon: den siste lenkede seksjonen hvis topp er passert en linje litt under menyen.
+  const lenker = [...nav.querySelectorAll('.side-nav__lenke')]
+  const mal = lenker.map((a) => ({ a, el: document.querySelector(a.getAttribute('href')) })).filter((x) => x.el)
+  let ventende = false
+  const oppdater = () => {
+    ventende = false
+    const linje = nav.getBoundingClientRect().height + window.innerHeight * 0.25
+    let aktiv = null
+    for (const m of mal) if (m.el.getBoundingClientRect().top <= linje) aktiv = m.a
+    for (const m of mal) {
+      if (m.a === aktiv) m.a.setAttribute('aria-current', 'true')
+      else m.a.removeAttribute('aria-current')
+    }
+  }
+  addEventListener('scroll', () => { if (!ventende) { ventende = true; requestAnimationFrame(oppdater) } }, { passive: true })
+  addEventListener('resize', oppdater)
+  oppdater()
 }
