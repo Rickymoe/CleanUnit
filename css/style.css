@@ -348,7 +348,33 @@ a { color: inherit; }
    tyngde som det gamle tekst-ordmerket (bokstavhøyden i C er lavere enn Quicksands). Den
    gamle Quicksand-varianten (Rickys valg 2026-09-21) er erstattet. */
 .logo { margin: 0; display: flex; justify-content: center; }
-.logo img { display: block; width: 5.2em; max-width: 100%; height: auto; }
+.logo svg { display: block; width: 5.2em; max-width: 100%; height: auto; overflow: visible; }
+/* De tre boblene over «IT» (Ricky, 2026-10-02: som i logovalg C): stor, mellom, liten vokser
+   inn med et lite overskyt og stiger litt fra ordet, rett etter at sveipet har nådd dem; så en
+   svært rolig flyt (±2,4 px, 5-7 s, forskjøvet per boble). Starter først når JS har satt .kjor
+   (samme tidspunkt som sveipet); uten JS står de ferdige. Bare transform/translate/opacity, så
+   ingenting flytter layout. Redusert bevegelse: ferdig logo, ingen animasjon. */
+.logo { --b0: 1150ms; --stig: 24px; --amp: 2.4px; }
+.lg__b1 { --i: 0; --flyt: 6.4s; }
+.lg__b2 { --i: 1; --flyt: 5.2s; }
+.lg__b3 { --i: 2; --flyt: 6.9s; }
+html.js .logo.kjor .lg__b1, html.js .logo.kjor .lg__b2, html.js .logo.kjor .lg__b3 {
+  transform-box: fill-box; transform-origin: 50% 50%;
+  animation:
+    lg-vokse 750ms cubic-bezier(.34, 1.56, .64, 1) calc(var(--b0) + var(--i) * 170ms) both,
+    lg-flyt var(--flyt) ease-in-out calc(var(--b0) + var(--i) * 170ms + 850ms) infinite alternate;
+}
+@keyframes lg-vokse {
+  from { transform: translateY(var(--stig)) scale(0); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+@keyframes lg-flyt {
+  from { translate: 0 calc(var(--amp) * -1); }
+  to   { translate: 0 var(--amp); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .logo.kjor .lg__b1, html.js .logo.kjor .lg__b2, html.js .logo.kjor .lg__b3 { animation: none; }
+}
 /* «Vask»: hele ordmerket avsløres i ÉN sammenhengende sveip fra venstre mot
    høyre, som når en vindusvisker/svamp går over en flate (Ricky valgte den
    framfor mynt-flip, løft, fokus m.fl. i verkstedet 2026-09-21; første
