@@ -456,15 +456,25 @@ function sideNav() {
   const nav = document.querySelector('.side-nav')
   if (!nav) return
   const bryter = nav.querySelector('.side-nav__bryter')
+  const festet = () => nav.classList.toggle('side-nav--festet', scrollY > 8 || bryter.getAttribute('aria-expanded') === 'true')
   const meny = nav.querySelector('.side-nav__meny')
   const smal = matchMedia('(max-width: 62rem)')
   const sett = (apen) => {
     bryter.setAttribute('aria-expanded', String(apen))
     meny.hidden = smal.matches && !apen
+    festet()
   }
   sett(false)
   smal.addEventListener('change', () => sett(false))
   bryter.addEventListener('click', () => sett(bryter.getAttribute('aria-expanded') !== 'true'))
+  // Merket i hjørnet tar deg til toppen. href="#" gjør det uten JS; her blir det en myk rulling
+  // uten «#» i adressefeltet. Headeren er sticky og kan ikke brukes som anker (den ligger allerede
+  // øverst i vinduet, så en lenke til den gjør ingenting).
+  nav.querySelector('.side-nav__logo').addEventListener('click', (e) => {
+    e.preventDefault()
+    sett(false)
+    scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+  })
   meny.addEventListener('click', (e) => { if (e.target.closest('a')) sett(false) })
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && bryter.getAttribute('aria-expanded') === 'true') { sett(false); bryter.focus() }
@@ -487,6 +497,8 @@ function sideNav() {
       else m.a.removeAttribute('aria-current')
     }
   }
+  addEventListener('scroll', festet, { passive: true })
+  festet()
   addEventListener('scroll', () => { if (!ventende) { ventende = true; requestAnimationFrame(oppdater) } }, { passive: true })
   addEventListener('resize', oppdater)
   oppdater()

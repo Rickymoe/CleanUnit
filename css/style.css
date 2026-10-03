@@ -1279,15 +1279,16 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 }
 .hopp-til-innhold:focus { top: 0; }
 .side-nav {
-  position: sticky; top: -1px; z-index: 50; background: rgba(255, 255, 255, .97);
+  position: sticky; top: -1px; z-index: 50; background: var(--base); /* samme farge som heroen (Ricky 2026-10-03) */
   border-bottom: 1px solid var(--teal-lys); box-shadow: 0 1px 6px rgba(0, 89, 91, .06);
 }
 .side-nav__rad { display: flex; align-items: center; gap: var(--s-4); min-height: 3.75rem; position: relative; }
-.side-nav__logo { display: block; flex: none; }
-.side-nav__logo img { display: block; height: 2rem; width: auto; }
+/* Merket i hjørnet er logoens tre bobler, samme tegning som favicon (Ricky 2026-10-03). */
+.side-nav__logo { display: block; flex: none; line-height: 0; border-radius: 8px; }
+.side-nav__logo svg { display: block; width: 2.6rem; height: 2.6rem; }
 .side-nav__bryter { display: none; }
 .side-nav__meny { display: flex; align-items: center; gap: var(--s-4); flex: 1; min-width: 0; }
-.side-nav__meny ul { list-style: none; margin: 0 auto 0 var(--s-5); padding: 0; display: flex; gap: var(--s-1); flex-wrap: wrap; }
+.side-nav__meny ul { list-style: none; margin: 0 auto 0 var(--s-3); padding: 0; display: flex; gap: var(--s-1); flex-wrap: wrap; }
 .side-nav__lenke {
   display: block; padding: .6rem .75rem; border-radius: 8px; color: var(--tekst);
   font: 600 var(--t-sm)/1.2 var(--sans); text-decoration: none;
@@ -1307,7 +1308,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   .side-nav__bryter { order: 3; }
   html.js .side-nav__bryter {
     display: inline-flex; flex: none; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem;
-    border: 1px solid #7A9593; border-radius: 10px; background: #fff; cursor: pointer; color: var(--teal-mork);
+    border: 1px solid #7A9593; border-radius: 10px; background: var(--base); cursor: pointer; color: var(--teal-mork);
   }
   .side-nav__bryter-ikon, .side-nav__bryter-ikon::before, .side-nav__bryter-ikon::after {
     display: block; width: 1.15rem; height: 2px; background: currentColor; border-radius: 2px; content: ""; transition: transform .2s, opacity .2s;
@@ -1320,7 +1321,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   .side-nav__bryter[aria-expanded="true"] .side-nav__bryter-ikon::after { transform: translateY(-6px) rotate(-45deg); }
   .side-nav__meny {
     position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: stretch; gap: 0;
-    background: #fff; border-bottom: 1px solid var(--teal-lys); box-shadow: 0 8px 16px rgba(0, 89, 91, .08);
+    background: var(--base); border-bottom: 1px solid var(--teal-lys); box-shadow: 0 8px 16px rgba(0, 89, 91, .08);
     padding: var(--s-2) clamp(1rem, 4vw, 3rem) var(--s-4);
   }
   html.js .side-nav__meny[hidden] { display: none; }
@@ -1330,7 +1331,6 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   .side-nav__by { padding: .85rem .5rem; font-size: var(--t-base); }
 }
 @media (max-width: 26rem) {
-  .side-nav__logo img { height: 1.6rem; }
   .side-nav__tilbud { padding: 10px 14px; }
 }
 
@@ -1432,3 +1432,10 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .side-footer__personer h3 { color: #fff; font-size: var(--t-base); }
 .side-footer__personer p { margin-top: var(--s-1); font-size: var(--t-sm); color: #CBDFDE; }
 .side-footer__personer a { color: #fff; text-underline-offset: 3px; }
+
+/* Øverst på siden er headeren gjennomsiktig og heroen går helt opp bak den, så den har nøyaktig
+   heroens farge og glød (Ricky 2026-10-03: den var «fortsatt hvit» med flat --base, fordi heroen
+   har en teal-glød øverst). Så snart man har scrollet får den heroens flate farge, så innholdet
+   ikke skinner gjennom. Uten JS er den alltid flat. */
+html.js .side-nav { margin-bottom: -3.75rem; transition: background-color .2s, box-shadow .2s, border-color .2s; }
+html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: none; border-bottom-color: transparent; }
