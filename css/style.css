@@ -756,9 +756,9 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    Lys teal-bunn (--teal-lys) så den skiller seg fra den hvite sideflaten. */
 .tillit-stempel {
   width: 4.75rem; height: 4.75rem; border-radius: 50%;
-  background: var(--teal-lys); border: 2px solid var(--teal);
+  background: #fff; border: 2px solid var(--teal);
   display: grid; place-items: center; position: relative;
-  margin-bottom: var(--s-3); flex-shrink: 0;
+  margin-bottom: var(--s-4); flex-shrink: 0;
 }
 .tillit-stempel::before {
   content: ""; position: absolute; inset: 5px; border-radius: 50%;
