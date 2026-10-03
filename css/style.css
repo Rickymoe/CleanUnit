@@ -729,7 +729,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    låst til logoen og ga 4,2:1, under de 4,5:1 småtekst skal ha. #9BD5D3 er
    samme turkis, ett hakk lysere, og blir den best lesbare eyebrowen på
    siden. */
-.stopp--tillit { padding-block: var(--seksjon-y); background: var(--flate); }
+.stopp--tillit { padding-block: var(--seksjon-y); background: var(--teal-lys); }
 /* Seksjonen var mørk (--teal-mork, så --teal) med hvit tekst og en våt kant,
    men ble hvit 2026-10-03 (Ricky) — den mørke blokken leste som en dobbel
    footer. Teksten faller tilbake på standardfargene, og glansen er fjernet. */
