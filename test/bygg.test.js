@@ -375,11 +375,16 @@ test('Tilbud: hver by har sin egen mottaker i fallback og emne', () => {
   }
 })
 
-test('Tilbud: heroens sekundærknapp peker på #tilbud i begge byer', () => {
+test('Tilbud: «Be om tilbud» står bare i headeren; heroen har kun «Ring oss»', () => {
   for (const [f] of TILBUD_BYER) {
-    assert.match(les(f), /<a class="knapp knapp--omriss" href="#tilbud">Be om tilbud<\/a>/, f)
+    const h = les(f);
+    const i = h.indexOf('<div class="hero__knapper">');
+    const knapper = h.slice(i, h.indexOf('</div>', i));
+    assert.equal((knapper.match(/class="knapp/g) || []).length, 1, `${f}: heroen skal ha én knapp`);
+    assert.match(knapper, /href="tel:/, `${f}: heroens knapp er «Ring oss»`);
+    assert.match(h, /class="knapp knapp--fyll side-nav__tilbud" href="#tilbud"/, `${f}: headerknappen peker på #tilbud`);
   }
-})
+});
 
 test('Tilbud: skjemaet har kvittering og feilboks', () => {
   for (const [f] of TILBUD_BYER) {
