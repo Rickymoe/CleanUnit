@@ -180,7 +180,7 @@ function overskriftVask(reduksjon) {
    1) Linja starter ikke i tom luft, men PÅ veilinja i heroen: den samme
       linja fortsetter til venstre for bilen, tar en 90° sving i
       venstremargen og blir ryggraden ned til footer-kanten. Derfor rører
-      dette ikke .hero__rute-linje i det hele tatt — den står urørt fra
+      dette ikke heroscenen i det hele tatt — den står urørt fra
       venstrekanten av stoppraden, og SVG-en tegner fortsettelsen bortover
       og ned. (Ricky valgte denne varianten, «s2».)
    2) Nodene er ekte <a href="#seksjon">-lenker inni SVG-en, ikke en
@@ -201,8 +201,9 @@ const STI_SEKSJONER = [
 ]
 
 function stiNedover(reduksjon) {
-  const rad = document.querySelector('.hero__stopp-rad')
-  const linje = document.querySelector('.hero__rute-linje')
+  // Stien begynner i heroscenen, på veiens venstre ende (se .hero__sti-start i style.css).
+  const rad = document.querySelector('.hero__sti-start')
+  const linje = rad
   const hero = document.querySelector('.hero')
   const footer = document.querySelector('.side-footer')
   if (!rad || !linje || !hero || !footer) return

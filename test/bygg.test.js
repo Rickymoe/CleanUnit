@@ -52,18 +52,20 @@ test('Stavanger: egen tittel, eget telefonnummer, lenke til Oslo i footeren', ()
   assert.doesNotMatch(h, /Clean Unit har i dag over 100 ansatte, fordelt på kontoret i Nydalen/);
 });
 
-// Hero-variant «Vi kommer til deg» (2026-09-26): byene ut, kjøretøy + kundetyper inn.
-// Kunden mente bysilhuettene leste som «vi holder bare til her».
-test('Hero: rutebånd med de fire kundetypene og rekkevidde-linje', () => {
+// Heroen er en scene (Marits illustrasjon, modernisert, 2026-10-03): varebil, by, sol og ballong i ett
+// bilde. Den erstattet bybakgrunnen, solen og rutebåndet med varebilen og de fire kundetypene.
+test('Hero: scene med rekkevidde-linje, uten de gamle rutebåndet, bybakgrunnen og solen', () => {
   for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
     const h = les(f);
     assert.match(h, /<p class="hero__rekkevidde">Kontorer i Oslo og Stavanger\. Vi kjører dit du er\.<\/p>/, f);
-    assert.match(h, /hero__rute-bil/, f);
-    for (const stopp of ['Barnehager', 'Skoler', 'Kontorer', 'Bilforhandlere']) {
-      assert.match(h, new RegExp(`hero__stopp-prikk"></span>${stopp}<`), `${f}: ${stopp}`);
-    }
-    // Båndet er rent dekorativt — kundetypene står også i ingressen
-    assert.match(h, /<div class="hero__rute" aria-hidden="true">/, f);
+    assert.match(h, /<div class="hero__scene" aria-hidden="true">/, f);
+    assert.match(h, /bilder\/hero-scene\.webp/, f);
+    assert.match(h, /<img class="hero__scene-bilde" src="[^"]*bilder\/hero-scene\.jpg" alt=""/, f);
+    assert.match(h, /class="hero__sti-start"/, `${f}: stien trenger startpunktet sitt`);
+    assert.doesNotMatch(h, /hero__(rute|stopp|by|sol)/, `${f}: rester av den gamle heroen`);
+  }
+  for (const fil of ['hero-scene.webp', 'hero-scene.jpg', 'logo-cleanunit-varebil.svg']) {
+    assert.ok(existsSync(`test/ut/bilder/${fil}`), `bilder/${fil} mangler i bygget`);
   }
 });
 
@@ -72,7 +74,7 @@ test('Hero: rutebånd med de fire kundetypene og rekkevidde-linje', () => {
 // finnes fordi ingen av dem har innhold å telle: forsvinner en av dem, feiler
 // ingenting, siden ser bare annerledes ut. Det er samme stillhet som gjorde at
 // de døde sti-lenkene kunne ligge uoppdaget i fire dager.
-test('Glans: de to behandlingene finnes i CSS-en', () => {
+test('Glans: vindusglasset finnes i CSS-en (speilet i bakken gikk ut med den gamle heroen)', () => {
   const css = les('css/style.css');
   // Vindusglasset: refleksen ligger inni kortets egen ramme (8,5 px), så den
   // måler seg etter rammen og ikke etter kortet. Innholdet må være løftet over
@@ -83,41 +85,6 @@ test('Glans: de to behandlingene finnes i CSS-en', () => {
     'innholdet på vinduskortet løftes ikke over refleksen');
   assert.match(css, /inset: 8\.5px; border-radius: 5\.5px/,
     'glansen følger ikke vindusrammen (8,5 px innrykk, 5,5 px radius)');
-  // Speilet i bakken: -17,2 % er hjullinja uttrykt som prosent-margin mot
-  // bilens bredde — samme konstant som boksens negative margin bruker.
-  assert.match(css, /\.hero__rute-speil \{[\s\S]*?margin-top: -17\.2%;[\s\S]*?\}/,
-    'speilet under bilen mangler forankringen i hjullinja');
-  // Snuingen må ligge på bildet og masken på boksen rundt. Ligger begge på
-  // samme element, speilvendes masken også, og speilet dør oppover i stedet
-  // for nedover (målt i laben).
-  assert.match(css, /\.hero__rute-speil img \{[^}]*scaleY\(-1\)/,
-    'speilvendingen ligger ikke på bildet inni speilboksen');
-  assert.match(css, /\.hero__rute-speil \{[^}]*mask-image/,
-    'masken ligger ikke på speilboksen');
-});
-
-test('Glans: speilet i heroen er en egen boks rundt bilen', () => {
-  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
-    const h = les(f);
-    // Boksen må finnes: speilet forankres i hjullinja inne i den, og uten den
-    // ville speilet hengt fra bilens underkant — 17,2 % av bilbredden for lavt.
-    assert.match(h, /<div class="hero__rute-bil-boks">/, f);
-    // Bredden og den negative marginen flyttet fra bilen til boksen, så
-    // geometrien må fortsatt ligge der den plasserer bilen på linja.
-    assert.match(les('css/style.css'), /\.hero__rute-bil-boks \{[\s\S]*?margin-bottom: calc\(1\.6rem - 0\.172 \* var\(--bil-b\)\)/,
-      'bilens plassering på linja ligger ikke på boksen');
-    const hero = h.slice(h.indexOf('<div class="hero__rute"'), h.indexOf('hero__stopp-rad'));
-    const biler = [...hero.matchAll(/src="([^"]*bil\.(?:png|webp))"/g)].map((m) => m[1]);
-    assert.equal(biler.length, 2, `${f}: heroen skal ha bilen og ett speil`);
-    // Speilet er en kopi av bilen — ingen ny nettverkshenting — men det MÅ
-    // være samme fil: byttes bildet i den ene og ikke den andre, står det et
-    // speil av en annen bil under den.
-    assert.equal(biler[0], biler[1], `${f}: speilet viser ikke samme bilde som bilen`);
-    const speil = hero.slice(hero.indexOf('hero__rute-speil'), hero.indexOf('hero__stopp-rad'));
-    // Hele båndet er aria-hidden, så speilet skal ikke ha noe å lese opp.
-    assert.match(speil, /alt=""/, f);
-    assert.doesNotMatch(speil, /aria-label|alt="[^"]+/, `${f}: speilet har fått et innhold`);
-  }
 });
 
 test('Glans: sveipet går én gang, og bare når bevegelse er greit', () => {
@@ -136,17 +103,14 @@ test('Glans: sveipet går én gang, og bare når bevegelse er greit', () => {
     'CSS-en fanger ikke redusert bevegelse satt etter sidelast');
 });
 
-// Byillustrasjonen (bilder/Byer.png) er tilbake som svak bakgrunn 2026-10-01
-// (se .hero__by i css/style.css). Veinett-teppet (dekning-nett) er ute av
-// heroen og lever bare i footeren; det gamle navngitte Oslo-kartet med
-// kontor-markører skal fortsatt ikke komme tilbake.
-test('Hero: byillustrasjonen er svak bakgrunn, uten veinett-teppe og navngitt bykart', () => {
+// Veinett-teppet (dekning-nett) lever bare i footeren, og det gamle navngitte Oslo-kartet med
+// kontor-markører skal ikke komme tilbake i heroen.
+test('Hero: scenen er bakgrunnen, uten veinett-teppe og navngitt bykart', () => {
   for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
     const h = les(f);
     const start = h.indexOf('<header class="hero">');
     const hero = h.slice(start, h.indexOf('</header>', start));
-    assert.match(hero, /<div class="hero__by" aria-hidden="true">/, f);
-    assert.match(hero, /bilder\/Byer\.(webp|png)/, f);
+    assert.match(hero, /<div class="hero__scene" aria-hidden="true">/, f);
     assert.doesNotMatch(hero, /dekning-nett/, f);
     assert.doesNotMatch(h, /hero__kart-vannmerke/, f);
     assert.doesNotMatch(h, /hero-kart-vannmerke/, f);
@@ -503,4 +467,12 @@ test('Stavanger-siden får ikke Oslo-kontorets tekster, men beholder sine egne',
   }
   assert.ok(h.includes('Hva koster renhold for dere?'));
   assert.ok(h.includes('To kontorer, samme standard'));
+});
+
+// stiNedover() avslutter stille hvis startpunktet mangler: uten denne koblingen forsvinner hele
+// stien nedover siden uten at noe feiler.
+test('Stien begynner i heroscenen: JS og CSS peker på samme startpunkt', () => {
+  const js = les('js/main.js');
+  assert.match(js, /document\.querySelector\('\.hero__sti-start'\)/, 'stiNedover finner ikke startpunktet i scenen');
+  assert.match(les('css/style.css'), /\.hero__sti-start \{ position: absolute;/, 'startpunktet er ikke plassert i CSS');
 });

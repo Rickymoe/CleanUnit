@@ -63,31 +63,6 @@ addEventListener("load", function () {
 </header>
 <main id="innhold">
 <header class="hero">
-  <!-- Sol oppe til venstre (Ricky 2026-10-01: cleanunit.no har en sol i heroen).
-       Verdiene er hans egne fra en slider-labb: 90 px, 18 % / 16 %, synlighet
-       77 %, fargetone 42°, 14 stråler à 31, glød 73 %, strålene roterer sakte.
-       Rent dekorativ og under alt annet; skjult på mobil sammen med byene. -->
-  <div class="hero__sol" aria-hidden="true"><svg viewBox="-120 -120 240 240" xmlns="http://www.w3.org/2000/svg" focusable="false"><defs><radialGradient id="sol-glod" cx="0" cy="0" r="120" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="hsla(42,95%,70%,.4015)"/><stop offset=".45" stop-color="hsla(42,95%,70%,.1606)"/><stop offset="1" stop-color="hsla(42,95%,70%,0)"/></radialGradient><linearGradient id="sol-straale" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="hsl(42,92%,76%)" stop-opacity=".95"/><stop offset="1" stop-color="hsl(42,92%,76%)" stop-opacity="0"/></linearGradient></defs><circle r="120" fill="url(#sol-glod)"/><g class="hero__sol-straaler" fill="url(#sol-straale)"><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(0.0000)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(25.7143)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(51.4286)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(77.1429)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(102.8571)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(128.5714)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(154.2857)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(180.0000)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(205.7143)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(231.4286)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(257.1429)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(282.8571)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(308.5714)"/><path d="M44 -2.5L123.6 -7V7L44 2.5Z" transform="rotate(334.2857)"/></g><circle r="44" fill="hsl(42,88%,62%)"/></svg></div>
-  <!-- Byene som svak bakgrunn bak hele heroen (Ricky 2026-10-01): Oslo til
-       venstre, Stavanger til høyre. Var ute 2026-09-26 og er tilbake som
-       stemning bak teksten, ikke et «her holder vi til»: rekkevidde-linja
-       under ingressen sier at de kjører dit kunden er. Erstatter
-       veinett-teppet i heroen (teppet brukes fortsatt i footeren). Samme
-       bilde på begge bysider. Rent dekorativt, under alt annet. -->
-  <div class="hero__by" aria-hidden="true">
-    <!-- Samme bilde to ganger, hver vist som sin halvdel (se .hero__by-halv i
-         style.css): Oslo forankret i venstre kant, Stavanger i høyre, så byene
-         kan flyttes ut til sidene og midten holdes åpen for ordmerket. Bildet
-         lastes én gang (samme URL). På mobil vises bare den første, i full bredde. -->
-    <picture class="hero__by-halv hero__by-halv--oslo">
-      <source srcset="{{rot}}bilder/Byer.webp" type="image/webp">
-      <img src="{{rot}}bilder/Byer.png" alt="" width="1860" height="701">
-    </picture>
-    <picture class="hero__by-halv hero__by-halv--stavanger">
-      <source srcset="{{rot}}bilder/Byer.webp" type="image/webp">
-      <img src="{{rot}}bilder/Byer.png" alt="" width="1860" height="701">
-    </picture>
-  </div>
   <div class="wrap hero__innhold">
     <!-- Lockup: logoen «CleanUnit» og taglinen (H1) er ÉN enhet på felles
          midtakse mellom byene. Logoen er C i logovalget (Ricky, 2026-10-02): deres
@@ -120,43 +95,28 @@ addEventListener("load", function () {
     {{/er_oslo}}{{^er_oslo}}<p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte&nbsp;– ingen underleverandører.</p>
     {{/er_oslo}}<p class="hero__rekkevidde">{{rekkevidde}}</p>
   </div>
-  <!-- Rutebånd: bilen på vei mot kundetypene. De fire stoppene er de samme
-       kundetypene som ingressen nevner, i flertall så de ikke kolliderer med
-       tjenestekortet «Barnehagerenhold». Båndet er aria-hidden: en
-       skjermleser får den samme informasjonen fra ingressen, og skal slippe
-       å høre de fire ordene to ganger. -->
-  <div class="hero__rute" aria-hidden="true">
-    <!-- Bilen og speilbildet av den i bakken. Speilet er en egen boks og ikke
-         bare et speilvendt bilde, fordi bilens hjulbunn ligger et stykke over
-         bildets underkant (se .hero__rute-bil-boks i style.css): speilet må
-         forankres i hjullinja for at hjulene skal møtes i speilet. Hele
-         båndet er aria-hidden, så speilet er et bilde uten innhold for en
-         skjermleser uansett — det får ingen egen alt-tekst å lese opp. -->
-    <div class="hero__rute-bil-boks">
-      <img class="hero__rute-bil" src="{{rot}}bilder/bil.webp" alt="" width="1448" height="1086">
-      <span class="hero__rute-speil">
-        <img src="{{rot}}bilder/bil.webp" alt="" width="1448" height="1086">
-      </span>
-      <!-- «CleanUNIT» på siden, som på varebilen i footeren (Ricky, 2026-10-01):
-           ekte tekst lagt over dørpanelet, ikke bakt inn i bildet. Bilen er
-           speilvendt her, så panelet ligger på 58 % i stedet for 42 %, og
-           teksten ligger utenpå bildet og blir ikke speilvendt. -->
-      <img class="verktoy__merke hero__rute-merke" src="{{rot}}bilder/logo-cleanunit.svg" alt="" width="626" height="192">
-    </div>
-    <div class="hero__stopp-rad">
-      <div class="hero__rute-linje"></div>
-      <span class="hero__stopp"><span class="hero__stopp-prikk"></span>Barnehager</span>
-      <span class="hero__stopp"><span class="hero__stopp-prikk"></span>Skoler</span>
-      <span class="hero__stopp"><span class="hero__stopp-prikk"></span>Kontorer</span>
-      <span class="hero__stopp"><span class="hero__stopp-prikk"></span>Bilforhandlere</span>
-    </div>
-  </div>
   <!-- Egen bys telefonnummer er primærknappen. Sekundærknappen kommer fra
        byer.json og er tom til tilbudsskjemaet (Formspree) er på plass — en
        tom verdi rendrer ingen knapp, så ingen død lenke går live. -->
   <div class="hero__knapper">
     <a class="knapp knapp--fyll" href="tel:{{telefon}}">Ring oss – {{telefon_visning}}</a>
     {{hero_knapp_sekundaer}}
+  </div>
+  <!-- Scenen (Marits illustrasjon, modernisert, 2026-10-03): varebil, by, sol og ballong i ett bilde, så
+       heroen ikke lenger trenger egen sol, bybakgrunn eller rutebånd. Rent dekorativ, derfor aria-hidden
+       og tom alt. Himmelen i bildet er en nesten flat farge (#9AD2D5): toppen tones ut mot sidens
+       bakgrunn og bunnen mot neste seksjon i CSS, så det ikke er noen kant. «CleanUNIT» på varebilen er
+       ekte logo lagt oppå den blanke siden (AI-bilder kan ikke gjengi tekst). .hero__sti-start er
+       punktet stien nedover siden begynner på (veiens venstre ende). -->
+  <div class="hero__scene" aria-hidden="true">
+   <div class="hero__scene-ramme">
+    <picture>
+      <source srcset="{{rot}}bilder/hero-scene.webp" type="image/webp">
+      <img class="hero__scene-bilde" src="{{rot}}bilder/hero-scene.jpg" alt="" width="2172" height="724" fetchpriority="high">
+    </picture>
+    <img class="hero__scene-merke" src="{{rot}}bilder/logo-cleanunit-varebil.svg" alt="" width="616" height="78">
+    <span class="hero__sti-start"></span>
+   </div>
   </div>
 </header>
 {{#er_oslo}}<!-- «Derfor velger kundene Clean Unit Renhold AS» fra Maritts forsidetekst (Oppsett ny nettside,

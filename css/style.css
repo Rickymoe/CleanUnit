@@ -20,6 +20,7 @@
   --teal-lys: #E7F4F4;    /* lys flate: 20 % mellomgrønn mot hvit */
   --base: #F3F5F7; /* matcher himmelfargen i to-byer-illustrasjonen (bilder/Byer.png) */
   --flate: #FFFFFF;
+  --himmel: #9AD2D5; /* himmelen i heroscenen (målt i bilder/hero-scene.*) */
   --tekst: #1E2B2B;
   --tekst-svak: #55706E;
   --sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -38,7 +39,7 @@
   /* Glansen (Ricky 2026-09-30: «jeg savner noe glossy på siden»). Glans er
      tolket som BEVIS og ikke som pynt: de tre behandlingene under legger
      lys på flater som allerede finnes — vindusglasset på tjenestekortet
-     (.kort--vindu) og bakken under bilen i heroen (.hero__rute-speil).
+     (.kort--vindu); speilbildet av varebilen i bakken gikk ut med den gamle heroen.
      Ingen nye flater, ingen
      nye farger utenfor paletten: alt er hvitt lys med varierende styrke.
      Alle tallene står her så de kan justeres på ett sted. Verdiene er valgt
@@ -101,47 +102,18 @@ a { color: inherit; }
   .knapp { transition: none; }
   .knapp:hover { transform: none; }
 }
-
-/* Steg 3: Hero */
 .hero {
-  --rute-nede: clamp(1.5rem, 4vh, 2.5rem);
   /* Logoens skriftstørrelse (lockupens 1em). Logoen er 5,2em bred, og ingressen får samme
      bredde via denne variabelen, så de to følger hverandre på alle bredder (#3). */
   --logo-skrift: clamp(3.1rem, 11.5vw, 5.6rem);
   position: relative; overflow: hidden;
-  min-height: 100svh; display: flex; flex-direction: column; justify-content: center;
-  padding-top: clamp(3rem, 12vh, 6rem); padding-bottom: clamp(2rem, 8vh, 5rem);
-  /* Fargevalg C, Ricky 2026-09-27 (valgte C + D i fargelabben): en svak
-     teal-glød bak lockupen som falmer ned i --base på 62 %. Siden heroen
-     hadde --base flatt før, var første skjerm helt nøytral grå; gløden gir
-     et fargeholdepunkt øverst uten å gjøre flaten mørk. Endepunktet er
-     --base, så overgangen til neste seksjon (Tjenester, --flate) er usynlig. */
-  background: radial-gradient(115% 85% at 50% 30%, var(--teal-lys) 0%, var(--base) 62%);
-}
-/* Desktop: rutebåndet er absolutt plassert nederst, så heroen holder av plassen til det
-   (rute-nede + båndets egen høyde 7,5rem + litt luft) som bunn-padding. Teksten og knappene
-   sentreres da i resten (design-kritikk #1). Under 48rem ligger båndet i flyten. */
-@media (min-width: 48.01rem) { /* ikke 48rem: 768 px treffer også max-width: 48rem (rutebåndet i flyten), og da stod plassen reservert for ingenting */
-  .hero { padding-bottom: calc(var(--rute-nede) + 7.5rem + var(--s-5)); }
-}
-/* På smale/høye mobilskjermer sentrerer justify-content:center innholdet
-   midt i hele 100svh-flaten, langt under den toppforankrede logoen (som er
-   absolutt posisjonert, utenfor denne sentreringen) — det ga et stort, tomt
-   gap mellom logo og resten. Under 40rem forankres innholdet i stedet rett
-   under logoen. */
-@media (max-width: 40rem) {
-  .hero { min-height: 88vh; }
-}
-/* Nettbrett stående (40–48rem): rutebåndet ligger i flyten som på mobil, men heroen ble likevel
-   strukket til hele skjermhøyden og sentrerte innholdet, så det ble ca. 440 px tomt mellom
-   bilen og neste seksjon (målt i 768x1024: 267 px under innholdet pluss seksjonens toppluft).
-   47rem gir omtrent samme luft over og under innholdet som mobilvisningen. */
-@media (min-width: 40.01rem) and (max-width: 48rem) {
-  .hero { min-height: min(100svh, 47rem); }
+  min-height: min(100svh, 56rem); display: flex; flex-direction: column;
+  padding-top: clamp(2.5rem, 8vh, 5rem);
+  background: var(--base);
 }
 /* To-byer-illustrasjonen var ute 2026-09-26 (dempingen av «den andre byen»,
    body.by--*-sløret, er borte for godt) og er tilbake 2026-10-01 som svak
-   bakgrunn — se .hero__by lenger ned. */
+   bakgrunn (nå erstattet av .hero__scene). */
 /* "CLEANUNIT" på dørpanelet — ekte tekst, ikke del av AI-bildet (som ikke
    kan gjengi tekst pålitelig). Målt i bilder/bil.png: panelet ligger omtrent
    38–61% av bredden, 40–60% av høyden. Brukt av .side-footer__bil under
@@ -170,177 +142,14 @@ a { color: inherit; }
   display: flex; gap: var(--s-3); justify-content: center; flex-wrap: wrap;
   padding-inline: 1rem;
 }
-
-/* Rutebåndet: varebilen på vei mot kundetypene (Barnehager · Skoler ·
-   Kontorer · Bilforhandlere). Erstattet bysilhuettene 2026-09-26: heroen
-   skulle ikke lenger si «her holder vi til», men «vi kommer til deg».
-   Bilen står stille med vilje — logo-sveipet er heroens
-   bevegelse, og Ricky vil ikke ha flere ting som skjer samtidig. */
-.hero__rute {
-  position: absolute; left: 0; right: 0; bottom: var(--rute-nede);
-  /* z-index MÅ ligge over .hero__innhold (1), ikke under. Vannmerket har
-     z-index:-1, men det ligger INNI .hero__innhold, og en negativ z-index
-     rømmer ikke forelderens stablekontekst: med 0 her la hele innholdsboksen
-     — vannmerket inkludert — seg oppå rutebåndet, og veilinjene gikk tvers
-     over bilens karosseri (Ricky, 2026-09-26: «kan man se veinettet igjennom
-     bilen»). Målt på skjermbilde som vannmerke-piksler innenfor bilens opake
-     kropp (alfa >= 248 i bilder/bil.png): 1011 px med z-index 0 mot 28 px her,
-     og 0 etter 2 px erosjon. Samme nivå som .hero__knapper, den andre
-     bunnforankrede raden. */
-  z-index: 2; pointer-events: none;
-  /* Bilbredden og mellomrommet mellom stoppene og bilen deles av boksen, linja
-     og båndet: linja forlenges under bilen med akkurat disse to målene. */
-  --bil-b: clamp(4rem, 10.5vw, 8.5rem);
-  --rute-gap: clamp(1.5rem, 5vw, 4rem);
-  display: flex; align-items: flex-end; justify-content: center;
-  gap: var(--rute-gap);
-  padding-inline: clamp(1rem, 6vw, 5rem);
-}
-/* Bildets gjennomsiktige luft er en del av boksen, så hjulene står ikke på
-   underkanten. Målt i alfa-kanalen til bilder/bil.png: nederste synlige
-   hjulpiksel ligger 249 px over bildets underkant, og bildet er 1448 px
-   bredt — hjulbunnen er altså 249/1448 = 17,2 % av BILENS BREDDE (høyden er
-   alltid 1086/1448 av bredden, så forholdet holder på alle bredder).
-   En tidligere verdi (26/1086) målte hele alfa-bbox-en, der moppen bak på
-   bilen henger ~25 px lavere enn hjulene. Den ga en bil som svevde 41 px
-   OVER den stiplede linja i stedet for å kjøre på den (målt på skjermbilde:
-   hjulbunn 684 mot linje 725,5). Den negative marginen trekker bilen ned
-   til hjulene lander på linja; den tomme lufta under hjulene havner da
-   under radens underkant, noe som er harmløst (raden er absolutt plassert).
-
-   Boksen rundt bilen (2026-09-30): den negative marginen og bredden lå på
-   bilen selv, men speilbildet under den må forankres i HJULLINJA og ikke i
-   bildets underkant. Derfor bærer boksen plasseringen og bilen bare fyller
-   den. Geometrien er uendret — boksen er den samme boksen som bilen var. */
-.hero__rute-bil-boks {
-  container-type: inline-size; /* gir .verktoy__merke størrelsen sin i cqw, som i footeren */
-  /* Til høyre for stoppene (Ricky, 2026-10-01: «speilvende bilen og vise den på
-     høyre side»): order 1 setter den etter stoppraden, og bildet speilvendes
-     så den kjører mot venstre, mot kundene. Mobil (kolonne) overstyrer order
-     lenger ned så bilen blir stående over båndet. */
-  order: 1;
-  position: relative;
-  width: var(--bil-b);
-  margin-bottom: calc(1.6rem - 0.172 * var(--bil-b));
-}
-/* Bilen er speilvendt, så dørpanelet ligger på 58 % (100 - 42) i stedet for 42 %.
-   Teksten er et eget element over bildet og speilvendes ikke. For liten til å
-   leses på mobil (bilen er 64 px bred der), så den skjules under 48rem. */
-.hero__rute-merke { left: 58%; }
-@media (max-width: 48rem) { .hero__rute-merke { display: none; } }
-.hero__rute-bil {
-  width: 100%; height: auto; display: block; transform: scaleX(-1);
-  /* Bildet har en myk kant: alfa kravler fra 0 til 255 over ~40 px i kilden
-     (~4 px på skjermen). Der en veilinje krysser den, holder linja seg synlig
-     helt inn til silhuetten. Etter z-index-fiksen over er dette alt som
-     gjenstår — målt 28 px vannmerke inni kroppen, maks styrke 7 av 255 — og
-     det er ikke verdt å skjære bort bilens myke overgang for. */
-  filter: drop-shadow(0 14px 22px rgba(0, 122, 124, .22));
-}
-/* Speilbildet av bilen i bakken (Ricky 2026-09-30). Bilen står på en stille
-   vei — speilet sier at underlaget er nyvasket, og det er den eneste av de
-   tre glansene som forteller noe om UTFØRELSEN og ikke om resultatet.
-   Avstanden opp til hjullinja er den samme 17,2 %-konstanten som over, men
-   her MÅ den skrives som en prosent-margin: en prosent-margin på et absolutt
-   posisjonert element løses mot containing block-ens BREDDE, altså mot
-   bilens bredde — nøyaktig samme tall som boksens negative margin bruker,
-   uten å gjenta clamp()-en.
-   Masken ligger på dette elementet og snuingen på bildet inni, og det er
-   ikke vilkårlig: en maske følger elementets eget koordinatsystem, så hadde
-   begge ligget på samme element, ville speilvendingen også snudd masken og
-   latt speilet dø oppover i stedet for nedover (målt i laben).
-   filter: blur() demper pikselstøyen i den skarpe bilen; uten den leses
-   speilet som en andre bil og ikke som et speil. */
-.hero__rute-speil {
-  position: absolute; left: 0; top: 100%; width: 100%;
-  margin-top: -17.2%;
-  opacity: var(--glans-speil); filter: blur(var(--glans-speil-blur));
-  pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent var(--glans-speil-fade));
-          mask-image: linear-gradient(to bottom, #000 0%, transparent var(--glans-speil-fade));
-}
-.hero__rute-speil img { width: 100%; height: auto; display: block; transform: scaleX(-1) scaleY(-1); }
-.hero__stopp-rad {
-  position: relative; display: flex; align-items: flex-end;
-  gap: clamp(1.5rem, 5vw, 4rem);
-}
-/* Linja skal ligge på prikkenes SENTRUM, ikke over dem. Prikken er .8rem
-   (var .6rem før fargevalg C), stoppen har .4rem gap og en etikett på
-   var(--t-sm) med line-height 1, så prikkens sentrum ligger 1,7rem over
-   radens underkant — mot linjas 1,6rem. Den større prikken flyttet altså
-   sentrum 1,6 px nærmere linja, ikke bort fra den. Målt i 1440x900 etter
-   endringen: prikkens sentrum 656 px, linjas 656 px (linja er 3 px høy,
-   fra 654 til 657, så prikken lander inni den), bilens hjulbunn 1 px under. */
-.hero__rute-linje {
-  position: absolute; left: 0; bottom: 1.6rem;
-  /* Veien fortsetter under bilen på høyre side: avstanden til bilen pluss
-     bilens egen bredde. */
-  right: calc(-1 * (var(--rute-gap) + var(--bil-b)));
-  /* Fargevalg C (2026-09-27): hel --teal i stedet for 50 % blanding, og 3 px
-     i stedet for 2 px. Ruta skal leses som et rutetilbud, ikke som en
-     hjelpelinje. Kontrast mot --base: 4,59:1 (målt). */
-  border-top: 3px dashed var(--teal);
-}
-.hero__stopp {
-  position: relative; display: flex; flex-direction: column; align-items: center;
-  gap: .4rem; font: 600 var(--t-sm)/1 var(--sans); color: var(--teal);
-  white-space: nowrap;
-}
-.hero__stopp-prikk {
-  width: .8rem; height: .8rem; border-radius: 50%; background: var(--teal);
-  box-shadow: 0 0 0 5px color-mix(in srgb, var(--teal) 22%, transparent);
-}
 /* Rekkevidde-linja under ingressen — svaret på «må jeg ha lokaler i Oslo
    eller Stavanger?». Teksten kommer fra byer.json ({{rekkevidde}}). */
 .hero__rekkevidde {
   margin: var(--s-2) auto 0; max-width: 44ch;
   font: 600 .9375rem/1.45 var(--sans); color: var(--teal-mork);
 }
-/* Under 48rem går rutebåndet og knappene UT av absolutt posisjonering og inn
-   i .hero sin kolonneflyt. Da kan ikke båndet kollidere med teksten over,
-   uansett hvor mange linjer ingress/rekkevidde-linja brekker til — og fire
-   stoppnavn får plass på én rad under bilen i stedet for ved siden av den.
-   Målt i 390 px (getBoundingClientRect, iframe-wrapper): innholdet slutter
-   på 357 px, rutebåndet begynner på 389 px, knappene på 608 px — ingen
-   overlapp, og heroen holder seg innenfor 88vh (se .hero over). */
 @media (max-width: 48rem) {
-  .hero__rute {
-    /* relative, ikke static: ellers er z-index-en over inert, og vannmerket
-       (inne i .hero__innhold) maler igjen over bilen — samme feil som på
-       desktop. Målt mot et skjult vannmerke, med samme layout i begge
-       varianter og bilkroppen som maske (alfa >= 248 i bilder/bil.png):
-       med z-index 0 lekker det 53 px (maks 22) i 414x896, 906 px (maks 36)
-       i 600x900 og 828 px (maks 46) i 768x1024; med z-index 2 står det igjen
-       0, 40 px (maks 8) og 26 px (maks 11) — samme myke kant som på desktop.
-       I 360x640, 390x700 og 390x844 er det 0 px i begge varianter, fordi
-       vannmerket ikke rekker ned til bilen der. Regelen må derfor stå selv om
-       den ikke gjør noe på de smaleste skjermene.
-       bottom: auto er ikke pynt: båndet er absolutt posisjonert på desktop
-       med bottom: clamp(6rem, 16vh, 8.5rem), og for en relativt posisjonert
-       boks forskyver bottom elementet oppover. Uten denne flyttet båndet seg
-       135 px opp (målt: bilens dekk y 487 -> 352). */
-    position: relative; bottom: auto; margin-top: var(--s-8); /* 4,5rem: mer luft mellom knappene og bilen (Ricky 2026-10-01, etter at byene ble borte på mobil) */
-    flex-direction: column; align-items: center; gap: var(--s-4);
-  }
-  /* Bilen står nå OVER båndet (kolonne), ikke ved siden av det, og kan
-     derfor ikke ha hjulene midt på prikkene — den ville dekket dem. I stedet
-     legges linja på TOPPEN av stoppraden (bottom: 100 % under), så prikkene
-     henger rett under veien, og bilen kjører på den: eneste del av bilen som
-     stikker ned er moppen (~2 px, målt).
-     Formelen er den samme som på desktop, men løst for kolonneflyt. I en
-     kolonne er det NEGATIVE marginen som avgjør hvor neste element begynner,
-     så bilen trekkes ned ved å la marginen spise av gapet til stoppraden:
-     hjulbunn − linje = gap + |M| − 0,172 × bilbredde, og den skal være 0
-     → M = −(gap + 0,172 × bilbredde) = −0,9375rem − 0,172 × bilbredde.
-     (Målt i 390 px: hjulbunn 437 mot linje 468 = 31 px feil med forrige
-     formel, som hadde motsatt fortegn.) */
-  .hero__rute-bil-boks { order: 0; width: var(--bil-b);
-    margin-bottom: calc(-0.9375rem - 0.172 * var(--bil-b)); }
-  .hero__stopp-rad { position: relative; width: 100%; justify-content: space-between; gap: var(--s-2); }
-  .hero__rute-linje { bottom: 100%; right: 0; }
-  .hero__stopp { font-size: var(--t-xs); }
-  .hero__knapper { margin-top: var(--s-6); order: 1; }
-  .hero__rute { order: 2; }
+  .hero__knapper { margin-top: var(--s-6); }
 }
 /* Lockup: ordmerket «CleanUNIT» og taglinen «Renhold i {by}» er
    ÉN enhet på felles midtakse mellom byene. Før var de to uavhengige blokker
@@ -459,88 +268,8 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 @media (max-width: 48rem) {
   .hero__innhold { margin-top: 0; }
 }
-/* Byene som svak bakgrunn (Ricky 2026-10-01, «komposisjon B» fra en labb):
-   bilder/Byer.png er 1860x701 med Oslo til venstre og Stavanger til høyre og
-   ligger fullt dekkende bak hele heroen. Erstatter veinett-teppet, som
-   fortsatt brukes i footeren (.side-footer::before). Under .hero__innhold (1)
-   og .hero__rute/.hero__knapper (2), så bilen og knappene aldri blir
-   liggende bak noe.
-   Dempet til 45 % + masket ut i topp og bunn så bildet ikke har noen kant
-   mot heroens bakgrunn. Lockupen står i det åpne vannet mellom byene;
-   ingress, rekkevidde-linje og stoppnavn ligger delvis over husene og får et
-   lyst slør (se ::before under), målt mot piksler med teksten skjult. */
-.hero__by {
-  /* Størrelse, høyde og synlighet er Rickys egne verdier fra en slider-labb
-     (2026-10-01: 75 %, +29 %, 74 %). --by-ut flytter byene utover mot (og forbi)
-     sidekantene; 0 = forankret i kanten. Bildet er delt i to halvdeler (se
-     mal.html): Oslo i venstre kant, Stavanger i høyre, så midten er åpen for
-     ordmerket uansett størrelse. */
-  --by-skala: 75%; --by-y: 29%; --by-syn: .74; --by-ut: 0%;
-  position: absolute; left: 0; right: 0; top: 50%;
-  transform: translateY(calc(-46% + var(--by-y)));
-  display: flex; justify-content: space-between;
-  z-index: 0; pointer-events: none; opacity: var(--by-syn);
-}
-/* Hver halvdel er bare byen sin, uten det åpne vannet mellom byene (Ricky:
-   «vi trenger ikke vann i midten»): Oslo er bildets venstre 49 %, Stavanger
-   de høyre 40 % (fra x = 60 %, der fjellet begynner). Bredden er andelen av
-   bildet i valgt skala, høyden følger av proporsjonene (911 x 701 og
-   744 x 701). Bildet er satt til 100 % / andel av halvdelen og forankret til
-   sin ytre kant, så hver halvdel viser sin egen side. Fades ut mot snittet
-   og opp/ned. */
-.hero__by-halv {
-  position: relative; display: block; flex: none; overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%),
-                      linear-gradient(to right, #000 0, #000 90%, transparent 100%);
-          mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%),
-                      linear-gradient(to right, #000 0, #000 90%, transparent 100%);
-  -webkit-mask-composite: source-in;
-          mask-composite: intersect;
-}
-.hero__by-halv img { position: absolute; top: 0; max-width: none; height: 100%; }
-.hero__by-halv--oslo { width: calc(var(--by-skala) * .49); aspect-ratio: 911 / 701; margin-left: calc(var(--by-ut) * -1); }
-.hero__by-halv--oslo img { left: 0; width: 204.08%; }
-.hero__by-halv--stavanger {
-  width: calc(var(--by-skala) * .40); aspect-ratio: 744 / 701; margin-right: calc(var(--by-ut) * -1);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%),
-                      linear-gradient(to left, #000 0, #000 90%, transparent 100%);
-          mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%),
-                      linear-gradient(to left, #000 0, #000 90%, transparent 100%);
-}
-.hero__by-halv--stavanger img { right: 0; width: 250%; }
-/* Ingen byer på mobil (Ricky, 2026-10-01: «vi fjerner byene på mobilvisning»):
-   i 390 px er bildet bare ~147 px høyt og ble enten et rotete bånd bak
-   ingressen eller, bunnforankret, havnet det bak rutebåndet (sett på ekte
-   iPhone). Heroen står uten bakgrunnsbilde under 48rem; markupen er den
-   samme, den vises bare ikke. */
-@media (max-width: 48rem) {
-  .hero__by { display: none; }
-}
-/* Solen i heroen: absolutt i heroens hjørne, bak byene (kommer før dem i
-   markupen) og alt annet. translate(-50%,-50%) legger midtpunktet på
-   18 % / 16 %, slik som i labben. Strålene roterer én runde på to minutter;
-   under prefers-reduced-motion står de stille. */
-.hero__sol {
-  position: absolute; left: 18%; top: 16%; width: 90px; height: 90px;
-  transform: translate(-50%, -50%); opacity: .77; pointer-events: none;
-}
-.hero__sol svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.hero__sol-straaler { transform-origin: 0 0; animation: sol-spinn 120s linear infinite; }
 @keyframes sol-spinn { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .hero__sol-straaler { animation: none; } }
-@media (max-width: 48rem) { .hero__sol { display: none; } }
-.hero__ingress, .hero__rekkevidde, .hero__stopp-rad { position: relative; }
-.hero__ingress::before, .hero__rekkevidde::before {
-  content: ""; position: absolute; z-index: -1; inset: -.5em -1.2em; pointer-events: none;
-  background: rgba(243, 245, 247, .7); border-radius: 999px; filter: blur(14px);
-}
-.hero__stopp-rad::before {
-  content: ""; position: absolute; inset: -12px -26px -8px; z-index: -1; pointer-events: none;
-  background: rgba(243, 245, 247, .8); border-radius: 999px; filter: blur(9px);
-}
-@media (max-width: 48rem) {
-  .hero__stopp-rad::before { background: rgba(243, 245, 247, .92); }
-}
+.hero__ingress, .hero__rekkevidde { position: relative; }
 /* Bil-markørene (.kart-markor-wrap/.kart-markor, syv små biler spredt på
    Oslo-utsnittet) er fjernet 2026-09-26 sammen med kartet de sto på: de ga
    bare mening oppå et gjenkjennelig bykart. Stjerneglimtet ved dem forsvant
@@ -1098,7 +827,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
    står i bygg() i js/main.js. Reglene under gjelder altså fra 48rem og opp. */
 .sti {
   position: absolute; left: 0; top: 0; width: 100%;
-  z-index: 3;               /* over seksjonenes bakgrunner, se .hero__rute */
+  z-index: 3;               /* over seksjonenes bakgrunner */
   pointer-events: none;
 }
 .sti__linje {
@@ -1289,9 +1018,9 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 
 /* «Derfor velger kundene …» */
 .stopp--derfor {
-  padding-block: var(--s-8); padding-top: calc(var(--seksjon-y) + var(--s-4));
-  /* Heroen ender i --base. Flaten tones inn fra den i stedet for å starte med en rett kant rett under bilen. */
-  background: linear-gradient(to bottom, var(--base) 0, var(--teal-lys) 6rem);
+  padding-block: var(--s-8);
+  /* Heroscenen ender i himmelfargen. Flaten tones inn fra den i stedet for å starte med en rett kant. */
+  background: linear-gradient(to bottom, var(--himmel) 0, var(--teal-lys) 6rem);
 }
 .derfor-liste {
   list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-5); grid-template-columns: 1fr;
@@ -1375,6 +1104,39 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .miljo-kort li { margin-top: var(--s-1); }
 .miljo-kort__logo { display: block; height: 3rem; width: auto; max-width: 9rem; object-fit: contain; }
 .miljo-kort__logo--bred { height: 3.25rem; max-width: 11rem; }
+
+/* ── Scenen i heroen (Marits illustrasjon, modernisert) ─────────────────────────────────────────
+   Bildet har en nesten flat himmel (--himmel). Toppen av figuren tones fra sidens bakgrunn til
+   himmelfargen, og bildet tones ut mot toppen, sidene og bunnen mot en flat himmel bak, så scenen
+   ikke har noen kant. Bredden er begrenset til 135 svh slik at veien og knappen alltid er synlige i
+   første skjermbilde (bildet er 3:1). Under 48rem beskjæres bildet (cover) i stedet for å bli
+   bittelite, og logoen på varebilen og stistarten skjules. Stien (js/main.js, stiNedover) begynner i
+   .hero__sti-start, som ligger på veiens venstre ende (9 % / 84 % av bildet, målt). */
+.hero__innhold { margin-top: auto; }
+.hero__knapper { margin-bottom: auto; }
+.hero__scene {
+  position: relative; flex: none; margin-top: var(--s-6);
+  background: linear-gradient(to bottom, transparent 0, var(--himmel) 26%);
+}
+.hero__scene-ramme { position: relative; width: min(100%, 135svh); margin-inline: auto; aspect-ratio: 2172 / 724; }
+.hero__scene picture, .hero__scene-bilde { display: block; width: 100%; height: 100%; }
+.hero__scene-bilde {
+  object-fit: cover; object-position: 50% 100%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 26%, #000 90%, transparent 100%),
+                      linear-gradient(to right, transparent 0, #000 7%, #000 93%, transparent 100%);
+  -webkit-mask-composite: source-in;
+          mask-image: linear-gradient(to bottom, transparent 0, #000 26%, #000 90%, transparent 100%),
+                      linear-gradient(to right, transparent 0, #000 7%, #000 93%, transparent 100%);
+          mask-composite: intersect;
+}
+/* Varebilens blanke side: ca. 23 % / 73-78 % av bildet, 5,6 % bredt (målt). Egen logovariant (bilder/logo-cleanunit-varebil.svg): bare ordmerket, mørke farger. */
+.hero__scene-merke { position: absolute; left: 22.8%; top: 74.4%; width: 5.6%; height: auto; }
+.hero__sti-start { position: absolute; left: 9%; top: 84%; width: 0; height: 0; }
+@media (max-width: 48rem) {
+  .hero__scene-ramme { width: 100%; aspect-ratio: auto; height: 15rem; }
+  .hero__scene-bilde { object-position: 35% 100%; }
+  .hero__scene-merke, .hero__sti-start { display: none; }
+}
 
 /* Øverst på siden er headeren gjennomsiktig og heroen går helt opp bak den, så den har nøyaktig
    heroens farge og glød (Ricky 2026-10-03: den var «fortsatt hvit» med flat --base, fordi heroen
