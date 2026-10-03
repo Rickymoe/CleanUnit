@@ -41,9 +41,9 @@ addEventListener("load", function () {
 <body class="{{body_klasse}}">
 <a class="hopp-til-innhold" href="#innhold">Hopp til innhold</a>
 <!-- Toppmeny (Ricky 2026-10-02: «vi trenger en header med lenke nedover på siden»), i Maritts
-     rekkefølge: Tjenester · Referanser · Om oss · Miljø og seriøsitet · Kontakt, med den
-     andre byen til høyre og «Be om tilbud» som knapp. Siden er fortsatt én lang side, så
-     lenkene er ankre. Uten JS vises lenkene alltid (html.js styrer mobilmenyen), og
+     rekkefølge: Tjenester · Referanser · Om oss · Miljø og seriøsitet, med den andre byen til
+     høyre og «Kontakt» som knapp. Siden er fortsatt én lang side, så lenkene er ankre. Uten JS
+     vises lenkene alltid (html.js styrer mobilmenyen), og
      .side-nav__lenke[aria-current] settes av js/main.js ut fra hvor man er på siden. -->
 <header class="side-nav" id="topp">
   <div class="wrap side-nav__rad">
@@ -55,11 +55,10 @@ addEventListener("load", function () {
         <li><a class="side-nav__lenke" href="#referanser">Referanser</a></li>
         <li><a class="side-nav__lenke" href="#om-oss">Om oss</a></li>
         <li><a class="side-nav__lenke" href="#hvorfor">Miljø og seriøsitet</a></li>
-        <li><a class="side-nav__lenke" href="#kontakt">Kontakt</a></li>
       </ul>
       <a class="side-nav__by" href="{{andre_by_href}}">{{andre_by_navn}} <span aria-hidden="true">↗</span></a>
     </nav>
-    <a class="knapp knapp--fyll side-nav__tilbud" href="#kontakt">Be om tilbud</a>
+    <a class="knapp knapp--fyll side-nav__kontakt" href="#kontakt">Kontakt</a>
   </div>
 </header>
 <main id="innhold">

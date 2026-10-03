@@ -1196,7 +1196,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 [hidden] { display: none; }
 
 /* Toppmeny: fast øverst, lenker nedover på siden (Ricky 2026-10-02). Sticky i flyten (ikke fixed),
-   så den tar sin egen plass og ikke dekker heroen. Mobil: logo + «Be om tilbud» + menyknapp, og
+   så den tar sin egen plass og ikke dekker heroen. Mobil: logo + «Kontakt» + menyknapp, og
    menyen åpner som en absolutt panel rett under raden (ikke fixed: backdrop-filter ville gjort
    headeren til containing block). Uten JS ligger lenkene alltid åpne (html.js styrer skjulingen). */
 .hopp-til-innhold {
@@ -1221,7 +1221,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 }
 .side-nav__lenke[aria-current="true"] { color: var(--teal-mork); box-shadow: inset 0 -2px 0 var(--teal); border-radius: 8px 8px 0 0; }
 .side-nav__by { color: var(--teal-mork); font: 600 var(--t-sm)/1.2 var(--sans); text-decoration: none; white-space: nowrap; padding: .6rem .5rem; }
-.side-nav__tilbud { flex: none; padding: 11px 18px; }
+.side-nav__kontakt { flex: none; padding: 11px 18px; }
 @media (hover: hover) {
   .side-nav__lenke:hover { background: var(--teal-lys); color: var(--teal-mork); }
   .side-nav__by:hover { text-decoration: underline; text-underline-offset: 3px; }
@@ -1230,7 +1230,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 #tjenester, #referanser, #om-oss, #hvorfor, #miljo, #jobb-hos-oss, #kontakt { scroll-margin-top: 3.75rem; }
 @media (max-width: 62rem) {
   .side-nav__rad { gap: var(--s-3); }
-  .side-nav__tilbud { margin-left: auto; order: 2; }
+  .side-nav__kontakt { margin-left: auto; order: 2; }
   .side-nav__bryter { order: 3; }
   html.js .side-nav__bryter {
     display: inline-flex; flex: none; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem;
@@ -1257,7 +1257,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   .side-nav__by { padding: .85rem .5rem; font-size: var(--t-base); }
 }
 @media (max-width: 26rem) {
-  .side-nav__tilbud { padding: 10px 14px; }
+  .side-nav__kontakt { padding: 10px 14px; }
 }
 
 /* ===== Innhold fra Maritts dokument «Oppsett ny nettside» (2026-10-02), Oslo-siden ===== */
@@ -1266,7 +1266,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .stopp__lede--flere > p + p { margin-top: var(--s-3); }
 
 /* «Derfor velger kundene …» */
-.stopp--derfor { padding-block: var(--s-8); background: var(--base); }
+.stopp--derfor { padding-block: var(--s-8); background: var(--teal-lys); }
 .derfor-liste {
   list-style: none; margin: var(--s-6) 0 0; padding: 0; display: grid; gap: var(--s-5); grid-template-columns: 1fr;
 }

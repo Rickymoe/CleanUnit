@@ -372,14 +372,14 @@ test('Tilbud: hver by har sin egen mottaker i fallback og emne', () => {
   }
 })
 
-test('Tilbud: «Be om tilbud» står bare i headeren; heroen har kun «Ring oss»', () => {
+test('Tilbud: «Kontakt»-knappen står i headeren; heroen har kun «Ring oss»', () => {
   for (const [f] of TILBUD_BYER) {
     const h = les(f);
     const i = h.indexOf('<div class="hero__knapper">');
     const knapper = h.slice(i, h.indexOf('</div>', i));
     assert.equal((knapper.match(/class="knapp/g) || []).length, 1, `${f}: heroen skal ha én knapp`);
     assert.match(knapper, /href="tel:/, `${f}: heroens knapp er «Ring oss»`);
-    assert.match(h, /class="knapp knapp--fyll side-nav__tilbud" href="#kontakt"/, `${f}: headerknappen peker på #kontakt`);
+    assert.match(h, /class="knapp knapp--fyll side-nav__kontakt" href="#kontakt"/, `${f}: headerknappen peker på #kontakt`);
   }
 });
 
@@ -464,16 +464,16 @@ test('fyllMal: betingede blokker tas med bare når nøkkelen har verdi', () => {
   assert.throws(() => fyllMal('{{#oslo}}X{{/oslo}}', {}), /Mangler verdi for \{\{#oslo\}\}/);
 });
 
-test('Toppmeny: lenkene i Maritts rekkefølge peker på ankre som finnes, med den andre byen og «Be om tilbud»', () => {
+test('Toppmeny: lenkene i Maritts rekkefølge peker på ankre som finnes, med den andre byen og «Kontakt»-knappen', () => {
   for (const [f, andre] of [['test/ut/index.html', 'Stavanger'], ['test/ut/stavanger/index.html', 'Oslo']]) {
     const h = les(f);
     const nav = h.slice(h.indexOf('<header class="side-nav"'), h.indexOf('</header>'));
     const lenker = [...nav.matchAll(/class="side-nav__lenke" href="#([a-z-]+)">([^<]+)</g)].map((m) => [m[1], m[2]]);
     assert.deepEqual(lenker.map((l) => l[1]),
-      ['Tjenester', 'Referanser', 'Om oss', 'Miljø og seriøsitet', 'Kontakt'], `${f}: menyrekkefølgen`);
+      ['Tjenester', 'Referanser', 'Om oss', 'Miljø og seriøsitet'], `${f}: menyrekkefølgen`);
     for (const [id] of lenker) assert.match(h, new RegExp(`id="${id}"`), `${f}: mangler #${id}`);
     assert.match(nav, new RegExp(`class="side-nav__by" href="[^"]+">${andre} `), `${f}: lenke til ${andre}`);
-    assert.match(nav, /class="knapp knapp--fyll side-nav__tilbud" href="#kontakt"/, f);
+    assert.match(nav, /class="knapp knapp--fyll side-nav__kontakt" href="#kontakt"/, f);
     assert.match(h, /id="kontakt"/, f);
   }
 });
