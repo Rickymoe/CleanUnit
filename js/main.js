@@ -115,6 +115,16 @@ function glansSveip(reduksjon) {
 // mente ikke logoens egne tre bobler, som er en del av selve logoen). Kjører med en gang
 // siden heroen alltid er synlig ved sidelast (ikke scroll-styrt). Reduced-motion viser
 // sluttresultatet direkte via CSS — ingenting å gjøre her i så fall.
+// Nullstiller og kjører heroens logo (sveip + bobler) én gang til: .kjor av, tving omberegning så
+// animasjonene starter fra begynnelsen, .kjor på igjen.
+function spillLogoPaaNytt() {
+  const logo = document.querySelector('.hero .logo')
+  if (!logo) return
+  logo.classList.remove('kjor')
+  void logo.getBoundingClientRect()
+  logo.classList.add('kjor')
+}
+
 function logoAnimer(reduksjon) {
   if (reduksjon) return
   const logo = document.querySelector('.hero .logo')
@@ -467,13 +477,23 @@ function sideNav() {
   sett(false)
   smal.addEventListener('change', () => sett(false))
   bryter.addEventListener('click', () => sett(bryter.getAttribute('aria-expanded') !== 'true'))
-  // Merket i hjørnet tar deg til toppen. href="#" gjør det uten JS; her blir det en myk rulling
-  // uten «#» i adressefeltet. Headeren er sticky og kan ikke brukes som anker (den ligger allerede
-  // øverst i vinduet, så en lenke til den gjør ingenting).
+  // Merket i hjørnet tar deg til toppen og spiller heroens logo-animasjon på nytt (Ricky
+  // 2026-10-03). href="#" gjør «til toppen» uten JS; her blir det en myk rulling uten «#» i
+  // adressefeltet. Headeren er sticky og kan ikke brukes som anker (den ligger allerede øverst i
+  // vinduet, så en lenke til den gjør ingenting). Animasjonen starter først når rullingen er
+  // framme, ellers ville den gått ferdig utenfor syne.
   nav.querySelector('.side-nav__logo').addEventListener('click', (e) => {
     e.preventDefault()
     sett(false)
-    scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+    const reduksjon = matchMedia('(prefers-reduced-motion: reduce)').matches
+    scrollTo({ top: 0, behavior: reduksjon ? 'auto' : 'smooth' })
+    if (reduksjon) return
+    const start = performance.now()
+    const vent = () => {
+      if (scrollY <= 2 || performance.now() - start > 2500) spillLogoPaaNytt()
+      else requestAnimationFrame(vent)
+    }
+    vent()
   })
   meny.addEventListener('click', (e) => { if (e.target.closest('a')) sett(false) })
   document.addEventListener('keydown', (e) => {
