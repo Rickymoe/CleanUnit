@@ -615,6 +615,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 .stopp--tjenester { padding-block: var(--seksjon-y); background: var(--flate); }
 .tjeneste-kort {
   position: relative; /* anker for refleksen/sveipet på .kort--vindu og for innholdet som løftes over den */
+  display: flex; flex-direction: column; /* like høyder i raden + «Les mer» fast i bunnen (Ricky 2026-10-03) */
   background: var(--teal-lys); border-radius: var(--radius); padding: var(--s-5);
   transition: transform .2s, box-shadow .2s;
 }
@@ -753,7 +754,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    (verktoy/symboler.py; Ricky 2026-10-01: «vi bygger symboler selv fra bunn»).
    Deres egne merker er store, og detaljene forsvinner under ~60 px, så de står
    i 4,75rem (76 px) og ikke de 2,75rem de gamle strekikonene hadde. */
-.tjeneste-kort__ikon { height: 4.75rem; width: auto; margin-bottom: var(--s-3); transition: transform .2s; }
+.tjeneste-kort__ikon { height: 4.75rem; width: auto; align-self: flex-start; margin-bottom: var(--s-3); transition: transform .2s; }
 @media (hover: hover) {
   .tjeneste-kort:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0, 89, 91,.35); }
   .tjeneste-kort:hover .tjeneste-kort__ikon { transform: scale(1.08); }
@@ -1352,7 +1353,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 
 /* Sju tjenester: 1 kolonne → 2 → 3, og de brede kortene (første og siste) fyller rekkene slik at
    ingen står alene (jf. #9). «Les mer» viser resten av Maritts tekst uten å gjøre kortene høye. */
-.tjeneste-grid--sju { align-items: start; grid-template-columns: 1fr; }
+.tjeneste-grid--sju { grid-template-columns: 1fr; }
 @media (min-width: 36rem) { .tjeneste-grid--sju { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 36rem) and (max-width: 55.99rem) {
   .tjeneste-grid--sju > .tjeneste-kort--bred:first-child { grid-column: 1 / -1; }
@@ -1361,7 +1362,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   .tjeneste-grid--sju { grid-template-columns: repeat(3, 1fr); }
   .tjeneste-grid--sju > .tjeneste-kort--bred { grid-column: span 2; }
 }
-.tjeneste-mer { margin-top: var(--s-3); }
+.tjeneste-mer { margin-top: auto; padding-top: var(--s-3); }
 .tjeneste-mer summary {
   cursor: pointer; padding: .4rem 0; font: 700 var(--t-sm)/1.2 var(--sans); color: var(--teal-mork);
   text-decoration: underline; text-underline-offset: 3px;
