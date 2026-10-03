@@ -522,4 +522,19 @@ function sideNav() {
   addEventListener('scroll', () => { if (!ventende) { ventende = true; requestAnimationFrame(oppdater) } }, { passive: true })
   addEventListener('resize', oppdater)
   oppdater()
+
+  // Personvern-modal
+  const privacyBtn = document.getElementById('privacy-btn')
+  const privacyPanel = document.getElementById('privacy-panel')
+  const privacyClose = privacyPanel.querySelector('.privacy-panel__close')
+  if (privacyBtn && privacyPanel) {
+    privacyBtn.addEventListener('click', () => privacyPanel.removeAttribute('hidden'))
+    privacyClose.addEventListener('click', () => privacyPanel.setAttribute('hidden', ''))
+    privacyPanel.addEventListener('click', (e) => {
+      if (e.target === privacyPanel) privacyPanel.setAttribute('hidden', '')
+    })
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !privacyPanel.hasAttribute('hidden')) privacyPanel.setAttribute('hidden', '')
+    })
+  }
 }

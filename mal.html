@@ -751,6 +751,7 @@ addEventListener("load", function () {
 <footer class="side-footer">
   <div class="wrap">
     <p class="side-footer__merke" role="img" aria-label="CleanUnit"><img src="{{rot}}bilder/logo-cleanunit-lys.svg" alt="" width="626" height="192"></p>
+    <p class="side-footer__lenker"><button id="privacy-btn" class="side-footer__lenke">Personvern</button></p>
     <!-- Flyttet ned fra hero øverst til høyre — Ricky: "det faktisk bedre
          ut uten". "CLEANUNIT" er ekte tekst lagt oppå dørpanelet (samme
          teknikk/mål som i hero: bilder/bil.png, panelet ligger omtrent
@@ -764,6 +765,13 @@ addEventListener("load", function () {
     </div>
   </div>
 </footer>
+<div id="privacy-panel" class="privacy-panel" role="dialog" aria-labelledby="privacy-title" hidden>
+  <div class="privacy-panel__content">
+    <button class="privacy-panel__close" aria-label="Lukk Personvern">×</button>
+    <h3 id="privacy-title">Personvern</h3>
+    <p>Kartbildene hentes fra OpenStreetMap og Kartverket, som da ser IP-adressen din, slik alle nettsteder med kart gjør. Besøkene telles anonymt, uten informasjonskapsler, med Cloudflare Web Analytics.</p>
+  </div>
+</div>
 <script type="module">
   import { initSider } from '{{js_rot}}js/main.js';
   initSider();

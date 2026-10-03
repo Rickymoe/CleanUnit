@@ -1346,3 +1346,40 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
    ikke skinner gjennom. Uten JS er den alltid flat. */
 html.js .side-nav { margin-bottom: -3.75rem; transition: background-color .2s, box-shadow .2s, border-color .2s; }
 html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: none; border-bottom-color: transparent; }
+
+/* ── Personvern-modal ───────────────────────────────────────────── */
+.privacy-panel {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0, 0, 0, .5);
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--s-4);
+}
+.privacy-panel[hidden] { display: none; }
+.privacy-panel__content {
+  background: #fff; border-radius: var(--radius); padding: var(--s-5);
+  max-width: 36rem; position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .2);
+}
+.privacy-panel__close {
+  position: absolute; top: var(--s-3); right: var(--s-3);
+  background: none; border: none; font: 2rem/1 monospace;
+  color: var(--tekst-svak); cursor: pointer; padding: 0;
+  width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;
+}
+@media (hover: hover) {
+  .privacy-panel__close:hover { color: var(--tekst); }
+}
+.privacy-panel__content h3 { margin-bottom: var(--s-4); }
+.privacy-panel__content p { color: var(--tekst-svak); line-height: var(--lh-brod); }
+
+.side-footer__lenker {
+  margin-top: var(--s-4); font-size: var(--t-sm);
+}
+.side-footer__lenke {
+  background: none; border: none; color: var(--tekst-svak);
+  cursor: pointer; text-decoration: underline; font: inherit;
+  padding: 0; display: inline;
+}
+@media (hover: hover) {
+  .side-footer__lenke:hover { color: var(--tekst); }
+}
