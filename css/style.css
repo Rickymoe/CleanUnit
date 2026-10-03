@@ -995,7 +995,8 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
 .sitat-kort p { color: var(--tekst); font-style: italic; font-size: var(--t-md); line-height: 1.6; max-width: 62ch; }
 @media (max-width: 36rem) { .sitat-kort p { font-size: var(--t-base); } } /* 16 px på telefon: 17 ga 8-9 linjer på ansattsitatene */
 .sitat-kort footer { margin-top: var(--s-3); font: 700 var(--t-sm)/1.4 var(--sans); color: var(--teal-mork); font-style: normal; }
-.sitat-logo { display: block; height: 2.5rem; max-width: 9rem; margin: 0; flex-shrink: 0; }
+/* Fast boks + contain: logoene har svært ulike proporsjoner (BSN 1,5:1, Medistim 6,9:1), og høyde + max-width alene strakte dem. */
+.sitat-logo { display: block; width: 9rem; height: 4rem; object-fit: contain; object-position: left center; margin: 0; flex-shrink: 0; }
 /* Fast logokolonne på desktop, så sitatteksten starter på samme x i alle kortene (den startet
    ved 401, 409 og 249 px etter logoens bredde). Kortet uten logo (Stålverkskroken) får samme
    innrykk, så venstrekanten er rett. */

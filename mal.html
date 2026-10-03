@@ -293,7 +293,10 @@ addEventListener("load", function () {
         </blockquote>
       </li>
       <li class="sitat-kort">
-        <!-- UTKAST: Marits dokument har en logo-plassholder for Dr. Brandt, men filen i dokumentet kunne ikke knyttes sikkert til Dr. Brandt. Logo mangler til hun bekrefter. -->
+        <picture>
+          <source srcset="{{rot}}bilder/logo-pioner.webp" type="image/webp">
+          <img loading="lazy" decoding="async" class="sitat-logo" src="{{rot}}bilder/logo-pioner.png" alt="" width="180" height="117">
+        </picture>
         <blockquote>
           <p>Etter noen år med en annen leverandør valgte vi å gå tilbake til Clean Unit. Vi setter stor pris på stabile renholdere, god kommunikasjon og trygg oppfølging.</p>
           <footer>Mariann<br>Dr. Brandt</footer>
@@ -520,9 +523,7 @@ addEventListener("load", function () {
         </blockquote>
       </li>
     {{/er_oslo}}</ul>
-    <!-- UTKAST: mottakeradresse for åpen søknad ikke bekreftet — gjenbruker
-         Oslo-kontorets generelle e-post inntil videre -->
-    <a class="knapp knapp--fyll" href="mailto:renhold@cleanunit.no?subject=%C3%85pen%20s%C3%B8knad">Send oss en åpen søknad</a>
+    <a class="knapp knapp--fyll" href="mailto:jobb@cleanunit.no?subject=%C3%85pen%20s%C3%B8knad">Send oss en åpen søknad</a>
   </div>
 </section>
 <section class="stopp--tillit" id="hvorfor">

@@ -492,7 +492,7 @@ test('Maritts innhold (Oppsett ny nettside) står på Oslo-siden: sju tjenester,
     assert.ok(h.includes(t), `mangler «${t}»`);
   }
   for (const [tlf] of [['+4797195993'], ['+4747298445']]) assert.ok(h.includes(`href="tel:${tlf}"`), tlf);
-  assert.ok(h.includes('Send oss en åpen søknad'), 'åpen søknad ligger i «Jobb hos oss» (jobbsøknad-kortet i Kontakt er fjernet)');
+  assert.ok(h.includes('mailto:jobb@cleanunit.no?subject='), 'åpen søknad går til jobb@ (Maritts dokument: «Søker du jobb? Send oss en e-post på jobb@cleanunit.no»)');
   assert.match(h, /<div class="om-foto-rad" hidden>/, 'fotoplassholderen skal fortsatt være skjult');
 });
 
