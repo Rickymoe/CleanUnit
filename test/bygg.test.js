@@ -487,7 +487,7 @@ test('Maritts innhold (Oppsett ny nettside) står på Oslo-siden: sju tjenester,
     'Gulvvedlikehold', 'Vindusvask', 'Hygieneartikler']) {
     assert.match(h, new RegExp(`<h3>${t}</h3>`), `tjeneste: ${t}`);
   }
-  assert.equal((h.match(/class="tjeneste-kort/g) || []).length >= 7 + 4, true, 'sju tjenestekort + fire fordelskort');
+  assert.equal((h.match(/class="tjeneste-kort[\s"]/g) || []).length, 7, 'sju tjenestekort');
   for (const t of ['BSN – Boligstiftelsen Nydalen', 'Dr. Brandt', 'Vilma', 'Marit Byfuglien', 'Mari Pedersen',
     'Guro Klingenberg Schei', 'Miljøfyrtårn siden 2011',
     'Medlem av Virke og tariffbundet', 'Offentlig godkjent renholdsbedrift', 'Hvorfor vi velger bort underleverandører',

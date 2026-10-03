@@ -23,8 +23,6 @@
   --flate: #FFFFFF;
   --tekst: #1E2B2B;
   --tekst-svak: #55706E;
-  --rosa: #75355D; /* hjerte-vannmerket (.kort--hjerte): nå burgunder (Marit), var lyserødt #EC6B95 */
-  --tekst-middels: #3F5453; /* mellom --tekst-svak og --tekst: 5,8:1 over rosa hjerte, 7,2:1 på --teal-lys */
   --sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --t-xs: .8125rem; --t-sm: .9rem; --t-base: 1rem; --t-md: 1.0625rem;
   --t-lg: 1.25rem; --t-2xl: 2rem; --t-3xl: 2.75rem;
@@ -605,10 +603,6 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   display: grid;
 }
 .tjeneste-grid { gap: var(--s-5); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
-/* «Jobb hos oss» har fire fordeler: auto-fit/15rem ga 3+1 på desktop (et foreldreløst kort,
-   design-kritikk #9). Her går de 1 → 2×2 → 4 på rad, aldri 3+1. */
-@media (min-width: 36rem) { .stopp--jobb .tjeneste-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 64rem) { .stopp--jobb .tjeneste-grid { grid-template-columns: repeat(4, 1fr); } }
 .tillit-liste { gap: var(--s-6); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
 .tjeneste-kort p, .tillit-liste p { margin-top: var(--s-2); color: var(--tekst-svak); font-size: var(--t-sm); }
 
@@ -620,43 +614,6 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   transition: transform .2s, box-shadow .2s;
 }
 .tjeneste-kort h3 { color: var(--teal-mork); }
-/* Hjerte-vannmerke på «Langvarige kollegaer» (Ricky, 2026-09-21) — kun dette
-   kortet, satt via .kort--hjerte i markupen. Rent CSS: et stort, svakt
-   hjerte (SVG-maske fylt med --rosa, nå burgunder #75355D som Marit ønsker; var
-   lyserødt #EC6B95 — Ricky ba om litt lyserødt, 2026-09-21) midt på høyre side,
-   tippet litt og med ca. en fjerdedel utenfor kanten (overflow:hidden), så
-   hele formen (to topper og spiss) leses, men som et vannmerke og ikke som
-   et ikon. Ligger BAK teksten (::before, teksten
-   løftes med position:relative). Opasiteten er lav nok til at brødteksten
-   (--tekst-svak mot --teal-lys) beholder kontrasten. Ren dekor, aria-skjult
-   av seg selv (pseudo-element, ingen tekstinnhold). */
-.kort--hjerte { overflow: hidden; }
-.kort--hjerte::before {
-  content: ""; position: absolute; bottom: -1.8rem; right: -1.8rem;
-  width: 8rem; aspect-ratio: 1; pointer-events: none;
-  /* Hjertet er en maske (SVG som data-URI) fylt med --rosa i stedet for en SVG
-     med rosa hardkodet i seg: en data-URI kan ikke bruke CSS-variabler, så på
-     den måten blir fargen et ekte token og kan endres ett sted. */
-  background: var(--rosa);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
-          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
-  transform: rotate(12deg); opacity: .3; /* Flyttet fra midt på høyresiden ned i hjørnet, under teksten (design-kritikk #10): der skar det gjennom «hos oss i» og måtte holdes på .16, som blandet seg til en gråfiolett klatt. I hjørnet kan det stå på .3 og leses som burgunder. */
-}
-.kort--hjerte > * { position: relative; }
-/* Under 64rem er kortet ikke strukket av en høyere nabo, og hjertet i hjørnet nådde opp i
-   brødteksten (målt: 76 px overlapp ved 390 px). Mindre hjerte og luft under teksten. */
-@media (max-width: 63.99rem) {
-  .kort--hjerte { padding-bottom: 4.75rem; }
-  .kort--hjerte::before { width: 6rem; bottom: -1.4rem; right: -1.4rem; }
-}
-/* Brødteksten på dette kortet er litt mørkere (--tekst-middels i stedet for
-   --tekst-svak): rosa hjerte (22 %) bak linja "hos oss i" senket kontrasten for
-   --tekst-svak fra 4,8 til 3,9:1, under AA (design-kritikk 2026-09-21, funn 1).
-   Første valg var helt mørk --tekst (10,6:1), men den stakk for mye ut mot
-   søsknene; en mellomfarge rett over AA (#4A6261, 4,7:1) ble for subtil, så
-   Ricky landet på et trinn imellom. Bevisst avvik fra søsknene — se
-   feedback_sibling_element_conformity i minnet. */
-.kort--hjerte p { color: var(--tekst-middels); }
 
 /* Vindusramme på «Vinduspuss» (Ricky, 2026-09-21): en ytre ramme i --teal og
    en tynn indre linje 7px innenfor, som en vindusrute. Tegnet med INSET
@@ -693,7 +650,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    Den ligger på ::before og ikke ::after fordi et posisjonert pseudo-element
    males OVER statisk innhold i samme element: en «::after» la seg oppå ordet
    «Vinduspuss» og vasket ut teksten (sett på skjermbilde i laben). Innholdet
-   løftes derfor under — samme grep .kort--hjerte bruker for hjertet sitt.
+   løftes derfor under (innholdet får position:relative og z-index:1).
    Kontrast: hvit glans under mørk tekst kan bare øke kontrasten, og glansen
    legger ingen ny flate under noen av tegnene. */
 .kort--vindu::before {
