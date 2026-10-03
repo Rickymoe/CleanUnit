@@ -34,7 +34,7 @@ test('Oslo: egen tittel, eget telefonnummer, lenke til Stavanger i footeren', ()
   assert.match(h, /<title>Clean Unit – renhold i Oslo<\/title>/);
   assert.match(h, /<body class="by--oslo">/);
   assert.match(h, /href="tel:\+4721555680">Ring oss – 21 55 56 80/);
-  assert.match(h, /class="side-footer__bylenke" href="stavanger\/">Gå til Clean Unit Stavanger →/);
+  assert.match(h, /class="kontakt__bylenke" href="stavanger\/">Gå til Clean Unit Stavanger →/);
   assert.match(h, /<span class="tittel-aksent">Renhold<\/span> i Oslo<\/h1>/);
   assert.match(h, /og:url" content="https:\/\/rickymoe\.github\.io\/CleanUnit\/"/);
   assert.match(h, /4,8 · 4 anmeldelser på Google/);
@@ -45,7 +45,7 @@ test('Stavanger: egen tittel, eget telefonnummer, lenke til Oslo i footeren', ()
   assert.match(h, /<title>Clean Unit – renhold i Stavanger<\/title>/);
   assert.match(h, /<body class="by--stavanger">/);
   assert.match(h, /href="tel:\+4790065009">Ring oss – 900 65 009/);
-  assert.match(h, /class="side-footer__bylenke" href="\.\.\/">Gå til Clean Unit Oslo →/);
+  assert.match(h, /class="kontakt__bylenke" href="\.\.\/">Gå til Clean Unit Oslo →/);
   assert.match(h, /<span class="tittel-aksent">Renhold<\/span> i Stavanger<\/h1>/);
   assert.match(h, /og:url" content="https:\/\/rickymoe\.github\.io\/CleanUnit\/stavanger\/"/);
   assert.doesNotMatch(h, /anmeldelser på Google/);
@@ -269,7 +269,7 @@ test('Bare «Tjenester»-overskriften har vaskesveip', () => {
 test('Stien: alle seksjonene den ankrer til finnes, med eyebrow', () => {
   for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
     const h = les(f)
-    for (const id of ['tjenester', 'referanser', 'hvorfor', 'om-oss', 'jobb-hos-oss', 'tilbud']) {
+    for (const id of ['tjenester', 'referanser', 'hvorfor', 'om-oss', 'jobb-hos-oss', 'kontakt']) {
       const start = h.indexOf(`id="${id}"`)
       assert.ok(start > -1, `${f}: mangler #${id}`)
       const seksjon = h.slice(start, h.indexOf('</section>', start))
@@ -306,7 +306,7 @@ const TILBUD_BYER = [
 ]
 
 const tilbudSeksjon = (h) => {
-  const start = h.indexOf('id="tilbud"')
+  const start = h.indexOf('id="kontakt"')
   return start < 0 ? '' : h.slice(start, h.indexOf('</section>', start))
 }
 
@@ -321,7 +321,7 @@ test('Tilbud: ingen ekte Formspree-ID er committet', () => {
 test('Tilbud: skjemaet står synlig, men knappen er låst til ID-en finnes', () => {
   for (const [f] of TILBUD_BYER) {
     const seksjon = tilbudSeksjon(les(f))
-    assert.ok(seksjon, `${f}: mangler #tilbud`)
+    assert.ok(seksjon, `${f}: mangler #kontakt`)
     // Ricky 2026-09-27: seksjonen skal se ferdig ut også før abonnementet er
     // på plass, så skjemaet vises. Det som hindrer en tapt henvendelse er
     // derfor ikke lenger hidden, men den låste knappen + at main.js ikke
@@ -359,12 +359,15 @@ test('Tilbud: hver by har sin egen mottaker i fallback og emne', () => {
   const alle = ['renhold@cleanunit.no', 'thord@cleanunit.no']
   for (const [f, by, epost] of TILBUD_BYER) {
     const seksjon = tilbudSeksjon(les(f))
-    assert.match(seksjon, new RegExp(`mailto:${epost.replace('.', '\\.')}`), `${f}: feilboksens fallback`)
+    // Fallback-ene (varselet i skjemaet og feilboksen) peker på EGET kontor;
+    // kontaktinfoen kan gjerne vise begge kontorene, så vi ser bare på skjemaet + feilboksen.
+    const skjema = seksjon.slice(seksjon.indexOf('<form'), seksjon.indexOf('</form>'))
+    const feil = seksjon.slice(seksjon.indexOf('id="tilbud-feil"'), seksjon.indexOf('</p>', seksjon.indexOf('id="tilbud-feil"')))
+    const fallback = skjema + feil
+    assert.match(fallback, new RegExp(`mailto:${epost.replace('.', '\\.')}`), `${f}: fallbacken mangler eget kontor`)
     assert.match(seksjon, new RegExp(`name="_subject" value="Ny tilbudsforespørsel – ${by}"`), `${f}: emnefeltet`)
-    // Feilboksens fallback må peke på EGET kontor — at Stavanger havner hos Oslo
-    // er nettopp det hele to-skjemaer-oppsettet skal unngå.
     for (const annen of alle.filter((e) => e !== epost)) {
-      assert.doesNotMatch(seksjon, new RegExp(`mailto:${annen.replace('.', '\\.')}`), `${f}: låner ${annen}`)
+      assert.doesNotMatch(fallback, new RegExp(`mailto:${annen.replace('.', '\\.')}`), `${f}: fallbacken låner ${annen}`)
     }
   }
 })
@@ -376,7 +379,7 @@ test('Tilbud: «Be om tilbud» står bare i headeren; heroen har kun «Ring oss�
     const knapper = h.slice(i, h.indexOf('</div>', i));
     assert.equal((knapper.match(/class="knapp/g) || []).length, 1, `${f}: heroen skal ha én knapp`);
     assert.match(knapper, /href="tel:/, `${f}: heroens knapp er «Ring oss»`);
-    assert.match(h, /class="knapp knapp--fyll side-nav__tilbud" href="#tilbud"/, `${f}: headerknappen peker på #tilbud`);
+    assert.match(h, /class="knapp knapp--fyll side-nav__tilbud" href="#kontakt"/, `${f}: headerknappen peker på #kontakt`);
   }
 });
 
@@ -395,7 +398,7 @@ test('Tilbud: varselet om at skjemaet ikke er i bruk står synlig i skjemakortet
     assert.ok(tag, `${f}: varselet mangler`)
     assert.doesNotMatch(tag[0], /hidden/, `${f}: varselet skal være synlig i markup`)
     // Det skal ligge inne i skjemakortet, ellers står det utenfor kortet det
-    // forklarer, og det ville blitt en tredje grid-kolonne i .tilbud-layout.
+    // forklarer, og det ville blitt en tredje grid-kolonne i .kontakt-layout.
     assert.ok(seksjon.indexOf('id="tilbud-varsel"') < seksjon.indexOf('</form>'),
       `${f}: varselet må ligge inne i skjemaet`)
     // Besøkende skal ikke se interne huskelapper (leverandør, personnavn): varselet sier at
@@ -428,7 +431,7 @@ test('Tilbud: uten ID kobles innsendingen ikke på, og Enter laster ikke siden',
 
 test('Tilbud: stien får en node for seksjonen, og skriptet kobles på', () => {
   const js = les('js/main.js')
-  assert.match(js, /\['#tilbud', 'Be om tilbud'\]/, 'sti-noden mangler')
+  assert.match(js, /\['#kontakt', 'Kontakt'\]/, 'sti-noden mangler')
   assert.match(initKropp(js), /tilbudSkjema\(\)/, 'tilbudSkjema kalles ikke fra initSider()')
   // Gatingen: står plassholderen igjen, finnes ingen ID — da skal skjemaet
   // forbli skjult og seksjonen vise ring/e-post i stedet.
@@ -439,8 +442,8 @@ test('Tilbud: seksjonen fortsetter bakgrunnsvekslingen og har skjemastil', () =>
   const css = les('css/style.css')
   // #jobb-hos-oss slutter på --base, så neste seksjon skal være --teal-lys —
   // samme veksling som resten av siden (flate / teal-lys / base / teal-lys / base).
-  assert.match(css, /\n\.stopp--tilbud \{ padding-block: var\(--seksjon-y\); background: var\(--teal-lys\); \}/)
-  assert.match(css, /\.tilbud-layout \{/, 'layout-grid mangler')
+  assert.match(css, /\n\.stopp--kontakt \{ padding-block: var\(--seksjon-y\); background: var\(--teal-lys\); \}/)
+  assert.match(css, /\.kontakt-layout \{/, 'layout-grid mangler')
   assert.match(css, /\.skjema-felt label \{/)
   assert.match(css, /\.tilbud-skjema input,/, 'feltstilen mangler')
   assert.match(css, /\.skjema-varsel \{/)
@@ -470,8 +473,8 @@ test('Toppmeny: lenkene i Maritts rekkefølge peker på ankre som finnes, med de
       ['Tjenester', 'Referanser', 'Om oss', 'Miljø og seriøsitet', 'Kontakt'], `${f}: menyrekkefølgen`);
     for (const [id] of lenker) assert.match(h, new RegExp(`id="${id}"`), `${f}: mangler #${id}`);
     assert.match(nav, new RegExp(`class="side-nav__by" href="[^"]+">${andre} `), `${f}: lenke til ${andre}`);
-    assert.match(nav, /class="knapp knapp--fyll side-nav__tilbud" href="#tilbud"/, f);
-    assert.match(h, /id="tilbud"/, f);
+    assert.match(nav, /class="knapp knapp--fyll side-nav__tilbud" href="#kontakt"/, f);
+    assert.match(h, /id="kontakt"/, f);
   }
 });
 

@@ -1030,31 +1030,6 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
 .side-footer__bil img { width: 100%; height: auto; display: block; }
 /* Logoen på bildøra er også et <img> inne i .side-footer__bil, og regelen over ga den hele bilbredden. */
 .side-footer__bil img.verktoy__merke { width: 24%; }
-.side-footer__kontorer {
-  display: grid; gap: var(--s-6); justify-items: center;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); width: 100%;
-}
-.side-footer__kontorer h3 { color: #fff; font-size: var(--t-lg); }
-.side-footer__kontorer p { margin-top: var(--s-1); opacity: .85; font-size: var(--t-sm); }
-.side-footer__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); justify-content: center; margin-top: var(--s-4); }
-/* Hvit, ikke --logo-turkis-lys — den lyse turkisen ga bare ~4,2:1 mot
-   --teal-mork-footeren (under AA 4,5:1). Hover-hintet må derfor være noe
-   annet enn en fargeendring til hvit (den er allerede der); en tykkere
-   understrek gir samme "her skjer det noe"-følelse uten kontrasttap. */
-.side-footer__bylenke {
-  display: inline-block; margin-top: var(--s-3);
-  color: #fff; font-weight: 600; text-decoration: underline;
-  text-underline-offset: .2em;
-}
-@media (hover: hover) { .side-footer__bylenke:hover { text-decoration-thickness: 2px; } }
-.side-footer .knapp { border-color: #fff; }
-.side-footer .knapp--fyll { background: #fff; color: var(--teal-mork); }
-.side-footer .knapp--omriss { color: #fff; }
-.side-footer :where(a, button):focus-visible { outline-color: #fff; }
-@media (hover: hover) {
-  .side-footer .knapp--omriss:hover { background: #fff; color: var(--teal-mork); }
-  .side-footer .knapp--fyll:hover { background: var(--teal-lys); }
-}
 
 /* Scroll-reveal for kort nedover siden (js/main.js legger på .js-reveal på
    tjeneste-kort, sitat-kort, tillit-liste-punktene og om-foto-plassholder-
@@ -1134,11 +1109,10 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 }
 .sti__lenke:focus-visible .sti__navn { opacity: 1; }
 
-/* ── Tilbudsskjemaet ───────────────────────────────────────────────────
-   Siste stopp før footeren (Ricky valgte «egen #tilbud-seksjon», 2026-09-27).
-   Bakgrunnen er --teal-lys fordi seksjonen over (#jobb-hos-oss) slutter på
-   --base: sidens veksling er flate / teal-lys / base / teal-lys / base, og
-   den må fortsette, ellers smelter to seksjoner sammen.
+/* ── Kontakt (skjema + kontaktinfo) ─────────────────────────────────────
+   Siste stopp før footeren. Bakgrunnen er --teal-lys fordi seksjonen over
+   (Miljø og seriøsitet) er hvit, så den fortsetter vekslingen og skiller
+   seg fra den mørke footeren under.
 
    Skjemaet står synlig også før Formspree-ID-en finnes (Ricky, 2026-09-27).
    Send-knappen er da `disabled` i markup og js/main.js kobler ikke på
@@ -1147,18 +1121,13 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
    [hidden]-regelen nederst må fortsatt ligge sist: den deler spesifisitet med
    en klasse, så rekkefølgen avgjør om .skjema-varsel, .skjema-feil og
    .skjema-kvittering faktisk blir skjult når skriptet setter hidden på dem. */
-.stopp--tilbud { padding-block: var(--seksjon-y); background: var(--teal-lys); }
-.tilbud-layout { display: grid; gap: var(--s-6); margin-top: var(--s-5); }
+.stopp--kontakt { padding-block: var(--seksjon-y); background: var(--teal-lys); }
+.kontakt-layout { display: grid; gap: var(--s-6); margin-top: var(--s-5); }
 @media (min-width: 56rem) {
-  .tilbud-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 30rem); gap: var(--s-8); align-items: start; }
+  .kontakt-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-8); align-items: start; }
 }
-.tilbud__direkte { margin-top: var(--s-4); color: var(--tekst-svak); }
-.tilbud__direkte a { color: var(--teal-mork); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
-
-/* Skjemakortet. Feltene står i én kolonne også på desktop — kortet er bare
-   ~30rem bredt, og to felt ved siden av hverandre der ville blitt for trangt
-   (en container-media-query ville dessuten ikke hjulpet, siden bredden kommer
-   fra grid-kolonnen og ikke fra vinduet). */
+/* Skjemakortet står til venstre, kontaktinfoen til høyre (Ricky 2026-10-03).
+   Når kortet deler bredden, står feltene i én kolonne igjen. */
 .tilbud-skjema { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(0, 89, 91, .08); }
 .tilbud-skjema > * + * { margin-top: var(--s-4); }
 .skjema-rad { display: grid; gap: var(--s-4); }
@@ -1204,6 +1173,25 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .skjema-kvittering h3 { color: var(--teal-mork); }
 .skjema-kvittering p { margin-top: var(--s-2); color: var(--tekst-svak); }
 
+/* Kontaktinfoen til høyre for skjemaet (Ricky 2026-10-03): kontorer og personer
+   flyttet hit fra footeren, nå med mørk tekst på lys bunn. */
+.kontakt__info { display: grid; gap: var(--s-5); align-content: start; }
+.kontakt__kontorer { display: grid; gap: var(--s-5); }
+.kontakt__kontorer h3 { color: var(--teal-mork); font-size: var(--t-lg); }
+.kontakt__kontorer p { margin-top: var(--s-1); color: var(--tekst-svak); font-size: var(--t-sm); }
+.kontakt__orgnr { opacity: .8; }
+.kontakt__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-4); }
+.kontakt__bylenke {
+  display: inline-block; margin-top: var(--s-3);
+  color: var(--teal-mork); font-weight: 600; text-decoration: underline;
+  text-underline-offset: .2em;
+}
+@media (hover: hover) { .kontakt__bylenke:hover { text-decoration-thickness: 2px; } }
+.kontakt__personer { display: grid; gap: var(--s-4); border-top: 1px solid var(--gronn-mellom); padding-top: var(--s-4); }
+.kontakt__personer h3 { color: var(--teal-mork); font-size: var(--t-base); }
+.kontakt__personer p { margin-top: var(--s-1); font-size: var(--t-sm); color: var(--tekst-svak); }
+.kontakt__personer a { color: var(--teal-mork); text-underline-offset: 3px; }
+
 /* Må ligge sist: samme spesifisitet som en klasse, så rekkefølgen avgjør. */
 [hidden] { display: none; }
 
@@ -1239,7 +1227,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   .side-nav__by:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 .side-nav a:focus-visible, .side-nav__bryter:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
-#tjenester, #referanser, #om-oss, #hvorfor, #miljo, #jobb-hos-oss, #tilbud, #kontakt { scroll-margin-top: 3.75rem; }
+#tjenester, #referanser, #om-oss, #hvorfor, #miljo, #jobb-hos-oss, #kontakt { scroll-margin-top: 3.75rem; }
 @media (max-width: 62rem) {
   .side-nav__rad { gap: var(--s-3); }
   .side-nav__tilbud { margin-left: auto; order: 2; }
@@ -1351,15 +1339,6 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .miljo-kort li { margin-top: var(--s-1); }
 .miljo-kort__logo { display: block; height: 3rem; width: auto; max-width: 9rem; object-fit: contain; margin-bottom: var(--s-3); }
 .miljo-kort__logo--bred { height: 3.25rem; max-width: 11rem; }
-
-/* Kontakt i footeren (Oslo): ingress og kontaktpersoner */
-.side-footer h2 { color: #fff; }
-.side-footer__ingress { max-width: 56ch; color: #CBDFDE; }
-.side-footer__personer { display: grid; gap: var(--s-5); grid-template-columns: repeat(2, 1fr); width: 100%; max-width: 48rem; padding-top: var(--s-5); border-top: 1px solid rgba(255, 255, 255, .2); }
-@media (min-width: 48rem) { .side-footer__personer { grid-template-columns: repeat(4, 1fr); } }
-.side-footer__personer h3 { color: #fff; font-size: var(--t-base); }
-.side-footer__personer p { margin-top: var(--s-1); font-size: var(--t-sm); color: #CBDFDE; }
-.side-footer__personer a { color: #fff; text-underline-offset: 3px; }
 
 /* Øverst på siden er headeren gjennomsiktig og heroen går helt opp bak den, så den har nøyaktig
    heroens farge og glød (Ricky 2026-10-03: den var «fortsatt hvit» med flat --base, fordi heroen

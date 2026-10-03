@@ -59,7 +59,7 @@ addEventListener("load", function () {
       </ul>
       <a class="side-nav__by" href="{{andre_by_href}}">{{andre_by_navn}} <span aria-hidden="true">↗</span></a>
     </nav>
-    <a class="knapp knapp--fyll side-nav__tilbud" href="#tilbud">Be om tilbud</a>
+    <a class="knapp knapp--fyll side-nav__tilbud" href="#kontakt">Be om tilbud</a>
   </div>
 </header>
 <main id="innhold">
@@ -634,19 +634,17 @@ addEventListener("load", function () {
      send-knapp og .skjema-varsel øverst i kortet som forklarer hvorfor.
      main.js lar være å koble på innsendingen så lenge plassholderen står, så
      ingenting kan sendes dit det ikke finnes noe mottak. -->
-<section class="stopp--tilbud" id="tilbud">
+<section class="stopp--kontakt" id="kontakt">
   <div class="wrap">
-    <p class="eyebrow">Be om tilbud</p>
-    <div class="tilbud-layout">
-      <div class="tilbud__tekst">
-        <!-- UTKAST: teksten i denne seksjonen er skrevet av oss og ikke
-             bekreftet av Marit/Christopher -->
-        {{#er_oslo}}<h2>Trenger dere en ny renholdsleverandør?</h2>
+    <p class="eyebrow">Kontakt</p>
+    <!-- UTKAST: teksten i denne seksjonen er skrevet av oss og ikke
+         bekreftet av Marit/Christopher -->
+    {{#er_oslo}}<h2>Trenger dere en ny renholdsleverandør?</h2>
         <p class="stopp__lede">Vi tar gjerne en uforpliktende prat. Fortell oss litt om lokalene og behovet deres, så kommer vi tilbake med et tilbud. Befaring og tilbud er kostnadsfritt.</p>
         {{/er_oslo}}{{^er_oslo}}<h2>Hva koster renhold for dere?</h2>
         <p class="stopp__lede">Fortell oss litt om lokalene og behovet deres, så kommer vi tilbake med et tilbud. Vi vasker for barnehager, skoler, kontorer og bilforhandlere — og tilpasser opplegget etter hvordan dere jobber.</p>
-        {{/er_oslo}}<p class="tilbud__direkte">Går det fortere å snakkes? Ring <a href="tel:{{telefon}}">{{telefon_visning}}</a>, eller send e-post til <a href="mailto:{{tilbud_epost}}">{{tilbud_epost}}</a>.</p>
-      </div>
+        {{/er_oslo}}
+    <div class="kontakt-layout">
       <form class="tilbud-skjema" id="tilbud-skjema"
             data-endpoint="https://formspree.io/f/%%FORMSPREE_ID%%">
         <!-- Varselet står øverst i kortet, ikke under knappen: da ser kunden
@@ -676,20 +674,22 @@ addEventListener("load", function () {
             <input type="text" id="tilbud-virksomhet" name="virksomhet" autocomplete="organization" required>
           </div>
         </div>
-        <div class="skjema-felt">
-          <label for="tilbud-areal">Omtrentlig areal <span class="skjema-valgfri">(m², valgfritt)</span></label>
-          <input type="text" id="tilbud-areal" name="areal" inputmode="numeric" autocomplete="off">
-        </div>
-        <div class="skjema-felt">
-          <label for="tilbud-gjelder">Hva gjelder det</label>
-          <select id="tilbud-gjelder" name="gjelder">
-            <option value="">Velg kategori</option>
-            <option value="barnehage">Barnehage</option>
-            <option value="skole">Skole</option>
-            <option value="kontor">Kontor</option>
-            <option value="bilforhandler">Bilforhandler</option>
-            <option value="annet">Annet</option>
-          </select>
+        <div class="skjema-rad">
+          <div class="skjema-felt">
+            <label for="tilbud-areal">Omtrentlig areal <span class="skjema-valgfri">(m², valgfritt)</span></label>
+            <input type="text" id="tilbud-areal" name="areal" inputmode="numeric" autocomplete="off">
+          </div>
+          <div class="skjema-felt">
+            <label for="tilbud-gjelder">Hva gjelder det</label>
+            <select id="tilbud-gjelder" name="gjelder">
+              <option value="">Velg kategori</option>
+              <option value="barnehage">Barnehage</option>
+              <option value="skole">Skole</option>
+              <option value="kontor">Kontor</option>
+              <option value="bilforhandler">Bilforhandler</option>
+              <option value="annet">Annet</option>
+            </select>
+          </div>
         </div>
         <div class="skjema-felt">
           <label for="tilbud-melding">Melding</label>
@@ -699,6 +699,47 @@ addEventListener("load", function () {
         <button type="submit" class="knapp knapp--fyll" disabled>Send forespørsel</button>
         <p class="skjema-notat">Vi svarer som regel innen én arbeidsdag.</p>
       </form>
+      <div class="kontakt__info">
+        <div class="kontakt__kontorer">
+          <div>
+            <h3>Clean Unit Renhold AS</h3>
+            <p>Gunnar Schjelderups vei 9, 0485 Oslo</p>
+            <p class="kontakt__orgnr">Org.nr 895 215 902</p>
+            <div class="kontakt__knapper">
+              <a class="knapp knapp--fyll" href="tel:+4721555680">Ring – 21 55 56 80</a>
+              <a class="knapp knapp--omriss" href="mailto:renhold@cleanunit.no">Send e-post</a>
+            </div>
+            {{oslo_bylenke}}
+          </div>
+          <div>
+            <h3>Clean Unit Stavanger AS</h3>
+            <p><!-- UTKAST: Brønnøysundregistrene oppgir registrert adresse Nedre
+                 Holmegate 30, 4006 Stavanger — avviker fra denne besøksadressen
+                 hentet fra cleanunit.no 2026-09-12. Bekreft hvilken som skal
+                 brukes -->Bryggerikaien 16, 4014 Stavanger</p>
+            <p class="kontakt__orgnr">Org.nr 929 085 019</p>
+            <div class="kontakt__knapper">
+              <a class="knapp knapp--fyll" href="tel:+4790065009">Ring – 900 65 009</a>
+              <a class="knapp knapp--omriss" href="mailto:thord@cleanunit.no">Send e-post</a>
+            </div>
+            {{stavanger_bylenke}}
+          </div>
+        </div>
+        {{#er_oslo}}<div class="kontakt__personer">
+          <div>
+            <h3>Jobbsøknader</h3>
+            <p><a href="mailto:jobb@cleanunit.no">jobb@cleanunit.no</a></p>
+          </div>
+          <div>
+            <h3>Daglig leder</h3>
+            <p>Marit Byfuglien<br><a href="tel:+4797195993">Mobil: 971 95 993</a></p>
+          </div>
+          <div>
+            <h3>Markedsansvarlig</h3>
+            <p>Mari Pedersen<br><a href="tel:+4747298445">Mobil: 472 98 445</a></p>
+          </div>
+        </div>{{/er_oslo}}
+      </div>
     </div>
     <p class="skjema-feil" id="tilbud-feil" role="alert" hidden>Noe gikk galt. Prøv igjen, eller ring <a href="tel:{{telefon}}">{{telefon_visning}}</a> — eller send e-post til <a href="mailto:{{tilbud_epost}}">{{tilbud_epost}}</a>.</p>
     <div class="skjema-kvittering" id="tilbud-kvittering" role="status" hidden>
@@ -708,7 +749,7 @@ addEventListener("load", function () {
   </div>
 </section>
 </main>
-<footer class="side-footer" id="kontakt">
+<footer class="side-footer">
   <div class="wrap">
     <p class="side-footer__merke" role="img" aria-label="CleanUnit"><img src="{{rot}}bilder/logo-cleanunit-lys.svg" alt="" width="626" height="192"></p>
     <!-- Flyttet ned fra hero øverst til høyre — Ricky: "det faktisk bedre
@@ -722,53 +763,7 @@ addEventListener("load", function () {
       </picture>
       <img class="verktoy__merke" src="{{rot}}bilder/logo-cleanunit.svg" alt="" width="626" height="192">
     </div>
-    {{#er_oslo}}<h2>Kontakt</h2>
-    <p class="side-footer__ingress">Trenger dere fast renhold, ønsker et tilbud eller vil avtale en befaring? Ta kontakt med oss. Vi kommer gjerne ut for å se på lokalene og behovet deres.</p>
-    {{/er_oslo}}{{^er_oslo}}<h2 class="visually-hidden">Kontakt</h2>
-    {{/er_oslo}}<div class="side-footer__kontorer">
-      <div>
-        <h3>Clean Unit Renhold AS</h3>
-        <p>Gunnar Schjelderups vei 9, 0485 Oslo</p>
-        <p class="side-footer__orgnr">Org.nr 895 215 902</p>
-        <div class="side-footer__knapper">
-          <a class="knapp knapp--fyll" href="tel:+4721555680">Ring – 21 55 56 80</a>
-          <a class="knapp knapp--omriss" href="mailto:renhold@cleanunit.no">Send e-post</a>
-        </div>
-        {{oslo_bylenke}}
-      </div>
-      <div>
-        <h3>Clean Unit Stavanger AS</h3>
-        <p><!-- UTKAST: Brønnøysundregistrene oppgir registrert adresse Nedre
-             Holmegate 30, 4006 Stavanger — avviker fra denne besøksadressen
-             hentet fra cleanunit.no 2026-09-12. Bekreft hvilken som skal
-             brukes -->Bryggerikaien 16, 4014 Stavanger</p>
-        <p class="side-footer__orgnr">Org.nr 929 085 019</p>
-        <div class="side-footer__knapper">
-          <a class="knapp knapp--fyll" href="tel:+4790065009">Ring – 900 65 009</a>
-          <a class="knapp knapp--omriss" href="mailto:thord@cleanunit.no">Send e-post</a>
-        </div>
-        {{stavanger_bylenke}}
-      </div>
-    </div>
-{{#er_oslo}}    <div class="side-footer__personer">
-      <div>
-        <h3>Generelle henvendelser</h3>
-        <p><a href="mailto:renhold@cleanunit.no">renhold@cleanunit.no</a></p>
-      </div>
-      <div>
-        <h3>Jobbsøknader</h3>
-        <p><a href="mailto:jobb@cleanunit.no">jobb@cleanunit.no</a></p>
-      </div>
-      <div>
-        <h3>Daglig leder</h3>
-        <p>Marit Byfuglien<br><a href="tel:+4797195993">Mobil: 971 95 993</a></p>
-      </div>
-      <div>
-        <h3>Markedsansvarlig</h3>
-        <p>Mari Pedersen<br><a href="tel:+4747298445">Mobil: 472 98 445</a></p>
-      </div>
-    </div>
-{{/er_oslo}}  </div>
+  </div>
 </footer>
 <script type="module">
   import { initSider } from '{{js_rot}}js/main.js';

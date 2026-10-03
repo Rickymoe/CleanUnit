@@ -197,7 +197,7 @@ const STI_SEKSJONER = [
   ['#om-oss', 'Om oss'],
   ['#jobb-hos-oss', 'Jobb hos oss'],
   ['#hvorfor', 'Miljø og seriøsitet'],
-  ['#tilbud', 'Be om tilbud'],
+  ['#kontakt', 'Kontakt'],
 ]
 
 function stiNedover(reduksjon) {
