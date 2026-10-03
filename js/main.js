@@ -485,6 +485,7 @@ function sideNav() {
   nav.querySelector('.side-nav__logo').addEventListener('click', (e) => {
     e.preventDefault()
     sett(false)
+    history.replaceState(null, '', window.location.pathname)
     const reduksjon = matchMedia('(prefers-reduced-motion: reduce)').matches
     scrollTo({ top: 0, behavior: reduksjon ? 'auto' : 'smooth' })
     if (reduksjon) return
