@@ -1090,7 +1090,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .sti__node { fill: var(--base); stroke: var(--teal); stroke-width: 2.5; transition: fill .25s; }
 .sti__node--aktiv { fill: var(--teal); }
 .sti__treff { fill: transparent; }
-.sti__lenke { cursor: pointer; }
+.sti__lenke { cursor: pointer; pointer-events: auto; }
 .sti__lenke:focus-visible { outline: none; }
 .sti__lenke:focus-visible .sti__node { fill: var(--teal); stroke-width: 4; }
 /* Nodens navn for skjermlesere — synlig kun ved tastaturfokus, som en
