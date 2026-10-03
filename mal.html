@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
 document.documentElement.classList.add("js");
+// Vinterscene i heroen 1. desember til 6. januar. ?vinter og ?sommer i adressen tvinger en av dem
+// (for å vise fram eller teste utenom sesongen). Settes her, før noe tegnes, så det ikke blinker.
+(function () {
+  var d = new Date(), q = location.search;
+  if (/[?&]vinter\b/.test(q) || (!/[?&]sommer\b/.test(q) && (d.getMonth() === 11 || (d.getMonth() === 0 && d.getDate() <= 6)))) {
+    document.documentElement.classList.add("vinter");
+  }
+})();
 // Nødluke: hvis js/main.js 404-er eller kaster før logoAnimer() kjører,
 // blir ordmerket (html.js .logo, klippet av clip-path) usynlig for alltid.
 // Etter 1,2 s uten .kjor: vis logoen. Sjekker selve .kjor-klassen (ikke bare
@@ -110,9 +118,13 @@ addEventListener("load", function () {
        punktet stien nedover siden begynner på (veiens venstre ende). -->
   <div class="hero__scene" aria-hidden="true">
    <div class="hero__scene-ramme">
-    <picture>
+    <picture class="hero__scene-sommer">
       <source srcset="{{rot}}bilder/hero-scene.webp" type="image/webp">
       <img class="hero__scene-bilde" src="{{rot}}bilder/hero-scene.jpg" alt="" width="2172" height="724" fetchpriority="high">
+    </picture>
+    <picture class="hero__scene-vinter">
+      <source srcset="{{rot}}bilder/hero-scene-vinter.webp" type="image/webp">
+      <img class="hero__scene-bilde" src="{{rot}}bilder/hero-scene-vinter.jpg" alt="" width="2172" height="724">
     </picture>
     <img class="hero__scene-merke" src="{{rot}}bilder/logo-cleanunit-varebil.svg" alt="" width="616" height="78">
     <span class="hero__sti-start"></span>

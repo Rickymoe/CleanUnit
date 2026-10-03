@@ -1120,6 +1120,13 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 }
 .hero__scene-ramme { position: relative; width: min(100%, 135svh); margin-inline: auto; aspect-ratio: 2172 / 724; }
 .hero__scene picture, .hero__scene-bilde { display: block; width: 100%; height: 100%; }
+/* Sesong: html.vinter settes i <head> 1. des.–6. jan. (eller med ?vinter). Begge bildene er små (ca. 55 KB)
+   og lastes alltid, så byttet aldri blinker. Vinterhimmelen er litt kaldere enn sommerhimmelen (målt),
+   og --himmel styrer både tonen i heroen og starten på «Derfor»-flaten. */
+.hero__scene .hero__scene-vinter { display: none; }
+html.vinter .hero__scene .hero__scene-sommer { display: none; }
+html.vinter .hero__scene .hero__scene-vinter { display: block; }
+html.vinter { --himmel: #93CED3; }
 .hero__scene-bilde {
   object-fit: cover; object-position: 50% 100%;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 26%, #000 90%, transparent 100%),

@@ -62,9 +62,11 @@ test('Hero: scene med rekkevidde-linje, uten de gamle rutebåndet, bybakgrunnen 
     assert.match(h, /bilder\/hero-scene\.webp/, f);
     assert.match(h, /<img class="hero__scene-bilde" src="[^"]*bilder\/hero-scene\.jpg" alt=""/, f);
     assert.match(h, /class="hero__sti-start"/, `${f}: stien trenger startpunktet sitt`);
+    assert.match(h, /<picture class="hero__scene-vinter">[\s\S]*?bilder\/hero-scene-vinter\.jpg/, `${f}: vinterscenen mangler`);
+    assert.match(h, /classList\.add\("vinter"\)/, `${f}: sesongbyttet mangler i <head>`);
     assert.doesNotMatch(h, /hero__(rute|stopp|by|sol)/, `${f}: rester av den gamle heroen`);
   }
-  for (const fil of ['hero-scene.webp', 'hero-scene.jpg', 'logo-cleanunit-varebil.svg']) {
+  for (const fil of ['hero-scene.webp', 'hero-scene.jpg', 'hero-scene-vinter.webp', 'hero-scene-vinter.jpg', 'logo-cleanunit-varebil.svg']) {
     assert.ok(existsSync(`test/ut/bilder/${fil}`), `bilder/${fil} mangler i bygget`);
   }
 });
