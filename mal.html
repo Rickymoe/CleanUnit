@@ -530,7 +530,7 @@ addEventListener("load", function () {
   <div class="wrap">
     <p class="eyebrow">Miljø og seriøsitet</p>
     <h2>Godkjent, ansvarlig og til stede</h2>
-    <ul class="tillit-liste">
+    {{^er_oslo}}<ul class="tillit-liste">
       <li>
         <div class="tillit-stempel">
           <svg class="tillit-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -577,7 +577,7 @@ addEventListener("load", function () {
         <h3>Jevnlig re-sertifisert</h3>
         <p><!-- UTKAST: antar fortsatt miljøsertifisert per Rickys instruks 2026-09-13, siste kjente konkrete resertifisering var januar 2021 -->Vi fornyer sertifiseringene våre jevnlig for å holde standarden oppe.</p>
       </li>
-    </ul>{{#er_oslo}}
+    </ul>{{/er_oslo}}{{#er_oslo}}
     <div class="miljo-detaljer">
       <article class="miljo-kort">
         <picture><source srcset="{{rot}}bilder/logo-miljofyrtarn.webp" type="image/webp"><img class="miljo-kort__logo" src="{{rot}}bilder/logo-miljofyrtarn.png" alt="" width="61" height="52"></picture>
@@ -608,6 +608,7 @@ addEventListener("load", function () {
         <p>Alle som selger renholdstjenester i Norge må ha godkjenning fra Arbeidstilsynet for å drive lovlig. Godkjente bedrifter dokumenterer lovlige lønns- og arbeidsforhold for de ansatte.</p>
       </article>
       <article class="miljo-kort">
+        <img class="miljo-kort__logo miljo-kort__logo--bred" src="{{rot}}bilder/logo-cleanunit.svg" alt="" width="626" height="192">
         <h3>Hvorfor vi velger bort underleverandører</h3>
         <p>Vi tror at det beste renholdet skapes av folk som trives og har trygge rammer. Derfor utfører vi alle renholdsoppdrag med egne, fast ansatte renholdere. Dette gir oss, og deg en helt annen kontroll enn ved bruk av underleverandører.</p>
         <p><strong>Garantert lovlige vilkår:</strong> Vi har full kontroll på at våre ansatte har riktig lønn, pensjon og forsikringer. Som kunde hos oss kan du være 100 % trygg på at du bidrar til et rettferdig og seriøst arbeidsliv.</p>

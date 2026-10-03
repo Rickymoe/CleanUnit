@@ -72,7 +72,7 @@ test('Hero: rutebånd med de fire kundetypene og rekkevidde-linje', () => {
 // finnes fordi ingen av dem har innhold å telle: forsvinner en av dem, feiler
 // ingenting, siden ser bare annerledes ut. Det er samme stillhet som gjorde at
 // de døde sti-lenkene kunne ligge uoppdaget i fire dager.
-test('Glans: de tre behandlingene finnes i CSS-en', () => {
+test('Glans: de to behandlingene finnes i CSS-en', () => {
   const css = les('css/style.css');
   // Vindusglasset: refleksen ligger inni kortets egen ramme (8,5 px), så den
   // måler seg etter rammen og ikke etter kortet. Innholdet må være løftet over
@@ -94,12 +94,6 @@ test('Glans: de tre behandlingene finnes i CSS-en', () => {
     'speilvendingen ligger ikke på bildet inni speilboksen');
   assert.match(css, /\.hero__rute-speil \{[^}]*mask-image/,
     'masken ligger ikke på speilboksen');
-  // Den våte kanten øverst på den mørke flaten.
-  assert.match(css, /\.stopp--tillit \{ padding-block: var\(--seksjon-y\); background: var\(--teal-mork\);/,
-    'den mørke seksjonen er endret — glansen under må sjekkes på nytt');
-  assert.match(css, /\.stopp--tillit::before \{/, 'den våte kanten mangler');
-  assert.match(css, /\.stopp--tillit \.wrap \{ position: relative; z-index: 1; \}/,
-    'innholdet løftes ikke over kanten — et hvitt slør ville spist av eyebrow-kontrasten');
 });
 
 test('Glans: speilet i heroen er en egen boks rundt bilen', () => {

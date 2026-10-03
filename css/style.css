@@ -6,7 +6,7 @@
        Mørk grønn   PMS 327U          CMYK 90,5,45,0     #008789
        Mellomgrønn  PMS 7472U         CMYK 45,3,20,0     #87CAC9
        Lys grønn    PMS 7472U 50 %    CMYK 27,2,13,0     #AED1D1
-       Burgunder    RGB 117,53,93                         #75355D
+       Burgunder    RGB 117,53,93                         #75355D   (i Marits palett, men brukes ikke på nettsiden)
      Disse fem er merkefargene og brukes slik de er til flater, ikon og stor grafikk.
      Under dem ligger tre AVLEDEDE verdier som er mørkere enn merkefargen, fordi tekst og
      knapper må ha 4,5:1 (merkegrønn #008789 gir 4,35:1 mot hvit, #87CAC9 og #AED1D1 under
@@ -15,7 +15,6 @@
   --gronn-mork: #008789;
   --gronn-mellom: #87CAC9;
   --gronn-lys: #AED1D1;
-  --burgunder: #75355D;
   --teal: #007A7C;        /* handling og tekst: merkegrønn, mørknet til 5,2:1 mot hvit */
   --teal-mork: #00595B;   /* mørk flate (tillitsblokk, footer): 8,1:1 mot hvit tekst */
   --teal-lys: #E7F4F4;    /* lys flate: 20 % mellomgrønn mot hvit */
@@ -39,8 +38,8 @@
   /* Glansen (Ricky 2026-09-30: «jeg savner noe glossy på siden»). Glans er
      tolket som BEVIS og ikke som pynt: de tre behandlingene under legger
      lys på flater som allerede finnes — vindusglasset på tjenestekortet
-     (.kort--vindu), bakken under bilen i heroen (.hero__rute-speil) og
-     overkanten av den mørke flaten (.stopp--tillit). Ingen nye flater, ingen
+     (.kort--vindu) og bakken under bilen i heroen (.hero__rute-speil).
+     Ingen nye flater, ingen
      nye farger utenfor paletten: alt er hvitt lys med varierende styrke.
      Alle tallene står her så de kan justeres på ett sted. Verdiene er valgt
      av Ricky i lab-glans.html (et kast-av-dokument, ikke i repoet). */
@@ -53,11 +52,6 @@
   --glans-speil: .45;        /* speilbildet av bilen i bakken */
   --glans-speil-fade: 60%;   /* hvor langt ned speilbildet rekker før det dør */
   --glans-speil-blur: 1px;
-  --glans-kant: .12;         /* den våte kanten øverst på den mørke flaten */
-  /* Klemt til 5rem OG ikke bare 16 %: den mørke seksjonen er nesten tre
-     ganger så høy som den var i laben, og et rent prosenttall ville lagt et
-     15-20 rem høyt slør over eyebrowen og overskriften i stedet for en kant. */
-  --glans-kant-hoyde: min(16%, 5rem);
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; overflow-x: clip; background: var(--base); }
@@ -735,52 +729,23 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    låst til logoen og ga 4,2:1, under de 4,5:1 småtekst skal ha. #9BD5D3 er
    samme turkis, ett hakk lysere, og blir den best lesbare eyebrowen på
    siden. */
-.stopp--tillit { padding-block: var(--seksjon-y); background: var(--teal-mork);
-  position: relative; }
-.stopp--tillit .eyebrow { color: var(--gronn-lys); }
-.stopp--tillit h2 { color: #fff; }
-/* Den våte kanten øverst på den mørke flaten (Ricky 2026-09-30): en smal
-   lysning som faller ned fra overkanten, pluss en 1 px linje helt på toppen
-   der flaten møter den lyse seksjonen over. Det er den eneste av de tre
-   glansene som ikke forestiller noe — den sier bare at flaten er en flate
-   og ikke et hull i siden. Uten den sluttet den mørke blokken tvert.
-   Høyden er klemt til 5 rem (se --glans-kant-hoyde): denne seksjonen er
-   nesten tre ganger så høy som den mørke flaten i laben, så et rent 16 %
-   slør ville lagt seg over eyebrowen og overskriften i stedet for å legge
-   seg på kanten.
-   Innholdet løftes over begge lagene, av samme grunn som på vinduskortet:
-   et posisjonert pseudo-element males over statisk innhold. Uten det ville
-   et hvitt slør ligget oppå eyebrowen (--gronn-lys #AED1D1 på #00595B, målt 4,98:1) og
-   spist av kontrasten. Nå kan glansen bare ligge bak teksten. */
-.stopp--tillit .wrap { position: relative; z-index: 1; }
-.stopp--tillit::before {
-  content: ""; position: absolute; left: 0; right: 0; top: 0;
-  height: var(--glans-kant-hoyde); pointer-events: none;
-  background: linear-gradient(to bottom, #fff 0%, transparent 100%);
-  opacity: var(--glans-kant);
-}
-/* Egen 1 px linje i stedet for et hardt stopp i gradienten over: en gradient
-   kan ikke love én piksel på tvers av skjermtettheter, og kanten er hele
-   poenget med denne glansen. */
-.stopp--tillit::after {
-  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
-  background: #fff; opacity: var(--glans-kant); pointer-events: none;
-}
+.stopp--tillit { padding-block: var(--seksjon-y); background: var(--flate); }
+/* Seksjonen var mørk (--teal-mork, så --teal) med hvit tekst og en våt kant,
+   men ble hvit 2026-10-03 (Ricky) — den mørke blokken leste som en dobbel
+   footer. Teksten faller tilbake på standardfargene, og glansen er fjernet. */
 /* Eyebrow og overskrift er venstrejustert som i de andre seksjonene; kun
    punktene (.tillit-liste) har sentrert ikon-og-tekst-oppsett (Ricky valgte
    dette 2026-09-21, alternativ C). Før stod h2 sentrert og eyebrowen til
    venstre: sentrerings-regelen for .eyebrow virket aldri (den er
    inline-block). */
-.tillit-liste h3 { color: #fff; }
-.tillit-liste p { color: #CBDFDE; }
 .tillit-liste li { display: flex; flex-direction: column; align-items: center; text-align: center; }
 /* Sirkel-/stempel-ramme rundt hvert ikon/logo — Ricky syntes seksjonen
    virket passiv/kjedelig (2026-09-13); dobbel ring gir et "offisielt segl"-
    preg som passer siden innholdet faktisk ER sertifiseringer/medlemskap.
-   Hvit bunn (ikke --base) så den skiller seg fra sideflaten bak. */
+   Lys teal-bunn (--teal-lys) så den skiller seg fra den hvite sideflaten. */
 .tillit-stempel {
   width: 4.75rem; height: 4.75rem; border-radius: 50%;
-  background: #fff; border: 2px solid var(--teal);
+  background: var(--teal-lys); border: 2px solid var(--teal);
   display: grid; place-items: center; position: relative;
   margin-bottom: var(--s-3); flex-shrink: 0;
 }
@@ -1002,7 +967,7 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
 .sitat-kort blockquote { margin: 0; flex: 1; min-width: 0; }
 .sitat-kort blockquote::before {
   content: "\201C"; display: block; margin-bottom: var(--s-2);
-  font: 800 3rem/1 Georgia, "Times New Roman", serif; color: var(--burgunder); opacity: .55; /* burgunder som i Marits mockup (2026-10-02); dekor, ikke tekst */
+  font: 800 3rem/1 Georgia, "Times New Roman", serif; color: var(--teal); opacity: .55; /* dekor, ikke tekst */
 }
 /* Sitatene er sidens sterkeste bevis, så de er satt i --t-md (17 px), ikke kortbrødtekstens
    14,4 px, og med linjelengde 45-75 tegn (62ch) (design-kritikk #7/#8). */
@@ -1363,9 +1328,22 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 @media (min-width: 56rem) { .ansatte { grid-template-columns: 1.15fr 1fr; align-items: center; gap: var(--s-6); } }
 
 /* Miljø og seriøsitet: Maritts fire tekstblokker på hvite kort under rutene */
-.miljo-detaljer { margin-top: var(--s-8); display: grid; gap: var(--s-5); grid-template-columns: 1fr; align-items: start; }
-@media (min-width: 48rem) { .miljo-detaljer { grid-template-columns: repeat(2, 1fr); } }
-.miljo-kort { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); color: var(--tekst-svak); }
+.miljo-detaljer { margin-top: var(--s-8); display: grid; gap: var(--s-5); grid-template-columns: 1fr; }
+@media (min-width: 48rem) {
+  .miljo-detaljer { grid-template-columns: repeat(2, 1fr); }
+  /* Bento (Ricky 2026-10-03): de to lange kortene får full bredde, de to korte deler en rad. */
+  .miljo-kort:first-child, .miljo-kort:last-child { grid-column: 1 / -1; }
+}
+.miljo-kort { background: var(--flate); border: 1px solid var(--teal-lys); border-radius: var(--radius); padding: var(--s-5); color: var(--tekst-svak); transition: transform .2s, box-shadow .2s; }
+/* Full-bredde-kortene får tekst i lesebredde (68ch) så linjene ikke blir ~130 tegn brede. */
+.miljo-kort p, .miljo-kort ul { max-width: 68ch; }
+@media (hover: hover) {
+  .miljo-kort:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0, 89, 91, .35); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .miljo-kort { transition: none; }
+  .miljo-kort:hover { transform: none; }
+}
 .miljo-kort h3 { color: var(--teal-mork); margin-bottom: var(--s-2); }
 .miljo-kort p { margin-top: var(--s-2); font-size: var(--t-sm); }
 .miljo-kort p strong { color: var(--tekst); }
