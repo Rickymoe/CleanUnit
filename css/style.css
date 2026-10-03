@@ -729,7 +729,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    låst til logoen og ga 4,2:1, under de 4,5:1 småtekst skal ha. #9BD5D3 er
    samme turkis, ett hakk lysere, og blir den best lesbare eyebrowen på
    siden. */
-.stopp--tillit { padding-block: var(--seksjon-y); background: var(--teal-lys); }
+.stopp--tillit { padding-block: var(--seksjon-y); background: var(--flate); }
 /* Seksjonen var mørk (--teal-mork, så --teal) med hvit tekst og en våt kant,
    men ble hvit 2026-10-03 (Ricky) — den mørke blokken leste som en dobbel
    footer. Teksten faller tilbake på standardfargene, og glansen er fjernet. */
@@ -738,7 +738,18 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    dette 2026-09-21, alternativ C). Før stod h2 sentrert og eyebrowen til
    venstre: sentrerings-regelen for .eyebrow virket aldri (den er
    inline-block). */
-.tillit-liste li { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.tillit-liste li {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  background: #fff; border: 1px solid var(--teal-lys); border-radius: var(--radius);
+  padding: var(--s-5); transition: transform .2s, box-shadow .2s;
+}
+@media (hover: hover) {
+  .tillit-liste li:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0, 89, 91,.35); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tillit-liste li { transition: none; }
+  .tillit-liste li:hover { transform: none; }
+}
 /* Sirkel-/stempel-ramme rundt hvert ikon/logo — Ricky syntes seksjonen
    virket passiv/kjedelig (2026-09-13); dobbel ring gir et "offisielt segl"-
    preg som passer siden innholdet faktisk ER sertifiseringer/medlemskap.
