@@ -121,7 +121,7 @@ a { color: inherit; }
 /* Desktop: rutebåndet er absolutt plassert nederst, så heroen holder av plassen til det
    (rute-nede + båndets egen høyde 7,5rem + litt luft) som bunn-padding. Teksten og knappene
    sentreres da i resten (design-kritikk #1). Under 48rem ligger båndet i flyten. */
-@media (min-width: 48rem) {
+@media (min-width: 48.01rem) { /* ikke 48rem: 768 px treffer også max-width: 48rem (rutebåndet i flyten), og da stod plassen reservert for ingenting */
   .hero { padding-bottom: calc(var(--rute-nede) + 7.5rem + var(--s-5)); }
 }
 /* På smale/høye mobilskjermer sentrerer justify-content:center innholdet
@@ -131,6 +131,13 @@ a { color: inherit; }
    under logoen. */
 @media (max-width: 40rem) {
   .hero { min-height: 88vh; }
+}
+/* Nettbrett stående (40–48rem): rutebåndet ligger i flyten som på mobil, men heroen ble likevel
+   strukket til hele skjermhøyden og sentrerte innholdet, så det ble ca. 440 px tomt mellom
+   bilen og neste seksjon (målt i 768x1024: 267 px under innholdet pluss seksjonens toppluft).
+   47rem gir omtrent samme luft over og under innholdet som mobilvisningen. */
+@media (min-width: 40.01rem) and (max-width: 48rem) {
+  .hero { min-height: min(100svh, 47rem); }
 }
 /* To-byer-illustrasjonen var ute 2026-09-26 (dempingen av «den andre byen»,
    body.by--*-sløret, er borte for godt) og er tilbake 2026-10-01 som svak
@@ -1280,11 +1287,22 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .stopp__lede--flere > p + p { margin-top: var(--s-3); }
 
 /* «Derfor velger kundene …» */
-.stopp--derfor { padding-block: var(--s-8); background: var(--teal-lys); }
-.derfor-liste {
-  list-style: none; margin: var(--s-6) 0 0; padding: 0; display: grid; gap: var(--s-5); grid-template-columns: 1fr;
+.stopp--derfor {
+  padding-block: var(--s-8); padding-top: calc(var(--seksjon-y) + var(--s-4));
+  /* Heroen ender i --base. Flaten tones inn fra den i stedet for å starte med en rett kant rett under bilen. */
+  background: linear-gradient(to bottom, var(--base) 0, var(--teal-lys) 6rem);
 }
-.derfor-liste li { border-top: 3px solid var(--gronn-mellom); padding-top: var(--s-3); }
+.derfor-liste {
+  list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-5); grid-template-columns: 1fr;
+}
+.derfor-liste li { background: #fff; border-radius: var(--radius); padding: var(--s-5); transition: transform .2s, box-shadow .2s; }
+@media (hover: hover) {
+  .derfor-liste li:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0, 89, 91, .35); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .derfor-liste li { transition: none; }
+  .derfor-liste li:hover { transform: none; }
+}
 .derfor-liste h3 { color: var(--teal-mork); font-size: var(--t-lg); }
 .derfor-liste p { margin-top: var(--s-2); color: var(--tekst-svak); font-size: var(--t-sm); }
 @media (min-width: 36rem) { .derfor-liste { grid-template-columns: repeat(2, 1fr); } }
@@ -1393,10 +1411,10 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
   margin-top: var(--s-4); font-size: var(--t-sm);
 }
 .side-footer__lenke {
-  background: none; border: none; color: var(--tekst-svak);
+  background: none; border: none; color: var(--gronn-lys); /* 4,8:1 mot --teal-mork */
   cursor: pointer; text-decoration: underline; font: inherit;
-  padding: 0; display: inline;
+  padding: var(--s-3) var(--s-4); display: inline;
 }
 @media (hover: hover) {
-  .side-footer__lenke:hover { color: var(--tekst); }
+  .side-footer__lenke:hover { color: #fff; }
 }
