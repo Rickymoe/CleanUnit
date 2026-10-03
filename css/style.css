@@ -1201,10 +1201,10 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   text-underline-offset: .2em;
 }
 @media (hover: hover) { .kontakt__bylenke:hover { text-decoration-thickness: 2px; } }
-.kontakt__personer { display: grid; gap: var(--s-4); border-top: 1px solid var(--gronn-mellom); padding-top: var(--s-4); }
-.kontakt__personer h3 { color: var(--teal-mork); font-size: var(--t-base); }
-.kontakt__personer p { margin-top: var(--s-1); font-size: var(--t-sm); color: var(--tekst-svak); }
-.kontakt__personer a { color: var(--teal-mork); text-underline-offset: 3px; }
+.kontakt__kanal { margin-top: var(--s-2); }
+.kontakt__personer { list-style: none; margin: 0; padding: var(--s-4) 0 0; border-top: 1px solid var(--gronn-mellom); display: grid; gap: var(--s-2); font-size: var(--t-sm); color: var(--tekst-svak); }
+.kontakt__personer strong { color: var(--tekst); margin-right: var(--s-1); }
+.kontakt__kanal a, .kontakt__personer a { color: var(--teal-mork); text-underline-offset: 3px; }
 
 /* Må ligge sist: samme spesifisitet som en klasse, så rekkefølgen avgjør. */
 [hidden] { display: none; }
