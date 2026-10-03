@@ -1200,10 +1200,10 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .kontakt__kontorer { display: grid; gap: var(--s-5); }
 .kontakt__kontorer h3 { color: var(--teal-mork); font-size: var(--t-lg); }
 .kontakt__kontorer p { margin-top: var(--s-1); color: var(--tekst-svak); font-size: var(--t-sm); }
-.kontakt__orgnr { opacity: .8; }
+.kontakt__orgnr { color: var(--tekst-svak); } /* opacity .8 ga 3,25:1 mot --teal-lys */
 .kontakt__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-4); }
 .kontakt__bylenke {
-  display: inline-block; margin-top: var(--s-3);
+  display: inline-block; margin-top: 0; padding-block: .6rem; /* 44 px trykkflate */
   color: var(--teal-mork); font-weight: 600; text-decoration: underline;
   text-underline-offset: .2em;
 }
@@ -1242,7 +1242,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 }
 .side-nav__lenke[aria-current="true"] { color: var(--teal-mork); box-shadow: inset 0 -2px 0 var(--teal); border-radius: 8px 8px 0 0; }
 .side-nav__by { color: var(--teal-mork); font: 600 var(--t-sm)/1.2 var(--sans); text-decoration: none; white-space: nowrap; padding: .6rem .5rem; }
-.side-nav__kontakt { flex: none; padding: 11px 18px; }
+.side-nav__kontakt { flex: none; padding: 14px 18px; }
 @media (hover: hover) {
   .side-nav__lenke:hover { background: var(--teal-lys); color: var(--teal-mork); }
   .side-nav__by:hover { text-decoration: underline; text-underline-offset: 3px; }
@@ -1278,7 +1278,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   .side-nav__by { padding: .85rem .5rem; font-size: var(--t-base); }
 }
 @media (max-width: 26rem) {
-  .side-nav__kontakt { padding: 10px 14px; }
+  .side-nav__kontakt { padding: 13px 14px; }
 }
 
 /* ===== Innhold fra Maritts dokument «Oppsett ny nettside» (2026-10-02), Oslo-siden ===== */
@@ -1321,7 +1321,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 }
 .tjeneste-mer { margin-top: auto; padding-top: var(--s-3); }
 .tjeneste-mer summary {
-  cursor: pointer; padding: .4rem 0; font: 700 var(--t-sm)/1.2 var(--sans); color: var(--teal-mork);
+  cursor: pointer; padding: .85rem 0; font: 700 var(--t-sm)/1.2 var(--sans); color: var(--teal-mork);
   text-decoration: underline; text-underline-offset: 3px;
 }
 .tjeneste-mer summary:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
