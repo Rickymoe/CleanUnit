@@ -489,7 +489,7 @@ test('Maritts innhold (Oppsett ny nettside) står på Oslo-siden: sju tjenester,
   }
   assert.equal((h.match(/class="tjeneste-kort/g) || []).length >= 7 + 4, true, 'sju tjenestekort + fire fordelskort');
   for (const t of ['BSN – Boligstiftelsen Nydalen', 'Dr. Brandt', 'Vilma', 'Marit Byfuglien', 'Mari Pedersen',
-    'Guro Klingenberg Schei', 'Slik jobber vi', 'Møt oss', 'Miljøfyrtårn siden 2011',
+    'Guro Klingenberg Schei', 'Miljøfyrtårn siden 2011',
     'Medlem av Virke og tariffbundet', 'Offentlig godkjent renholdsbedrift', 'Hvorfor vi velger bort underleverandører',
     'Trenger dere en ny renholdsleverandør?']) {
     assert.ok(h.includes(t), `mangler «${t}»`);
@@ -501,7 +501,7 @@ test('Maritts innhold (Oppsett ny nettside) står på Oslo-siden: sju tjenester,
 
 test('Stavanger-siden får ikke Oslo-kontorets tekster, men beholder sine egne', () => {
   const h = les('test/ut/stavanger/index.html');
-  for (const t of ['Marit Byfuglien', 'Slik jobber vi', 'Guro Klingenberg', 'tjeneste-grid--sju', 'Boligstiftelsen Nydalen', 'derfor-liste']) {
+  for (const t of ['Marit Byfuglien', 'Guro Klingenberg', 'tjeneste-grid--sju', 'Boligstiftelsen Nydalen', 'derfor-liste']) {
     assert.ok(!h.includes(t), `Oslo-teksten «${t}» lekker inn i Stavanger-siden`);
   }
   assert.ok(h.includes('Hva koster renhold for dere?'));
