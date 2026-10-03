@@ -969,6 +969,8 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
   content: "\201C"; display: block; margin-bottom: var(--s-2);
   font: 800 3rem/1 Georgia, "Times New Roman", serif; color: var(--teal); opacity: .55; /* dekor, ikke tekst */
 }
+/* Ansatte-sitatene under "Jobb hos oss" har ikke sitasjonstegn (frigjør plass). */
+.stopp--jobb .sitat-kort blockquote::before { display: none; }
 /* Sitatene er sidens sterkeste bevis, så de er satt i --t-md (17 px), ikke kortbrødtekstens
    14,4 px, og med linjelengde 45-75 tegn (62ch) (design-kritikk #7/#8). */
 .sitat-kort p { color: var(--tekst); font-style: italic; font-size: var(--t-md); line-height: 1.6; max-width: 62ch; }
