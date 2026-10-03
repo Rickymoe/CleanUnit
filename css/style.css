@@ -1336,7 +1336,10 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   /* Bento (Ricky 2026-10-03): de to lange kortene får full bredde, de to korte deler en rad. */
   .miljo-kort:first-child, .miljo-kort:last-child { grid-column: 1 / -1; }
 }
-.miljo-kort { background: var(--flate); border: 1px solid var(--teal-lys); border-radius: var(--radius); padding: var(--s-5); color: var(--tekst-svak); transition: transform .2s, box-shadow .2s; }
+.miljo-kort { background: var(--flate); border: 1px solid var(--teal-lys); border-radius: var(--radius); padding: 0; overflow: hidden; display: flex; flex-direction: column; color: var(--tekst-svak); transition: transform .2s, box-shadow .2s; }
+/* Todelt kort: logoen på hvitt øverst (logofilene har hvit bakgrunn), teksten på lys farge under. */
+.miljo-kort__topp { background: #fff; padding: var(--s-4) var(--s-5); min-height: calc(3.25rem + 2 * var(--s-4)); display: flex; align-items: center; }
+.miljo-kort__tekst { background: var(--teal-lys); padding: var(--s-5); flex: 1; }
 /* Full-bredde-kortene får tekst i lesebredde (68ch) så linjene ikke blir ~130 tegn brede. */
 .miljo-kort p, .miljo-kort ul { max-width: 68ch; }
 @media (hover: hover) {
@@ -1351,7 +1354,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .miljo-kort p strong { color: var(--tekst); }
 .miljo-kort ul { margin: var(--s-2) 0 0; padding-left: 1.2rem; font-size: var(--t-sm); }
 .miljo-kort li { margin-top: var(--s-1); }
-.miljo-kort__logo { display: block; height: 3rem; width: auto; max-width: 9rem; object-fit: contain; margin-bottom: var(--s-3); }
+.miljo-kort__logo { display: block; height: 3rem; width: auto; max-width: 9rem; object-fit: contain; }
 .miljo-kort__logo--bred { height: 3.25rem; max-width: 11rem; }
 
 /* Øverst på siden er headeren gjennomsiktig og heroen går helt opp bak den, så den har nøyaktig
