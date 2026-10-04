@@ -1049,14 +1049,14 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 /* Sju tjenester stablet oppå hverandre i én kolonne (Ricky 2026-10-04): med flere kolonner og like
    høyder ble naboen strukket hver gang et kort ble åpnet med «Les mer». Fra 36rem ligger ikonet til
    venstre og teksten til høyre, så de brede kortene ikke blir et hav av tom flate. */
-.tjeneste-grid--sju { grid-template-columns: 1fr; align-items: start; max-width: 52rem; }
+:is(.tjeneste-grid--sju, .tjeneste-grid--stablet) { grid-template-columns: 1fr; align-items: start; max-width: 52rem; }
 @media (min-width: 36rem) {
-  .tjeneste-grid--sju > .tjeneste-kort {
+  :is(.tjeneste-grid--sju, .tjeneste-grid--stablet) > .tjeneste-kort {
     display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: var(--s-5); align-content: start;
   }
-  .tjeneste-grid--sju > .tjeneste-kort > :not(.tjeneste-kort__ikon):not(picture) { grid-column: 2; }
-  .tjeneste-grid--sju > .tjeneste-kort > .tjeneste-kort__ikon,
-  .tjeneste-grid--sju > .tjeneste-kort > picture { grid-column: 1; grid-row: 1 / span 3; margin-bottom: 0; }
+  :is(.tjeneste-grid--sju, .tjeneste-grid--stablet) > .tjeneste-kort > :not(.tjeneste-kort__ikon):not(picture) { grid-column: 2; }
+  :is(.tjeneste-grid--sju, .tjeneste-grid--stablet) > .tjeneste-kort > .tjeneste-kort__ikon,
+  :is(.tjeneste-grid--sju, .tjeneste-grid--stablet) > .tjeneste-kort > picture { grid-column: 1; grid-row: 1 / span 3; margin-bottom: 0; }
 }
 .tjeneste-mer { margin-top: auto; padding-top: var(--s-3); }
 .tjeneste-mer summary {
