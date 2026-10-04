@@ -180,7 +180,7 @@ test('Flåten: bilene ligger i et klippende spor, veilinja utenfor', () => {
 // veien igjen — det skjedde da padding ble prøvd direkte på .flaate.
 test('Flåten: alle fire stedene bruker samme heng-mål', () => {
   const css = les('css/style.css')
-  assert.match(css, /--flaate-heng: calc\(0\.172 \* var\(--flaate-b\)\)/)
+  assert.match(css, /--flaate-heng: calc\(0\.027 \* var\(--flaate-b\)\)/)
   const regel = (sel) => {
     const s = css.indexOf(sel)
     return css.slice(s, css.indexOf('}', s))
