@@ -47,7 +47,8 @@ test('Stavanger: egen tittel, eget telefonnummer, lenke til Oslo i footeren', ()
   assert.match(h, /<body class="by--stavanger">/);
   assert.match(h, /href="tel:\+4790065009">Ring oss – 900 65 009/);
   assert.match(h, /class="kontakt__bylenke" href="\.\.\/">Gå til Clean Unit Oslo →/);
-  assert.match(h, /<span class="tittel-aksent">Renhold<\/span> i Stavanger<\/h1>/);
+  assert.match(h, /<h1 class="visually-hidden">Renhold i Stavanger<\/h1>/);
+  assert.doesNotMatch(h, /hero__tittel/);
   assert.match(h, /og:url" content="https:\/\/rickymoe\.github\.io\/CleanUnit\/stavanger\/"/);
   assert.doesNotMatch(h, /anmeldelser på Google/);
   assert.doesNotMatch(h, /Clean Unit har i dag over 100 ansatte, fordelt på kontoret i Nydalen/);
@@ -56,7 +57,7 @@ test('Stavanger: egen tittel, eget telefonnummer, lenke til Oslo i footeren', ()
 // Heroen er en scene (Marits illustrasjon, modernisert, 2026-10-03): varebil, by, sol og ballong i ett
 // bilde. Den erstattet bybakgrunnen, solen og rutebåndet med varebilen og de fire kundetypene.
 test('Hero: scene med rekkevidde-linje, uten de gamle rutebåndet, bybakgrunnen og solen', () => {
-  for (const [f, linje] of [['test/ut/index.html', 'Vi rengjør i hele Oslo, Asker og Bærum\\.'], ['test/ut/stavanger/index.html', 'Kontorer i Oslo og Stavanger\\. Vi kjører dit du er\\.']]) {
+  for (const [f, linje] of [['test/ut/index.html', 'Vi rengjør i hele Oslo, Asker og Bærum\\.'], ['test/ut/stavanger/index.html', 'Vi rengjør i Stavanger og omegn\\.']]) {
     const h = les(f);
     assert.match(h, new RegExp(`<p class="hero__rekkevidde">${linje}</p>`), f);
     assert.match(h, /<div class="hero__scene" aria-hidden="true">/, f);
