@@ -938,6 +938,13 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 /* Kontaktinfoen til høyre for skjemaet (Ricky 2026-10-03): kontorer og personer
    flyttet hit fra footeren, nå med mørk tekst på lys bunn. */
 .kontakt__info { display: grid; gap: var(--s-5); align-content: start; }
+/* Kontaktinfoen står på et hvitt kort som skjemaet (Ricky 2026-10-05: venstresiden var «tung», høyresiden «tynn»):
+   samme flate, radius, skygge og padding gir lik visuell vekt. Ved ≥56rem følger kortet med nedover mens man
+   fyller ut det høye skjemaet (sticky, under den klebrige menyen på 3,75rem). */
+.kontakt__info { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(0, 89, 91, .08); }
+@media (min-width: 56rem) {
+  .kontakt__info { position: sticky; top: calc(3.75rem + var(--s-5)); }
+}
 .kontakt__kontorer { display: grid; gap: var(--s-5); }
 .kontakt__kontorer h3 { color: var(--teal-mork); font-size: var(--t-lg); }
 .kontakt__kontorer p { margin-top: var(--s-1); color: var(--tekst-svak); font-size: var(--t-sm); }
