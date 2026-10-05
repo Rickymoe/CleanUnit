@@ -15,6 +15,7 @@
   --gronn-mork: #008789;
   --gronn-mellom: #87CAC9;
   --gronn-lys: #AED1D1;
+  --burgunder: #75355D;   /* Maritts burgunder: aksent, ikke handling */
   --teal: #007A7C;        /* handling og tekst: merkegrønn, mørknet til 5,2:1 mot hvit */
   --teal-mork: #00595B;   /* mørk flate (tillitsblokk, footer): 8,1:1 mot hvit tekst */
   --teal-lys: #E7F4F4;    /* lys flate: 20 % mellomgrønn mot hvit */
@@ -415,7 +416,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    (verktoy/symboler.py; Ricky 2026-10-01: «vi bygger symboler selv fra bunn»).
    Deres egne merker er store, og detaljene forsvinner under ~60 px, så de står
    i 4,75rem (76 px) og ikke de 2,75rem de gamle strekikonene hadde. */
-.tjeneste-kort__ikon { height: 4.75rem; width: auto; align-self: flex-start; margin-bottom: var(--s-3); transition: transform .2s; }
+.tjeneste-kort__ikon { height: 6.25rem; width: auto; align-self: flex-start; margin-bottom: var(--s-3); transition: transform .2s; }
 @media (hover: hover) {
   .tjeneste-kort:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0, 89, 91,.35); }
   .tjeneste-kort:hover .tjeneste-kort__ikon { transform: scale(1.08); }
@@ -1048,7 +1049,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .om-team { min-width: 0; }
 .team-liste h4 { margin: 0; font: 700 var(--t-md)/1.3 var(--sans); color: var(--teal-mork); }
 .team-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-4); grid-template-columns: 1fr; }
-.team-liste li { display: flex; gap: var(--s-4); padding: var(--s-4); border: 1px solid var(--teal-lys); border-radius: var(--radius); background: var(--flate); }
+.team-liste li { display: flex; gap: var(--s-4); padding: var(--s-4); border: 1px solid var(--burgunder); border-radius: var(--radius); background: var(--flate); }
 .team-initialer {
   flex: none; display: grid; place-items: center; width: 3.25rem; height: 3.25rem; border-radius: 50%;
   background: var(--teal-lys); color: var(--teal-mork); font: 800 var(--t-md)/1 var(--sans); letter-spacing: .04em;
