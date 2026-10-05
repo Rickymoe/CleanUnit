@@ -412,8 +412,7 @@ test('Tilbud: stien får en node for seksjonen, og skriptet kobles på', () => {
 
 test('Tilbud: seksjonen fortsetter bakgrunnsvekslingen og har skjemastil', () => {
   const css = les('css/style.css')
-  // #jobb-hos-oss slutter på --base, så neste seksjon skal være --teal-lys —
-  // samme veksling som resten av siden (flate / teal-lys / base / teal-lys / base).
+  // #jobb-hos-oss slutter på --base, så neste seksjon (Miljø, nå på himmelen) tones fra --base; Kontakt er lys teal.
   assert.match(css, /\n\.stopp--kontakt \{ padding-block: var\(--seksjon-y\); background: var\(--teal-lys\); \}/)
   assert.match(css, /\.kontakt-layout \{/, 'layout-grid mangler')
   assert.match(css, /\.skjema-felt label \{/)

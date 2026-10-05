@@ -426,7 +426,19 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   .tjeneste-kort:hover { transform: none; }
 }
 
-.stopp--referanser { padding-block: var(--seksjon-y); background: var(--teal-lys); }
+/* Himmel-seksjonene tones inn fra hvitt over (og Referanser også ut til hvitt under) i stedet for en hard kant
+   (Ricky 2026-10-05). Fadesonen (--himmel-fade) ligger INNE i seksjonens topp- og bunn-padding (6rem), så ingen
+   tekst står på en halvferdig farge: full himmel er nådd før første linje. Miljø og seriøsitet har samme behandling (flyttet fra Kontakt 2026-10-05) og tones fra/til naboenes farger. */
+.stopp--referanser, .stopp--tillit { --himmel-fade: 5rem; }
+.stopp--referanser {
+  padding-block: var(--seksjon-y);
+  background: linear-gradient(to bottom, var(--flate) 0, var(--himmel) var(--himmel-fade), var(--himmel) calc(100% - var(--himmel-fade)), var(--flate) 100%);
+}
+/* Referanser står på himmelfargen fra heroen (Ricky 2026-10-05, prøvd forsiktig på én seksjon). Himmelen er mørk
+   nok til at sidens vanlige tekstfarger ikke holder: --tekst-svak 3,2:1 og --teal 3,1:1 mot den. Teksten i
+   seksjonen settes derfor til --tekst (8,7:1) og eyebrowen til --teal-mork (4,65:1); sitatkortene er hvite. */
+.stopp--referanser .stopp__lede { color: var(--tekst); }
+.stopp--referanser .eyebrow { color: var(--teal-mork); }
 .stopp--referanser .sitat-liste { margin-top: var(--s-6); }
 /* Fargevalg D, Ricky 2026-09-27: «Hvorfor Clean Unit» er sidens midtanker.
    Uten det gikk hele midtpartiet lyst og grått fra heroen og ned til
@@ -440,7 +452,14 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    låst til logoen og ga 4,2:1, under de 4,5:1 småtekst skal ha. #9BD5D3 er
    samme turkis, ett hakk lysere, og blir den best lesbare eyebrowen på
    siden. */
-.stopp--tillit { padding-block: var(--seksjon-y); background: var(--flate); }
+/* «Miljø og seriøsitet» står på himmelen (flyttet hit fra Kontakt, Ricky 2026-10-05). Fadesonen tones fra --base
+   («Jobb hos oss» over) og ut til --teal-lys («Kontakt» under), så kantene er myke på begge sider. Tekst rett på
+   himmelen: eyebrow --teal-mork (4,65:1); h2 er allerede mørk, og de fire kortene er hvite. */
+.stopp--tillit {
+  padding-block: var(--seksjon-y);
+  background: linear-gradient(to bottom, var(--base) 0, var(--himmel) var(--himmel-fade), var(--himmel) calc(100% - var(--himmel-fade)), var(--teal-lys) 100%);
+}
+.stopp--tillit > .wrap > .eyebrow { color: var(--teal-mork); }
 /* Seksjonen var mørk (--teal-mork, så --teal) med hvit tekst og en våt kant,
    men ble hvit 2026-10-03 (Ricky) — den mørke blokken leste som en dobbel
    footer. Teksten faller tilbake på standardfargene, og glansen er fjernet. */
