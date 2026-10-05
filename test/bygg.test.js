@@ -60,7 +60,7 @@ test('Hero: scene med rekkevidde-linje, uten de gamle rutebåndet, bybakgrunnen 
   for (const [f, linje] of [['test/ut/index.html', 'Vi rengjør i hele Oslo, Asker og Bærum\\.'], ['test/ut/stavanger/index.html', 'Vi rengjør i Stavanger og omegn\\.']]) {
     const h = les(f);
     assert.match(h, new RegExp(`<p class="hero__rekkevidde">${linje}</p>`), f);
-    assert.match(h, /<div class="hero__scene" aria-hidden="true">/, f);
+    assert.match(h, /<div class="hero__scene">/, f);
     assert.match(h, /bilder\/hero-scene\.webp/, f);
     assert.match(h, /<img class="hero__scene-bilde" src="[^"]*bilder\/hero-scene\.jpg" alt=""/, f);
     assert.match(h, /class="hero__sti-start"/, `${f}: stien trenger startpunktet sitt`);
@@ -114,7 +114,7 @@ test('Hero: scenen er bakgrunnen, uten veinett-teppe og navngitt bykart', () => 
     const h = les(f);
     const start = h.indexOf('<header class="hero">');
     const hero = h.slice(start, h.indexOf('</header>', start));
-    assert.match(hero, /<div class="hero__scene" aria-hidden="true">/, f);
+    assert.match(hero, /<div class="hero__scene">/, f);
     assert.doesNotMatch(hero, /dekning-nett/, f);
     assert.doesNotMatch(h, /hero__kart-vannmerke/, f);
     assert.doesNotMatch(h, /hero-kart-vannmerke/, f);
@@ -466,7 +466,7 @@ test('Maritts innhold (Oppsett ny nettside) står på Oslo-siden: sju tjenester,
 
 test('Stavanger-siden får ikke Oslo-kontorets tekster, men beholder sine egne', () => {
   const h = les('test/ut/stavanger/index.html');
-  for (const t of ['Marit Byfuglien', 'Guro Klingenberg', 'tjeneste-grid--sju', 'Boligstiftelsen Nydalen', 'derfor-liste']) {
+  for (const t of ['Marit Byfuglien', 'Guro Klingenberg', 'tjeneste-grid--sju', 'Boligstiftelsen Nydalen']) {
     assert.ok(!h.includes(t), `Oslo-teksten «${t}» lekker inn i Stavanger-siden`);
   }
   assert.ok(h.includes('Hva koster renhold for dere?'));

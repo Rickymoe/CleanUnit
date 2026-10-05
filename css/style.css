@@ -1103,6 +1103,8 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .hero__knapper { margin-bottom: auto; }
 .hero__scene {
   position: relative; flex: none; margin-top: var(--s-6);
+  /* Rekkevidde-linja (absolutt i rammen) kan rage under rammen når viewporten er lav og rammen liten: luft så .hero (overflow: hidden) ikke skjærer av bunnen av bokstavene. */
+  padding-bottom: 2.75rem;
   background: linear-gradient(to bottom, transparent 0, var(--himmel) 26%);
 }
 .hero__scene-ramme { position: relative; width: min(100%, 135svh); margin-inline: auto; aspect-ratio: 2172 / 724; }
@@ -1123,10 +1125,18 @@ html.vinter { --himmel: #93CED3; }
                       linear-gradient(to right, transparent 0, #000 7%, #000 93%, transparent 100%);
           mask-composite: intersect;
 }
+/* Rekkevidde-linja står under veien, over «Derfor»-kortene (Marit 2026-10-05). Veien (med skygge) slutter ca. 90 %
+   ned i bildet, så linja ligger på den flate himmelen like under. Fargen er Maritts. */
+.hero__scene-ramme .hero__rekkevidde {
+  position: absolute; left: 0; right: 0; top: 90.5%; margin: 0 auto; max-width: none; text-align: center; line-height: 1.2;
+  font-size: clamp(1.25rem, 3.5vw, 2.5rem); color: #595959; /* Maritts farge i mockupen (595959); stor tekst, så 4,2:1 mot himmelen holder (3:1) */
+}
 /* Varebilens blanke side: ca. 23 % / 73-78 % av bildet, 5,6 % bredt (målt). Egen logovariant (bilder/logo-cleanunit-varebil.svg): bare ordmerket, mørke farger. */
 .hero__scene-merke { position: absolute; left: 22.8%; top: 74.4%; width: 5.6%; height: auto; }
 .hero__sti-start { position: absolute; left: 9%; top: 84%; width: 0; height: 0; }
 @media (max-width: 48rem) {
+  .hero__scene { padding-bottom: 1.5rem; }
+  .hero__scene-ramme .hero__rekkevidde { font-size: 1.15rem; font-weight: 700; color: #4F4F4F; padding-inline: 1rem; } /* under «stor tekst»-grensa, så mørkere grå (4,9:1) */
   .hero__scene-ramme { width: 100%; aspect-ratio: auto; height: 15rem; }
   .hero__scene-bilde { object-position: 35% 100%; }
   .hero__scene-merke, .hero__sti-start { display: none; }

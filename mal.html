@@ -93,8 +93,7 @@ addEventListener("load", function () {
     </div>
     {{#er_oslo}}<p class="hero__ingress"><strong>Profesjonelt renhold for bedrifter, skoler og barnehager.</strong><br>Etablert 2007, offentlig godkjent, Miljøfyrtårn, ingen underleverandører.</p>
     {{/er_oslo}}{{^er_oslo}}<p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte&nbsp;– ingen underleverandører.</p>
-    {{/er_oslo}}<p class="hero__rekkevidde">{{rekkevidde}}</p>
-  </div>
+    {{/er_oslo}}  </div>
   <!-- Egen bys telefonnummer er primærknappen. Sekundærknappen kommer fra
        byer.json og er tom til tilbudsskjemaet (Formspree) er på plass — en
        tom verdi rendrer ingen knapp, så ingen død lenke går live. -->
@@ -103,12 +102,12 @@ addEventListener("load", function () {
     {{hero_knapp_sekundaer}}
   </div>
   <!-- Scenen (Marits illustrasjon, modernisert, 2026-10-03): varebil, by, sol og ballong i ett bilde, så
-       heroen ikke lenger trenger egen sol, bybakgrunn eller rutebånd. Rent dekorativ, derfor aria-hidden
-       og tom alt. Himmelen i bildet er en nesten flat farge (#9AD2D5): toppen tones ut mot sidens
+       heroen ikke lenger trenger egen sol, bybakgrunn eller rutebånd. Bildene er dekorative (tom alt).
+       Rekkevidde-linja ligger under veien i scenen (Marit 2026-10-05). Himmelen i bildet er en nesten flat farge (#9AD2D5): toppen tones ut mot sidens
        bakgrunn og bunnen mot neste seksjon i CSS, så det ikke er noen kant. «CleanUNIT» på varebilen er
        ekte logo lagt oppå den blanke siden (AI-bilder kan ikke gjengi tekst). .hero__sti-start er
        punktet stien nedover siden begynner på (veiens venstre ende). -->
-  <div class="hero__scene" aria-hidden="true">
+  <div class="hero__scene">
    <div class="hero__scene-ramme">
     <picture class="hero__scene-sommer">
       <source srcset="{{rot}}bilder/hero-scene.webp" type="image/webp">
@@ -120,15 +119,16 @@ addEventListener("load", function () {
     </picture>
     <img class="hero__scene-merke" src="{{rot}}bilder/logo-cleanunit-varebil.svg" alt="" width="616" height="78">
     <span class="hero__sti-start"></span>
+    <p class="hero__rekkevidde">{{rekkevidde}}</p>
    </div>
   </div>
 </header>
-{{#er_oslo}}<!-- «Derfor velger kundene Clean Unit Renhold AS» fra Maritts forsidetekst (Oppsett ny nettside,
+<!-- «Derfor velger kundene Clean Unit» fra Maritts forsidetekst (Oppsett ny nettside,
      2026-10-02). Tillitsraden hennes (Etablert 2007 · Offentlig godkjent · Miljøfyrtårn · Egne
-     ansatte) ble tatt bort på Rickys ønske 2026-10-03; faktaene står i Miljø og seriøsitet. Kun Oslo-siden. -->
+     ansatte) ble tatt bort på Rickys ønske 2026-10-03; faktaene står i Miljø og seriøsitet. Begge sider (Marit: Stavanger stort sett lik Oslo). -->
 <section class="stopp--derfor" id="derfor">
   <div class="wrap">
-    <h2 class="visually-hidden">Derfor velger våre kunder Clean Unit Renhold AS</h2>
+    <h2 class="visually-hidden">Derfor velger våre kunder Clean Unit</h2>
     <ul class="derfor-liste">
       <li>
         <h3>Fast renholder</h3>
@@ -150,7 +150,7 @@ addEventListener("load", function () {
     </ul>
   </div>
 </section>
-{{/er_oslo}}<section class="stopp--tjenester" id="tjenester">
+<section class="stopp--tjenester" id="tjenester">
   <div class="wrap">
     <p class="eyebrow">Tjenester</p>
     <div class="vask-boks"><h2 data-vask>Renhold tilpasset stedet du driver</h2></div>
