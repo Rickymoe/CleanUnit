@@ -923,11 +923,12 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
    det hvitt på hvitt. Det er en melding, ikke en feil, så den holder seg i
    paletten og låner ikke rødfargen fra .skjema-feil. js/main.js skjuler det
    når skjemaet tas i bruk. */
-.skjema-varsel { padding: var(--s-3) var(--s-4); border-radius: 10px; background: var(--teal-lys); }
+.skjema-varsel, .kontakt__direkte { padding: var(--s-3) var(--s-4); border-radius: 10px; background: var(--teal-lys); }
 .skjema-varsel > * + * { margin-top: var(--s-2); }
-.skjema-varsel p { color: var(--tekst-svak); font-size: var(--t-sm); }
-.skjema-varsel strong { color: var(--teal-mork); }
-.skjema-varsel a { color: var(--teal-mork); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.skjema-varsel p, .kontakt__direkte p { color: var(--tekst-svak); font-size: var(--t-sm); }
+.skjema-varsel strong, .kontakt__direkte strong { color: var(--teal-mork); }
+.skjema-varsel a, .kontakt__direkte a { color: var(--teal-mork); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+/* Kortet til høyre har en header i samme stil som varselet øverst i skjemakortet, men med bare «Kontakt» (Ricky 2026-10-05). Egen klasse: js/main.js skjuler .skjema-varsel når skjemaet åpnes, og denne skal bli stående. */
 
 .skjema-feil { margin-top: var(--s-4); padding: var(--s-3) var(--s-4); border-radius: 10px; background: #FDECEF; color: #8A1F35; font-size: var(--t-sm); }
 .skjema-feil a { color: inherit; }
@@ -957,8 +958,12 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 }
 @media (hover: hover) { .kontakt__bylenke:hover { text-decoration-thickness: 2px; } }
 .kontakt__kanal { margin-top: var(--s-2); }
-.kontakt__personer { list-style: none; margin: 0; padding: var(--s-4) 0 0; border-top: 1px solid var(--gronn-mellom); display: grid; gap: var(--s-2); font-size: var(--t-sm); color: var(--tekst-svak); }
-.kontakt__personer strong { color: var(--tekst); margin-right: var(--s-1); }
+.kontakt__personer { list-style: none; margin: 0; padding: var(--s-4) 0 0; border-top: 1px solid var(--gronn-mellom); display: grid; gap: var(--s-3); font-size: var(--t-sm); color: var(--tekst-svak); }
+/* Personene som små rader med burgunder initialsirkel (samme .team-initialer som i «Om oss», bare mindre): navn, rolle, telefon. */
+.kontakt__personer li { display: flex; align-items: center; gap: var(--s-3); }
+.kontakt__personer .team-initialer { width: 2.75rem; height: 2.75rem; font-size: var(--t-sm); }
+.kontakt__personer li > div { display: grid; gap: .1rem; min-width: 0; }
+.kontakt__personer strong { color: var(--tekst); font-size: var(--t-base); }
 .kontakt__kanal a, .kontakt__personer a { color: var(--teal-mork); text-underline-offset: 3px; }
 
 /* Må ligge sist: samme spesifisitet som en klasse, så rekkefølgen avgjør. */

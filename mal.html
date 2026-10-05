@@ -639,6 +639,9 @@ addEventListener("load", function () {
         <p class="skjema-notat">Vi svarer som regel innen én arbeidsdag.</p>
       </form>
       <div class="kontakt__info">
+        <div class="kontakt__direkte">
+          <p><strong>Kontakt</strong></p>
+        </div>
         <div class="kontakt__kontorer">
           {{#er_oslo}}<div>
             <h3>Clean Unit Renhold AS</h3>
@@ -658,10 +661,19 @@ addEventListener("load", function () {
             {{oslo_bylenke}}
           </div>{{/er_oslo}}
         </div>
-        {{#er_oslo}}<ul class="kontakt__personer">
-          <li><strong>Daglig leder</strong> Marit Byfuglien · <a href="tel:+4797195993">971 95 993</a></li>
-          <li><strong>Markedsansvarlig</strong> Mari Pedersen · <a href="tel:+4747298445">472 98 445</a></li>
-        </ul>{{/er_oslo}}
+        <ul class="kontakt__personer">
+          {{#er_oslo}}<li>
+            <span class="team-initialer" aria-hidden="true">MB</span>
+            <div><strong>Marit Byfuglien</strong><span>Daglig leder</span><a href="tel:+4797195993">971 95 993</a></div>
+          </li>
+          <li>
+            <span class="team-initialer" aria-hidden="true">MP</span>
+            <div><strong>Mari Pedersen</strong><span>Markedsansvarlig</span><a href="tel:+4747298445">472 98 445</a></div>
+          </li>{{/er_oslo}}{{^er_oslo}}<li>
+            <span class="team-initialer" aria-hidden="true">TD</span>
+            <div><strong>Thor D.</strong><span>Leder Stavanger</span><a href="tel:+4790065009">900 65 009</a></div>
+          </li>{{/er_oslo}}
+        </ul>
       </div>
     </div>
     <p class="skjema-feil" id="tilbud-feil" role="alert" hidden>Noe gikk galt. Prøv igjen, eller ring <a href="tel:{{telefon}}">{{telefon_visning}}</a> — eller send e-post til <a href="mailto:{{tilbud_epost}}">{{tilbud_epost}}</a>.</p>

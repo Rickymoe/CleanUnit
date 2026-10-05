@@ -417,7 +417,8 @@ test('Tilbud: seksjonen fortsetter bakgrunnsvekslingen og har skjemastil', () =>
   assert.match(css, /\.kontakt-layout \{/, 'layout-grid mangler')
   assert.match(css, /\.skjema-felt label \{/)
   assert.match(css, /\.tilbud-skjema input,/, 'feltstilen mangler')
-  assert.match(css, /\.skjema-varsel \{/)
+  assert.match(css, /\.skjema-varsel(, \.kontakt__direkte)? \{/)
+  assert.match(css, /\.kontakt__direkte \{/, 'headeren på kontaktkortet mangler')
   // Den låste knappen må se låst ut: uten en :disabled-regel står den i full
   // solid teal og ser trykkbar ut mens den ikke gjør noe.
   assert.match(css, /\.tilbud-skjema button\[type="submit"\]:disabled \{[^}]*opacity/)
