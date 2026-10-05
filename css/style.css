@@ -1132,14 +1132,23 @@ html.vinter { --himmel: #93CED3; }
   font-size: clamp(1.25rem, 3.5vw, 2.5rem); color: #595959; /* Maritts farge i mockupen (595959); stor tekst, så 4,2:1 mot himmelen holder (3:1) */
 }
 /* Varebilens blanke side: ca. 23 % / 73-78 % av bildet, 5,6 % bredt (målt). Egen logovariant (bilder/logo-cleanunit-varebil.svg): bare ordmerket, mørke farger. */
-.hero__scene-merke { position: absolute; left: 22.8%; top: 74.4%; width: 5.6%; height: auto; }
+.hero__scene-merke { position: absolute; left: 19.4%; top: 66.45%; width: 5.5%; height: auto; }
 .hero__sti-start { position: absolute; left: 9%; top: 84%; width: 0; height: 0; }
 @media (max-width: 48rem) {
   .hero__scene { padding-bottom: 1.5rem; }
   .hero__scene-ramme .hero__rekkevidde { font-size: 1.15rem; font-weight: 700; color: #4F4F4F; padding-inline: 1rem; } /* under «stor tekst»-grensa, så mørkere grå (4,9:1) */
+  .hero__sti-start { display: none; }
+}
+/* Under 45rem beskjæres bildet (cover, 15rem høyt, forankret 35 % fra venstre) i stedet for å bli bittelite. Da er bildet
+   skalert etter høyden (15rem / 724 px), og varebilen sitter derfor ikke lenger på de samme prosentene av bredden:
+   logoen plasseres med samme regnestykke. Skala s = 15rem/724; bildebredden er 2172·s = 45rem; venstre beskjæring er
+   (45rem − bredden)·0,35. Venstre kant = 19,4 % av 2172·s − beskjæringen = 8,73rem − 15,75rem + 35 % = 35 % − 7,02rem.
+   Bredden 5,5 % av bildet = 2,48rem. Loddrett er bildet nøyaktig like høyt som rammen, så top gjelder uendret. */
+@media (max-width: 45rem) {
   .hero__scene-ramme { width: 100%; aspect-ratio: auto; height: 15rem; }
   .hero__scene-bilde { object-position: 35% 100%; }
-  .hero__scene-merke, .hero__sti-start { display: none; }
+  .hero__scene-merke { left: calc(35% - 7.02rem); width: 2.48rem; }
+}
 }
 
 /* Øverst på siden er headeren gjennomsiktig og heroen går helt opp bak den, så den har nøyaktig
