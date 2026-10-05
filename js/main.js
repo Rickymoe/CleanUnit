@@ -19,8 +19,8 @@ function debounce(fn, ms) {
 }
 
 // Kort dukker opp (fade + løft) etter hvert som de scrolles inn i synsfeltet
-// — tjenestekort, sitatkort (Referanser + Jobb hos oss), tillitspunktene og
-// foto-plassholderne i Om oss. .js-reveal legges på HER, ikke i HTML-en —
+// — tjenestekort, sitatkort (Referanser + Jobb hos oss), kortene i Miljø og
+// seriøsitet, tillitspunktene og foto-plassholderne i Om oss. .js-reveal legges på HER, ikke i HTML-en —
 // dermed er elementene alltid synlige med en gang hvis dette scriptet aldri
 // kjører (se kommentar i style.css). Fyrer bare én gang per kort: observer
 // slutter å følge elementet så snart det er avslørt, ikke ved tilbake-
@@ -29,7 +29,7 @@ function debounce(fn, ms) {
 function kortReveal(reduksjon) {
   if (reduksjon) return
   const kort = document.querySelectorAll(
-    '.tjeneste-kort, .sitat-kort, .tillit-liste > li, .om-foto-plassholder'
+    '.tjeneste-kort, .sitat-kort, .miljo-kort, .tillit-liste > li, .om-foto-plassholder'
   )
   if (!kort.length) return
   if (!('IntersectionObserver' in window)) {
@@ -40,8 +40,14 @@ function kortReveal(reduksjon) {
     (entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return
-        entry.target.classList.add('revealed')
-        observer.unobserve(entry.target)
+        const el = entry.target
+        el.classList.add('revealed')
+        observer.unobserve(el)
+        // Når avsløringen er ferdig fjernes begge klassene igjen. .js-reveal sin transition (0,7 s, med forsinkelse)
+        // og «transform: none» slår ellers kortets egen hover (løft + skygge, lavere spesifisitet) for godt.
+        const ferdig = () => el.classList.remove('js-reveal', 'revealed')
+        el.addEventListener('transitionend', (e) => { if (e.propertyName === 'opacity') ferdig() })
+        setTimeout(ferdig, 1800)
       })
     },
     { rootMargin: '0px 0px -8% 0px', threshold: 0.15 }
