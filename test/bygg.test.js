@@ -217,18 +217,22 @@ test('Flåten: skjules bare bak html.js, og vises igjen ved reduced motion', () 
   assert.match(les('js/main.js'), /flaateInn\(reduksjon\)/)
 })
 
-// «Renholderne er de viktigste» mistet vaskesveipet (Ricky, 2026-09-26: den
-// står rett under flåten, og to animasjoner etter hverandre der ble for mye).
-// Testen låser at sveipet bare er på «Tjenester»-overskriften, så en
-// gjeninnsetting må være bevisst.
-test('Bare «Tjenester»-overskriften har vaskesveip', () => {
-  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
+// Vaskesveipet står på seks overskrifter per side (Ricky 2026-10-05): «Renhold tilpasset stedet du driver»,
+// «Dette sier kundene våre», «Renholderne er de viktigste» (mistet det 2026-09-26, fikk det tilbake),
+// «Fra to personer med hver sin mopp», «Godkjent, ansvarlig og til stede» og «Trenger dere en ny
+// renholdsleverandør?». Stavanger har egne overskrifter i «Om oss» og Kontakt, men samme behandling.
+// Hver må ligge i .vask-boks, ellers måler observeren mot en klippet h2 og sveipet kjører aldri.
+const VASK_FELLES = ['Renhold tilpasset stedet du driver', 'Dette sier kundene våre', 'Renholderne er de viktigste', 'Godkjent, ansvarlig og til stede']
+test('Vaskesveipet står på de seks valgte overskriftene, hver i .vask-boks', () => {
+  for (const [f, egne] of [
+    ['test/ut/index.html', ['Fra to personer med hver sin mopp', 'Trenger dere en ny renholdsleverandør?']],
+    ['test/ut/stavanger/index.html', ['To kontorer, samme standard', 'Hva koster renhold for dere?']],
+  ]) {
     const h = les(f)
-    // Bare h2-elementer teller — ordet står også i en kommentar i kilden
-    assert.equal((h.match(/<h2 data-vask/g) || []).length, 1, `${f}: antall h2 med data-vask`)
-    assert.match(h, /<h2 data-vask>Renhold tilpasset stedet du driver<\/h2>/, f)
-    assert.match(h, /<h2>Renholderne er de viktigste<\/h2>/, f)
-    assert.doesNotMatch(h, /vask-boks"><h2[^>]*>Renholderne/, f)
+    assert.equal((h.match(/<h2 data-vask/g) || []).length, 6, `${f}: antall h2 med data-vask`)
+    for (const tekst of [...VASK_FELLES, ...egne]) {
+      assert.ok(h.includes(`<div class="vask-boks"><h2 data-vask>${tekst}</h2></div>`), `${f}: «${tekst}» mangler sveip i .vask-boks`)
+    }
   }
 })
 

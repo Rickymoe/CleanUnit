@@ -246,7 +246,7 @@ addEventListener("load", function () {
 <section class="stopp--referanser" id="referanser">
   <div class="wrap">
     <p class="eyebrow">Referanser</p>
-    <h2>Dette sier kundene våre</h2>{{#er_oslo}}
+    <div class="vask-boks"><h2 data-vask>Dette sier kundene våre</h2></div>{{#er_oslo}}
     <div class="stopp__lede stopp__lede--flere">
       <p>Clean Unit Renhold AS leverer i dag renhold til rundt 100 kunder i Oslo og omegn. Kundene våre er blant annet barnehager, private skoler og kontorvirksomheter.</p>
       <p>Vi har særlig lang erfaring med barnehagerenhold, og mange av kundene våre har vært med oss i en årrekke.</p>
@@ -332,14 +332,14 @@ addEventListener("load", function () {
   <div class="om-layout">
     <div class="om-tekst">
       <p class="eyebrow">Om oss</p>
-      {{#er_oslo}}<h2>Fra to personer med hver sin mopp</h2>
+      {{#er_oslo}}<div class="vask-boks"><h2 data-vask>Fra to personer med hver sin mopp</h2></div>
       <div class="stopp__lede stopp__lede--flere">
         <p>Clean Unit startet i 2007 med to personer, hver sin mopp og en idé om å bygge en renholdsbedrift med god service og ordnede forhold.</p>
         <p>Siden den gang har vi vokst betydelig, men mye av tankegangen er den samme: Renholderne skal kjenne arbeidsplassen sin, kundene skal vite hvem som kommer, og det skal være enkelt å få tak i oss når noe må løses.</p>
         <p>Clean Unit Renhold AS leverer fast renhold til rundt 100 kunder i Oslo og omegn.</p>
         <p>Det daglige renholdet utføres av våre egne ansatte, og vi legger stor vekt på faste renholdere, god opplæring og kort vei mellom kunde, renholder og administrasjon. Renholderne får opplæring i arbeidsmetoder, hygiene, HMS og oppgavene på arbeidsstedet — med nettkurs, teori og praksis.</p>
         <p>Vi ønsker å være en renholdsleverandør kundene kjenner, og som kjenner kundene sine.</p>
-      </div>{{/er_oslo}}{{^er_oslo}}<h2>To kontorer, samme standard</h2>
+      </div>{{/er_oslo}}{{^er_oslo}}<div class="vask-boks"><h2 data-vask>To kontorer, samme standard</h2></div>
       <p class="stopp__lede">Clean Unit er en servicebedrift som utfører de fleste former for renhold, gulvbehandlinger og levering av hygieneartikler til bedriftsmarkedet. {{om_kontorer}} Hos oss er kunden i fokus — vi tilpasser oss kundens behov for å finne den løsningen som passer best for akkurat deres bedrift. Clean Unit er en bedrift i vekst, for stadig flere oppdager verdien av en kvalitetsfokusert renholdsleverandør.</p>{{/er_oslo}}
     </div>
     {{#er_oslo}}
@@ -457,13 +457,9 @@ addEventListener("load", function () {
 <section class="stopp--jobb" id="jobb-hos-oss">
   <div class="wrap">
     <p class="eyebrow">Jobb hos oss</p>
-    <!-- Uten data-vask (Ricky, 2026-09-26: «ta bort animasjon på Renholderne er
-         de viktigste»). Denne overskriften står rett under flåten, og to
-         animasjoner etter hverandre på samme sted ble for mye — sveipet og
-         skumboblene er derfor bare på «Renhold tilpasset stedet du driver».
-         Uten .vask-boks rundt seg er overskriften dessuten aldri klippet, så
-         den kan ikke bli stående skjult om main.js ikke kjører. -->
-    <h2>Renholderne er de viktigste</h2>
+    <!-- Vaskesveipet ble tatt bort 2026-09-26 (to animasjoner etter hverandre rett under flåten ble for mye), og
+         satt tilbake 2026-10-05 på Rickys ønske, sammen med «Dette sier kundene våre». -->
+    <div class="vask-boks"><h2 data-vask>Renholderne er de viktigste</h2></div>
     <p class="stopp__lede"><!-- UTKAST: egen syntese av Ansatte-sitatene under, ikke bekreftet med Marit/Christopher -->Hos Clean Unit er det renholderne som gjør jobben — ikke bare en del av firmaet. Vi gir alle ansatte skikkelig opplæring, følger opp med trening og ergonomi i hverdagen, og mange av våre ansatte blir hos oss i mange år.</p>
     {{#er_oslo}}<div class="ansatte">
       <figure class="ansatte__bilde">
@@ -512,7 +508,7 @@ addEventListener("load", function () {
 <section class="stopp--tillit" id="hvorfor">
   <div class="wrap">
     <p class="eyebrow">Miljø og seriøsitet</p>
-    <h2>Godkjent, ansvarlig og til stede</h2>
+    <div class="vask-boks"><h2 data-vask>Godkjent, ansvarlig og til stede</h2></div>
     <div class="miljo-detaljer">
       <article class="miljo-kort">
         <div class="miljo-kort__topp"><picture><source srcset="{{rot}}bilder/logo-miljofyrtarn.webp" type="image/webp"><img loading="lazy" decoding="async" class="miljo-kort__logo" src="{{rot}}bilder/logo-miljofyrtarn.png" alt="" width="61" height="52"></picture></div>
@@ -582,9 +578,9 @@ addEventListener("load", function () {
     <p class="eyebrow">Kontakt</p>
     <!-- UTKAST: teksten i denne seksjonen er skrevet av oss og ikke
          bekreftet av Marit/Christopher -->
-    {{#er_oslo}}<h2>Trenger dere en ny renholdsleverandør?</h2>
+    {{#er_oslo}}<div class="vask-boks"><h2 data-vask>Trenger dere en ny renholdsleverandør?</h2></div>
         <p class="stopp__lede">Vi tar gjerne en uforpliktende prat. Fortell oss litt om lokalene og behovet deres, så kommer vi tilbake med et tilbud. Befaring og tilbud er kostnadsfritt.</p>
-        {{/er_oslo}}{{^er_oslo}}<h2>Hva koster renhold for dere?</h2>
+        {{/er_oslo}}{{^er_oslo}}<div class="vask-boks"><h2 data-vask>Hva koster renhold for dere?</h2></div>
         <p class="stopp__lede">Fortell oss litt om lokalene og behovet deres, så kommer vi tilbake med et tilbud. Vi vasker for barnehager, skoler, kontorer og bilforhandlere — og tilpasser opplegget etter hvordan dere jobber.</p>
         {{/er_oslo}}
     <div class="kontakt-layout">
