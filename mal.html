@@ -72,7 +72,7 @@ addEventListener("load", function () {
 <main id="innhold">
 <header class="hero">
   <div class="wrap hero__innhold">
-    <!-- Lockup: logoen «CleanUnit» og taglinen (H1) er ÉN enhet på felles
+    <!-- Lockup: logoen «CleanUnit» og taglinen (H1; Oslo har den kun for skjermlesere, Marit 2026-10-05) er ÉN enhet på felles
          midtakse mellom byene. Logoen er C i logovalget (Ricky, 2026-10-02): deres
          logo, forsiktig modernisert (store bokstaver, tre bobler over «IT»), tegnet som
          vektor (bilder/logo-cleanunit.svg, bokstavene som stier så fonten ikke trengs).
@@ -89,9 +89,10 @@ addEventListener("load", function () {
           <path fill="#87CAC9" d="M380.52 80.00V127.00Q380.52 132.80 382.37 137.35Q384.22 141.90 387.62 145.10Q391.02 148.30 395.72 150.00Q400.42 151.70 406.02 151.70Q411.62 151.70 416.32 150.00Q421.02 148.30 424.47 145.10Q427.92 141.90 429.77 137.35Q431.62 132.80 431.62 127.00V80.00H419.72V126.50Q419.72 132.90 416.27 136.90Q412.82 140.90 406.02 140.90Q399.32 140.90 395.82 136.90Q392.32 132.90 392.32 126.50V80.00ZM508.05 80.00V127.00L456.95 76.50V150.00H468.55V103.00L519.65 153.50V80.00ZM545.58 80.00V150.00H557.58V80.00ZM576.39 90.90H594.89V150.00H606.69V90.90H625.19V80.00H576.39Z"/>
         </svg>
       </p>
-      <h1 class="hero__tittel"><span class="tittel-aksent">Renhold</span> i {{by}}</h1>
-    </div>
-    {{#er_oslo}}<p class="hero__ingress"><strong>Profesjonelt renhold for bedrifter, skoler og barnehager.</strong> Siden 2007, med faste renholdere og egne ansatte.</p>
+      {{#er_oslo}}<h1 class="visually-hidden">Renhold i Oslo, Asker og Bærum</h1>
+      {{/er_oslo}}{{^er_oslo}}<h1 class="hero__tittel"><span class="tittel-aksent">Renhold</span> i {{by}}</h1>
+      {{/er_oslo}}    </div>
+    {{#er_oslo}}<p class="hero__ingress"><strong>Profesjonelt renhold for bedrifter, skoler og barnehager.</strong><br>Etablert 2007, offentlig godkjent, Miljøfyrtårn, ingen underleverandører.</p>
     {{/er_oslo}}{{^er_oslo}}<p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte&nbsp;– ingen underleverandører.</p>
     {{/er_oslo}}<p class="hero__rekkevidde">{{rekkevidde}}</p>
   </div>
