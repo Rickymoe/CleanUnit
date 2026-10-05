@@ -37,7 +37,7 @@ test('Oslo: egen tittel, eget telefonnummer, lenke til Stavanger i footeren', ()
   assert.match(h, /class="kontakt__bylenke" href="stavanger\/">Gå til Clean Unit Stavanger →/);
   assert.match(h, /<span class="tittel-aksent">Renhold<\/span> i Oslo<\/h1>/);
   assert.match(h, /og:url" content="https:\/\/rickymoe\.github\.io\/CleanUnit\/"/);
-  assert.match(h, /4,8 · 4 anmeldelser på Google/);
+  assert.doesNotMatch(h, /anmeldelser på Google/);
 });
 
 test('Stavanger: egen tittel, eget telefonnummer, lenke til Oslo i footeren', () => {
@@ -436,7 +436,7 @@ test('Toppmeny: lenkene i Maritts rekkefølge peker på ankre som finnes, med de
     const nav = h.slice(h.indexOf('<header class="side-nav"'), h.indexOf('</header>'));
     const lenker = [...nav.matchAll(/class="side-nav__lenke" href="#([a-z-]+)">([^<]+)</g)].map((m) => [m[1], m[2]]);
     assert.deepEqual(lenker.map((l) => l[1]),
-      ['Tjenester', 'Referanser', 'Om oss', 'Miljø og seriøsitet'], `${f}: menyrekkefølgen`);
+      ['Tjenester', 'Referanser', 'Om oss', 'Miljø'], `${f}: menyrekkefølgen`);
     for (const [id] of lenker) assert.match(h, new RegExp(`id="${id}"`), `${f}: mangler #${id}`);
     assert.match(nav, new RegExp(`class="side-nav__by" href="[^"]+">${andre} `), `${f}: lenke til ${andre}`);
     assert.match(nav, /class="knapp knapp--fyll side-nav__kontakt" href="#kontakt"/, f);

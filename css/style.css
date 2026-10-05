@@ -219,23 +219,6 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   html.js .logo.kjor, html.js-vask [data-vask].kjor { animation: none; }
 }
 
-/* Ekte Google-vurdering under logoen (se index.html for kilde/dato).
-   Gull-stjernene var opprinnelig samme lyse #FFC93C som glimtet på
-   kart-markørene, men den druknet mot --base (1,4:1 kontrast, design-kritikk
-   påpekte det) — mørknet til #C98600 (2,8:1) her. Beholdt lys på kart-
-   glimtet, siden det bare vises kort og har egen glød/skygge som hjelper. */
-.hero__vurdering {
-  /* margin-top brukte .6em (ad-hoc) — byttet til --s-2 (samme skala som
-     resten av siden) etter design-kritikk, nærmeste token til samme avstand. */
-  display: flex; align-items: center; justify-content: center; gap: .45em;
-  margin-top: var(--s-4); font: 600 clamp(.7rem, 1.3vw, .85rem)/1 var(--sans);
-  color: var(--tekst-svak); text-decoration: none;
-}
-.hero__vurdering-stjerner { color: #C98600; letter-spacing: .05em; }
-@media (hover: hover) {
-  .hero__vurdering:hover { color: var(--teal-mork); }
-}
-
 /* .hero__innhold er på desktop den ENESTE elementet i .hero sin
    flex-strøm (vannmerke/rutebånd/knapper er absolutt posisjonert, utenfor),
    så justify-content:center på .hero sentrerer den midt i hele den

@@ -49,7 +49,7 @@ addEventListener("load", function () {
 <body class="{{body_klasse}}">
 <a class="hopp-til-innhold" href="#innhold">Hopp til innhold</a>
 <!-- Toppmeny (Ricky 2026-10-02: «vi trenger en header med lenke nedover på siden»), i Maritts
-     rekkefølge: Tjenester · Referanser · Om oss · Miljø og seriøsitet, med den andre byen til
+     rekkefølge: Tjenester · Referanser · Om oss · Miljø (Marit 2026-10-05: kortere topptekst), med den andre byen til
      høyre og «Kontakt» som knapp. Siden er fortsatt én lang side, så lenkene er ankre. Uten JS
      vises lenkene alltid (html.js styrer mobilmenyen), og
      .side-nav__lenke[aria-current] settes av js/main.js ut fra hvor man er på siden. -->
@@ -62,7 +62,7 @@ addEventListener("load", function () {
         <li><a class="side-nav__lenke" href="#tjenester">Tjenester</a></li>
         <li><a class="side-nav__lenke" href="#referanser">Referanser</a></li>
         <li><a class="side-nav__lenke" href="#om-oss">Om oss</a></li>
-        <li><a class="side-nav__lenke" href="#hvorfor">Miljø og seriøsitet</a></li>
+        <li><a class="side-nav__lenke" href="#hvorfor">Miljø</a></li>
       </ul>
       <a class="side-nav__by" href="{{andre_by_href}}">{{andre_by_navn}} <span aria-hidden="true">↗</span></a>
     </nav>
@@ -91,14 +91,6 @@ addEventListener("load", function () {
       </p>
       <h1 class="hero__tittel"><span class="tittel-aksent">Renhold</span> i {{by}}</h1>
     </div>
-    <!-- Ekte vurdering fra Google Maps (Clean Unit Renhold AS, sjekket
-         2026-09-13 av Ricky: 4,8 av 5, 4 anmeldelser). Søkelenke i stedet
-         for en fast place-ID/lenke, siden vi ikke har den eksakte
-         Maps-lenken — søket lander på samme oppføring. Ren statisk visning,
-         ingen animasjon — Tuven sin fyll-/telle-opp-mekanikk ble prøvd her
-         også, men fjernet igjen (Ricky: "for mye skjer samme sted" ved
-         siden av logo-snurr/bobler/kart-stjernene rett i nærheten). -->
-    {{vurdering}}
     {{#er_oslo}}<p class="hero__ingress"><strong>Profesjonelt renhold for bedrifter, skoler og barnehager.</strong> Siden 2007, med faste renholdere og egne ansatte.</p>
     {{/er_oslo}}{{^er_oslo}}<p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte&nbsp;– ingen underleverandører.</p>
     {{/er_oslo}}<p class="hero__rekkevidde">{{rekkevidde}}</p>
