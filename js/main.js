@@ -20,7 +20,7 @@ function debounce(fn, ms) {
 
 // Kort dukker opp (fade + løft) etter hvert som de scrolles inn i synsfeltet
 // — tjenestekort, sitatkort (Referanser + Jobb hos oss), kortene i Miljø og
-// seriøsitet, tillitspunktene og foto-plassholderne i Om oss. .js-reveal legges på HER, ikke i HTML-en —
+// seriøsitet, «Derfor velger»-kortene under heroen, tillitspunktene og foto-plassholderne i Om oss. .js-reveal legges på HER, ikke i HTML-en —
 // dermed er elementene alltid synlige med en gang hvis dette scriptet aldri
 // kjører (se kommentar i style.css). Fyrer bare én gang per kort: observer
 // slutter å følge elementet så snart det er avslørt, ikke ved tilbake-
@@ -29,7 +29,7 @@ function debounce(fn, ms) {
 function kortReveal(reduksjon) {
   if (reduksjon) return
   const kort = document.querySelectorAll(
-    '.tjeneste-kort, .sitat-kort, .miljo-kort, .tillit-liste > li, .om-foto-plassholder'
+    '.tjeneste-kort, .sitat-kort, .miljo-kort, .derfor-liste > li, .tillit-liste > li, .om-foto-plassholder'
   )
   if (!kort.length) return
   if (!('IntersectionObserver' in window)) {
