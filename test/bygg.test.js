@@ -414,31 +414,55 @@ test('Flåten: skjules bare bak html.js, og vises igjen ved reduced motion', () 
   assert.match(les('js/main.js'), /flaateInn\(reduksjon\)/)
 })
 
-// Vaskesveipet står på seks overskrifter per side (Ricky 2026-10-05): «Renhold tilpasset stedet du driver»,
-// «Dette sier kundene våre», «Renholderne er de viktigste» (mistet det 2026-09-26, fikk det tilbake),
-// «Fra to personer med hver sin mopp», «Godkjent, ansvarlig og til stede» og «Trenger dere en ny
-// renholdsleverandør?». Stavanger har egne overskrifter i «Om oss» og Kontakt, men samme behandling.
-// Hver må ligge i .vask-boks, ellers måler observeren mot en klippet h2 og sveipet kjører aldri.
-const VASK_FELLES = ['Renhold tilpasset stedet du driver', 'Dette sier kundene våre', 'Renholderne er de viktigste', 'Godkjent, ansvarlig og til stede']
-test('Vaskesveipet står på de seks valgte overskriftene, hver i .vask-boks', () => {
-  for (const [f, egne] of [
-    ['test/ut/index.html', ['Fra to personer med hver sin mopp', 'Trenger dere en ny renholdsleverandør?']],
-    ['test/ut/stavanger/index.html', ['To kontorer, samme standard', 'Hva koster renhold for dere?']],
+test('tjenester/: Oslo har sju tjenestekort med «Les mer», Stavanger seks, begge med vindusrammen og vask-overskriften', () => {
+  for (const [by, antall, navn] of [
+    ['Oslo', 7, ['Fast daglig renhold', 'Renhold av barnehager', 'Hovedrengjøring', 'Teppe- og møbelrens', 'Gulvvedlikehold', 'Vindusvask', 'Hygieneartikler']],
+    ['Stavanger', 6, ['Fast daglig renhold', 'Barnehagerenhold', 'Hovedrengjøring', 'Hygieneartikler', 'Gulvbehandling', 'Vinduspuss']],
   ]) {
-    const h = les(f)
-    assert.equal((h.match(/<h2 data-vask/g) || []).length, 6, `${f}: antall h2 med data-vask`)
-    for (const tekst of [...VASK_FELLES, ...egne]) {
-      assert.ok(h.includes(`<div class="vask-boks"><h2 data-vask>${tekst}</h2></div>`), `${f}: «${tekst}» mangler sveip i .vask-boks`)
+    const h = les(sideFil(by, 'tjenester'));
+    assert.equal((h.match(/class="tjeneste-kort[\s"]/g) || []).length, antall, `${by}: antall tjenestekort`);
+    assert.equal((h.match(/<details class="tjeneste-mer">/g) || []).length, antall, `${by}: «Les mer» på hvert kort`);
+    for (const t of navn) assert.match(h, new RegExp(`<h3>${t}</h3>`), `${by}: ${t}`);
+    assert.match(h, /class="tjeneste-kort kort--vindu"/, `${by}: vindusrammen`);
+    assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Renhold tilpasset stedet du driver</h2></div>'), `${by}: vask-overskriften`);
+    assert.match(h, /<section class="stopp--tjenester" id="tjenester">/, by);
+    assert.doesNotMatch(h.slice(h.indexOf('id="tjenester"'), h.indexOf('</section>', h.indexOf('id="tjenester"'))), /class="eyebrow"/, `${by}: eyebrowen er H1 nå`);
+  }
+});
+
+// Vaskesveipet (Ricky 2026-10-05): hver overskrift ligger i .vask-boks, ellers måler observeren mot en
+// klippet h2 og sveipet kjører aldri. Per side: overskriftene som skal ha data-vask. Kontakt-h2 står
+// på alle sider (delt partial) og legges til under.
+const KONTAKT_H2 = { Oslo: 'Trenger dere en ny renholdsleverandør?', Stavanger: 'Hva koster renhold for dere?' };
+const VASK = {
+  Oslo: {
+    // «Renhold tilpasset stedet du driver» hører til tjeneste-seksjonen og flyttet med den til /tjenester/
+    // i Task 4. Task 8 setter den tilbake på forsiden igjen.
+    forside: ['Dette sier kundene våre', 'Renholderne er de viktigste', 'Fra to personer med hver sin mopp', 'Godkjent, ansvarlig og til stede'],
+    tjenester: ['Renhold tilpasset stedet du driver'], referanser: [], om_oss: [], miljo: [],
+  },
+  Stavanger: {
+    forside: ['Dette sier kundene våre', 'Renholderne er de viktigste', 'To kontorer, samme standard', 'Godkjent, ansvarlig og til stede'],
+    tjenester: ['Renhold tilpasset stedet du driver'], referanser: [], om_oss: [], miljo: [],
+  },
+};
+test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
+  for (const s of alleSider()) {
+    const h = les(s.fil);
+    const forventet = [...VASK[s.by][s.id], KONTAKT_H2[s.by]];
+    assert.equal((h.match(/<h2 data-vask/g) || []).length, forventet.length, `${s.fil}: antall h2 med data-vask`);
+    for (const tekst of forventet) {
+      assert.ok(h.includes(`<div class="vask-boks"><h2 data-vask>${tekst}</h2></div>`), `${s.fil}: «${tekst}» mangler sveip i .vask-boks`);
     }
   }
-})
+});
 
 // Stien anker til eyebrow-en i hver seksjon (js/main.js). Endres id-ene eller
 // eyebrow-klassen, forsvinner nodene i stillhet — derfor denne testen.
 test('Stien: alle seksjonene den ankrer til finnes, med eyebrow', () => {
   for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
     const h = les(f)
-    for (const id of ['tjenester', 'referanser', 'hvorfor', 'om-oss', 'jobb-hos-oss', 'kontakt']) {
+    for (const id of ['referanser', 'hvorfor', 'om-oss', 'jobb-hos-oss', 'kontakt']) {
       const start = h.indexOf(`id="${id}"`)
       assert.ok(start > -1, `${f}: mangler #${id}`)
       const seksjon = h.slice(start, h.indexOf('</section>', start))

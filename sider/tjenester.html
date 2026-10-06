@@ -3,3 +3,95 @@
     <h1>{{side_h1}}</h1>
   </div>
 </div>
+<section class="stopp--tjenester" id="tjenester">
+  <div class="wrap">
+    <div class="vask-boks"><h2 data-vask>Renhold tilpasset stedet du driver</h2></div>
+    {{#er_oslo}}<div class="stopp__lede stopp__lede--flere">
+      <p>Vi leverer fast, daglig renhold til bedrifter, skoler og barnehager i Oslo og omegn.</p>
+      <p>Det daglige renholdet utføres av våre egne ansatte. Dere får faste renholdere, tydelige renholdsplaner og tett oppfølging gjennom hele avtalen. Når den faste renholderen er borte, sørger vi for vikar.</p>
+      <p>I tillegg utfører vi hovedrengjøring, tepperens, møbelrens, vindusvask og maskinelt gulvvedlikehold. Ved enkelte spesialoppdrag benytter vi fagpersoner vi samarbeider med.</p>
+    </div>
+    {{/er_oslo}}{{^er_oslo}}<p class="stopp__lede">I Clean Unit er fokuset på kvalitet. For oss betyr det at vi i tillegg til å vaske rent, strekker oss langt for å imøtekomme våre kunders ønsker og behov. For oss handler kvalitet om service i alle ledd, og vi er fleksible og kan skreddersy et renhold som passer din bedrift.</p>
+    {{/er_oslo}}{{#er_oslo}}<ul class="tjeneste-grid tjeneste-grid--stablet">
+      <li class="tjeneste-kort tjeneste-kort--bred">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-daglig-kunde.webp" alt="" width="200" height="200">
+        <h3>Fast daglig renhold</h3>
+        <p>Vi leverer fast, daglig renhold til kontorer, private skoler, barnehager og andre virksomheter. Etter befaring avtaler vi hva som skal rengjøres, hvor ofte og hvilket kvalitetsnivå dere trenger.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Vi tar ikke automatisk utgangspunkt i en tidligere renholdsplan, men vurderer sammen med kunden hva som faktisk trenger å gjøres og hvor ofte.</p><p>Målet er at renhold, behov og pris skal henge sammen.</p><p>Renholderen får en tydelig arbeidsplan og opplæring på arbeidsstedet. Vi legger vekt på kontinuitet med fast renholder, vikar ved fravær, faste kontaktpersoner og systematisk kvalitetsoppfølging.</p><p>Behovene kan endre seg over tid, og vi justerer renholdsplanen sammen med kunden ved behov.</p><p>Befaring og tilbud er kostnadsfritt.</p></details>
+      </li>
+      <li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-barnehage-kunde.webp" alt="" width="200" height="200">
+        <h3>Renhold av barnehager</h3>
+        <p>Vi har rengjort barnehager siden 2007 og rengjør i dag over 70 barnehager i Oslo og omegn.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Vi kjenner hverdagen med sand, søle, mat, små toaletter og lokaler som brukes intensivt hver dag.</p><p>Renholdet utføres etter faste planer og rutiner tilpasset den enkelte barnehagen. Våre renholdere får opplæring i både arbeidsmetoder, hygiene og oppgavene på arbeidsstedet.</p><p>Vi følger opp kvaliteten gjennom hele avtalen og sørger for vikar ved ferie og fravær.</p><p>Ved behov planlegger vi også hovedrengjøring, gulvvedlikehold, tepperens og andre periodiske arbeider gjennom året.</p></details>
+      </li>
+      <li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-hovedrengjoring-kunde.webp" alt="" width="200" height="200">
+        <h3>Hovedrengjøring</h3>
+        <p>Hovedrengjøring omfatter oppgaver som ikke inngår i det daglige renholdet. Sammen med kunden avtaler vi hva som skal rengjøres.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Det kan for eksempel være grundigere rengjøring av garderober, vegger, lister, dører, skap og høye flater.</p><p>Hovedrengjøring kan utføres som et enkeltoppdrag eller planlegges gjennom året.</p></details>
+      </li>
+      <li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-teppe-kunde.svg" alt="" width="200" height="200">
+        <h3>Teppe- og møbelrens</h3>
+        <p>Tepper i inngangspartier og andre lokaler trenger jevnlig grundig rengjøring.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Vi har både mindre rensemaskiner for møbler og mindre arealer, og større profesjonelle maskiner for effektiv rens av større teppeflater.</p><p>Tepperens kan utføres som enkeltoppdrag eller planlegges som en del av det periodiske renholdet.</p></details>
+      </li>
+      <li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-gulv-kunde.webp" alt="" width="200" height="200">
+        <h3>Gulvvedlikehold</h3>
+        <p>Riktig vedlikehold bidrar til at gulvene holder seg pene og er enklere å rengjøre. Ved befaring vurderer vi gulvtype, slitasje og behov.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Ut fra dette anbefaler vi en løsning for videre vedlikehold.</p><p>Vi utfører blant annet maskinell rengjøring og highspeed-behandling av polishgulv.</p><p>Ved større spesialoppgaver, som oppskuring, ny polish eller lakk, benytter vi fagpersoner vi samarbeider med.</p></details>
+      </li>
+      <li class="tjeneste-kort tjeneste-kort--bred">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-hygiene-kunde.webp" alt="" width="200" height="200">
+        <h3>Hygieneartikler</h3>
+        <p>Vi kan bestille og levere hygieneartikler og dispensere fra de fleste profesjonelle leverandører.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Hos flere kunder følger renholderen også opp forbruket og etterbestiller varer ved behov.</p></details>
+      </li>
+      <li class="tjeneste-kort kort--vindu">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-vindu-kunde.webp" alt="" width="200" height="200">
+        <h3>Vindusvask</h3>
+        <p>Vi utfører innvendig og utvendig vindusvask for våre kunder.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Ved oppdrag som krever lift eller annet spesialutstyr, benytter vi fagpersoner vi samarbeider med.</p></details>
+      </li>
+    </ul>{{/er_oslo}}{{^er_oslo}}<!-- UTKAST: «Les mer»-tekstene er Maritts tekster fra Oslo-siden, gjenbrukt. Bekreft med Marit/Christopher at Stavanger leverer det samme. --><ul class="tjeneste-grid tjeneste-grid--stablet">
+      <li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-daglig-kunde.webp" alt="" width="200" height="200">
+        <h3>Fast daglig renhold</h3>
+        <p>Renhold er viktig for helsen og trivselen til de ansatte på alle arbeidsplasser. Ti års erfaring fra renhold i barnehager har gitt Clean Unit gode rutiner for å holde det rent.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Vi tar ikke automatisk utgangspunkt i en tidligere renholdsplan, men vurderer sammen med kunden hva som faktisk trenger å gjøres og hvor ofte.</p><p>Renholderen får en tydelig arbeidsplan og opplæring på arbeidsstedet. Vi legger vekt på kontinuitet med fast renholder, vikar ved fravær, faste kontaktpersoner og systematisk kvalitetsoppfølging.</p><p>Befaring og tilbud er kostnadsfritt.</p></details>
+      </li>
+      <li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-barnehage-kunde.webp" alt="" width="200" height="200">
+        <h3>Barnehagerenhold</h3>
+        <p>Clean Unit er spesialisten på rengjøring av barnehager. Vi vet hvilke krav som stilles til hygiene, innemiljø og smittevern, da om lag 90 prosent av våre oppdrag utføres hos barnehager.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Vi kjenner hverdagen med sand, søle, mat, små toaletter og lokaler som brukes intensivt hver dag.</p><p>Renholdet utføres etter faste planer og rutiner tilpasset den enkelte barnehagen. Våre renholdere får opplæring i både arbeidsmetoder, hygiene og oppgavene på arbeidsstedet.</p><p>Vi følger opp kvaliteten gjennom hele avtalen og sørger for vikar ved ferie og fravær.</p><p>Ved behov planlegger vi også hovedrengjøring, gulvvedlikehold, tepperens og andre periodiske arbeider gjennom året.</p></details>
+      </li>
+      <li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-hovedrengjoring-kunde.webp" alt="" width="200" height="200">
+        <h3>Hovedrengjøring</h3>
+        <p>Hovedrengjøring er en viktig del av det totale renholdet for mange bedrifter. Dette innbefatter grundig rengjøring av vegger, tak, lister, skap og annet som avtales.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Det kan for eksempel være grundigere rengjøring av garderober, vegger, lister, dører, skap og høye flater.</p><p>Hovedrengjøring kan utføres som et enkeltoppdrag eller planlegges gjennom året.</p></details>
+      </li>
+      <li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-hygiene-kunde.webp" alt="" width="200" height="200">
+        <h3>Hygieneartikler</h3>
+        <p>Clean Unit kan levere de fleste merker innen hygieneartikler og dispensere. Vi både bestiller varene og etterfyller dispenserne hos flere av våre kunder.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Hos flere kunder følger renholderen også opp forbruket og etterbestiller varer ved behov.</p></details>
+      </li>
+      <li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-gulv-kunde.webp" alt="" width="200" height="200">
+        <h3>Gulvbehandling</h3>
+        <p>Det finnes mange ulike gulv og belegg. Vi har kompetanse til å finne riktig renhold og vedlikehold for både tepper og harde gulv.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Vi utfører blant annet maskinell rengjøring og highspeed-behandling av polishgulv.</p><p>Ved større spesialoppgaver, som oppskuring, ny polish eller lakk, benytter vi fagpersoner vi samarbeider med.</p></details>
+      </li>
+      <li class="tjeneste-kort kort--vindu">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-vindu-kunde.webp" alt="" width="200" height="200">
+        <h3>Vinduspuss</h3>
+        <p>Clean Unit kan utføre de fleste oppdrag innen vinduspuss, både utvendig og innvendig.</p>
+        <details class="tjeneste-mer"><summary>Les mer</summary><p>Ved oppdrag som krever lift eller annet spesialutstyr, benytter vi fagpersoner vi samarbeider med.</p></details>
+      </li>
+    </ul>{{/er_oslo}}
+  </div>
+</section>
