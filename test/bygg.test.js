@@ -854,6 +854,42 @@ test('Stavanger-siden får ikke Oslo-kontorets tekster, men beholder sine egne',
   assert.ok(h.includes('To kontorer, samme standard'));
 });
 
+// Task 10: sikkerhetsnettet mot at en senere endring gjør Stavanger til en kopi av Oslo.
+// Testene måler SYNLIG innhold: kommentaren i tilbudsskjema-blokken nevner begge kontorenes
+// e-postadresser med vilje (den dokumenterer hvorfor byene har hvert sitt Formspree-skjema, og
+// Actions stripper kommentarer før publisering). Ricky 2026-10-06: kommentaren skal stå urørt,
+// så kommentarer fjernes før letingen i stedet for å svekke kilden.
+const synlig = (h) => h.replace(/<!--[\s\S]*?-->/g, '');
+
+test('Stavanger: ingen Oslo-tekster på noen av de fem sidene, men egne tekster og eget kontor', () => {
+  const h = synlig(heleBy('Stavanger'));
+  for (const t of ['Marit Byfuglien', 'Mari Pedersen', 'Guro Klingenberg', 'Boligstiftelsen Nydalen', 'Dr. Brandt', 'logo-pioner', 'logo-bsn',
+    'rundt 100 kunder', 'over 70 barnehager', 'Fra to personer med hver sin mopp', 'Trenger dere en ny renholdsleverandør?', '21 55 56 80', 'renhold@cleanunit.no']) {
+    assert.ok(!h.includes(t), `Oslo-teksten «${t}» lekker inn i Stavanger`);
+  }
+  for (const t of ['To kontorer, samme standard', 'Hva koster renhold for dere?', 'thord@cleanunit.no', '900 65 009', 'Thor D.']) {
+    assert.ok(h.includes(t), `Stavanger mangler «${t}»`);
+  }
+  for (const s of alleSider().filter((x) => x.by === 'Stavanger')) {
+    assert.match(les(s.fil), /<body class="by--stavanger side--/, s.fil);
+    assert.match(les(s.fil), /class="kontakt__bylenke" href="\.\.\/(\.\.\/)?">Gå til Clean Unit Oslo →/, `${s.fil}: bylenken til Oslo (forsiden)`);
+  }
+});
+
+test('Oslo: ingen Stavanger-tekster på noen av de fem sidene', () => {
+  const h = synlig(heleBy('Oslo'));
+  for (const t of ['thord@cleanunit.no', '900 65 009', 'Thor D.', 'To kontorer, samme standard', 'Hva koster renhold for dere?', 'Bryggerikaien']) {
+    assert.ok(!h.includes(t), `Stavanger-teksten «${t}» lekker inn i Oslo (bortsett fra kontaktblokkens ene bylenke)`);
+  }
+});
+
+test('Stavanger: UTKAST-merkene står igjen på det som ikke er bekreftet', () => {
+  const forside = les('sider/forside.html');
+  assert.match(forside, /UTKAST: sammendrag av Hovedrengjøring, Gulvbehandling, Vinduspuss og Hygieneartikler/);
+  assert.match(les('sider/tjenester.html'), /UTKAST: «Les mer»-tekstene er Maritts tekster fra Oslo-siden, gjenbrukt/);
+  assert.match(les('byer.json'), /UTKAST: Stavanger-kontorets egen beskrivelse/);
+});
+
 // stiNedover() avslutter stille hvis startpunktet mangler: uten denne koblingen forsvinner hele
 // stien nedover siden uten at noe feiler.
 test('Stien begynner i heroscenen: JS og CSS peker på samme startpunkt', () => {
