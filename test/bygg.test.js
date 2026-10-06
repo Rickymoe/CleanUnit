@@ -430,6 +430,24 @@ test('tjenester/: Oslo har sju tjenestekort med «Les mer», Stavanger seks, beg
   }
 });
 
+test('referanser/: Oslo har sju sitatkort (BSN, Dr. Brandt, NVH, Kanvas, KG, Medistim, Stålverkskroken), Stavanger fem, på --base-hodet', () => {
+  for (const [by, antall, navn] of [
+    ['Oslo', 7, ['BSN – Boligstiftelsen Nydalen', 'Mariann<br>Dr. Brandt', 'Stiftelsen NVH barnehagen', 'Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken barnehage']],
+    ['Stavanger', 5, ['Stiftelsen NVH barnehagen', 'Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken barnehage']],
+  ]) {
+    const h = les(sideFil(by, 'referanser'));
+    assert.equal((h.match(/class="sitat-kort"/g) || []).length, antall, `${by}: antall sitatkort`);
+    for (const t of navn) assert.ok(h.includes(t), `${by}: mangler «${t}»`);
+    assert.match(h, /<div class="side-hode side-hode--ned-base">/, `${by}: hodet toner ned til --base`);
+    assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Dette sier kundene våre</h2></div>'), by);
+  }
+  assert.ok(les(sideFil('Oslo', 'referanser')).includes('rundt 100 kunder'), 'Oslo: ledeteksten');
+  assert.ok(!les(sideFil('Stavanger', 'referanser')).includes('Boligstiftelsen Nydalen'), 'Stavanger: ingen Oslo-sitater');
+});
+test('CSS: referanser-siden har --base-bakgrunn (aldri himmel rett under himmel-hodet)', () => {
+  assert.match(les('css/style.css'), /\.side--referanser \.stopp--referanser \{ background: var\(--base\); \}/);
+});
+
 // Vaskesveipet (Ricky 2026-10-05): hver overskrift ligger i .vask-boks, ellers måler observeren mot en
 // klippet h2 og sveipet kjører aldri. Per side: overskriftene som skal ha data-vask. Kontakt-h2 står
 // på alle sider (delt partial) og legges til under.
@@ -438,12 +456,12 @@ const VASK = {
   Oslo: {
     // «Renhold tilpasset stedet du driver» hører til tjeneste-seksjonen og flyttet med den til /tjenester/
     // i Task 4. Task 8 setter den tilbake på forsiden igjen.
-    forside: ['Dette sier kundene våre', 'Renholderne er de viktigste', 'Fra to personer med hver sin mopp', 'Godkjent, ansvarlig og til stede'],
-    tjenester: ['Renhold tilpasset stedet du driver'], referanser: [], om_oss: [], miljo: [],
+    forside: ['Renholderne er de viktigste', 'Fra to personer med hver sin mopp', 'Godkjent, ansvarlig og til stede'],
+    tjenester: ['Renhold tilpasset stedet du driver'], referanser: ['Dette sier kundene våre'], om_oss: [], miljo: [],
   },
   Stavanger: {
-    forside: ['Dette sier kundene våre', 'Renholderne er de viktigste', 'To kontorer, samme standard', 'Godkjent, ansvarlig og til stede'],
-    tjenester: ['Renhold tilpasset stedet du driver'], referanser: [], om_oss: [], miljo: [],
+    forside: ['Renholderne er de viktigste', 'To kontorer, samme standard', 'Godkjent, ansvarlig og til stede'],
+    tjenester: ['Renhold tilpasset stedet du driver'], referanser: ['Dette sier kundene våre'], om_oss: [], miljo: [],
   },
 };
 test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
@@ -462,7 +480,7 @@ test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
 test('Stien: alle seksjonene den ankrer til finnes, med eyebrow', () => {
   for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
     const h = les(f)
-    for (const id of ['referanser', 'hvorfor', 'om-oss', 'jobb-hos-oss', 'kontakt']) {
+    for (const id of ['hvorfor', 'om-oss', 'jobb-hos-oss', 'kontakt']) {
       const start = h.indexOf(`id="${id}"`)
       assert.ok(start > -1, `${f}: mangler #${id}`)
       const seksjon = h.slice(start, h.indexOf('</section>', start))
