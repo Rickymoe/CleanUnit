@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync, rmSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { fyllMal, byggAlle, settInnDeler, sideData, SIDER } from '../bygg.js';
 
 test('fyllMal erstatter nøkler', () => {
@@ -487,21 +488,18 @@ test('CSS: miljø-siden er hvit, og scroll-margin-listen kjenner #miljo', () => 
 const KONTAKT_H2 = { Oslo: 'Trenger dere en ny renholdsleverandør?', Stavanger: 'Hva koster renhold for dere?' };
 const VASK = {
   Oslo: {
-    // «Renhold tilpasset stedet du driver» hører til tjeneste-seksjonen og flyttet med den til /tjenester/
-    // i Task 4. Task 8 setter den tilbake på forsiden igjen.
-    forside: [],
-    tjenester: ['Renhold tilpasset stedet du driver'], referanser: ['Dette sier kundene våre'],
-    om_oss: ['Renholderne er de viktigste', 'Fra to personer med hver sin mopp'],
+    forside: ['Renhold tilpasset stedet du driver'], tjenester: ['Renhold tilpasset stedet du driver'],
+    referanser: ['Dette sier kundene våre'],
+    om_oss: ['Fra to personer med hver sin mopp', 'Renholderne er de viktigste'],
     miljo: ['Godkjent, ansvarlig og til stede'],
   },
   Stavanger: {
-    forside: [],
-    tjenester: ['Renhold tilpasset stedet du driver'], referanser: ['Dette sier kundene våre'],
-    om_oss: ['Renholderne er de viktigste', 'To kontorer, samme standard'],
+    forside: ['Renhold tilpasset stedet du driver'], tjenester: ['Renhold tilpasset stedet du driver'],
+    referanser: ['Dette sier kundene våre'],
+    om_oss: ['To kontorer, samme standard', 'Renholderne er de viktigste'],
     miljo: ['Godkjent, ansvarlig og til stede'],
   },
-};
-test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
+};test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
   for (const s of alleSider()) {
     const h = les(s.fil);
     const forventet = [...VASK[s.by][s.id], KONTAKT_H2[s.by]];
@@ -514,18 +512,95 @@ test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
 
 // Stien anker til eyebrow-en i hver seksjon (js/main.js). Endres id-ene eller
 // eyebrow-klassen, forsvinner nodene i stillhet — derfor denne testen.
-test('Stien: alle seksjonene den ankrer til finnes, med eyebrow', () => {
-  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
-    const h = les(f)
-    for (const id of ['kontakt']) {
-      const start = h.indexOf(`id="${id}"`)
-      assert.ok(start > -1, `${f}: mangler #${id}`)
-      const seksjon = h.slice(start, h.indexOf('</section>', start))
-      assert.match(seksjon, /class="eyebrow"/, `${f}: #${id} mangler .eyebrow (stien ankrer til den)`)
+test('Forsiden: tre tjenestekort uten «Les mer», én «Se alle tjenester →» under kortene, og ingen sitater', () => {
+  for (const [by, navn] of [
+    ['Oslo', ['Fast daglig renhold', 'Barnehagerenhold', 'Temporært renhold og hygieneartikler']],
+    ['Stavanger', ['Fast daglig renhold', 'Barnehagerenhold', 'Temporært renhold og hygieneartikler']],
+  ]) {
+    const h = les(sideFil(by, 'forside'));
+    const sek = h.slice(h.indexOf('id="tjenester"'), h.indexOf('</section>', h.indexOf('id="tjenester"')));
+    assert.equal((sek.match(/class="tjeneste-kort[\s"]/g) || []).length, 3, `${by}: tre kort`);
+    assert.doesNotMatch(h, /<details/, `${by}: forsiden har ingen «Les mer»`);
+    // Ricky 2026-10-06: ÉN lenke UNDER de tre kortene, ikke én lenke på hvert kort.
+    const lenker = sek.match(/<a class="tekst-lenke" href="tjenester\/">Se alle tjenester →<\/a>/g) || [];
+    assert.equal(lenker.length, 1, `${by}: nøyaktig én «Se alle tjenester →»`);
+    const kortSlutt = sek.lastIndexOf('</ul>');
+    const lenke = sek.indexOf('Se alle tjenester →');
+    assert.ok(lenke > kortSlutt, `${by}: lenken står etter kortene`);
+    assert.ok(lenke < sek.indexOf('</div>', kortSlutt), `${by}: lenken står inne i .wrap`);
+    assert.equal((sek.slice(0, kortSlutt).match(/class="tekst-lenke"/g) || []).length, 0, `${by}: ingen lenke inne i kortene`);
+    navn.forEach((t, i) => assert.ok(sek.indexOf(`<h3>${t}</h3>`) > (i ? sek.indexOf(`<h3>${navn[i - 1]}</h3>`) : -1), `${by}: ${t} i rekkefølge`));
+    assert.doesNotMatch(h, /class="sitat-kort"|<blockquote/, `${by}: forsiden viser ikke sitater`);
+    assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Renhold tilpasset stedet du driver</h2></div>'), by);
+  }
+});
+
+test('Forsiden: kunderaden lenker til referanser/ (Oslo 5 logoer, Stavanger 4), i riktig rekkefølge', () => {
+  for (const [by, logoer] of [
+    ['Oslo', ['logo-bsn', 'logo-kg', 'logo-kanvas', 'logo-medistim', 'logo-pioner']],
+    ['Stavanger', ['logo-nvh', 'logo-kanvas', 'logo-kg', 'logo-medistim']],
+  ]) {
+    const h = les(sideFil(by, 'forside'));
+    const start = h.indexOf('<section class="stopp--kunder" id="kunder">');
+    assert.ok(start > -1, `${by}: #kunder`);
+    const sek = h.slice(start, h.indexOf('</section>', start));
+    assert.match(sek, /<a class="kunde-rad" href="referanser\/" tabindex="-1" aria-hidden="true">/, `${by}: raden er lenke`);
+    assert.match(sek, /<a class="tekst-lenke" href="referanser\/">Se hva kundene sier →<\/a>/, `${by}: synlig tekstlenke`);
+    // Rot-prefikset er valgfritt: Stavanger-forsiden ligger i /stavanger/, så logoene der
+    // står som ../bilder/… Vi fanger hele src-en og løser den fra SIDENS mappe, så testen
+    // fanger feil rot-dybde (en ../ for mye eller for lite) og ikke bare logonavnet.
+    const stier = [...sek.matchAll(/<img [^>]*src="((?:\.\.\/)?bilder\/(logo-[a-z]+)\.png)"/g)].map((m) => ({ sti: m[1], navn: m[2] }));
+    const funnet = stier.map((x) => x.navn);
+    assert.deepEqual(funnet, logoer, `${by}: logoene`);
+    assert.match(sek, /<p class="eyebrow">Referanser<\/p>/, `${by}: eyebrow (stien ankrer til den)`);
+    assert.equal((sek.match(/loading="lazy"/g) || []).length, logoer.length, `${by}: alle logoer lazy`);
+    const navnTekst = [...sek.matchAll(/<span class="kunde-rad__navn">([^<]+)<\/span>/g)].map((m) => m[1]);
+    assert.deepEqual(navnTekst, [], `${by}: alle logoer finnes, så ingen kunde skal være tekstnavn ennå`);
+    assert.equal(funnet.length + navnTekst.length, logoer.length, `${by}: hver kunde står i raden som logo eller som navn`);
+    const mappe = dirname(sideFil(by, 'forside'));
+    for (const { sti } of stier) {
+      const absolutt = join(mappe, sti);
+      assert.ok(existsSync(absolutt), `${by}: ${sti} finnes ikke fra ${mappe}`);
+      assert.ok(existsSync(absolutt.replace(/\.png$/, '.webp')), `${by}: ${sti} mangler .webp`);
     }
   }
-})
+});
 
+test('Forsiden: rekkefølge derfor → tjenester → kunder → kontakt, og kunderaden har hvitt kort på --base', () => {
+  for (const by of ['Oslo', 'Stavanger']) {
+    const h = les(sideFil(by, 'forside'));
+    const pos = ['id="derfor"', 'id="tjenester"', 'id="kunder"', 'id="kontakt"'].map((x) => h.indexOf(x));
+    assert.ok(pos.every((p, i) => p > -1 && (i === 0 || p > pos[i - 1])), `${by}: rekkefølgen ${pos}`);
+  }
+  const css = les('css/style.css');
+  assert.match(css, /\.stopp--kunder \{ padding-block: var\(--s-8\); background: var\(--base\); \}/);
+  assert.match(css, /\.kunde-rad \{[^}]*background: var\(--flate\)/, 'logoene har hvit bakgrunn i filene: raden må ha hvitt kort');
+  assert.match(css, /\.kunde-rad img \{[^}]*object-fit: contain/);
+  assert.match(css, /\.tekst-lenke \{[^}]*min-height: 2\.75rem/, '44 px trykkflate');
+});
+
+test('Stien: nodene speiler forsidens seksjoner, hver finnes med anker, og bare forsiden har stien', () => {
+  const js = les('js/main.js');
+  const liste = js.slice(js.indexOf('const STI_SEKSJONER'), js.indexOf('function stiNedover'));
+  const ider = [...liste.matchAll(/sel: '#([a-z-]+)'/g)].map((m) => m[1]);
+  assert.deepEqual(ider, ['derfor', 'tjenester', 'kunder', 'kontakt'], 'sti-nodene');
+  for (const by of ['Oslo', 'Stavanger']) {
+    const h = les(sideFil(by, 'forside'));
+    for (const [id, anker] of [['derfor', 'derfor-liste'], ['tjenester', 'eyebrow'], ['kunder', 'eyebrow'], ['kontakt', 'eyebrow']]) {
+      const start = h.indexOf(`id="${id}"`);
+      assert.ok(start > -1, `${by}: mangler #${id}`);
+      assert.match(h.slice(start, h.indexOf('</section>', start)), new RegExp(`class="${anker}"`), `${by}: #${id} mangler .${anker} (stien ankrer til den)`);
+    }
+    assert.match(h, /class="hero__sti-start"/, `${by}: stien trenger startpunktet sitt`);
+  }
+  for (const s of alleSider().filter((x) => x.id !== 'forside')) {
+    assert.doesNotMatch(les(s.fil), /hero__sti-start/, `${s.fil}: undersider har ingen sti`);
+  }
+  assert.match(js, /document\.querySelector\('\.hero__sti-start'\)/, 'stiNedover finner ikke startpunktet');
+});
+test('CSS: scroll-margin-listen følger forsidens og undersidenes ids', () => {
+  assert.match(les('css/style.css'), /#derfor, #tjenester, #kunder, #miljo, #jobb-hos-oss, #kontakt \{ scroll-margin-top: 3\.75rem; \}/);
+});
 test('Footer-vannmerket er samme veinett-teppe som heroen', () => {
   const css = les('css/style.css')
   // Let etter REGELEN, ikke første gang selectoren nevnes: en kommentar et helt
@@ -692,7 +767,6 @@ test('Tilbud: uten ID kobles innsendingen ikke på, og Enter laster ikke siden',
 
 test('Tilbud: stien får en node for seksjonen, og skriptet kobles på', () => {
   const js = les('js/main.js')
-  assert.match(js, /\['#kontakt', 'Kontakt'\]/, 'sti-noden mangler')
   assert.match(initKropp(js), /tilbudSkjema\(\)/, 'tilbudSkjema kalles ikke fra initSider()')
   // Gatingen: står plassholderen igjen, finnes ingen ID — da skal skjemaet
   // forbli skjult og seksjonen vise ring/e-post i stedet.

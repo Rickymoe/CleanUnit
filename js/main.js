@@ -197,13 +197,14 @@ function overskriftVask(reduksjon) {
    ingenting å rydde opp. reduced-motion: linja står ferdig tegnet.
    Geometrien måles på nytt ved resize og når fontene er klare (høydene
    endrer seg når Quicksand bytter ut fallback-fonten). */
+// Nodene speiler forsidens seksjoner (stien finnes bare på forsiden). anker = elementet i seksjonen
+// noden festes til (standard eyebrowen); fra = «midt» (eyebrowens midtlinje, som før) eller «topp»
+// (24 px under toppen, for «Derfor»-listen som er et høyt element uten eyebrow).
 const STI_SEKSJONER = [
-  ['#tjenester', 'Tjenester'],
-  ['#referanser', 'Referanser'],
-  ['#om-oss', 'Om oss'],
-  ['#jobb-hos-oss', 'Jobb hos oss'],
-  ['#hvorfor', 'Miljø og seriøsitet'],
-  ['#kontakt', 'Kontakt'],
+  { sel: '#derfor', navn: 'Derfor Clean Unit', anker: '.derfor-liste', fra: 'topp' },
+  { sel: '#tjenester', navn: 'Tjenester' },
+  { sel: '#kunder', navn: 'Referanser' },
+  { sel: '#kontakt', navn: 'Kontakt' },
 ]
 
 function stiNedover(reduksjon) {
@@ -274,16 +275,17 @@ function stiNedover(reduksjon) {
     svg.setAttribute('viewBox', `0 0 ${bredde} ${bunn - topp}`)
     svg.replaceChildren()
 
-    // Nodene festes til eyebrow-en i hver seksjon — den står først i hver av
-    // dem, og er der øyet allerede lander når man kommer dit.
-    noder = STI_SEKSJONER.map(([sel, navn]) => {
-      const rubrikk = document.querySelector(sel + ' .eyebrow')
+    // Nodene festes til ankeret i hver seksjon (se STI_SEKSJONER) — eyebrowen står først i
+    // de fleste av dem, og er der øyet allerede lander når man kommer dit.
+    noder = STI_SEKSJONER.map(({ sel, navn, anker = '.eyebrow', fra = 'midt' }) => {
+      const rubrikk = document.querySelector(sel + ' ' + anker)
       if (!rubrikk) return null
       const r = rubrikk.getBoundingClientRect()
       // Relativt til SVG-ens topp (topp): SVG-en er flyttet ned til veilinja, og alt under
       // (banen, nodene, aktiv-node-valget) regner fra dens egen nullpunkt. Uten fratrekket
       // lå alle nodene `topp` (ca. 837 px) for langt nede (design-kritikk, 2026-10-02).
-      return { y: Math.round(r.top + scroll + r.height / 2) - topp, navn, sel }
+      const y = fra === 'topp' ? r.top + scroll + 24 : r.top + scroll + r.height / 2
+      return { y: Math.round(y) - topp, navn, sel }
     }).filter(Boolean)
 
     // Mild meander mot venstre mellom nodene — samme grep som X7. Bulken

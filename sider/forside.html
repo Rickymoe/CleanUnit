@@ -78,3 +78,61 @@
     </ul>
   </div>
 </section>
+<section class="stopp--tjenester" id="tjenester">
+  <div class="wrap">
+    <p class="eyebrow">Tjenester</p>
+    <div class="vask-boks"><h2 data-vask>Renhold tilpasset stedet du driver</h2></div>
+    <ul class="tjeneste-grid tjeneste-grid--stablet">
+      {{#er_oslo}}<li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-daglig-kunde.webp" alt="" width="200" height="200">
+        <h3>Fast daglig renhold</h3>
+        <p>Vi leverer fast, daglig renhold til kontorer, private skoler, barnehager og andre virksomheter. Dere får faste renholdere, tydelige renholdsplaner og tett oppfølging gjennom hele avtalen.</p>
+      </li>
+      <li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-barnehage-kunde.webp" alt="" width="200" height="200">
+        <h3>Barnehagerenhold</h3>
+        <p>Vi har rengjort barnehager siden 2007 og rengjør i dag over 70 barnehager i Oslo og omegn. Vi kjenner hverdagen med sand, søle, mat og små toaletter.</p>
+      </li>
+      <li class="tjeneste-kort">
+        <!-- UTKAST: sammendrag av Hovedrengjøring, Teppe- og møbelrens, Gulvvedlikehold, Vindusvask og Hygieneartikler. Overskriften er avtalt med Ricky; teksten er vår og må bekreftes av Marit. -->
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-hovedrengjoring-kunde.webp" alt="" width="200" height="200">
+        <h3>Temporært renhold og hygieneartikler</h3>
+        <p>Hovedrengjøring, tepper og møbler, gulv, vinduer og hygieneartikler – som enkeltoppdrag eller planlagt gjennom året.</p>
+      </li>{{/er_oslo}}{{^er_oslo}}<li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-daglig-kunde.webp" alt="" width="200" height="200">
+        <h3>Fast daglig renhold</h3>
+        <p>Renhold er viktig for helsen og trivselen til de ansatte på alle arbeidsplasser. Ti års erfaring fra renhold i barnehager har gitt Clean Unit gode rutiner for å holde det rent.</p>
+      </li>
+      <li class="tjeneste-kort">
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-barnehage-kunde.webp" alt="" width="200" height="200">
+        <h3>Barnehagerenhold</h3>
+        <p>Clean Unit er spesialisten på rengjøring av barnehager. Vi vet hvilke krav som stilles til hygiene, innemiljø og smittevern, da om lag 90 prosent av våre oppdrag utføres hos barnehager.</p>
+      </li>
+      <li class="tjeneste-kort">
+        <!-- UTKAST: sammendrag av Hovedrengjøring, Gulvbehandling, Vinduspuss og Hygieneartikler, samme overskrift som Oslo. Teksten er vår; bekreft med Marit/Christopher at Stavanger leverer alt dette. -->
+        <img loading="lazy" decoding="async" class="tjeneste-kort__ikon" src="{{rot}}bilder/ikon-hovedrengjoring-kunde.webp" alt="" width="200" height="200">
+        <h3>Temporært renhold og hygieneartikler</h3>
+        <p>Hovedrengjøring, gulvbehandling, vinduspuss og hygieneartikler – som enkeltoppdrag eller planlagt gjennom året.</p>
+      </li>{{/er_oslo}}
+    </ul>
+    <a class="tekst-lenke" href="{{by_rot}}tjenester/">Se alle tjenester →</a>
+  </div>
+</section>
+<section class="stopp--kunder" id="kunder">
+  <div class="wrap">
+    <p class="eyebrow">Referanser</p>
+    <!-- UTKAST: overskriften er vår, ikke Maritts. Raden er én lenke til referanser/; logoene har tom alt og lenken er skjult for tastatur/skjermleser, den synlige tekstlenken under bærer navnet. -->
+    <h2>Kunder som har valgt oss</h2>
+    <a class="kunde-rad" href="{{by_rot}}referanser/" tabindex="-1" aria-hidden="true">
+      {{#er_oslo}}<picture><source srcset="{{rot}}bilder/logo-bsn.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-bsn.png" alt="" width="360" height="237"></picture>
+      <picture><source srcset="{{rot}}bilder/logo-kg.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kg.png" alt="" width="1140" height="237"></picture>
+      <picture><source srcset="{{rot}}bilder/logo-kanvas.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kanvas.png" alt="" width="394" height="166"></picture>
+      <picture><source srcset="{{rot}}bilder/logo-medistim.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-medistim.png" alt="" width="1198" height="174"></picture>
+      <picture><source srcset="{{rot}}bilder/logo-pioner.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-pioner.png" alt="" width="180" height="117"></picture>{{/er_oslo}}{{^er_oslo}}<picture><source srcset="{{rot}}bilder/logo-nvh.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-nvh.png" alt="" width="136" height="100"></picture>
+      <picture><source srcset="{{rot}}bilder/logo-kanvas.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kanvas.png" alt="" width="394" height="166"></picture>
+      <picture><source srcset="{{rot}}bilder/logo-kg.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kg.png" alt="" width="1140" height="237"></picture>
+      <picture><source srcset="{{rot}}bilder/logo-medistim.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-medistim.png" alt="" width="1198" height="174"></picture>{{/er_oslo}}
+    </a>
+    <a class="tekst-lenke" href="{{by_rot}}referanser/">Se hva kundene sier →</a>
+  </div>
+</section>
