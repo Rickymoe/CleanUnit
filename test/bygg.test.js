@@ -463,6 +463,23 @@ test('om-oss/: «Om oss», flåten og «Jobb hos oss» (åpen søknad, ansattsit
   assert.ok(les(sideFil('Oslo', 'om_oss')).includes('Marit Byfuglien'));
   assert.ok(les(sideFil('Stavanger', 'om_oss')).includes('To kontorer, samme standard'));
 });
+test('miljo/: fire detaljkort på hvit flate (aldri himmel under himmel-hodet), id=miljo', () => {
+  for (const by of ['Oslo', 'Stavanger']) {
+    const h = les(sideFil(by, 'miljo'));
+    assert.match(h, /<section class="stopp--tillit" id="miljo">/, by);
+    assert.equal((h.match(/<article class="miljo-kort">/g) || []).length, 4, `${by}: antall miljø-kort`);
+    for (const t of ['Miljøfyrtårn siden 2011', 'Medlem av Virke og tariffbundet', 'Offentlig godkjent renholdsbedrift', 'Hvorfor vi velger bort underleverandører']) {
+      assert.ok(h.includes(`<h3>${t}</h3>`), `${by}: ${t}`);
+    }
+    assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Godkjent, ansvarlig og til stede</h2></div>'), by);
+    assert.doesNotMatch(h.slice(h.indexOf('id="miljo"'), h.indexOf('</section>', h.indexOf('id="miljo"'))), /class="eyebrow"/, `${by}: eyebrowen er H1 nå`);
+  }
+});
+test('CSS: miljø-siden er hvit, og scroll-margin-listen kjenner #miljo', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\.side--miljo \.stopp--tillit \{ background: var\(--flate\); \}/);
+  assert.match(css, /#miljo\b[^{]*\{ scroll-margin-top: 3\.75rem; \}/);
+});
 
 // Vaskesveipet (Ricky 2026-10-05): hver overskrift ligger i .vask-boks, ellers måler observeren mot en
 // klippet h2 og sveipet kjører aldri. Per side: overskriftene som skal ha data-vask. Kontakt-h2 står
@@ -472,14 +489,16 @@ const VASK = {
   Oslo: {
     // «Renhold tilpasset stedet du driver» hører til tjeneste-seksjonen og flyttet med den til /tjenester/
     // i Task 4. Task 8 setter den tilbake på forsiden igjen.
-    forside: ['Godkjent, ansvarlig og til stede'],
+    forside: [],
     tjenester: ['Renhold tilpasset stedet du driver'], referanser: ['Dette sier kundene våre'],
-    om_oss: ['Renholderne er de viktigste', 'Fra to personer med hver sin mopp'], miljo: [],
+    om_oss: ['Renholderne er de viktigste', 'Fra to personer med hver sin mopp'],
+    miljo: ['Godkjent, ansvarlig og til stede'],
   },
   Stavanger: {
-    forside: ['Godkjent, ansvarlig og til stede'],
+    forside: [],
     tjenester: ['Renhold tilpasset stedet du driver'], referanser: ['Dette sier kundene våre'],
-    om_oss: ['Renholderne er de viktigste', 'To kontorer, samme standard'], miljo: [],
+    om_oss: ['Renholderne er de viktigste', 'To kontorer, samme standard'],
+    miljo: ['Godkjent, ansvarlig og til stede'],
   },
 };
 test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
@@ -498,7 +517,7 @@ test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
 test('Stien: alle seksjonene den ankrer til finnes, med eyebrow', () => {
   for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
     const h = les(f)
-    for (const id of ['hvorfor', 'kontakt']) {
+    for (const id of ['kontakt']) {
       const start = h.indexOf(`id="${id}"`)
       assert.ok(start > -1, `${f}: mangler #${id}`)
       const seksjon = h.slice(start, h.indexOf('</section>', start))
