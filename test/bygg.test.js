@@ -327,7 +327,7 @@ test('Footer-vannmerket er samme veinett-teppe som heroen', () => {
 
 // Tilbudsskjemaet (2026-09-27). Ett Formspree-skjema per by, så hvert kontor
 // får bare sin egen post — Oslo til renhold@, Stavanger til thord@. Begge
-// sider bygges fra samme mal.html, så forskjellene må komme fra byer.json.
+// sider bygges fra deler/layout.html + sider/*.html, så forskjellene må komme fra byer.json.
 // Formspree-abonnementet er ennå ikke anskaffet (Christopher): kilden har
 // %%FORMSPREE_ID%% som plassholder, og deploy-workflowen bytter den mot
 // secrets.FORMSPREE_ID_OSLO / _STAVANGER. Den første testen her verner om at
@@ -343,12 +343,27 @@ const tilbudSeksjon = (h) => {
 }
 
 test('Tilbud: ingen ekte Formspree-ID er committet', () => {
-  const filer = ['deler/layout.html', 'sider/forside.html', '.github/workflows/deploy.yml', 'byer.json',
+  const filer = ['deler/layout.html', 'deler/kontakt.html', 'sider/forside.html', '.github/workflows/deploy.yml', 'byer.json',
     'test/ut/index.html', 'test/ut/stavanger/index.html']
   for (const f of filer) {
     assert.doesNotMatch(les(f), /formspree\.io\/f\/(?!%%FORMSPREE_ID%%)/, `${f}: ekte Formspree-ID i kilden`)
   }
 })
+
+test('Kontakt-blokken har én kilde: delt partial, ikke inline i noen side', () => {
+  const kontakt = les('deler/kontakt.html');
+  assert.equal((kontakt.match(/id="tilbud-skjema"/g) || []).length, 1, 'partialen har skjemaet');
+  assert.equal((kontakt.match(/<section class="stopp--kontakt" id="kontakt">/g) || []).length, 1);
+  assert.match(les('deler/layout.html'), /\{\{> side\}\}\n\{\{> kontakt\}\}\n<\/main>/, 'layouten setter inn kontakt etter siden');
+  for (const f of ['sider/forside.html']) {
+    assert.doesNotMatch(les(f), /id="kontakt"|id="tilbud-skjema"/, `${f}: kontakt skal ikke ligge inline`);
+  }
+});
+
+test('Kontakt: bylenken peker til den andre byens forside fra enhver side', () => {
+  assert.doesNotMatch(les('byer.json'), /bylenke/, 'de gamle bylenke-nøklene skal være borte');
+  assert.match(les('deler/kontakt.html'), /class="kontakt__bylenke" href="\{\{andre_by_hjem\}\}">Gå til Clean Unit \{\{andre_by_navn\}\} →/);
+});
 
 test('Tilbud: skjemaet står synlig, men knappen er låst til ID-en finnes', () => {
   for (const [f] of TILBUD_BYER) {

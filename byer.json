@@ -17,8 +17,6 @@
         "tilbud_epost": "renhold@cleanunit.no",
         "tilbud_emne": "Ny tilbudsforespørsel – Oslo",
         "om_kontorer": "Clean Unit har i dag over 100 ansatte, fordelt på kontoret i Nydalen, Oslo og et eget kontor i Stavanger.",
-        "oslo_bylenke": "",
-        "stavanger_bylenke": "<a class=\"kontakt__bylenke\" href=\"stavanger/\">Gå til Clean Unit Stavanger →</a>",
         "er_oslo": "1",
         "andre_by_navn": "Stavanger"
       }
@@ -40,8 +38,6 @@
         "tilbud_epost": "thord@cleanunit.no",
         "tilbud_emne": "Ny tilbudsforespørsel – Stavanger",
         "om_kontorer": "<!-- UTKAST: Stavanger-kontorets egen beskrivelse (antall ansatte m.m.) venter på Marit/Christopher -->Kontoret vårt i Stavanger er en del av Clean Unit, med hovedkontor i Nydalen, Oslo.",
-        "oslo_bylenke": "<a class=\"kontakt__bylenke\" href=\"../\">Gå til Clean Unit Oslo →</a>",
-        "stavanger_bylenke": "",
         "er_oslo": "",
         "andre_by_navn": "Oslo"
       }
