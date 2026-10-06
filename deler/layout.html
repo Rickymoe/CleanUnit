@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+document.documentElement.classList.add("js");
+// Vinterscene i heroen 1. desember til 6. januar. ?vinter og ?sommer i adressen tvinger en av dem
+// (for å vise fram eller teste utenom sesongen). Settes her, før noe tegnes, så det ikke blinker.
+(function () {
+  var d = new Date(), q = location.search;
+  if (/[?&]vinter\b/.test(q) || (!/[?&]sommer\b/.test(q) && (d.getMonth() === 11 || (d.getMonth() === 0 && d.getDate() <= 6)))) {
+    document.documentElement.classList.add("vinter");
+  }
+})();
+// Nødluke: hvis js/main.js 404-er eller kaster før logoAnimer() kjører,
+// blir ordmerket (html.js .logo, klippet av clip-path) usynlig for alltid.
+// Etter 1,2 s uten .kjor: vis logoen. Sjekker selve .kjor-klassen (ikke bare
+// at main.js kjørte) — en gammel cachet main.js kan kjøre uten å kjenne ny
+// markup. Seksjonsoverskriftene trenger ingen nødluke: html.js-vask settes
+// først av main.js, så uten den er de alltid synlige.
+addEventListener("load", function () {
+  setTimeout(function () {
+    var logo = document.querySelector(".hero .logo");
+    if (logo && !logo.classList.contains("kjor")) logo.classList.add("kjor");
+  }, 1200);
+});
+</script>
+<script nomodule>document.documentElement.classList.remove("js")</script>
+<title>{{side_tittel}}</title>
+<meta name="description" content="{{side_beskrivelse}}">
+<meta name="theme-color" content="#00595B">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{side_tittel}}">
+<meta property="og:description" content="Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører.">
+<meta property="og:image" content="https://rickymoe.github.io/CleanUnit/bilder/og-cleanunit.png">
+<meta property="og:url" content="{{side_url}}">
+<meta property="og:locale" content="nb_NO">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="{{rot}}bilder/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="{{rot}}bilder/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="{{rot}}bilder/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="{{rot}}bilder/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{rot}}css/style.css">
+</head>
+<body class="{{body_klasse}}">
+<a class="hopp-til-innhold" href="#innhold">Hopp til innhold</a>
+<!-- Toppmeny (Ricky 2026-10-02: «vi trenger en header med lenke nedover på siden»), i Maritts
+     rekkefølge: Tjenester · Referanser · Om oss · Miljø · Kontakt (Marit 2026-10-05: kortere topptekst, «Kontakt» som menyvalg, ingen knapp), med den andre byen til
+     høyre og «Kontakt» som knapp. Siden er fortsatt én lang side, så lenkene er ankre. Uten JS
+     vises lenkene alltid (html.js styrer mobilmenyen), og
+     .side-nav__lenke[aria-current] settes av js/main.js ut fra hvor man er på siden. -->
+<header class="side-nav" id="topp">
+  <div class="wrap side-nav__rad">
+    <a class="side-nav__logo" href="#" aria-label="Clean Unit, til toppen"><svg viewBox="501.55 -34.9 104 104" width="104" height="104" aria-hidden="true" focusable="false"><circle cx="569.0" cy="-7.5" r="25.7" fill="#87CAC9"/><circle cx="530.2" cy="27.8" r="17.8" fill="#008789"/><circle cx="551.2" cy="58.4" r="9.0" fill="#AED1D1"/></svg></a>
+    <button class="side-nav__bryter" type="button" aria-expanded="false" aria-controls="side-nav-meny"><span class="side-nav__bryter-ikon" aria-hidden="true"></span><span class="visually-hidden">Meny</span></button>
+    <nav class="side-nav__meny" id="side-nav-meny" aria-label="Hovedmeny">
+      <ul>
+        <li><a class="side-nav__lenke" href="#tjenester">Tjenester</a></li>
+        <li><a class="side-nav__lenke" href="#referanser">Referanser</a></li>
+        <li><a class="side-nav__lenke" href="#om-oss">Om oss</a></li>
+        <li><a class="side-nav__lenke" href="#hvorfor">Miljø</a></li>
+        <li><a class="side-nav__lenke" href="#kontakt">Kontakt</a></li>
+      </ul>
+      <a class="side-nav__by" href="{{andre_by_href}}">{{andre_by_navn}} <span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
+</header>
+<main id="innhold">
+{{> side}}
+</main>
+<footer class="side-footer">
+  <div class="wrap">
+    <p class="side-footer__merke" role="img" aria-label="CleanUnit"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-cleanunit-lys.svg" alt="" width="626" height="192"></p>
+    <!-- Parkeringsplassen (Ricky 2026-10-04): varebilene står parkert i hver sin rute, med én tom rute
+         merket «P». Under 48rem vises tre ruter (bil, bil, P). -->
+    <div class="parkering" aria-hidden="true">
+      <img loading="lazy" decoding="async" class="parkering__bil" src="{{rot}}bilder/varebil-hero.svg" alt="" width="347" height="154">
+      <img loading="lazy" decoding="async" class="parkering__bil" src="{{rot}}bilder/varebil-hero.svg" alt="" width="347" height="154">
+      <span class="parkering__p">P</span>
+      <img loading="lazy" decoding="async" class="parkering__bil" src="{{rot}}bilder/varebil-hero.svg" alt="" width="347" height="154">
+      <img loading="lazy" decoding="async" class="parkering__bil" src="{{rot}}bilder/varebil-hero.svg" alt="" width="347" height="154">
+    </div>
+    <p class="side-footer__lenker"><button id="privacy-btn" class="side-footer__lenke">Personvern</button></p>
+  </div>
+</footer>
+<div id="privacy-panel" class="privacy-panel" role="dialog" aria-labelledby="privacy-title" hidden>
+  <div class="privacy-panel__content">
+    <button class="privacy-panel__close" aria-label="Lukk Personvern">×</button>
+    <h3 id="privacy-title">Personvern</h3>
+    <p>Besøkene telles anonymt, uten informasjonskapsler, med Cloudflare Web Analytics.</p>
+  </div>
+</div>
+<script type="module">
+  import { initSider } from '{{js_rot}}js/main.js';
+  initSider();
+</script>
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token":"3b2830d8c1b74ed68dee031783103adc"}'></script>
+</body>
+</html>

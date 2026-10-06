@@ -2,12 +2,12 @@
   "byer": [
     {
       "mappe": "",
+      "sider": {
+        "forside": { "tittel": "Clean Unit – renhold i Oslo", "beskrivelse": "Profesjonelt renhold i Oslo – barnehager, skoler og bedrifter. Direkte ansatte, ingen underleverandører." }
+      },
       "data": {
-        "rot": "",
-        "js_rot": "./",
         "by": "Oslo",
         "body_klasse": "by--oslo",
-        "meta_beskrivelse": "Profesjonelt renhold i Oslo – barnehager, skoler og bedrifter. Direkte ansatte, ingen underleverandører.",
         "og_url": "https://rickymoe.github.io/CleanUnit/",
         "hovedtittel": "Renhold i Oslo, Asker og Bærum",
         "rekkevidde": "Vi rengjør i hele Oslo, Asker og Bærum.",
@@ -20,18 +20,17 @@
         "oslo_bylenke": "",
         "stavanger_bylenke": "<a class=\"kontakt__bylenke\" href=\"stavanger/\">Gå til Clean Unit Stavanger →</a>",
         "er_oslo": "1",
-        "andre_by_navn": "Stavanger",
-        "andre_by_href": "stavanger/"
+        "andre_by_navn": "Stavanger"
       }
     },
     {
       "mappe": "stavanger",
+      "sider": {
+        "forside": { "tittel": "Clean Unit – renhold i Stavanger", "beskrivelse": "Clean Unit Stavanger AS. Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører." }
+      },
       "data": {
-        "rot": "../",
-        "js_rot": "../",
         "by": "Stavanger",
         "body_klasse": "by--stavanger",
-        "meta_beskrivelse": "Clean Unit Stavanger AS. Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører.",
         "og_url": "https://rickymoe.github.io/CleanUnit/stavanger/",
         "hovedtittel": "Renhold i Stavanger",
         "rekkevidde": "Vi rengjør i Stavanger og omegn.",
@@ -44,8 +43,7 @@
         "oslo_bylenke": "<a class=\"kontakt__bylenke\" href=\"../\">Gå til Clean Unit Oslo →</a>",
         "stavanger_bylenke": "",
         "er_oslo": "",
-        "andre_by_navn": "Oslo",
-        "andre_by_href": "../"
+        "andre_by_navn": "Oslo"
       }
     }
   ]

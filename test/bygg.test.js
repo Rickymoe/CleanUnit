@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync, rmSync } from 'node:fs';
-import { fyllMal, byggAlle } from '../bygg.js';
+import { fyllMal, byggAlle, settInnDeler, sideData, SIDER } from '../bygg.js';
 
 test('fyllMal erstatter nøkler', () => {
   assert.equal(fyllMal('a {{by}} b {{by}}', { by: 'Oslo' }), 'a Oslo b Oslo');
@@ -18,6 +18,66 @@ test('fyllMal godtar tom streng som verdi', () => {
 test('byggAlle kjører', () => {
   rmSync('test/ut', { recursive: true, force: true });
   byggAlle({ kilde: '.', ut: 'test/ut' });
+});
+
+test('settInnDeler setter inn {{> side}} og navngitte partials (også nestet)', () => {
+  const filer = { 'sider/forside.html': 'S[{{> kontakt}}]\n', 'deler/kontakt.html': 'K\n' };
+  const les = (f) => { if (!(f in filer)) throw new Error(`ENOENT ${f}`); return filer[f]; };
+  assert.equal(settInnDeler('a\n{{> side}}\nb', les, { fil: 'forside' }), 'a\nS[K\n]\nb');
+});
+
+test('settInnDeler kaster på ukjent partial og på sirkulære partials', () => {
+  const les = (f) => { if (f === 'deler/a.html') return '{{> a}}'; throw new Error(`ENOENT ${f}`); };
+  assert.throws(() => settInnDeler('{{> finnesikke}}', les, { fil: 'forside' }), /ENOENT deler\/finnesikke\.html/);
+  assert.throws(() => settInnDeler('{{> a}}', les, { fil: 'forside' }), /For dype partials/);
+});
+
+const TEST_BYER = [
+  { mappe: '', data: { by: 'Oslo', og_url: 'https://x.test/CleanUnit/', andre_by_navn: 'Stavanger', hovedtittel: 'HT' },
+    sider: { forside: { tittel: 'F', beskrivelse: 'B' }, tjenester: { tittel: 'T', beskrivelse: 'B', h1: 'Tjenester' } } },
+  { mappe: 'stavanger', data: { by: 'Stavanger', og_url: 'https://x.test/CleanUnit/stavanger/', andre_by_navn: 'Oslo', hovedtittel: 'HT' },
+    sider: { forside: { tittel: 'F', beskrivelse: 'B' }, tjenester: { tittel: 'T', beskrivelse: 'B', h1: 'Tjenester' } } },
+];
+const FORSIDE = { id: 'forside', fil: 'forside', sti: '' };
+const TJENESTER = { id: 'tjenester', fil: 'tjenester', sti: 'tjenester/' };
+
+test('sideData: rot-dybde og lenker for alle fire kombinasjonene (Stavanger-underside = dybde 2)', () => {
+  const [oslo, stav] = TEST_BYER;
+  const tilfeller = [
+    [oslo, FORSIDE,    { rot: '',        by_rot: '',    js_rot: './',      andre_by_hjem: 'stavanger/', andre_by_href: 'stavanger/',            logo_href: '#',    side_url: 'https://x.test/CleanUnit/' }],
+    [oslo, TJENESTER,  { rot: '../',     by_rot: '../', js_rot: '../',     andre_by_hjem: '../stavanger/', andre_by_href: '../stavanger/tjenester/', logo_href: '../', side_url: 'https://x.test/CleanUnit/tjenester/' }],
+    [stav, FORSIDE,    { rot: '../',     by_rot: '',    js_rot: '../',     andre_by_hjem: '../',        andre_by_href: '../',                   logo_href: '#',    side_url: 'https://x.test/CleanUnit/stavanger/' }],
+    [stav, TJENESTER,  { rot: '../../',  by_rot: '../', js_rot: '../../',  andre_by_hjem: '../../',      andre_by_href: '../../tjenester/',       logo_href: '../', side_url: 'https://x.test/CleanUnit/stavanger/tjenester/' }],
+  ];
+  for (const [by, side, forventet] of tilfeller) {
+    const d = sideData(by, side, TEST_BYER);
+    for (const [k, v] of Object.entries(forventet)) assert.equal(d[k], v, `${by.data.by}/${side.id}: ${k}`);
+  }
+});
+
+test('sideData: aria-current bare på gjeldende side, og h1/tittel kommer fra byer.json', () => {
+  const d = sideData(TEST_BYER[0], TJENESTER, TEST_BYER);
+  assert.equal(d.aktiv_tjenester, ' aria-current="page"');
+  assert.equal(d.aktiv_referanser, '');
+  assert.equal(d.aktiv_om_oss, '');
+  assert.equal(d.aktiv_miljo, '');
+  assert.equal(d.side_h1, 'Tjenester');
+  assert.equal(sideData(TEST_BYER[0], FORSIDE, TEST_BYER).side_h1, 'HT');
+  assert.equal(sideData(TEST_BYER[0], FORSIDE, TEST_BYER).aktiv_tjenester, '');
+});
+
+test('sideData: kaster når byer.json mangler siden, eller en underside mangler egen h1', () => {
+  const uten = [{ ...TEST_BYER[0], sider: { forside: TEST_BYER[0].sider.forside } }, TEST_BYER[1]];
+  assert.throws(() => sideData(uten[0], TJENESTER, uten), /mangler sider\.tjenester/);
+  const utenH1 = [{ ...TEST_BYER[0], sider: { forside: { tittel: 'F', beskrivelse: 'B' }, tjenester: { tittel: 'T', beskrivelse: 'B' } } }, TEST_BYER[1]];
+  assert.throws(() => sideData(utenH1[0], TJENESTER, utenH1), /mangler h1/);
+});
+
+test('SIDER: forsiden først, unike id-er, unike stier', () => {
+  assert.equal(SIDER[0].id, 'forside');
+  assert.equal(SIDER[0].sti, '');
+  assert.equal(new Set(SIDER.map((s) => s.id)).size, SIDER.length);
+  assert.equal(new Set(SIDER.map((s) => s.sti)).size, SIDER.length);
 });
 
 const les = (f) => readFileSync(f, 'utf8');
@@ -283,7 +343,7 @@ const tilbudSeksjon = (h) => {
 }
 
 test('Tilbud: ingen ekte Formspree-ID er committet', () => {
-  const filer = ['mal.html', '.github/workflows/deploy.yml', 'byer.json',
+  const filer = ['deler/layout.html', 'sider/forside.html', '.github/workflows/deploy.yml', 'byer.json',
     'test/ut/index.html', 'test/ut/stavanger/index.html']
   for (const f of filer) {
     assert.doesNotMatch(les(f), /formspree\.io\/f\/(?!%%FORMSPREE_ID%%)/, `${f}: ekte Formspree-ID i kilden`)
