@@ -3,3 +3,180 @@
     <h1>{{side_h1}}</h1>
   </div>
 </div>
+<section class="stopp--om" id="om-oss">
+  <div class="wrap">
+  <div class="om-layout">
+    <div class="om-tekst">
+      {{#er_oslo}}<div class="vask-boks"><h2 data-vask>Fra to personer med hver sin mopp</h2></div>
+      <div class="stopp__lede stopp__lede--flere">
+        <p>Clean Unit startet i 2007 med to personer, hver sin mopp og en idé om å bygge en renholdsbedrift med god service og ordnede forhold.</p>
+        <p>Siden den gang har vi vokst betydelig, men mye av tankegangen er den samme: Renholderne skal kjenne arbeidsplassen sin, kundene skal vite hvem som kommer, og det skal være enkelt å få tak i oss når noe må løses.</p>
+        <p>Clean Unit Renhold AS leverer fast renhold til rundt 100 kunder i Oslo og omegn.</p>
+        <p>Det daglige renholdet utføres av våre egne ansatte, og vi legger stor vekt på faste renholdere, god opplæring og kort vei mellom kunde, renholder og administrasjon. Renholderne får opplæring i arbeidsmetoder, hygiene, HMS og oppgavene på arbeidsstedet — med nettkurs, teori og praksis.</p>
+        <p>Vi ønsker å være en renholdsleverandør kundene kjenner, og som kjenner kundene sine.</p>
+      </div>{{/er_oslo}}{{^er_oslo}}<div class="vask-boks"><h2 data-vask>To kontorer, samme standard</h2></div>
+      <p class="stopp__lede">Clean Unit er en servicebedrift som utfører de fleste former for renhold, gulvbehandlinger og levering av hygieneartikler til bedriftsmarkedet. {{om_kontorer}} Hos oss er kunden i fokus — vi tilpasser oss kundens behov for å finne den løsningen som passer best for akkurat deres bedrift. Clean Unit er en bedrift i vekst, for stadig flere oppdager verdien av en kvalitetsfokusert renholdsleverandør.</p>{{/er_oslo}}
+    </div>
+    {{#er_oslo}}
+    <div class="om-team">
+      <ul class="team-liste">
+        <li>
+          <span class="team-initialer" aria-hidden="true">MB</span>
+          <div>
+            <h4>Marit Byfuglien</h4>
+            <p class="team-rolle">Daglig leder</p>
+            <p>I Clean Unit siden 2010. Overordnet ansvar for drift, ansatte og kunder.</p>
+          </div>
+        </li>
+        <li>
+          <span class="team-initialer" aria-hidden="true">MP</span>
+          <div>
+            <h4>Mari Pedersen</h4>
+            <p class="team-rolle">Markedsansvarlig</p>
+            <p>I Clean Unit siden 2015. Ansvar for salg, tilbud, kundeoppfølging.</p>
+          </div>
+        </li>
+        <li>
+          <span class="team-initialer" aria-hidden="true">GS</span>
+          <div>
+            <h4>Guro Klingenberg Schei</h4>
+            <p class="team-rolle">Operativ leder</p>
+            <p>I Clean Unit siden 2024. Ansvar for drift, bemanning og opplæring.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    {{/er_oslo}}{{^er_oslo}}
+    <div class="om-team">
+      <ul class="team-liste">
+        <li>
+          <span class="team-initialer" aria-hidden="true">TD</span>
+          <div>
+            <h4>Thor D.</h4>
+            <p class="team-rolle">Leder Stavanger</p>
+            <p><a href="tel:+4790065009">900 65 009</a> · <a href="mailto:thord@cleanunit.no">thord@cleanunit.no</a></p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    {{/er_oslo}}
+  </div>
+    <!-- Plassholder for ekte kontorbilder. SKJULT (hidden) inntil bildene finnes
+         (design-kritikk #11, Ricky 2026-10-02): boksene viste «Selfie av de som jobber på
+         kontoret», en intern beskjed, til alle besøkende, i to store tomme flater. Når
+         bildene kommer: fjern hidden og bytt hver boks til <img alt="…"> (svg er aria-hidden,
+         figcaption er ekte tekst så stedsnavnet ikke går tapt for skjermlesere). -->
+    <div class="om-foto-rad" hidden>
+      <figure class="om-foto-plassholder">
+        <div class="om-foto-boks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="4" y="3" width="16" height="18" rx="1"/>
+            <path d="M9 21v-4h6v4"/>
+            <path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"/>
+          </svg>
+          <p class="om-foto-hint" aria-hidden="true">Selfie av de som jobber på kontoret</p>
+        </div>
+        <figcaption>Oslo</figcaption>
+      </figure>
+      <figure class="om-foto-plassholder">
+        <div class="om-foto-boks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="4" y="3" width="16" height="18" rx="1"/>
+            <path d="M9 21v-4h6v4"/>
+            <path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"/>
+          </svg>
+          <p class="om-foto-hint" aria-hidden="true">Selfie av de som jobber på kontoret</p>
+        </div>
+        <figcaption>Stavanger</figcaption>
+      </figure>
+    </div>
+    {{#er_oslo}}{{/er_oslo}}{{^er_oslo}}<h3>Fra to mopper til over 100 ansatte</h3>
+    <p><!-- UTKAST: grunnleggelseshistorien er hentet fra Oslo-siden av cleanunit.no, ikke bekreftet om den dekker Stavanger-kontoret også -->Vi startet Clean Unit i 2007 fordi vi så et marked som var modent for en renholdsbedrift som ville levere topp service i alle ledd. Den gangen var vi to stykker med hver vår mopp, og en felles idé om å lage landets beste servicebedrift. Vi er ikke størst, men vi jobber knallhardt for å være best — for oss er ikke renhold et nødvendig onde, det er levebrødet vårt, og det tar vi på alvor. Derfor er det viktig at alle ansatte får skikkelig opplæring, og at de deler vår visjon om å levere den beste servicen. Resultatet vi leverer, er vår garanti for å beholde dere som kunde.</p>
+
+    {{/er_oslo}}<!-- Flåten (Ricky, 2026-09-26): fire like biler på én vei — samme bil og
+         samme bilde som rutebåndet i heroen, som allerede har lastet
+         bilder/bil.webp, så de fire koster ingen ekstra nedlasting. Bilen er WebP
+         (107 KB) rett i src her og i heroen, ikke PNG (607 KB): alfakanalen er identisk
+         (målt piksel for piksel), og WebP støttes i alle nettlesere siden 2020. Derfor
+         <img>, ikke <picture>: .flaate__bil:nth-child() teller søsken, og en <picture>
+         rundt hver ville gjort hver til første barn. Footeren bruker <picture> med
+         PNG som reserve og lastes da bare som WebP. Designkritikk #4, 2026-10-02.
+
+         Bevisst UTEN tall og tekst: hvor mange biler de har, er ikke
+         bekreftet (siden sier over 100 ansatte i dag), og flåten leser som «flere
+         enn vi kan telle her» uansett — et tall ville bare blitt feil.
+         Rent dekorativ, derfor aria-hidden, ellers ville fire tomme
+         alt-tekster støyet for skjermlesere.
+
+         Veilinja (.flaate__vei) er bredere enn bilene — 3 % inn fra hver
+         kant av .wrap — så den ser ut som en vei som fortsetter ut av
+         bildet i stedet for å stoppe ved bilene.
+
+         Bilene ligger i .flaate__spor (Ricky: «en animasjon når de 4 bilene
+         viser seg», 2026-09-26). Sporet er det som klipper: bilene ruller inn
+         fra venstre, og uten klipping ville de rullet innover teksten ved
+         siden av på smale skjermer. Veilinja ligger utenfor sporet, som
+         absolutt element på .flaate, så den tegnes ferdig først og blir ikke
+         klippet av bilenes bevegelse. -->
+    <div class="flaate" aria-hidden="true">
+      <div class="flaate__spor">
+        <img loading="lazy" decoding="async" class="flaate__bil" src="{{rot}}bilder/varebil-hero.svg" alt="" width="347" height="154">
+        <img loading="lazy" decoding="async" class="flaate__bil" src="{{rot}}bilder/varebil-hero.svg" alt="" width="347" height="154">
+        <img loading="lazy" decoding="async" class="flaate__bil" src="{{rot}}bilder/varebil-hero.svg" alt="" width="347" height="154">
+        <img loading="lazy" decoding="async" class="flaate__bil" src="{{rot}}bilder/varebil-hero.svg" alt="" width="347" height="154">
+      </div>
+      <div class="flaate__vei"></div>
+    </div>
+  </div>
+</section>
+<section class="stopp--jobb" id="jobb-hos-oss">
+  <div class="wrap">
+    <p class="eyebrow">Jobb hos oss</p>
+    <!-- Vaskesveipet ble tatt bort 2026-09-26 (to animasjoner etter hverandre rett under flåten ble for mye), og
+         satt tilbake 2026-10-05 på Rickys ønske, sammen med «Dette sier kundene våre». -->
+    <div class="vask-boks"><h2 data-vask>Renholderne er de viktigste</h2></div>
+    <p class="stopp__lede"><!-- UTKAST: egen syntese av Ansatte-sitatene under, ikke bekreftet med Marit/Christopher -->Hos Clean Unit er det renholderne som gjør jobben — ikke bare en del av firmaet. Vi gir alle ansatte skikkelig opplæring, følger opp med trening og ergonomi i hverdagen, og mange av våre ansatte blir hos oss i mange år.</p>
+    {{#er_oslo}}<div class="ansatte">
+      <figure class="ansatte__bilde">
+        <picture>
+          <source srcset="{{rot}}bilder/ansatte.webp" type="image/webp">
+          <img src="{{rot}}bilder/ansatte.jpg" alt="Ansatte i Clean Unit samlet og jublende på en fest" width="1200" height="760" loading="lazy">
+        </picture>
+      </figure>
+      <div class="ansatte__tekst">
+        <h3>Ansatte</h3>
+        <p>Renhold er ofte en usynlig jobb. Arbeidet utføres gjerne etter at andre har gått hjem, og mange renholdere jobber alene på forskjellige arbeidssteder. Derfor legger vi stor vekt på lederkontakt, opplæring og oppfølging.</p>
+        <p>Mer enn 1 av 10 ansatte har jobbet i Clean Unit i over 10 år — noen helt siden 2013. For kundene betyr det stabile renholdere som kjenner arbeidsplassen og leveransen godt.</p>
+        <p><!-- UTKAST: bekreft om SATS/ELIXIA-avtalen fra 2018 fortsatt gjelder -->Vi har fokus på riktige teknikker og ergonomi i hverdagen, og en bedriftsavtale med SATS/ELIXIA gir alle ansatte tilbud om trening til redusert pris.</p>
+      </div>
+    </div>
+    {{/er_oslo}}<h3>Dette sier de som jobber hos oss</h3>
+    <ul class="sitat-liste">
+      <li class="sitat-kort">
+        <blockquote>
+          <p>Mitt eventyr med Clean Unit begynte for 9 år siden. Jeg har lært mye i løpet av denne tiden. Godt miljø, en sjef som sørger om ansatte, følelse av sikkerhet og treningsmuligheter – dette er mest viktig for meg. Clean Unit har lært meg hvor viktig og ekstremt nødvendig denne jobben er.</p>
+          <footer>— Monika</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <blockquote>
+          <p>Jeg har jobbet i Clean Unit i mange år, men hadde et par års pause når jeg fikk barn. I Clean Unit blir vi oppdatert på metoder, ergonomi og hva som er viktig for at vi skal vaske rent, og for at vi skal ha det bra. Samholdet er viktig blant de som vasker, og med de på kontoret, så derfor ville jeg tilbake til Clean Unit når jeg skulle jobbe igjen.</p>
+          <footer>— Urszula</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <blockquote>
+          <p>Vår tjeneste er kunnskapsbasert og utvikler medarbeidernes kompetanse. Clean Unit er innovative og søker gode løsninger for oss medarbeidere og våre kunder. Vi vet hva vi vil og hva som skal til. Clean Unit utstråler energi og arbeidsglede.</p>
+          <footer>— Aneta</footer>
+        </blockquote>
+      </li>
+    {{#er_oslo}}      <li class="sitat-kort">
+        <blockquote>
+          <p>Jeg har jobbet i Clean Unit siden 2013. Dette er det første stedet jeg jobber hvor jeg føler at renholderne er de viktigste, og ikke bare en del av firma. Vi blir motivert til å gjøre en så god jobb som mulig, og alle får opplæring før de begynner å jobbe. Vi oppfordres til å spørre om hjelp hvis vi trenger det, eller hvis vi har noe vi er usikre på. Clean Unit jobber alltid fremover, og forsøker å være innovative på rengjøringsfronten.</p>
+          <footer>— Vilma</footer>
+        </blockquote>
+      </li>
+    {{/er_oslo}}</ul>
+    <a class="knapp knapp--fyll" href="mailto:jobb@cleanunit.no?subject=%C3%85pen%20s%C3%B8knad">Send oss en åpen søknad</a>
+  </div>
+</section>

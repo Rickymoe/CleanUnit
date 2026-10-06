@@ -345,7 +345,7 @@ test('Stavanger-siden peker til delte filer via ../', () => {
 // Bevisst uten tall — «nesten hundre ansatte» er ikke bekreftet av
 // Marit/Christopher (siden sier 55 i dag), og et tall ville blitt feil.
 test('Flåten i «Om oss»: fire like biler, uten tall og uten tekst', () => {
-  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
+  for (const f of [sideFil('Oslo', 'om_oss'), sideFil('Stavanger', 'om_oss')]) {
     const h = les(f)
     assert.match(h, /<div class="flaate" aria-hidden="true">/, f)
     assert.equal((h.match(/class="flaate__bil"/g) || []).length, 4, `${f}: antall biler`);
@@ -361,7 +361,7 @@ test('Flåten i «Om oss»: fire like biler, uten tall og uten tekst', () => {
 // på smale skjermer. Veilinja skal ligge UTENFOR sporet, ellers blir den
 // klippet av bilenes bevegelse i stedet for å tegnes ferdig først.
 test('Flåten: bilene ligger i et klippende spor, veilinja utenfor', () => {
-  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
+  for (const f of [sideFil('Oslo', 'om_oss'), sideFil('Stavanger', 'om_oss')]) {
     const h = les(f)
     const start = h.indexOf('<div class="flaate"')
     const blokk = h.slice(start, h.indexOf('</div>\n', h.indexOf('flaate__vei', start)))
@@ -447,6 +447,22 @@ test('referanser/: Oslo har sju sitatkort (BSN, Dr. Brandt, NVH, Kanvas, KG, Med
 test('CSS: referanser-siden har --base-bakgrunn (aldri himmel rett under himmel-hodet)', () => {
   assert.match(les('css/style.css'), /\.side--referanser \.stopp--referanser \{ background: var\(--base\); \}/);
 });
+test('om-oss/: «Om oss», flåten og «Jobb hos oss» (åpen søknad, ansattsitater) står på samme side', () => {
+  for (const [by, sitater] of [['Oslo', 4], ['Stavanger', 3]]) {
+    const h = les(sideFil(by, 'om_oss'));
+    assert.match(h, /<section class="stopp--om" id="om-oss">/, by);
+    assert.match(h, /<section class="stopp--jobb" id="jobb-hos-oss">/, by);
+    assert.ok(h.indexOf('id="om-oss"') < h.indexOf('id="jobb-hos-oss"'), `${by}: rekkefølgen`);
+    const jobb = h.slice(h.indexOf('id="jobb-hos-oss"'));
+    assert.equal((jobb.match(/class="sitat-kort"/g) || []).length, sitater, `${by}: ansattsitater`);
+    assert.ok(h.includes('mailto:jobb@cleanunit.no?subject='), `${by}: åpen søknad`);
+    assert.match(h, /<div class="flaate" aria-hidden="true">/, `${by}: flåten`);
+    assert.match(h, /<p class="eyebrow">Jobb hos oss<\/p>/, `${by}: «Jobb hos oss» beholder eyebrow`);
+    assert.doesNotMatch(h.slice(h.indexOf('id="om-oss"'), h.indexOf('id="jobb-hos-oss"')), /class="eyebrow"/, `${by}: «Om oss»-eyebrowen er H1 nå`);
+  }
+  assert.ok(les(sideFil('Oslo', 'om_oss')).includes('Marit Byfuglien'));
+  assert.ok(les(sideFil('Stavanger', 'om_oss')).includes('To kontorer, samme standard'));
+});
 
 // Vaskesveipet (Ricky 2026-10-05): hver overskrift ligger i .vask-boks, ellers måler observeren mot en
 // klippet h2 og sveipet kjører aldri. Per side: overskriftene som skal ha data-vask. Kontakt-h2 står
@@ -456,12 +472,14 @@ const VASK = {
   Oslo: {
     // «Renhold tilpasset stedet du driver» hører til tjeneste-seksjonen og flyttet med den til /tjenester/
     // i Task 4. Task 8 setter den tilbake på forsiden igjen.
-    forside: ['Renholderne er de viktigste', 'Fra to personer med hver sin mopp', 'Godkjent, ansvarlig og til stede'],
-    tjenester: ['Renhold tilpasset stedet du driver'], referanser: ['Dette sier kundene våre'], om_oss: [], miljo: [],
+    forside: ['Godkjent, ansvarlig og til stede'],
+    tjenester: ['Renhold tilpasset stedet du driver'], referanser: ['Dette sier kundene våre'],
+    om_oss: ['Renholderne er de viktigste', 'Fra to personer med hver sin mopp'], miljo: [],
   },
   Stavanger: {
-    forside: ['Renholderne er de viktigste', 'To kontorer, samme standard', 'Godkjent, ansvarlig og til stede'],
-    tjenester: ['Renhold tilpasset stedet du driver'], referanser: ['Dette sier kundene våre'], om_oss: [], miljo: [],
+    forside: ['Godkjent, ansvarlig og til stede'],
+    tjenester: ['Renhold tilpasset stedet du driver'], referanser: ['Dette sier kundene våre'],
+    om_oss: ['Renholderne er de viktigste', 'To kontorer, samme standard'], miljo: [],
   },
 };
 test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
@@ -480,7 +498,7 @@ test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
 test('Stien: alle seksjonene den ankrer til finnes, med eyebrow', () => {
   for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
     const h = les(f)
-    for (const id of ['hvorfor', 'om-oss', 'jobb-hos-oss', 'kontakt']) {
+    for (const id of ['hvorfor', 'kontakt']) {
       const start = h.indexOf(`id="${id}"`)
       assert.ok(start > -1, `${f}: mangler #${id}`)
       const seksjon = h.slice(start, h.indexOf('</section>', start))
