@@ -1181,13 +1181,17 @@ html.vinter { --himmel: #93CED3; }
   .hero__scene-bilde { object-position: 35% 100%; }
   .hero__scene-merke { left: calc(35% - 7.02rem); width: 2.48rem; }
 }
-}
 
-/* Øverst på siden er headeren gjennomsiktig og heroen går helt opp bak den, så den har nøyaktig
-   heroens farge og glød (Ricky 2026-10-03: den var «fortsatt hvit» med flat --base, fordi heroen
-   har en teal-glød øverst). Så snart man har scrollet får den heroens flate farge, så innholdet
-   ikke skinner gjennom. Uten JS er den alltid flat. */
-html.js .side-nav { margin-bottom: -3.75rem; transition: background-color .2s, box-shadow .2s, border-color .2s; }
+/* Headeren er gjennomsiktig øverst og tar da sidens bakgrunn (--base): den ligger på en flat, lys
+   flate, ikke oppå heroen. Så snart man har scrollet får den heroens flate farge, så innholdet
+   ikke skinner gjennom. Uten JS er den alltid flat.
+
+   Headeren overlapper IKKE heroen — heroen begynner under den. Regelen som skulle trukket innholdet
+   3,75rem opp bak headeren (html.js .side-nav { margin-bottom: -3.75rem }) kom inn 2026-10-03, men
+   ble slått ut av en løs } i en senere commit samme dag og har ikke virket siden. Ricky valgte
+   2026-10-06 å beholde det slik det faktisk ser ut, så klammen og regelen er nå begge fjernet.
+   .side-hode har derfor ~60px ekstra luft over tittelen: paddingen der regner med en header som
+   ikke ligger oppå. */
 html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: none; border-bottom-color: transparent; }
 
 /* ── Personvern-modal ───────────────────────────────────────────── */

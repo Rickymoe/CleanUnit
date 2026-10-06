@@ -209,11 +209,21 @@ test('CSS: .side-hode, himmel-på-himmel-vern og aria-current="page"', () => {
   assert.doesNotMatch(css, /aria-current="true"/);
 });
 
-// Klammebalansetesten («fanger løs } etter programmatisk erstatning») er bevisst IKKE her.
-// css/style.css har en kjent løs } på linje 1184, lagt inn ved en programmatisk erstatning
-// 2026-10-03, som kaster regelen html.js .side-nav { margin-bottom: -3.75rem; … } ut av
-// stilarket. Den fikses i sin egen commit (Ricky skal se før/etter først), og testen legges
-// inn der — sammen med fiksen den vokter. Fram til da finnes ingen balansetest.
+// Den løse } som lå på linje 1184 (inne i en programmatisk erstatning 2026-10-03) er fjernet
+// sammen med regelen den drepte — se css/style.css. Denne testen er vernet mot at det skjer igjen.
+test('CSS: klammene balanserer og går aldri negativt (fanger løs } etter programmatisk erstatning)', () => {
+  const css = les('css/style.css')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, '""');
+  let dybde = 0, linje = 1;
+  for (const tegn of css) {
+    if (tegn === '\n') linje++;
+    if (tegn === '{') dybde++;
+    if (tegn === '}') dybde--;
+    assert.ok(dybde >= 0, `løs } på linje ${linje} (etter kommentar- og strengstripping)`);
+  }
+  assert.equal(dybde, 0, 'ubalanserte klammer: ${ uten }');
+});
 
 // Kroppen til initSider() alene. Uten dette er «kalles X fra initSider()»
 // en test som ikke kan feile: mønsteret /x\(\)/ matcher også selve
