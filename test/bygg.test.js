@@ -201,6 +201,26 @@ test('main.js: sideNav kaster ikke på ikke-hash-lenker, og logoen navigerer nor
   assert.match(logoKlikk.slice(0, 260), /if \(!document\.querySelector\('\.hero'\)\) return/, 'logo-klikket må la nettleseren navigere når det ikke er noen hero');
 });
 
+test('main.js: hver init-funksjon verner mot manglende elementer', () => {
+  const js = les('js/main.js');
+  for (const [fn, vern] of [
+    ['function logoAnimer', /if \(!logo\) return/],
+    ['function overskriftVask', /if \(!overskrifter\.length\) return/],
+    ['function kortReveal', /if \(!kort\.length\) return/],
+    ['function flaateInn', /if \(reduksjon \|\| !flaate\) return/],
+    ['function glansSveip', /if \(reduksjon \|\| !kort\) return/],
+    ['function stiNedover', /if \(!rad \|\| !linje \|\| !hero \|\| !footer\) return/],
+    ['function tilbudSkjema', /if \(!skjema\) return/],
+  ]) {
+    const start = js.indexOf(fn);
+    assert.ok(start > -1, fn);
+    assert.match(js.slice(start, start + 1200), vern, `${fn}: vernet mangler`);
+  }
+  const personvern = js.slice(js.indexOf('// Personvern-modal'));
+  const guard = personvern.indexOf('if (privacyBtn && privacyPanel)');
+  assert.ok(guard > -1 && guard < personvern.indexOf('privacyPanel.querySelector'), 'personvern: null-sjekken må komme FØR querySelector');
+});
+
 test('CSS: .side-hode, himmel-på-himmel-vern og aria-current="page"', () => {
   const css = les('css/style.css');
   assert.match(css, /\n\.side-hode \{[^}]*linear-gradient\(to bottom, var\(--base\) 0, var\(--himmel\) 5rem, var\(--himmel\) calc\(100% - 3rem\), var\(--hode-ned, var\(--flate\)\) 100%\)/);

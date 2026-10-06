@@ -524,8 +524,8 @@ function sideNav() {
   // Personvern-modal
   const privacyBtn = document.getElementById('privacy-btn')
   const privacyPanel = document.getElementById('privacy-panel')
-  const privacyClose = privacyPanel.querySelector('.privacy-panel__close')
   if (privacyBtn && privacyPanel) {
+    const privacyClose = privacyPanel.querySelector('.privacy-panel__close')
     privacyBtn.addEventListener('click', () => privacyPanel.removeAttribute('hidden'))
     privacyClose.addEventListener('click', () => privacyPanel.setAttribute('hidden', ''))
     privacyPanel.addEventListener('click', (e) => {
