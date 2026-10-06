@@ -1302,3 +1302,23 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
   .kunde-rad img { width: 6.25rem; }
   .kunde-rad__navn { width: 6.25rem; }
 }
+
+/* Luftballongen i sidehodet (Ricky 2026-10-06): en rolig figur fra hero-scenen (ballong, sky, boble) i hodets høyre
+   hjørne, i samme høyrekant som innholdet. Først prøvd med hele byen, men den hadde for mange detaljer (valgte «A»).
+   Himmelen i bildet er flatet ut til nøyaktig --himmel (verktoy/hode-ballong.py), og kantene tones ut med en maske, så det
+   ikke ligger en rute bak. Dekor: aria-hidden, ingen animasjon. Skjult under 64rem der H1 trenger bredden. */
+.side-hode { position: relative; }
+.side-hode > .wrap { position: relative; z-index: 1; }
+.side-hode__by { display: none; }
+@media (min-width: 64rem) {
+  .side-hode__by {
+    display: block; position: absolute; z-index: 0; pointer-events: none;
+    top: var(--hode-by-topp, 2.75rem); bottom: var(--hode-by-bunn, 1.75rem);
+    right: calc(max(0px, (100% - var(--wrap)) / 2) + clamp(1rem, 4vw, 3rem));
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14%, #000 90%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 22%, #000 88%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent 0, #000 14%, #000 90%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 22%, #000 88%, transparent 100%);
+    mask-composite: intersect;
+  }
+  .side-hode__by img { display: block; height: 100%; width: auto; }
+}
