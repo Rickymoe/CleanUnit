@@ -37,25 +37,39 @@ jobs:
       # streng, står endepunktet igjen uten skjema-ID, og da lurer gatingen i
       # js/main.js seg selv til å tro at ID-en finnes og viser et skjema som
       # ikke kan sende. Derfor sjekker vi at den har innhold først.
+      #
+      # Alle fem sider per by har skjemaet, ikke bare forsiden. Tellingen under
+      # gjør «feil antall sider» til en feil i stedet for at undersidene stille
+      # blir stående med plassholderen (skjemaet ser ferdig ut, men sendingen er
+      # sperret, så feilen ville vært usynlig i produksjon).
       - name: Sett inn Formspree-ID-ene
         env:
           ID_OSLO: ${{ secrets.FORMSPREE_ID_OSLO }}
           ID_STAVANGER: ${{ secrets.FORMSPREE_ID_STAVANGER }}
         run: |
+          # $1 = by, $2 = ID, resten = byens fem sider.
           injiser() {
-            if [ -z "$2" ]; then
-              echo "::warning::$1: ingen Formspree-ID satt — skjemaet forblir skjult"
+            by="$1"; id="$2"; shift 2
+            if [ "$#" -ne 5 ]; then
+              echo "::error::$by: forventet 5 sider, fant $#"
+              exit 1
+            fi
+            if [ -z "$id" ]; then
+              echo "::warning::$by: ingen Formspree-ID satt — skjemaene forblir låst"
               return 0
             fi
-            sed -i "s|%%FORMSPREE_ID%%|$2|g" "$1"
-            echo "$1: Formspree-ID satt inn"
+            for f in "$@"; do
+              sed -i "s|%%FORMSPREE_ID%%|$id|g" "$f"
+            done
+            echo "$by: Formspree-ID satt inn i $# sider"
           }
-          injiser dist/index.html "$ID_OSLO"
-          injiser dist/stavanger/index.html "$ID_STAVANGER"
+          injiser Oslo "$ID_OSLO" $(find dist -name index.html -not -path 'dist/stavanger/*' | sort)
+          injiser Stavanger "$ID_STAVANGER" $(find dist/stavanger -name index.html | sort)
 
       - name: Fjern kommentarer fra HTML/CSS/JS
         run: |
-          for f in dist/index.html dist/stavanger/index.html; do
+          test "$(find dist -name '*.html' | wc -l)" -eq 10
+          for f in $(find dist -name '*.html' | sort); do
             npx --yes html-minifier-terser --remove-comments \
               --minify-js '{"compress":false,"mangle":false}' \
               "$f" -o "$f"

@@ -658,6 +658,22 @@ test('Tilbud: ingen ekte Formspree-ID er committet', () => {
   }
 })
 
+// Workflowen injiserte tidligere i to hardkodede filer (dist/index.html og
+// dist/stavanger/index.html). Med ti sider ville de åtte undersidene fått stå igjen med
+// plassholderen — skjemaet ser ferdig ut, men gatingen i main.js sperrer sendingen, så
+// feilen ville vært stille i produksjon. Tellingen gjør feil antall til en høy feil.
+test('deploy.yml: injisering og stripping treffer alle sider, ikke to hardkodede stier, og feiler høyt ved feil antall', () => {
+  const y = les('.github/workflows/deploy.yml');
+  assert.doesNotMatch(y, /injiser dist\/index\.html|for f in dist\/index\.html dist\/stavanger\/index\.html/, 'hardkodede stier');
+  assert.match(y, /find dist -name index\.html -not -path 'dist\/stavanger\/\*'/, 'Oslo-sidene finnes med find');
+  assert.match(y, /find dist\/stavanger -name index\.html/, 'Stavanger-sidene finnes med find');
+  assert.match(y, /-ne 5/, 'antall sider per by kontrolleres');
+  assert.match(y, /find dist -name '\*\.html'/, 'stripping går over alle html-filer');
+  assert.match(y, /-eq 10/, 'totalt antall sider kontrolleres');
+  assert.match(y, /FORMSPREE_ID_OSLO/);
+  assert.match(y, /FORMSPREE_ID_STAVANGER/);
+});
+
 test('Kontakt-blokken har én kilde: delt partial, ikke inline i noen side', () => {
   const kontakt = les('deler/kontakt.html');
   assert.equal((kontakt.match(/id="tilbud-skjema"/g) || []).length, 1, 'partialen har skjemaet');
