@@ -993,7 +993,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   display: block; padding: .6rem .75rem; border-radius: 8px; color: var(--tekst);
   font: 600 var(--t-sm)/1.2 var(--sans); text-decoration: none;
 }
-.side-nav__lenke[aria-current="true"] { color: var(--teal-mork); box-shadow: inset 0 -2px 0 var(--teal); border-radius: 8px 8px 0 0; }
+.side-nav__lenke[aria-current="page"] { color: var(--teal-mork); box-shadow: inset 0 -2px 0 var(--teal); border-radius: 8px 8px 0 0; }
 .side-nav__by { color: var(--teal-mork); font: 600 var(--t-sm)/1.2 var(--sans); text-decoration: none; white-space: nowrap; padding: .6rem .5rem; }
 @media (hover: hover) {
   .side-nav__lenke:hover { background: var(--teal-lys); color: var(--teal-mork); }
@@ -1025,7 +1025,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   html.js .side-nav__meny[hidden] { display: none; }
   .side-nav__meny ul { flex-direction: column; margin: 0; gap: 0; }
   .side-nav__lenke { padding: .85rem .5rem; font-size: var(--t-base); }
-  .side-nav__lenke[aria-current="true"] { box-shadow: inset 3px 0 0 var(--teal); border-radius: 0; background: var(--teal-lys); }
+  .side-nav__lenke[aria-current="page"] { box-shadow: inset 3px 0 0 var(--teal); border-radius: 0; background: var(--teal-lys); }
   .side-nav__by { padding: .85rem .5rem; font-size: var(--t-base); }
 }
 
@@ -1246,3 +1246,22 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
   .stopp--jobb .sitat-kort { padding-left: 4.5rem; }
   .stopp--jobb .sitat-kort::before { left: 1.1rem; top: .9rem; font-size: 4.2rem; }
 }
+
+/* ── Undersider (flerside, 2026-10-06) ────────────────────────────────────────────────────────────
+   Hodet erstatter heroen: H1 på himmelen, tonet inn fra --base øverst (headeren er gjennomsiktig
+   over det, som over heroen) og ut til fargen på første seksjon under (--hode-ned, standard hvit).
+   Fadesonene ligger INNE i paddingen, så ingen tekst står på en halvferdig farge. Himmelen er mørk
+   nok til at bare --tekst holder (8,7:1); eyebrows og lenker i hodet ville trengt --teal-mork.
+   Første seksjon under mister sin egen 6rem-padding (den holdt fadesonen på forsiden). */
+.side-hode {
+  padding-block: calc(3.75rem + var(--s-6)) var(--s-8);
+  background: linear-gradient(to bottom, var(--base) 0, var(--himmel) 5rem, var(--himmel) calc(100% - 3rem), var(--hode-ned, var(--flate)) 100%);
+}
+.side-hode--ned-base { --hode-ned: var(--base); }
+.side-hode h1 { font-size: clamp(2rem, 7vw, var(--t-3xl)); color: var(--tekst); }
+.side-hode + section { padding-top: var(--s-6); }
+/* Egen side = ingen himmel-seksjon rett under himmel-hodet: Referanser står på --base (hvite kort),
+   Miljø og seriøsitet på hvitt (kortene har allerede en --teal-lys-kant). Spesifisiteten (0,2,0)
+   slår .stopp--referanser/.stopp--tillit uansett rekkefølge. */
+.side--referanser .stopp--referanser { background: var(--base); }
+.side--miljo .stopp--tillit { background: var(--flate); }

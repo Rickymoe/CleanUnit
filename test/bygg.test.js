@@ -82,6 +82,139 @@ test('SIDER: forsiden først, unike id-er, unike stier', () => {
 
 const les = (f) => readFileSync(f, 'utf8');
 
+// Alle ti sider: [by, bygg-mappe, kontor-epost] × fem sider (id → mappe under byen).
+const BYER_UT = [['Oslo', 'test/ut', 'renhold@cleanunit.no'], ['Stavanger', 'test/ut/stavanger', 'thord@cleanunit.no']];
+const STIER = { forside: '', tjenester: 'tjenester/', referanser: 'referanser/', om_oss: 'om-oss/', miljo: 'miljo/' };
+const alleSider = () => BYER_UT.flatMap(([by, mappe, epost]) =>
+  Object.entries(STIER).map(([id, sti]) => ({ by, id, epost, fil: `${mappe}/${sti}index.html` })));
+const sideFil = (by, id) => alleSider().find((s) => s.by === by && s.id === id).fil;
+// All tekst en by viser (de fem sidene limt sammen) — for tester som bryr seg om at innholdet finnes,
+// ikke hvilken side det står på.
+const heleBy = (by) => alleSider().filter((s) => s.by === by).map((s) => les(s.fil)).join('\n');
+
+test('Bygget: ti sider finnes, ingen ufylte plassholdere', () => {
+  assert.equal(alleSider().length, 10);
+  for (const s of alleSider()) {
+    assert.ok(existsSync(s.fil), `${s.fil} mangler`);
+    assert.doesNotMatch(les(s.fil), /\{\{/, `${s.fil}: ufylt plassholder`);
+  }
+});
+
+test('Hver side: nøyaktig én H1, unike id-er, egen title/description, canonical = og:url', () => {
+  const titler = [], beskrivelser = [];
+  for (const s of alleSider()) {
+    const h = les(s.fil);
+    assert.equal((h.match(/<h1[\s>]/g) || []).length, 1, `${s.fil}: antall H1`);
+    const ider = [...h.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+    assert.deepEqual(ider.filter((x, i) => ider.indexOf(x) !== i), [], `${s.fil}: dupliserte id-er`);
+    assert.ok(ider.includes('innhold') && ider.includes('kontakt'), `${s.fil}: mangler #innhold eller #kontakt`);
+    const tittel = h.match(/<title>([^<]+)<\/title>/)?.[1];
+    const besk = h.match(/<meta name="description" content="([^"]+)"/)?.[1];
+    assert.ok(tittel && besk, `${s.fil}: title/description`);
+    assert.equal(h.match(/og:title" content="([^"]+)"/)?.[1], tittel, `${s.fil}: og:title`);
+    assert.equal(h.match(/og:description" content="([^"]+)"/)?.[1], besk, `${s.fil}: og:description`);
+    const kanon = h.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
+    assert.ok(kanon, `${s.fil}: canonical mangler`);
+    assert.equal(kanon, h.match(/og:url" content="([^"]+)"/)?.[1], `${s.fil}: canonical ≠ og:url`);
+    if (s.by === 'Oslo') assert.ok([...besk].length <= 155, `${s.fil}: Oslo-description er ${[...besk].length} tegn`);
+    titler.push(tittel); beskrivelser.push(besk);
+  }
+  assert.equal(new Set(titler).size, 10, 'title må være unik per side');
+  assert.equal(new Set(beskrivelser).size, 10, 'description må være unik per side');
+});
+
+// Fanger feil rot-dybde (stavanger/tjenester/ = ../../), døde menylenker og andre-by-lenker til
+// sider som ikke finnes, og ankre (#kontakt) som mangler i målsiden.
+test('Alle interne lenker, bilder, stilark og import løser seg fra hver side', () => {
+  for (const s of alleSider()) {
+    const h = les(s.fil);
+    const sideUrl = new URL(s.fil.replace('test/ut/', ''), 'https://t.test/');
+    const refs = [...h.matchAll(/\s(?:href|src|srcset)="([^"]+)"/g)].map((m) => m[1])
+      .concat([...h.matchAll(/from '([^']+)'/g)].map((m) => m[1]));
+    assert.ok(refs.length > 20, `${s.fil}: fant bare ${refs.length} referanser — regexen er blind`);
+    for (const ref of refs) {
+      if (/^(https?:|mailto:|tel:|data:)/.test(ref)) continue;
+      const u = new URL(ref, sideUrl);
+      let sti = decodeURIComponent(u.pathname).slice(1);
+      if (sti === '' || sti.endsWith('/')) sti += 'index.html';
+      const mal = `test/ut/${sti}`;
+      assert.ok(existsSync(mal), `${s.fil}: «${ref}» → ${mal} finnes ikke`);
+      if (u.hash.length > 1) {
+        assert.match(les(mal), new RegExp(`\\sid="${u.hash.slice(1)}"`), `${s.fil}: «${ref}» — ankeret finnes ikke i ${mal}`);
+      }
+    }
+  }
+});
+
+test('Toppmeny: ekte lenker til de fire undersidene, aria-current på gjeldende side, Kontakt = #kontakt, andre by ↗ til samme underside', () => {
+  const forventet = [['tjenester', 'Tjenester', 'tjenester/'], ['referanser', 'Referanser', 'referanser/'], ['om_oss', 'Om oss', 'om-oss/'], ['miljo', 'Miljø', 'miljo/']];
+  for (const s of alleSider()) {
+    const h = les(s.fil);
+    const nav = h.slice(h.indexOf('<header class="side-nav"'), h.indexOf('</header>'));
+    const lenker = [...nav.matchAll(/<a class="side-nav__lenke" href="([^"]+)"([^>]*)>([^<]+)</g)];
+    assert.deepEqual(lenker.map((m) => m[3]), ['Tjenester', 'Referanser', 'Om oss', 'Miljø', 'Kontakt'], `${s.fil}: menyrekkefølgen`);
+    const dybde = s.id === 'forside' ? '' : '../';
+    forventet.forEach(([id, , sti], i) => {
+      assert.equal(lenker[i][1], `${dybde}${sti}`, `${s.fil}: href for ${id}`);
+      assert.equal(lenker[i][2], id === s.id ? ' aria-current="page"' : '', `${s.fil}: aria-current for ${id}`);
+    });
+    assert.equal(lenker[4][1], '#kontakt');
+    assert.equal(lenker[4][2], '', `${s.fil}: Kontakt skal aldri ha aria-current`);
+    const andre = s.by === 'Oslo' ? 'Stavanger' : 'Oslo';
+    const by = nav.match(/class="side-nav__by" href="([^"]+)">([^<]+) </);
+    assert.equal(by[2], andre, `${s.fil}: andre by`);
+    const sti = STIER[s.id];
+    const mal = s.by === 'Oslo' ? `test/ut/stavanger/${sti}index.html` : `test/ut/${sti}index.html`;
+    assert.ok(existsSync(mal), `${s.fil}: andre-by-målet ${mal} finnes ikke`);
+    assert.equal((nav.match(/side-nav__kontakt/g) || []).length, 0, `${s.fil}: ingen Kontakt-knapp`);
+  }
+});
+
+test('Undersider: .side-hode med synlig H1, og ingen hero, sti-start eller vinter-scene', () => {
+  for (const s of alleSider().filter((x) => x.id !== 'forside')) {
+    const h = les(s.fil);
+    assert.match(h, /<div class="side-hode[ "][\s\S]*?<h1>[^<]+<\/h1>/, `${s.fil}: side-hode med H1`);
+    assert.doesNotMatch(h, /class="visually-hidden">[^<]*<\/h1>/, `${s.fil}: H1 skal være synlig`);
+    assert.doesNotMatch(h, /<header class="hero">|hero__sti-start|hero__scene/, `${s.fil}: heroen hører bare hjemme på forsiden`);
+    assert.match(h, new RegExp(`<body class="by--${s.by.toLowerCase()} side--[a-z-]+">`), `${s.fil}: body-klasse`);
+  }
+  for (const s of alleSider().filter((x) => x.id === 'forside')) {
+    assert.match(les(s.fil), /<header class="hero">/, `${s.fil}: forsiden har heroen`);
+  }
+});
+
+test('Undersider: logoen er en vanlig lenke til byens forside, ikke «til toppen»', () => {
+  for (const s of alleSider()) {
+    const h = les(s.fil);
+    const logo = h.match(/<a class="side-nav__logo" href="([^"]*)" aria-label="([^"]*)"/);
+    if (s.id === 'forside') { assert.deepEqual([logo[1], logo[2]], ['#', 'Clean Unit, til toppen']); }
+    else { assert.deepEqual([logo[1], logo[2]], ['../', 'Clean Unit, til forsiden'], s.fil); }
+  }
+});
+
+test('main.js: sideNav kaster ikke på ikke-hash-lenker, og logoen navigerer normalt uten hero', () => {
+  const js = les('js/main.js');
+  assert.doesNotMatch(js, /querySelector\(a\.getAttribute\('href'\)\)/, 'scrollspyen slår opp ikke-hash-lenker som selektorer');
+  assert.doesNotMatch(js, /aria-current', 'true'/, 'scrollspyen skal være borte');
+  const logoKlikk = js.slice(js.indexOf("querySelector('.side-nav__logo').addEventListener"));
+  assert.match(logoKlikk.slice(0, 260), /if \(!document\.querySelector\('\.hero'\)\) return/, 'logo-klikket må la nettleseren navigere når det ikke er noen hero');
+});
+
+test('CSS: .side-hode, himmel-på-himmel-vern og aria-current="page"', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\n\.side-hode \{[^}]*linear-gradient\(to bottom, var\(--base\) 0, var\(--himmel\) 5rem, var\(--himmel\) calc\(100% - 3rem\), var\(--hode-ned, var\(--flate\)\) 100%\)/);
+  assert.match(css, /\.side-hode--ned-base \{ --hode-ned: var\(--base\); \}/);
+  assert.match(css, /\.side-hode \+ section \{ padding-top: var\(--s-6\); \}/);
+  assert.equal((css.match(/\.side-nav__lenke\[aria-current="page"\]/g) || []).length, 2, 'desktop- og mobilregelen');
+  assert.doesNotMatch(css, /aria-current="true"/);
+});
+
+// Klammebalansetesten («fanger løs } etter programmatisk erstatning») er bevisst IKKE her.
+// css/style.css har en kjent løs } på linje 1184, lagt inn ved en programmatisk erstatning
+// 2026-10-03, som kaster regelen html.js .side-nav { margin-bottom: -3.75rem; … } ut av
+// stilarket. Den fikses i sin egen commit (Ricky skal se før/etter først), og testen legges
+// inn der — sammen med fiksen den vokter. Fram til da finnes ingen balansetest.
+
 // Kroppen til initSider() alene. Uten dette er «kalles X fra initSider()»
 // en test som ikke kan feile: mønsteret /x\(\)/ matcher også selve
 // definisjonen `function x()`, så den består selv om kallet er borte.
@@ -92,7 +225,7 @@ const initKropp = (js) => js.slice(js.indexOf('export function initSider'), js.i
 test('Oslo: egen tittel, eget telefonnummer, lenke til Stavanger i footeren', () => {
   const h = les('test/ut/index.html');
   assert.match(h, /<title>Clean Unit – renhold i Oslo<\/title>/);
-  assert.match(h, /<body class="by--oslo">/);
+  assert.match(h, /<body class="by--oslo side--forside">/);
   assert.match(h, /href="tel:\+4721555680">Ring oss – 21 55 56 80/);
   assert.match(h, /class="kontakt__bylenke" href="stavanger\/">Gå til Clean Unit Stavanger →/);
   assert.match(h, /<h1 class="visually-hidden">Renhold i Oslo, Asker og Bærum<\/h1>/);
@@ -104,7 +237,7 @@ test('Oslo: egen tittel, eget telefonnummer, lenke til Stavanger i footeren', ()
 test('Stavanger: egen tittel, eget telefonnummer, lenke til Oslo i footeren', () => {
   const h = les('test/ut/stavanger/index.html');
   assert.match(h, /<title>Clean Unit – renhold i Stavanger<\/title>/);
-  assert.match(h, /<body class="by--stavanger">/);
+  assert.match(h, /<body class="by--stavanger side--forside">/);
   assert.match(h, /href="tel:\+4790065009">Ring oss – 900 65 009/);
   assert.match(h, /class="kontakt__bylenke" href="\.\.\/">Gå til Clean Unit Oslo →/);
   assert.match(h, /<h1 class="visually-hidden">Renhold i Stavanger<\/h1>/);
@@ -189,12 +322,6 @@ test('byggAlle kopierer delte filer og lager Stavanger-siden', () => {
   assert.ok(existsSync('test/ut/bilder/dekning-nett.webp'));
   assert.ok(existsSync('test/ut/bilder/bil.png'));
   assert.ok(existsSync('test/ut/stavanger/index.html'));
-});
-
-test('ingen ufylte plassholdere i noen bygget side', () => {
-  for (const f of ['test/ut/index.html', 'test/ut/stavanger/index.html']) {
-    assert.doesNotMatch(readFileSync(f, 'utf8'), /\{\{/, f);
-  }
 });
 
 test('Stavanger-siden peker til delte filer via ../', () => {
@@ -332,10 +459,7 @@ test('Footer-vannmerket er samme veinett-teppe som heroen', () => {
 // %%FORMSPREE_ID%% som plassholder, og deploy-workflowen bytter den mot
 // secrets.FORMSPREE_ID_OSLO / _STAVANGER. Den første testen her verner om at
 // ingen ekte ID noen gang havner i git-historikken.
-const TILBUD_BYER = [
-  ['test/ut/index.html', 'Oslo', 'renhold@cleanunit.no'],
-  ['test/ut/stavanger/index.html', 'Stavanger', 'thord@cleanunit.no'],
-]
+const TILBUD_BYER = alleSider().map((s) => [s.fil, s.by, s.epost]);
 
 const tilbudSeksjon = (h) => {
   const start = h.indexOf('id="kontakt"')
@@ -419,14 +543,15 @@ test('Tilbud: hver by har sin egen mottaker i fallback og emne', () => {
   }
 })
 
-test('Tilbud: «Kontakt» er menyvalg i headeren (ingen knapp); heroen har kun «Ring oss»', () => {
-  for (const [f] of TILBUD_BYER) {
-    const h = les(f);
+test('Tilbud: Kontakt er menyvalg i headeren på alle sider; forsidens hero har kun «Ring oss»', () => {
+  for (const s of alleSider()) {
+    const h = les(s.fil);
+    assert.match(h, /class="side-nav__lenke" href="#kontakt">Kontakt</, `${s.fil}: menyvalget Kontakt peker på #kontakt`);
+    if (s.id !== 'forside') continue;
     const i = h.indexOf('<div class="hero__knapper">');
     const knapper = h.slice(i, h.indexOf('</div>', i));
-    assert.equal((knapper.match(/class="knapp/g) || []).length, 1, `${f}: heroen skal ha én knapp`);
-    assert.match(knapper, /href="tel:/, `${f}: heroens knapp er «Ring oss»`);
-    assert.match(h, /class="side-nav__lenke" href="#kontakt">Kontakt</, `${f}: menyvalget Kontakt peker på #kontakt`);
+    assert.equal((knapper.match(/class="knapp/g) || []).length, 1, `${s.fil}: heroen skal ha én knapp`);
+    assert.match(knapper, /href="tel:/, `${s.fil}: heroens knapp er «Ring oss»`);
   }
 });
 
@@ -505,33 +630,27 @@ test('Tilbud: seksjonen fortsetter bakgrunnsvekslingen og har skjemastil', () =>
   assert.match(css, /\[hidden\] \{ display: none; \}/)
 })
 
+// side_h1 er navnet byer.json og undersidemalene bruker. Den gamle nøkkelklassen [a-z_] slapp
+// den gjennom urørt — {{side_h1}} havnet ordrett i den bygde HTML-en uten at noe feilet.
+test('fyllMal: nøkler med siffer fylles, og ukjente nøkler kaster fortsatt', () => {
+  assert.equal(fyllMal('<h1>{{side_h1}}</h1>', { side_h1: 'Tjenester' }), '<h1>Tjenester</h1>');
+  assert.throws(() => fyllMal('{{side_h2}}', { side_h1: 'Tjenester' }), /Mangler verdi for \{\{side_h2\}\}/);
+  assert.equal(fyllMal('a{{#oslo1}}X{{by}}{{/oslo1}}b', { oslo1: '1', by: 'Oslo' }), 'aXOslob');
+  assert.throws(() => fyllMal('{{#oslo1}}X{{/oslo1}}', {}), /Mangler verdi for \{\{#oslo1\}\}/);
+});
+
 test('fyllMal: betingede blokker tas med bare når nøkkelen har verdi', () => {
   assert.equal(fyllMal('a{{#oslo}}X{{by}}{{/oslo}}b', { oslo: '1', by: 'Oslo' }), 'aXOslob');
   assert.equal(fyllMal('a{{#oslo}}X{{by}}{{/oslo}}b', { oslo: '', by: 'Oslo' }), 'ab');
   assert.throws(() => fyllMal('{{#oslo}}X{{/oslo}}', {}), /Mangler verdi for \{\{#oslo\}\}/);
 });
 
-test('Toppmeny: lenkene i Maritts rekkefølge peker på ankre som finnes, med den andre byen', () => {
-  for (const [f, andre] of [['test/ut/index.html', 'Stavanger'], ['test/ut/stavanger/index.html', 'Oslo']]) {
-    const h = les(f);
-    const nav = h.slice(h.indexOf('<header class="side-nav"'), h.indexOf('</header>'));
-    const lenker = [...nav.matchAll(/class="side-nav__lenke" href="#([a-z-]+)">([^<]+)</g)].map((m) => [m[1], m[2]]);
-    assert.deepEqual(lenker.map((l) => l[1]),
-      ['Tjenester', 'Referanser', 'Om oss', 'Miljø', 'Kontakt'], `${f}: menyrekkefølgen`);
-    for (const [id] of lenker) assert.match(h, new RegExp(`id="${id}"`), `${f}: mangler #${id}`);
-    assert.match(nav, new RegExp(`class="side-nav__by" href="[^"]+">${andre} `), `${f}: lenke til ${andre}`);
-    assert.doesNotMatch(nav, /side-nav__kontakt/, `${f}: ingen Kontakt-knapp i headeren`);
-    assert.match(h, /id="kontakt"/, f);
-  }
-});
-
 test('Maritts innhold (Oppsett ny nettside) står på Oslo-siden: sju tjenester, referanser, team, miljøblokker og kontaktpersoner', () => {
-  const h = les('test/ut/index.html');
+  const h = heleBy('Oslo');
   for (const t of ['Fast daglig renhold', 'Renhold av barnehager', 'Hovedrengjøring', 'Teppe- og møbelrens',
     'Gulvvedlikehold', 'Vindusvask', 'Hygieneartikler']) {
     assert.match(h, new RegExp(`<h3>${t}</h3>`), `tjeneste: ${t}`);
   }
-  assert.equal((h.match(/class="tjeneste-kort[\s"]/g) || []).length, 7, 'sju tjenestekort');
   for (const t of ['BSN – Boligstiftelsen Nydalen', 'Dr. Brandt', 'Vilma', 'Marit Byfuglien', 'Mari Pedersen',
     'Guro Klingenberg Schei', 'Miljøfyrtårn siden 2011',
     'Medlem av Virke og tariffbundet', 'Offentlig godkjent renholdsbedrift', 'Hvorfor vi velger bort underleverandører',
@@ -544,7 +663,7 @@ test('Maritts innhold (Oppsett ny nettside) står på Oslo-siden: sju tjenester,
 });
 
 test('Stavanger-siden får ikke Oslo-kontorets tekster, men beholder sine egne', () => {
-  const h = les('test/ut/stavanger/index.html');
+  const h = heleBy('Stavanger');
   for (const t of ['Marit Byfuglien', 'Guro Klingenberg', 'tjeneste-grid--sju', 'Boligstiftelsen Nydalen']) {
     assert.ok(!h.includes(t), `Oslo-teksten «${t}» lekker inn i Stavanger-siden`);
   }

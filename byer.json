@@ -3,7 +3,11 @@
     {
       "mappe": "",
       "sider": {
-        "forside": { "tittel": "Clean Unit – renhold i Oslo", "beskrivelse": "Profesjonelt renhold i Oslo – barnehager, skoler og bedrifter. Direkte ansatte, ingen underleverandører." }
+        "forside": { "tittel": "Clean Unit – renhold i Oslo", "beskrivelse": "Profesjonelt renhold i Oslo – barnehager, skoler og bedrifter. Direkte ansatte, ingen underleverandører." },
+        "tjenester": { "h1": "Tjenester", "tittel": "Tjenester – Clean Unit renhold i Oslo", "beskrivelse": "Fast daglig renhold, barnehagerenhold, hovedrengjøring, teppe- og møbelrens, gulvvedlikehold, vindusvask og hygieneartikler i Oslo og omegn." },
+        "referanser": { "h1": "Referanser", "tittel": "Referanser – Clean Unit renhold i Oslo", "beskrivelse": "Hva barnehager, skoler og virksomheter sier om Clean Unit: faste renholdere, god kommunikasjon og tett oppfølging." },
+        "om_oss": { "h1": "Om oss", "tittel": "Om oss – Clean Unit renhold i Oslo", "beskrivelse": "Clean Unit startet i 2007 med to personer og hver sin mopp. Les om renholdsbedriften, ledelsen og hvordan det er å jobbe hos oss." },
+        "miljo": { "h1": "Miljø og seriøsitet", "tittel": "Miljø og seriøsitet – Clean Unit renhold i Oslo", "beskrivelse": "Miljøfyrtårn siden 2011, offentlig godkjent renholdsbedrift, tariffbundet og medlem av Virke. Vi bruker egne ansatte, ikke underleverandører." }
       },
       "data": {
         "by": "Oslo",
@@ -24,7 +28,11 @@
     {
       "mappe": "stavanger",
       "sider": {
-        "forside": { "tittel": "Clean Unit – renhold i Stavanger", "beskrivelse": "Clean Unit Stavanger AS. Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører." }
+        "forside": { "tittel": "Clean Unit – renhold i Stavanger", "beskrivelse": "Clean Unit Stavanger AS. Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører." },
+        "tjenester": { "h1": "Tjenester", "tittel": "Tjenester – Clean Unit renhold i Stavanger", "beskrivelse": "Fast daglig renhold, barnehagerenhold, hovedrengjøring, gulvbehandling, vinduspuss og hygieneartikler fra Clean Unit Stavanger." },
+        "referanser": { "h1": "Referanser", "tittel": "Referanser – Clean Unit renhold i Stavanger", "beskrivelse": "Hva kundene sier om Clean Unit: direkte ansatte, god oppfølging og fokus på kvalitet i renholdet." },
+        "om_oss": { "h1": "Om oss", "tittel": "Om oss – Clean Unit renhold i Stavanger", "beskrivelse": "Om Clean Unit Stavanger: en servicebedrift som utfører renhold, gulvbehandling og levering av hygieneartikler til bedriftsmarkedet." },
+        "miljo": { "h1": "Miljø og seriøsitet", "tittel": "Miljø og seriøsitet – Clean Unit renhold i Stavanger", "beskrivelse": "Miljø og seriøsitet hos Clean Unit Stavanger: egne ansatte, ordnede arbeidsforhold og godkjent renholdsbedrift." }
       },
       "data": {
         "by": "Stavanger",

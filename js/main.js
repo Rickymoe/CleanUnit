@@ -468,7 +468,7 @@ function tilbudSkjema() {
 }
 
 // Toppmeny: mobilmenyen åpnes av knappen (lukkes av Escape, et trykk på en lenke eller et trykk
-// utenfor), og lenken til seksjonen man er i markeres med aria-current. Uten JS er lenkene alltid synlige.
+// utenfor), og gjeldende side markeres med aria-current i HTML-en. Uten JS er lenkene alltid synlige.
 function sideNav() {
   const nav = document.querySelector('.side-nav')
   if (!nav) return
@@ -486,10 +486,13 @@ function sideNav() {
   bryter.addEventListener('click', () => sett(bryter.getAttribute('aria-expanded') !== 'true'))
   // Merket i hjørnet tar deg til toppen og spiller heroens logo-animasjon på nytt (Ricky
   // 2026-10-03). href="#" gjør «til toppen» uten JS; her blir det en myk rulling uten «#» i
-  // adressefeltet. Headeren er sticky og kan ikke brukes som anker (den ligger allerede øverst i
+  // adressefeltet. Bare forsiden har hero — på undersidene lenker logoen til byens forside og får
+  // navigere vanlig (se vernet under). Headeren er sticky og kan ikke brukes som anker (den ligger allerede øverst i
   // vinduet, så en lenke til den gjør ingenting). Animasjonen starter først når rullingen er
   // framme, ellers ville den gått ferdig utenfor syne.
   nav.querySelector('.side-nav__logo').addEventListener('click', (e) => {
+    // Undersidene har ingen hero å rulle til: da er logoen en vanlig lenke til byens forside.
+    if (!document.querySelector('.hero')) return
     e.preventDefault()
     sett(false)
     history.replaceState(null, '', window.location.pathname)
@@ -511,25 +514,10 @@ function sideNav() {
     if (bryter.getAttribute('aria-expanded') === 'true' && !nav.contains(e.target)) sett(false)
   })
 
-  // Aktiv seksjon: den siste lenkede seksjonen hvis topp er passert en linje litt under menyen.
-  const lenker = [...nav.querySelectorAll('.side-nav__lenke')]
-  const mal = lenker.map((a) => ({ a, el: document.querySelector(a.getAttribute('href')) })).filter((x) => x.el)
-  let ventende = false
-  const oppdater = () => {
-    ventende = false
-    const linje = nav.getBoundingClientRect().height + window.innerHeight * 0.25
-    let aktiv = null
-    for (const m of mal) if (m.el.getBoundingClientRect().top <= linje) aktiv = m.a
-    for (const m of mal) {
-      if (m.a === aktiv) m.a.setAttribute('aria-current', 'true')
-      else m.a.removeAttribute('aria-current')
-    }
-  }
+  // Gjeldende side markeres med aria-current="page" i HTML-en (bygg.js). Scrollspy er fjernet: fire av
+  // valgene er egne sider, og et ekstra uthevet «Kontakt» ville gitt to uthevede menyvalg samtidig.
   addEventListener('scroll', festet, { passive: true })
   festet()
-  addEventListener('scroll', () => { if (!ventende) { ventende = true; requestAnimationFrame(oppdater) } }, { passive: true })
-  addEventListener('resize', oppdater)
-  oppdater()
 
   // Personvern-modal
   const privacyBtn = document.getElementById('privacy-btn')

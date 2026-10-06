@@ -32,9 +32,10 @@ addEventListener("load", function () {
 <meta name="theme-color" content="#00595B">
 <meta property="og:type" content="website">
 <meta property="og:title" content="{{side_tittel}}">
-<meta property="og:description" content="Barnehagerenhold, skolerenhold, kontor og bilforhandlere. Direkte ansatte, ingen underleverandører.">
+<meta property="og:description" content="{{side_beskrivelse}}">
 <meta property="og:image" content="https://rickymoe.github.io/CleanUnit/bilder/og-cleanunit.png">
 <meta property="og:url" content="{{side_url}}">
+<link rel="canonical" href="{{side_url}}">
 <meta property="og:locale" content="nb_NO">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="{{rot}}bilder/favicon.svg">
@@ -46,23 +47,23 @@ addEventListener("load", function () {
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{rot}}css/style.css">
 </head>
-<body class="{{body_klasse}}">
+<body class="{{body_klasse}} side--{{side_klasse}}">
 <a class="hopp-til-innhold" href="#innhold">Hopp til innhold</a>
 <!-- Toppmeny (Ricky 2026-10-02: «vi trenger en header med lenke nedover på siden»), i Maritts
-     rekkefølge: Tjenester · Referanser · Om oss · Miljø · Kontakt (Marit 2026-10-05: kortere topptekst, «Kontakt» som menyvalg, ingen knapp), med den andre byen til
-     høyre og «Kontakt» som knapp. Siden er fortsatt én lang side, så lenkene er ankre. Uten JS
-     vises lenkene alltid (html.js styrer mobilmenyen), og
-     .side-nav__lenke[aria-current] settes av js/main.js ut fra hvor man er på siden. -->
+     rekkefølge: Tjenester · Referanser · Om oss · Miljø · Kontakt (Marit 2026-10-05: kortere
+     topptekst, «Kontakt» som menyvalg, ingen knapp), med den andre byen til høyre. Fire av
+     menyvalgene er egne sider (aria-current="page" på gjeldende); Kontakt er #kontakt nederst på
+     hver side. Ingen scrollspy. Uten JS vises lenkene alltid (html.js styrer mobilmenyen). -->
 <header class="side-nav" id="topp">
   <div class="wrap side-nav__rad">
-    <a class="side-nav__logo" href="#" aria-label="Clean Unit, til toppen"><svg viewBox="501.55 -34.9 104 104" width="104" height="104" aria-hidden="true" focusable="false"><circle cx="569.0" cy="-7.5" r="25.7" fill="#87CAC9"/><circle cx="530.2" cy="27.8" r="17.8" fill="#008789"/><circle cx="551.2" cy="58.4" r="9.0" fill="#AED1D1"/></svg></a>
+    <a class="side-nav__logo" href="{{logo_href}}" aria-label="{{logo_label}}"><svg viewBox="501.55 -34.9 104 104" width="104" height="104" aria-hidden="true" focusable="false"><circle cx="569.0" cy="-7.5" r="25.7" fill="#87CAC9"/><circle cx="530.2" cy="27.8" r="17.8" fill="#008789"/><circle cx="551.2" cy="58.4" r="9.0" fill="#AED1D1"/></svg></a>
     <button class="side-nav__bryter" type="button" aria-expanded="false" aria-controls="side-nav-meny"><span class="side-nav__bryter-ikon" aria-hidden="true"></span><span class="visually-hidden">Meny</span></button>
     <nav class="side-nav__meny" id="side-nav-meny" aria-label="Hovedmeny">
       <ul>
-        <li><a class="side-nav__lenke" href="#tjenester">Tjenester</a></li>
-        <li><a class="side-nav__lenke" href="#referanser">Referanser</a></li>
-        <li><a class="side-nav__lenke" href="#om-oss">Om oss</a></li>
-        <li><a class="side-nav__lenke" href="#hvorfor">Miljø</a></li>
+        <li><a class="side-nav__lenke" href="{{by_rot}}tjenester/"{{aktiv_tjenester}}>Tjenester</a></li>
+        <li><a class="side-nav__lenke" href="{{by_rot}}referanser/"{{aktiv_referanser}}>Referanser</a></li>
+        <li><a class="side-nav__lenke" href="{{by_rot}}om-oss/"{{aktiv_om_oss}}>Om oss</a></li>
+        <li><a class="side-nav__lenke" href="{{by_rot}}miljo/"{{aktiv_miljo}}>Miljø</a></li>
         <li><a class="side-nav__lenke" href="#kontakt">Kontakt</a></li>
       </ul>
       <a class="side-nav__by" href="{{andre_by_href}}">{{andre_by_navn}} <span aria-hidden="true">↗</span></a>

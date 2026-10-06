@@ -13,21 +13,30 @@ const DELTE_MAPPER = ['css', 'js', 'bilder'];
 // URL-ene blir /tjenester/ og /stavanger/tjenester/.
 export const SIDER = [
   { id: 'forside', fil: 'forside', sti: '' },
+  { id: 'tjenester', fil: 'tjenester', sti: 'tjenester/' },
+  { id: 'referanser', fil: 'referanser', sti: 'referanser/' },
+  { id: 'om_oss', fil: 'om-oss', sti: 'om-oss/' },
+  { id: 'miljo', fil: 'miljo', sti: 'miljo/' },
 ];
 
 // Menyvalgene som er undersider. Nøklene aktiv_<id> må alltid finnes (også for sider som ikke er
 // bygget ennå), ellers kaster fyllMal på menyen.
 export const NAV_IDER = ['tjenester', 'referanser', 'om_oss', 'miljo'];
 
+// Nøkler skrives [a-z][a-z0-9_]* — små bokstaver, sifre og understrek, og må begynne på en
+// bokstav. Sifre ble tillatt 2026-10-06: side_h1 er nettopp det navnet byer.json og malene
+// bruker, og den gamle klassen [a-z_] lot den stå igjen i den bygde HTML-en uten å si fra.
+// Navnet på en nøkkel matches ordrett mot data, så et siffer i seg selv er ikke farlig.
+//
 // Betingede blokker: {{#nøkkel}}…{{/nøkkel}} tas med bare når data[nøkkel] er en ikke-tom
 // streng, {{^nøkkel}}…{{/nøkkel}} bare når den er tom. Brukt for innhold som bare gjelder ett
 // kontor (Oslo-teksten fra Marit), så det ikke ligger i Stavanger-siden og blir skjult med CSS.
 export function fyllMal(mal, data) {
-  mal = mal.replace(/\{\{([#^])([a-z_]+)\}\}([\s\S]*?)\{\{\/\2\}\}/g, (_, tegn, nokkel, innhold) => {
+  mal = mal.replace(/\{\{([#^])([a-z][a-z0-9_]*)\}\}([\s\S]*?)\{\{\/\2\}\}/g, (_, tegn, nokkel, innhold) => {
     if (!(nokkel in data)) throw new Error(`Mangler verdi for {{${tegn}${nokkel}}}`);
     return (tegn === '#') === Boolean(data[nokkel]) ? innhold : '';
   });
-  return mal.replace(/\{\{([a-z_]+)\}\}/g, (_, nokkel) => {
+  return mal.replace(/\{\{([a-z][a-z0-9_]*)\}\}/g, (_, nokkel) => {
     if (!(nokkel in data)) throw new Error(`Mangler verdi for {{${nokkel}}}`);
     return data[nokkel];
   });
@@ -37,6 +46,8 @@ export function fyllMal(mal, data) {
 // partials kan inneholde både nøkler og betingede blokker. Linjeskiftet etter markøren spises:
 // partialene slutter selv med linjeskift, så utfallet blir byte-likt det som lå inline.
 // Partials kan bruke andre partials; fem runder fanger sirkulære referanser.
+// Partial-navn skrives [a-z-]: små bokstaver og bindestrek (om-oss, kontakt). De er filnavn,
+// ikke nøkler — de går aldri gjennom fyllMal.
 export function settInnDeler(tekst, les, side) {
   for (let runde = 0; runde < 5; runde++) {
     const ny = tekst.replace(/\{\{>\s*([a-z-]+)\s*\}\}\n?/g, (_, navn) =>
