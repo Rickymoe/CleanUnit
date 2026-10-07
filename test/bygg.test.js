@@ -83,11 +83,11 @@ test('SIDER: forsiden først, unike id-er, unike stier', () => {
 
 const les = (f) => readFileSync(f, 'utf8');
 
-// Alle ti sider: [by, bygg-mappe, kontor-epost] × fem sider (id → mappe under byen).
-const BYER_UT = [['Oslo', 'test/ut', 'renhold@cleanunit.no'], ['Stavanger', 'test/ut/stavanger', 'thord@cleanunit.no']];
+// Alle ti sider: [by, bygg-mappe] × fem sider (id → mappe under byen).
+const BYER_UT = [['Oslo', 'test/ut'], ['Stavanger', 'test/ut/stavanger']];
 const STIER = { forside: '', tjenester: 'tjenester/', referanser: 'referanser/', om_oss: 'om-oss/', miljo: 'miljo/' };
-const alleSider = () => BYER_UT.flatMap(([by, mappe, epost]) =>
-  Object.entries(STIER).map(([id, sti]) => ({ by, id, epost, fil: `${mappe}/${sti}index.html` })));
+const alleSider = () => BYER_UT.flatMap(([by, mappe]) =>
+  Object.entries(STIER).map(([id, sti]) => ({ by, id, fil: `${mappe}/${sti}index.html` })));
 const sideFil = (by, id) => alleSider().find((s) => s.by === by && s.id === id).fil;
 // All tekst en by viser (de fem sidene limt sammen) — for tester som bryr seg om at innholdet finnes,
 // ikke hvilken side det står på.
@@ -838,6 +838,26 @@ test('Stavanger: ingen Oslo-tekster på noen av de fem sidene, men egne tekster 
   for (const s of alleSider().filter((x) => x.by === 'Stavanger')) {
     assert.match(les(s.fil), /<body class="by--stavanger side--/, s.fil);
     assert.match(les(s.fil), /class="kontakt__bylenke" href="\.\.\/(\.\.\/)?">Gå til Clean Unit Oslo →/, `${s.fil}: bylenken til Oslo (forsiden)`);
+  }
+});
+
+// Kunden vil ha én kontaktadresse: kortet har post@ i toppboksen og telefonen kun der, ingen egen
+// kanal-linje (telefon · e-post) under adressen. Mobilnumrene i personradene er greit.
+test('Kontakt-kortet: post@cleanunit.no som eneste kunde-e-post, telefonen kun i toppboksen', () => {
+  for (const s of alleSider()) {
+    const h = les(s.fil);
+    assert.doesNotMatch(h, /renhold@cleanunit\.no/, `${s.fil}: gammel Oslo-adresse`);
+    const kort = h.match(/<section class="stopp--kontakt"[\s\S]*?<\/section>/);
+    assert.ok(kort, `${s.fil}: Kontakt-kortet mangler`);
+    const k = kort[0];
+    assert.doesNotMatch(k, /thord@cleanunit\.no|renhold@cleanunit\.no/, `${s.fil}: gammel adresse i kortet`);
+    assert.deepEqual(k.match(/mailto:[^"]+/g), ['mailto:post@cleanunit.no'], `${s.fil}: skal ha én e-post`);
+    assert.doesNotMatch(k, /kontakt__kanal/, `${s.fil}: egen telefon · e-post-linje`);
+    const tlf = s.by === 'Oslo' ? '21 55 56 80' : '900 65 009';
+    const boks = k.match(/<div class="kontakt__direkte">[\s\S]*?<\/div>/)[0];
+    assert.equal(boks.split(tlf).length - 1, 1, `${s.fil}: telefonen skal stå én gang i toppboksen`);
+    const utenBoksOgPersoner = k.replace(boks, '').replace(/<ul class="kontakt__personer">[\s\S]*?<\/ul>/, '');
+    assert.ok(!utenBoksOgPersoner.includes(tlf) && !/href="tel:/.test(utenBoksOgPersoner), `${s.fil}: telefon utenfor toppboksen/personradene`);
   }
 });
 

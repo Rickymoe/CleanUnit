@@ -906,14 +906,13 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   text-underline-offset: .2em;
 }
 @media (hover: hover) { .kontakt__bylenke:hover { text-decoration-thickness: 2px; } }
-.kontakt__kanal { margin-top: var(--s-2); }
 .kontakt__personer { list-style: none; margin: 0; padding: var(--s-4) 0 0; border-top: 1px solid var(--gronn-mellom); display: grid; gap: var(--s-3); font-size: var(--t-sm); color: var(--tekst-svak); }
 /* Personene som små rader med burgunder initialsirkel (samme .team-initialer som i «Om oss», bare mindre): navn, rolle, telefon. */
 .kontakt__personer li { display: flex; align-items: center; gap: var(--s-3); }
 .kontakt__personer .team-initialer { width: 2.75rem; height: 2.75rem; font-size: var(--t-sm); }
 .kontakt__personer li > div { display: grid; gap: .1rem; min-width: 0; }
 .kontakt__personer strong { color: var(--tekst); font-size: var(--t-base); }
-.kontakt__kanal a, .kontakt__personer a { color: var(--teal-mork); text-underline-offset: 3px; }
+.kontakt__personer a { color: var(--teal-mork); text-underline-offset: 3px; }
 
 /* Må ligge sist: samme spesifisitet som en klasse, så rekkefølgen avgjør. */
 [hidden] { display: none; }
