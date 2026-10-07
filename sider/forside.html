@@ -22,11 +22,11 @@
     {{#er_oslo}}<p class="hero__ingress"><strong>Profesjonelt renhold for bedrifter, skoler og barnehager.</strong><br>Etablert 2007, offentlig godkjent, Miljøfyrtårn, ingen underleverandører.</p>
     {{/er_oslo}}{{^er_oslo}}<p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte&nbsp;– ingen underleverandører.</p>
     {{/er_oslo}}  </div>
-  <!-- Kontaktlinja: «Kontakt oss på <e-post> eller ring <telefon>» (Marit: kunden ønsker e-post/telefon, ikke skjema).
-       E-posten kommer fra byer.json (felles.kontakt_epost, ikke bekreftet), telefonen er byens egen. -->
+  <!-- Kontakt i heroen: to knapper side om side, «Ring oss» (fylt) og «Send e-post» (omriss). Ricky 2026-10-07: e-postlinja ble gjort om til knapp.
+       E-posten kommer fra byer.json (felles.kontakt_epost), telefonen er byens egen. -->
   <div class="hero__knapper">
-    <p class="hero__kontakt">Kontakt oss på <a href="mailto:{{kontakt_epost}}">{{kontakt_epost}}</a> eller</p>
     <a class="knapp knapp--fyll" href="tel:{{telefon}}">Ring oss – {{telefon_visning}}</a>
+    <a class="knapp knapp--omriss" href="mailto:{{kontakt_epost}}">Send e-post</a>
   </div>
   <!-- Scenen (Marits illustrasjon, modernisert, 2026-10-03): varebil, by, sol og ballong i ett bilde, så
        heroen ikke lenger trenger egen sol, bybakgrunn eller rutebånd. Bildene er dekorative (tom alt). Hver by har sin egen scene ({{hero_bilde}} i byer.json): Oslo og Stavanger har hver sin scene; varebilen med logo er tegnet inn i Stavanger-bildet, så .hero__scene-merke skjules der).

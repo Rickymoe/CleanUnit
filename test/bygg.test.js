@@ -681,10 +681,11 @@ test('Kontakt: e-post og telefon samlet ett sted (byer.json), uten hardkodede ko
     assert.doesNotMatch(les(f), /post@cleanunit|jobb@cleanunit/, `${f}: adressen skal komme fra {{kontakt_epost}}/{{jobb_epost}}`);
   }
   assert.equal(byer[0].data.telefon_visning, '21 55 56 80');
-  assert.match(felles._merknad, /IKKE BEKREFTET/);
+  assert.match(felles._merknad, /Bekreftet av Ricky 2026-10-07/);
+  assert.doesNotMatch(felles._merknad, /IKKE BEKREFTET/);
 });
 
-test('Kontakt: Kontakt er menyvalg i headeren; hero-linja har e-post og telefon på alle forsider', () => {
+test('Kontakt: Kontakt er menyvalg i headeren; hero har to knapper (telefon og e-post) på alle forsider', () => {
   for (const s of alleSider()) {
     const h = les(s.fil);
     assert.match(h, /class="side-nav__lenke" href="#kontakt">Kontakt</, `${s.fil}: menyvalget Kontakt peker på #kontakt`);
@@ -692,9 +693,16 @@ test('Kontakt: Kontakt er menyvalg i headeren; hero-linja har e-post og telefon 
     if (s.id !== 'forside') continue;
     const i = h.indexOf('<div class="hero__knapper">');
     const knapper = h.slice(i, h.indexOf('</div>', i));
-    assert.ok(knapper.includes(`Kontakt oss på <a href="mailto:${KONTAKT_EPOST}">${KONTAKT_EPOST}</a>`), `${s.fil}: e-post i kontaktlinja`);
-    assert.equal((knapper.match(/class="knapp/g) || []).length, 1, `${s.fil}: heroen skal ha én knapp`);
+    assert.ok(!knapper.includes('Kontakt oss på'), `${s.fil}: den gamle tekstlinja skal være borte fra heroen`);
+    assert.doesNotMatch(h, /hero__kontakt/, `${s.fil}: hero__kontakt er fjernet`);
+    const lenker = knapper.match(/<a [^>]*>/g) || [];
+    assert.equal(lenker.length, 2, `${s.fil}: heroen skal ha nøyaktig to handlinger`);
+    assert.equal((knapper.match(/class="knapp/g) || []).length, 2, `${s.fil}: to knapper`);
+    assert.match(lenker[0], /class="knapp knapp--fyll" href="tel:\+47\d+"/, `${s.fil}: telefonknappen først`);
     assert.match(knapper, new RegExp(`href="tel:\\+47\\d+">Ring oss – ${s.by === 'Oslo' ? '21 55 56 80' : '900 65 009'}`), `${s.fil}: «Ring oss» med byens telefon`);
+    assert.equal(lenker[1], `<a class="knapp knapp--omriss" href="mailto:${KONTAKT_EPOST}">`, `${s.fil}: e-postknappen er omriss-knapp`);
+    assert.match(knapper, />Send e-post<\/a>/, `${s.fil}: e-postknappen heter bare «Send e-post» (Ricky 2026-10-07), uten adressen`);
+    assert.equal(KONTAKT_EPOST, 'post@cleanunit.no');
     const kontakt = h.slice(h.indexOf('id="kontakt"'));
     assert.ok(kontakt.includes(`mailto:${KONTAKT_EPOST}`), `${s.fil}: e-posten står også i Kontakt-seksjonen`);
   }

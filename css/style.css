@@ -124,8 +124,6 @@ a { color: inherit; }
    heroen, under knappene (Ricky, 2026-10-01: «flytte bil og stiplet linje ned
    under knappene»). Knappene sitter derfor over bånd-høyden: 7,5rem er
    båndets egen høyde (bilen 6,4rem over linja pluss stoppnavnene under). */
-.hero__kontakt { flex-basis: 100%; text-align: center; color: var(--teal-mork); font-weight: 600; }
-.hero__kontakt a { color: inherit; font-weight: 700; text-underline-offset: 3px; }
 .hero__knapper {
   /* I flyten, rett under teksten (design-kritikk #1, Ricky 2026-10-02): knappene var absolutt
      plassert fra bunnen, mens teksten sentreres uavhengig av dem, så avstanden dem imellom
@@ -144,6 +142,10 @@ a { color: inherit; }
 }
 @media (max-width: 48rem) {
   .hero__knapper { margin-top: var(--s-6); }
+}
+.hero__knapper .knapp { min-height: 44px; justify-content: center; }
+@media (max-width: 36rem) {
+  .hero__knapper { flex-direction: column; align-items: stretch; }
 }
 /* Lockup: ordmerket «CleanUNIT» og taglinen «Renhold i {by}» er
    ÉN enhet på felles midtakse mellom byene. Før var de to uavhengige blokker
