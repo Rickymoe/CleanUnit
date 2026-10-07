@@ -210,7 +210,6 @@ test('main.js: hver init-funksjon verner mot manglende elementer', () => {
     ['function flaateInn', /if \(reduksjon \|\| !flaate\) return/],
     ['function glansSveip', /if \(reduksjon \|\| !kort\) return/],
     ['function stiNedover', /if \(!rad \|\| !linje \|\| !hero \|\| !footer\) return/],
-    ['function tilbudSkjema', /if \(!skjema\) return/],
   ]) {
     const start = js.indexOf(fn);
     assert.ok(start > -1, fn);
@@ -285,14 +284,15 @@ test('Hero: scene med rekkevidde-linje, uten de gamle rutebåndet, bybakgrunnen 
     const h = les(f);
     assert.match(h, new RegExp(`<p class="hero__rekkevidde">${linje}</p>`), f);
     assert.match(h, /<div class="hero__scene">/, f);
-    assert.match(h, /bilder\/hero-scene\.webp/, f);
-    assert.match(h, /<img class="hero__scene-bilde" src="[^"]*bilder\/hero-scene\.jpg" alt=""/, f);
+    const scene = f.includes('stavanger') ? 'hero-stavanger' : 'hero-scene';
+    assert.match(h, new RegExp(`bilder/${scene}\\.webp`), f);
+    assert.match(h, new RegExp(`<img class="hero__scene-bilde" src="[^"]*bilder/${scene}\\.jpg" alt=""`), f);
     assert.match(h, /class="hero__sti-start"/, `${f}: stien trenger startpunktet sitt`);
-    assert.match(h, /<picture class="hero__scene-vinter">[\s\S]*?bilder\/hero-scene-vinter\.jpg/, `${f}: vinterscenen mangler`);
+    assert.match(h, /<picture class="hero__scene-vinter">[\s\S]*?bilder\/hero-(scene|stavanger)-vinter\.jpg/, `${f}: vinterscenen mangler`);
     assert.match(h, /classList\.add\("vinter"\)/, `${f}: sesongbyttet mangler i <head>`);
     assert.doesNotMatch(h, /hero__(rute|stopp|by|sol)/, `${f}: rester av den gamle heroen`);
   }
-  for (const fil of ['hero-scene.webp', 'hero-scene.jpg', 'hero-scene-vinter.webp', 'hero-scene-vinter.jpg', 'logo-cleanunit-varebil.svg']) {
+  for (const fil of ['hero-scene.webp', 'hero-scene.jpg', 'hero-scene-vinter.webp', 'hero-scene-vinter.jpg', 'hero-stavanger.webp', 'hero-stavanger.jpg', 'hero-stavanger-vinter.webp', 'hero-stavanger-vinter.jpg', 'logo-cleanunit-varebil.svg']) {
     assert.ok(existsSync(`test/ut/bilder/${fil}`), `bilder/${fil} mangler i bygget`);
   }
 });
@@ -451,14 +451,15 @@ test('tjenester/: Oslo har sju tjenestekort med «Les mer», Stavanger seks, beg
   }
 });
 
-test('referanser/: Oslo har sju sitatkort (BSN, Dr. Brandt, NVH, Kanvas, KG, Medistim, Stålverkskroken), Stavanger fem, på --base-hodet', () => {
+test('referanser/: Oslo har seks sitatkort (BSN, Dr. Brandt, Kanvas, KG, Medistim, Stålverkskroken), Stavanger fire, uten NVH, på --base-hodet', () => {
   for (const [by, antall, navn] of [
-    ['Oslo', 7, ['BSN – Boligstiftelsen Nydalen', 'Mariann<br>Dr. Brandt', 'Stiftelsen NVH barnehagen', 'Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken barnehage']],
-    ['Stavanger', 5, ['Stiftelsen NVH barnehagen', 'Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken barnehage']],
+    ['Oslo', 6, ['BSN – Boligstiftelsen Nydalen', 'Mariann<br>Dr. Brandt', 'Roy Kristensen Bakland<br>Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken barnehage']],
+    ['Stavanger', 4, ['Roy Kristensen Bakland<br>Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken barnehage']],
   ]) {
     const h = les(sideFil(by, 'referanser'));
     assert.equal((h.match(/class="sitat-kort"/g) || []).length, antall, `${by}: antall sitatkort`);
     for (const t of navn) assert.ok(h.includes(t), `${by}: mangler «${t}»`);
+    assert.ok(!/NVH|logo-nvh|Cecilie|Beck-Hansen/.test(h), `${by}: NVH og Cecilie skal være borte`);
     assert.match(h, /<div class="side-hode side-hode--ned-base">/, `${by}: hodet toner ned til --base`);
     assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Dette sier kundene våre</h2></div>'), by);
   }
@@ -476,7 +477,7 @@ test('om-oss/: «Om oss», flåten og «Jobb hos oss» (åpen søknad, ansattsit
     assert.ok(h.indexOf('id="om-oss"') < h.indexOf('id="jobb-hos-oss"'), `${by}: rekkefølgen`);
     const jobb = h.slice(h.indexOf('id="jobb-hos-oss"'));
     assert.equal((jobb.match(/class="sitat-kort"/g) || []).length, sitater, `${by}: ansattsitater`);
-    assert.ok(h.includes('mailto:jobb@cleanunit.no?subject='), `${by}: åpen søknad`);
+    assert.match(jobb, /For å søke jobb: <a href="mailto:jobb@cleanunit\.no">jobb@cleanunit\.no<\/a>/, `${by}: jobbsøkere`);
     assert.match(h, /<div class="flaate" aria-hidden="true">/, `${by}: flåten`);
     assert.match(h, /<p class="eyebrow">Jobb hos oss<\/p>/, `${by}: «Jobb hos oss» beholder eyebrow`);
     assert.doesNotMatch(h.slice(h.indexOf('id="om-oss"'), h.indexOf('id="jobb-hos-oss"')), /class="eyebrow"/, `${by}: «Om oss»-eyebrowen er H1 nå`);
@@ -555,10 +556,10 @@ test('Forsiden: tre tjenestekort uten «Les mer», én «Se alle tjenester →»
   }
 });
 
-test('Forsiden: kunderaden lenker til referanser/ (Oslo 5 logoer, Stavanger 4), i riktig rekkefølge', () => {
+test('Forsiden: kunderaden lenker til referanser/ (Oslo 5 logoer, Stavanger 3), i riktig rekkefølge', () => {
   for (const [by, logoer] of [
     ['Oslo', ['logo-bsn', 'logo-kg', 'logo-kanvas', 'logo-medistim', 'logo-pioner']],
-    ['Stavanger', ['logo-nvh', 'logo-kanvas', 'logo-kg', 'logo-medistim']],
+    ['Stavanger', ['logo-kanvas', 'logo-kg', 'logo-medistim']],
   ]) {
     const h = les(sideFil(by, 'forside'));
     const start = h.indexOf('<section class="stopp--kunder" id="kunder">');
@@ -636,51 +637,34 @@ test('Footer-vannmerket er samme veinett-teppe som heroen', () => {
   assert.doesNotMatch(css, /hero-kart-vannmerke/)
 })
 
-// Tilbudsskjemaet (2026-09-27). Ett Formspree-skjema per by, så hvert kontor
-// får bare sin egen post — Oslo til renhold@, Stavanger til thord@. Begge
-// sider bygges fra deler/layout.html + sider/*.html, så forskjellene må komme fra byer.json.
-// Formspree-abonnementet er ennå ikke anskaffet (Christopher): kilden har
-// %%FORMSPREE_ID%% som plassholder, og deploy-workflowen bytter den mot
-// secrets.FORMSPREE_ID_OSLO / _STAVANGER. Den første testen her verner om at
-// ingen ekte ID noen gang havner i git-historikken.
-const TILBUD_BYER = alleSider().map((s) => [s.fil, s.by, s.epost]);
+// Kontakt (tilbudsskjemaet er fjernet på kundens ønske: e-post og telefon i stedet).
+// Kontakt-e-posten og jobb-e-posten står ÉN gang, i byer.json (felles); alt annet leser dem derfra.
+const KONTAKT_EPOST = 'post@cleanunit.no';
 
-const tilbudSeksjon = (h) => {
-  const start = h.indexOf('id="kontakt"')
-  return start < 0 ? '' : h.slice(start, h.indexOf('</section>', start))
-}
-
-test('Tilbud: ingen ekte Formspree-ID er committet', () => {
-  const filer = ['deler/layout.html', 'deler/kontakt.html', 'sider/forside.html', '.github/workflows/deploy.yml', 'byer.json',
-    'test/ut/index.html', 'test/ut/stavanger/index.html']
-  for (const f of filer) {
-    assert.doesNotMatch(les(f), /formspree\.io\/f\/(?!%%FORMSPREE_ID%%)/, `${f}: ekte Formspree-ID i kilden`)
+test('Skjemaet er borte: ingen form, Formspree, skjemastil eller skjema-JS noe sted', () => {
+  for (const f of ['deler/layout.html', 'deler/kontakt.html', 'sider/forside.html', 'sider/om-oss.html', 'byer.json',
+    'test/ut/index.html', 'test/ut/stavanger/index.html', 'test/ut/om-oss/index.html', 'test/ut/stavanger/om-oss/index.html']) {
+    assert.doesNotMatch(les(f), /<form|formspree|FORMSPREE|tilbud-skjema|tilbud-varsel|skjema-/i, `${f}: rester av skjemaet`);
   }
-})
+  const css = les('css/style.css'), js = les('js/main.js'), y = les('.github/workflows/deploy.yml');
+  assert.doesNotMatch(css, /tilbud-skjema|skjema-(felt|rad|varsel|feil|kvittering|notat|valgfri)/, 'skjemastil i CSS');
+  assert.doesNotMatch(js, /tilbudSkjema|formspree|FORMSPREE/i, 'skjema-JS');
+  assert.doesNotMatch(y, /formspree|FORMSPREE/i, 'Formspree i deploy.yml');
+  assert.doesNotMatch(y, /secrets\./, 'deploy.yml trenger ikke lenger secrets');
+});
 
-// Workflowen injiserte tidligere i to hardkodede filer (dist/index.html og
-// dist/stavanger/index.html). Med ti sider ville de åtte undersidene fått stå igjen med
-// plassholderen — skjemaet ser ferdig ut, men gatingen i main.js sperrer sendingen, så
-// feilen ville vært stille i produksjon. Tellingen gjør feil antall til en høy feil.
-test('deploy.yml: injisering og stripping treffer alle sider, ikke to hardkodede stier, og feiler høyt ved feil antall', () => {
+test('deploy.yml: strippingen treffer alle ti sider', () => {
   const y = les('.github/workflows/deploy.yml');
-  assert.doesNotMatch(y, /injiser dist\/index\.html|for f in dist\/index\.html dist\/stavanger\/index\.html/, 'hardkodede stier');
-  assert.match(y, /find dist -name index\.html -not -path 'dist\/stavanger\/\*'/, 'Oslo-sidene finnes med find');
-  assert.match(y, /find dist\/stavanger -name index\.html/, 'Stavanger-sidene finnes med find');
-  assert.match(y, /-ne 5/, 'antall sider per by kontrolleres');
   assert.match(y, /find dist -name '\*\.html'/, 'stripping går over alle html-filer');
   assert.match(y, /-eq 10/, 'totalt antall sider kontrolleres');
-  assert.match(y, /FORMSPREE_ID_OSLO/);
-  assert.match(y, /FORMSPREE_ID_STAVANGER/);
 });
 
 test('Kontakt-blokken har én kilde: delt partial, ikke inline i noen side', () => {
   const kontakt = les('deler/kontakt.html');
-  assert.equal((kontakt.match(/id="tilbud-skjema"/g) || []).length, 1, 'partialen har skjemaet');
   assert.equal((kontakt.match(/<section class="stopp--kontakt" id="kontakt">/g) || []).length, 1);
   assert.match(les('deler/layout.html'), /\{\{> side\}\}\n\{\{> kontakt\}\}\n<\/main>/, 'layouten setter inn kontakt etter siden');
   for (const f of ['sider/forside.html']) {
-    assert.doesNotMatch(les(f), /id="kontakt"|id="tilbud-skjema"/, `${f}: kontakt skal ikke ligge inline`);
+    assert.doesNotMatch(les(f), /id="kontakt"/, `${f}: kontakt skal ikke ligge inline`);
   }
 });
 
@@ -689,145 +673,51 @@ test('Kontakt: bylenken peker til den andre byens forside fra enhver side', () =
   assert.match(les('deler/kontakt.html'), /class="kontakt__bylenke" href="\{\{andre_by_hjem\}\}">Gå til Clean Unit \{\{andre_by_navn\}\} →/);
 });
 
-test('Tilbud: skjemaet står synlig, men knappen er låst til ID-en finnes', () => {
-  for (const [f] of TILBUD_BYER) {
-    const seksjon = tilbudSeksjon(les(f))
-    assert.ok(seksjon, `${f}: mangler #kontakt`)
-    // Ricky 2026-09-27: seksjonen skal se ferdig ut også før abonnementet er
-    // på plass, så skjemaet vises. Det som hindrer en tapt henvendelse er
-    // derfor ikke lenger hidden, men den låste knappen + at main.js ikke
-    // kobler på innsendingen så lenge plassholderen står.
-    assert.match(seksjon, /<form class="tilbud-skjema" id="tilbud-skjema"/, `${f}: skjemaet`)
-    assert.doesNotMatch(seksjon, /id="tilbud-skjema"[^>]*\bhidden\b/, `${f}: skjemaet skal ikke være hidden`)
-    assert.match(seksjon, /data-endpoint="https:\/\/formspree\.io\/f\/%%FORMSPREE_ID%%"/, `${f}: plassholder-endepunkt`)
-    assert.match(seksjon, /<button type="submit"[^>]*\bdisabled\b/, `${f}: send-knappen må være disabled i markup`)
+test('Kontakt: e-post og telefon samlet ett sted (byer.json), uten hardkodede kopier i malene', () => {
+  const { felles, byer } = JSON.parse(les('byer.json'));
+  assert.equal(felles.kontakt_epost, KONTAKT_EPOST);
+  assert.equal(felles.jobb_epost, 'jobb@cleanunit.no');
+  for (const f of ['sider/forside.html', 'sider/om-oss.html', 'deler/kontakt.html']) {
+    assert.doesNotMatch(les(f), /post@cleanunit|jobb@cleanunit/, `${f}: adressen skal komme fra {{kontakt_epost}}/{{jobb_epost}}`);
   }
-})
+  assert.equal(byer[0].data.telefon_visning, '21 55 56 80');
+  assert.match(felles._merknad, /IKKE BEKREFTET/);
+});
 
-test('Tilbud: alle feltene har label koblet til id', () => {
-  for (const [f] of TILBUD_BYER) {
-    const seksjon = tilbudSeksjon(les(f))
-    for (const id of ['tilbud-navn', 'tilbud-epost', 'tilbud-telefon',
-      'tilbud-virksomhet', 'tilbud-gjelder', 'tilbud-melding']) {
-      assert.match(seksjon, new RegExp(`for="${id}"`), `${f}: mangler <label for="${id}">`)
-      assert.match(seksjon, new RegExp(`id="${id}"`), `${f}: mangler feltet #${id}`)
-    }
-    // Formspree bruker feltet som heter «email» som svar-til-adresse
-    assert.match(seksjon, /id="tilbud-epost" name="email"/, `${f}: e-postfeltet må hete email`)
-  }
-})
-
-test('Tilbud: «Hva gjelder det» speiler heroens fire kundetyper', () => {
-  for (const [f] of TILBUD_BYER) {
-    const seksjon = tilbudSeksjon(les(f))
-    for (const type of ['Barnehage', 'Skole', 'Kontor', 'Bilforhandler', 'Annet']) {
-      assert.match(seksjon, new RegExp(`<option value="[a-z]+">${type}</option>`), `${f}: mangler ${type}`)
-    }
-  }
-})
-
-test('Tilbud: hver by har sin egen mottaker i fallback og emne', () => {
-  const alle = ['renhold@cleanunit.no', 'thord@cleanunit.no']
-  for (const [f, by, epost] of TILBUD_BYER) {
-    const seksjon = tilbudSeksjon(les(f))
-    // Fallback-ene (varselet i skjemaet og feilboksen) peker på EGET kontor;
-    // kontaktinfoen kan gjerne vise begge kontorene, så vi ser bare på skjemaet + feilboksen.
-    const skjema = seksjon.slice(seksjon.indexOf('<form'), seksjon.indexOf('</form>'))
-    const feil = seksjon.slice(seksjon.indexOf('id="tilbud-feil"'), seksjon.indexOf('</p>', seksjon.indexOf('id="tilbud-feil"')))
-    const fallback = skjema + feil
-    assert.match(fallback, new RegExp(`mailto:${epost.replace('.', '\\.')}`), `${f}: fallbacken mangler eget kontor`)
-    assert.match(seksjon, new RegExp(`name="_subject" value="Ny tilbudsforespørsel – ${by}"`), `${f}: emnefeltet`)
-    for (const annen of alle.filter((e) => e !== epost)) {
-      assert.doesNotMatch(fallback, new RegExp(`mailto:${annen.replace('.', '\\.')}`), `${f}: fallbacken låner ${annen}`)
-    }
-  }
-})
-
-test('Tilbud: Kontakt er menyvalg i headeren på alle sider; forsidens hero har kun «Ring oss»', () => {
+test('Kontakt: Kontakt er menyvalg i headeren; hero-linja har e-post og telefon på alle forsider', () => {
   for (const s of alleSider()) {
     const h = les(s.fil);
     assert.match(h, /class="side-nav__lenke" href="#kontakt">Kontakt</, `${s.fil}: menyvalget Kontakt peker på #kontakt`);
+    assert.match(h, /<a class="side-nav__lenke" href="#kontakt">/, s.fil);
     if (s.id !== 'forside') continue;
     const i = h.indexOf('<div class="hero__knapper">');
     const knapper = h.slice(i, h.indexOf('</div>', i));
+    assert.ok(knapper.includes(`Kontakt oss på <a href="mailto:${KONTAKT_EPOST}">${KONTAKT_EPOST}</a>`), `${s.fil}: e-post i kontaktlinja`);
     assert.equal((knapper.match(/class="knapp/g) || []).length, 1, `${s.fil}: heroen skal ha én knapp`);
-    assert.match(knapper, /href="tel:/, `${s.fil}: heroens knapp er «Ring oss»`);
+    assert.match(knapper, new RegExp(`href="tel:\\+47\\d+">Ring oss – ${s.by === 'Oslo' ? '21 55 56 80' : '900 65 009'}`), `${s.fil}: «Ring oss» med byens telefon`);
+    const kontakt = h.slice(h.indexOf('id="kontakt"'));
+    assert.ok(kontakt.includes(`mailto:${KONTAKT_EPOST}`), `${s.fil}: e-posten står også i Kontakt-seksjonen`);
   }
 });
 
-test('Tilbud: skjemaet har kvittering og feilboks', () => {
-  for (const [f] of TILBUD_BYER) {
-    const seksjon = tilbudSeksjon(les(f))
-    assert.match(seksjon, /id="tilbud-kvittering"[^>]*hidden/, `${f}: kvitteringen`)
-    assert.match(seksjon, /id="tilbud-feil"[^>]*role="alert"[^>]*hidden/, `${f}: feilboksen`)
-  }
-})
+test('Kontakt: seksjonen fortsetter bakgrunnsvekslingen, uten skjema', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\n\.stopp--kontakt \{ padding-block: var\(--seksjon-y\); background: var\(--teal-lys\); \}/);
+  assert.match(css, /\.kontakt__direkte \{/, 'headeren på kontaktkortet mangler');
+  // hidden-attributtet må faktisk skjule.
+  assert.match(css, /\[hidden\] \{ display: none; \}/);
+});
 
-test('Tilbud: varselet om at skjemaet ikke er i bruk står synlig i skjemakortet, uten interne navn', () => {
-  for (const [f, , epost] of TILBUD_BYER) {
-    const seksjon = tilbudSeksjon(les(f))
-    const tag = seksjon.match(/<div class="skjema-varsel" id="tilbud-varsel"[^>]*>/)
-    assert.ok(tag, `${f}: varselet mangler`)
-    assert.doesNotMatch(tag[0], /hidden/, `${f}: varselet skal være synlig i markup`)
-    // Det skal ligge inne i skjemakortet, ellers står det utenfor kortet det
-    // forklarer, og det ville blitt en tredje grid-kolonne i .kontakt-layout.
-    assert.ok(seksjon.indexOf('id="tilbud-varsel"') < seksjon.indexOf('</form>'),
-      `${f}: varselet må ligge inne i skjemaet`)
-    // Besøkende skal ikke se interne huskelapper (leverandør, personnavn): varselet sier at
-    // skjemaet åpner snart og gir telefon og e-post (design-kritikk #12, 2026-10-02).
-    const start = seksjon.indexOf('id="tilbud-varsel"');
-    const varsel = seksjon.slice(start, seksjon.indexOf('</div>', start));
-    assert.match(varsel, /Skjemaet åpner snart/, `${f}: varselet sier ikke at skjemaet åpner snart`)
-    assert.doesNotMatch(varsel, /Formspree|Christopher|abonnement/i, `${f}: varselet viser en intern beskjed`)
-    assert.ok(varsel.includes(`mailto:${epost}`), `${f}: varselet mangler ${epost}`)
-    assert.match(varsel, /href="tel:/, `${f}: varselet mangler telefonlenke`)
-  }
-})
-
-test('Tilbud: varselet skjules i samme slengen som skjemaet vises', () => {
-  const js = les('js/main.js')
-  const kropp = js.slice(js.indexOf('function tilbudSkjema'))
-  assert.match(kropp, /tilbud-varsel/, 'main.js kjenner ikke varselet')
-  assert.match(kropp, /varsel\.hidden = true/, 'varselet skjules ikke når skjemaet tas i bruk')
-})
-
-test('Tilbud: uten ID kobles innsendingen ikke på, og Enter laster ikke siden', () => {
-  const js = les('js/main.js')
-  const kropp = js.slice(js.indexOf('function tilbudSkjema'))
-  assert.match(kropp, /const klar = endepunkt !== '' && !endepunkt\.includes\('%%FORMSPREE_ID%%'\)/,
-    'klar-sjekken mangler')
-  const ikkeKlar = kropp.slice(kropp.indexOf('if (!klar)'), kropp.indexOf('knapp.disabled = false'))
-  assert.match(ikkeKlar, /preventDefault/, 'innsendingen stoppes ikke når endepunktet mangler')
-  assert.match(ikkeKlar, /return/, 'innsendingen kobles på selv uten endepunkt')
-})
-
-test('Tilbud: stien får en node for seksjonen, og skriptet kobles på', () => {
-  const js = les('js/main.js')
-  assert.match(initKropp(js), /tilbudSkjema\(\)/, 'tilbudSkjema kalles ikke fra initSider()')
-  // Gatingen: står plassholderen igjen, finnes ingen ID — da skal skjemaet
-  // forbli skjult og seksjonen vise ring/e-post i stedet.
-  assert.match(js, /includes\('%%FORMSPREE_ID%%'\)/, 'gatingen mot plassholderen mangler')
-})
-
-test('Tilbud: seksjonen fortsetter bakgrunnsvekslingen og har skjemastil', () => {
-  const css = les('css/style.css')
-  // #jobb-hos-oss slutter på --base, så neste seksjon (Miljø, nå på himmelen) tones fra --base; Kontakt er lys teal.
-  assert.match(css, /\n\.stopp--kontakt \{ padding-block: var\(--seksjon-y\); background: var\(--teal-lys\); \}/)
-  assert.match(css, /\.kontakt-layout \{/, 'layout-grid mangler')
-  assert.match(css, /\.skjema-felt label \{/)
-  assert.match(css, /\.tilbud-skjema input,/, 'feltstilen mangler')
-  assert.match(css, /\.skjema-varsel(, \.kontakt__direkte)? \{/)
-  assert.match(css, /\.kontakt__direkte \{/, 'headeren på kontaktkortet mangler')
-  // Den låste knappen må se låst ut: uten en :disabled-regel står den i full
-  // solid teal og ser trykkbar ut mens den ikke gjør noe.
-  assert.match(css, /\.tilbud-skjema button\[type="submit"\]:disabled \{[^}]*opacity/)
-  assert.match(css, /\.knapp:not\(:disabled\):hover/, 'den låste knappen løfter seg på hover')
-  assert.match(css, /\.skjema-feil \{/)
-  assert.match(css, /\.skjema-kvittering \{/)
-  // hidden-attributtet må faktisk skjule: setter man display på disse
-  // selektorene, overstyrer det UA-regelen og den døde formen vises likevel.
-  assert.match(css, /\[hidden\] \{ display: none; \}/)
-})
+test('Stavanger: eget tema (burgunder), eget bybilde og dempede symboler, Oslo uendret', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\.by--stavanger \{\s*--teal: var\(--burgunder\);/);
+  assert.match(css, /\.by--stavanger \.tjeneste-kort__ikon \{/);
+  assert.doesNotMatch(css, /\.by--oslo \{[^}]*--teal:/);
+  assert.match(les('test/ut/stavanger/index.html'), /name="theme-color" content="#5A2848"/);
+  assert.match(les('test/ut/index.html'), /name="theme-color" content="#00595B"/);
+  assert.doesNotMatch(les('test/ut/stavanger/index.html'), /hero-scene/, 'Stavanger skal ikke bruke Oslo-scenen');
+  assert.doesNotMatch(les('test/ut/index.html'), /hero-stavanger/, 'Oslo skal ikke bruke Stavanger-scenen');
+});
 
 // side_h1 er navnet byer.json og undersidemalene bruker. Den gamle nøkkelklassen [a-z_] slapp
 // den gjennom urørt — {{side_h1}} havnet ordrett i den bygde HTML-en uten at noe feilet.
@@ -857,7 +747,7 @@ test('Maritts innhold (Oppsett ny nettside) står på Oslo-siden: sju tjenester,
     assert.ok(h.includes(t), `mangler «${t}»`);
   }
   for (const [tlf] of [['+4797195993'], ['+4747298445']]) assert.ok(h.includes(`href="tel:${tlf}"`), tlf);
-  assert.ok(h.includes('mailto:jobb@cleanunit.no?subject='), 'åpen søknad går til jobb@ (Maritts dokument: «Søker du jobb? Send oss en e-post på jobb@cleanunit.no»)');
+  assert.ok(h.includes('For å søke jobb: <a href="mailto:jobb@cleanunit.no">'), 'jobbsøkere sendes til jobb@');
   assert.match(h, /<div class="om-foto-rad" hidden>/, 'fotoplassholderen skal fortsatt være skjult');
 });
 

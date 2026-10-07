@@ -124,6 +124,8 @@ a { color: inherit; }
    heroen, under knappene (Ricky, 2026-10-01: «flytte bil og stiplet linje ned
    under knappene»). Knappene sitter derfor over bånd-høyden: 7,5rem er
    båndets egen høyde (bilen 6,4rem over linja pluss stoppnavnene under). */
+.hero__kontakt { flex-basis: 100%; text-align: center; color: var(--teal-mork); font-weight: 600; }
+.hero__kontakt a { color: inherit; font-weight: 700; text-underline-offset: 3px; }
 .hero__knapper {
   /* I flyten, rett under teksten (design-kritikk #1, Ricky 2026-10-02): knappene var absolutt
      plassert fra bunnen, mens teksten sentreres uavhengig av dem, så avstanden dem imellom
@@ -727,7 +729,8 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
   .sitat-kort > picture { flex: 0 0 9.5rem; display: flex; align-items: center; }
   .stopp--referanser .sitat-kort:not(:has(> picture)) { padding-left: calc(var(--s-5) + 9.5rem + var(--s-4)); }
 }
-.stopp--jobb .knapp { margin-top: var(--s-6); }
+.stopp--jobb .jobb-soknad { margin-top: var(--s-6); font-weight: 700; font-size: var(--t-md); }
+.stopp--jobb .jobb-soknad a { color: var(--teal-mork); text-underline-offset: 3px; }
 .side-footer { background: var(--teal-mork); color: #fff; padding-block: var(--s-8); }
 .side-footer .wrap { display: grid; gap: var(--s-6); justify-items: center; text-align: center; }
 /* Veinett-teppet i footeren (Ricky, 2026-09-26: «endre vannmerke i footer
@@ -871,81 +874,25 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 }
 .sti__lenke:focus-visible .sti__navn { opacity: 1; }
 
-/* ── Kontakt (skjema + kontaktinfo) ─────────────────────────────────────
+/* ── Kontakt (kontaktinfo) ──────────────────────────────────────────────
    Siste stopp før footeren. Bakgrunnen er --teal-lys fordi seksjonen over
    (Miljø og seriøsitet) er hvit, så den fortsetter vekslingen og skiller
-   seg fra den mørke footeren under.
-
-   Skjemaet står synlig også før Formspree-ID-en finnes (Ricky, 2026-09-27).
-   Send-knappen er da `disabled` i markup og js/main.js kobler ikke på
-   innsendingen, så en forespørsel kan ikke forsvinne ut i tomme luft.
+   seg fra den mørke footeren under. Tilbudsskjemaet er fjernet (Marit): kunden
+   ønsker e-post og telefon i stedet.
 
    [hidden]-regelen nederst må fortsatt ligge sist: den deler spesifisitet med
-   en klasse, så rekkefølgen avgjør om .skjema-varsel, .skjema-feil og
-   .skjema-kvittering faktisk blir skjult når skriptet setter hidden på dem. */
+   en klasse, så rekkefølgen avgjør. */
 .stopp--kontakt { padding-block: var(--seksjon-y); background: var(--teal-lys); }
-.kontakt-layout { display: grid; gap: var(--s-6); margin-top: var(--s-5); }
-@media (min-width: 56rem) {
-  .kontakt-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-8); align-items: start; }
-}
-/* Skjemakortet står til venstre, kontaktinfoen til høyre (Ricky 2026-10-03).
-   Når kortet deler bredden, står feltene i én kolonne igjen. */
-.tilbud-skjema { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(0, 89, 91, .08); }
-.tilbud-skjema > * + * { margin-top: var(--s-4); }
-.skjema-rad { display: grid; gap: var(--s-4); }
-.skjema-felt label { display: block; margin-bottom: var(--s-2); font: 700 var(--t-sm)/1.2 var(--sans); color: var(--tekst); }
-.skjema-valgfri { font-weight: 500; color: var(--tekst-svak); }
-.tilbud-skjema input,
-.tilbud-skjema select,
-.tilbud-skjema textarea {
-  /* Kanten er det eneste som viser at dette er et felt: #C7D8D7 ga 1,48:1 mot hvit, under kravet
-     på 3:1 for grafikk som bærer informasjon (WCAG 1.4.11, design-kritikk #6). #7A9593 er samme
-     grønngrå tone og gir 3,2:1. */
-  width: 100%; padding: 12px 14px; border: 1px solid #7A9593; border-radius: 10px;
-  background: var(--flate); color: var(--tekst); font: 400 var(--t-base)/1.4 var(--sans);
-}
-.tilbud-skjema textarea { resize: vertical; }
-.tilbud-skjema input:focus-visible,
-.tilbud-skjema select:focus-visible,
-.tilbud-skjema textarea:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; border-color: var(--teal); }
-/* justify-content: knappen er inline-flex, og uten den stod teksten til venstre i den brede
-   pillen (design-kritikk #5). */
-.tilbud-skjema button[type="submit"] { width: 100%; justify-content: center; }
-/* Låst send-knapp: skjemaet vises før Formspree-ID-en finnes (Ricky,
-   2026-09-27), og da er knappen `disabled` i markup. Uten denne så den
-   fullt trykkbar ut — solid teal, ingen demping — og da ser det ut som en
-   feil på siden når ingenting skjer. Samme grep som Kuvaas. */
-.tilbud-skjema button[type="submit"]:disabled { opacity: .6; cursor: not-allowed; }
-.skjema-notat { color: var(--tekst-svak); font-size: var(--t-sm); text-align: center; }
+.kontakt-layout { margin-top: var(--s-5); max-width: 40rem; }
+.kontakt__direkte { padding: var(--s-3) var(--s-4); border-radius: 10px; background: var(--teal-lys); }
+.kontakt__direkte p { color: var(--tekst-svak); font-size: var(--t-md); }
+.kontakt__direkte strong { color: var(--teal-mork); }
+.kontakt__direkte a { color: var(--teal-mork); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 
-/* Varselet om at Formspree-abonnementet mangler. Det ligger inne i det hvite
-   kortet, så det får en svak teal-flate i stedet for kortstilen — ellers ble
-   det hvitt på hvitt. Det er en melding, ikke en feil, så den holder seg i
-   paletten og låner ikke rødfargen fra .skjema-feil. js/main.js skjuler det
-   når skjemaet tas i bruk. */
-.skjema-varsel, .kontakt__direkte { padding: var(--s-3) var(--s-4); border-radius: 10px; background: var(--teal-lys); }
-.skjema-varsel > * + * { margin-top: var(--s-2); }
-.skjema-varsel p, .kontakt__direkte p { color: var(--tekst-svak); font-size: var(--t-sm); }
-.skjema-varsel strong, .kontakt__direkte strong { color: var(--teal-mork); }
-.skjema-varsel a, .kontakt__direkte a { color: var(--teal-mork); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
-/* Kortet til høyre har en header i samme stil som varselet øverst i skjemakortet, men med bare «Kontakt» (Ricky 2026-10-05). Egen klasse: js/main.js skjuler .skjema-varsel når skjemaet åpnes, og denne skal bli stående. */
-
-.skjema-feil { margin-top: var(--s-4); padding: var(--s-3) var(--s-4); border-radius: 10px; background: #FDECEF; color: #8A1F35; font-size: var(--t-sm); }
-.skjema-feil a { color: inherit; }
-.skjema-kvittering { margin-top: var(--s-4); padding: var(--s-5) var(--s-4); background: var(--flate); border-radius: var(--radius); text-align: center; box-shadow: 0 1px 3px rgba(0, 89, 91, .08); }
-.skjema-kvittering h3 { color: var(--teal-mork); }
-.skjema-kvittering p { margin-top: var(--s-2); color: var(--tekst-svak); }
-
-/* Kontaktinfoen til høyre for skjemaet (Ricky 2026-10-03): kontorer og personer
-   flyttet hit fra footeren, nå med mørk tekst på lys bunn. */
+/* Kontaktinfoen (Ricky 2026-10-03): kontorer og personer flyttet hit fra footeren, nå med mørk tekst på lys bunn. */
 .kontakt__info { display: grid; gap: var(--s-5); align-content: start; }
-/* Kontaktinfoen står på et hvitt kort som skjemaet (Ricky 2026-10-05: venstresiden var «tung», høyresiden «tynn»):
-   samme flate, radius, skygge og padding gir lik visuell vekt. Ved ≥56rem følger kortet med nedover mens man
-   fyller ut det høye skjemaet (sticky, under den klebrige menyen på 3,75rem). */
+/* Kontaktinfoen står på et hvitt kort. */
 .kontakt__info { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(0, 89, 91, .08); }
-@media (min-width: 56rem) {
-  .kontakt__info { position: sticky; top: calc(3.75rem + var(--s-5)); }
-}
 .kontakt__kontorer { display: grid; gap: var(--s-5); }
 .kontakt__kontorer h3 { color: var(--teal-mork); font-size: var(--t-lg); }
 .kontakt__kontorer p { margin-top: var(--s-1); color: var(--tekst-svak); font-size: var(--t-sm); }
@@ -1322,3 +1269,22 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
   }
   .side-hode__by img { display: block; height: 100%; width: auto; }
 }
+
+/* ── Stavanger: mer burgunder (Marit: Stavanger skal se tydeligere annerledes ut enn Oslo) ───────────
+   Samme logo og samme palett, men Maritts burgunder (RGB 117, 53, 93 = --burgunder) bærer handling,
+   overskriftsaksenter og mørke flater i stedet for den mørke grønnen. De tre tokenene under er de
+   samme som Oslo bruker for handling/mørk flate/lys flate, så alle regler som bruker dem følger med:
+   --teal (knapper, lenker, eyebrow) = burgunder 9,6:1 mot hvit; --teal-mork (footer, tillitsblokk)
+   = mørk burgunder 11,6:1 mot hvit tekst; --teal-lys = svak burgunderflate. Heroscenen har eget
+   bybilde (bilder/hero-stavanger*, tegnet av verktoy/hero-stavanger.py) med samme himmelfarge som
+   Oslo, så overgangene mot siden er uendret. Logoen på varebilen er tegnet inn i bildet. */
+.by--stavanger {
+  --teal: var(--burgunder);
+  --teal-mork: #5A2848;
+  --teal-lys: #F5EBF1;
+}
+.by--stavanger .hero__scene-merke { display: none; }
+/* Tjenestesymbolene (de grønne rundmerkene) tones ned i Stavanger: mindre og dempet, siden de grønne
+   merkene ellers drar siden tilbake mot Oslo-uttrykket (Marit tror ikke Stavanger-lederen bruker symbolene likt). */
+.by--stavanger .tjeneste-kort__ikon { height: 3.5rem; opacity: .85; }
+.by--stavanger .tjeneste-kort { border-top: 3px solid var(--burgunder); }

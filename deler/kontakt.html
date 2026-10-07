@@ -1,88 +1,19 @@
-<!-- TILBUDSSKJEMA (2026-09-27). Ett Formspree-skjema per by, så hvert kontor
-     får bare sin egen post: Oslo -> renhold@cleanunit.no, Stavanger ->
-     thord@cleanunit.no. Begge sider bygges fra denne malen, så forskjellene
-     (mottaker, e-postemne, telefonnummer) kommer fra byer.json.
-
-     Kilden har %%FORMSPREE_ID%% som plassholder. Deploy-workflowen bytter den
-     mot secrets.FORMSPREE_ID_OSLO / _STAVANGER, så ID-en aldri havner i
-     git-historikken.
-
-     NB: Formspree-abonnementet er IKKE anskaffet ennå. Christopher må skaffe
-     et Formspree-abonnement og opprette to skjemaer, ett per kontor, før
-     skjemaet kan tas i bruk. Se .github/workflows/deploy.yml.
-
-     Skjemaet står synlig også før ID-en finnes (Ricky, 2026-09-27), med låst
-     send-knapp og .skjema-varsel øverst i kortet som forklarer hvorfor.
-     main.js lar være å koble på innsendingen så lenge plassholderen står, så
-     ingenting kan sendes dit det ikke finnes noe mottak. -->
+<!-- KONTAKT. Tilbudsskjemaet er fjernet på kundens ønske: kunden ønsker e-post og telefon i stedet.
+     Kontaktadressene kommer fra byer.json (felles.kontakt_epost, byens telefon), så de byttes ett sted. -->
 <section class="stopp--kontakt" id="kontakt">
   <div class="wrap">
     <p class="eyebrow">Kontakt</p>
     <!-- UTKAST: teksten i denne seksjonen er skrevet av oss og ikke
          bekreftet av Marit/Christopher -->
     {{#er_oslo}}<div class="vask-boks"><h2 data-vask>Trenger dere en ny renholdsleverandør?</h2></div>
-        <p class="stopp__lede">Vi tar gjerne en uforpliktende prat. Fortell oss litt om lokalene og behovet deres, så kommer vi tilbake med et tilbud. Befaring og tilbud er kostnadsfritt.</p>
+        <p class="stopp__lede">Vi tar gjerne en uforpliktende prat. Send oss en e-post eller ring, og fortell litt om lokalene og behovet deres, så kommer vi tilbake med et tilbud. Befaring og tilbud er kostnadsfritt.</p>
         {{/er_oslo}}{{^er_oslo}}<div class="vask-boks"><h2 data-vask>Hva koster renhold for dere?</h2></div>
-        <p class="stopp__lede">Fortell oss litt om lokalene og behovet deres, så kommer vi tilbake med et tilbud. Vi vasker for barnehager, skoler, kontorer og bilforhandlere — og tilpasser opplegget etter hvordan dere jobber.</p>
+        <p class="stopp__lede">Send oss en e-post eller ring, og fortell litt om lokalene og behovet deres, så kommer vi tilbake med et tilbud. Vi vasker for barnehager, skoler, kontorer og bilforhandlere — og tilpasser opplegget etter hvordan dere jobber.</p>
         {{/er_oslo}}
     <div class="kontakt-layout">
-      <form class="tilbud-skjema" id="tilbud-skjema"
-            data-endpoint="https://formspree.io/f/%%FORMSPREE_ID%%">
-        <!-- Varselet står øverst i kortet, ikke under knappen: da ser kunden
-             at skjemaet ikke er i bruk før den har fylt ut seks felt og trykket
-             på en knapp som ikke gjør noe. js/main.js skjuler det i samme
-             slengen som skjemaet tas i bruk. -->
-        <div class="skjema-varsel" id="tilbud-varsel">
-          <p><strong>Skjemaet åpner snart.</strong> Inntil videre: ring <a href="tel:{{telefon}}">{{telefon_visning}}</a>, eller send e-post til <a href="mailto:{{tilbud_epost}}">{{tilbud_epost}}</a>, så hjelper vi deg.</p>
-        </div>
-        <div class="skjema-rad">
-          <div class="skjema-felt">
-            <label for="tilbud-navn">Navn</label>
-            <input type="text" id="tilbud-navn" name="navn" autocomplete="name" required>
-          </div>
-          <div class="skjema-felt">
-            <label for="tilbud-epost">E-post</label>
-            <input type="email" id="tilbud-epost" name="email" autocomplete="email" required>
-          </div>
-        </div>
-        <div class="skjema-rad">
-          <div class="skjema-felt">
-            <label for="tilbud-telefon">Telefon <span class="skjema-valgfri">(valgfritt)</span></label>
-            <input type="tel" id="tilbud-telefon" name="telefon" autocomplete="tel">
-          </div>
-          <div class="skjema-felt">
-            <label for="tilbud-virksomhet">Virksomhet</label>
-            <input type="text" id="tilbud-virksomhet" name="virksomhet" autocomplete="organization" required>
-          </div>
-        </div>
-        <div class="skjema-rad">
-          <div class="skjema-felt">
-            <label for="tilbud-areal">Omtrentlig areal <span class="skjema-valgfri">(m², valgfritt)</span></label>
-            <input type="text" id="tilbud-areal" name="areal" inputmode="numeric" autocomplete="off">
-          </div>
-          <div class="skjema-felt">
-            <label for="tilbud-gjelder">Hva gjelder det</label>
-            <select id="tilbud-gjelder" name="gjelder" aria-label="Kategori – hva gjelder henvendelsen">
-              <option value="">Velg kategori</option>
-              <option value="barnehage">Barnehage</option>
-              <option value="skole">Skole</option>
-              <option value="kontor">Kontor</option>
-              <option value="bilforhandler">Bilforhandler</option>
-              <option value="annet">Annet</option>
-            </select>
-          </div>
-        </div>
-        <div class="skjema-felt">
-          <label for="tilbud-melding">Melding</label>
-          <textarea id="tilbud-melding" name="melding" rows="5" required></textarea>
-        </div>
-        <input type="hidden" name="_subject" value="{{tilbud_emne}}">
-        <button type="submit" class="knapp knapp--fyll" disabled>Send forespørsel</button>
-        <p class="skjema-notat">Vi svarer som regel innen én arbeidsdag.</p>
-      </form>
       <div class="kontakt__info">
         <div class="kontakt__direkte">
-          <p><strong>Kontakt</strong></p>
+          <p><strong>Kontakt oss på <a href="mailto:{{kontakt_epost}}">{{kontakt_epost}}</a> eller ring <a href="tel:{{telefon}}">{{telefon_visning}}</a></strong></p>
         </div>
         <div class="kontakt__kontorer">
           {{#er_oslo}}<div>
@@ -117,11 +48,6 @@
           </li>{{/er_oslo}}
         </ul>
       </div>
-    </div>
-    <p class="skjema-feil" id="tilbud-feil" role="alert" hidden>Noe gikk galt. Prøv igjen, eller ring <a href="tel:{{telefon}}">{{telefon_visning}}</a> — eller send e-post til <a href="mailto:{{tilbud_epost}}">{{tilbud_epost}}</a>.</p>
-    <div class="skjema-kvittering" id="tilbud-kvittering" role="status" hidden>
-      <h3>Takk for henvendelsen!</h3>
-      <p>Vi tar kontakt innen én arbeidsdag.</p>
     </div>
   </div>
 </section>

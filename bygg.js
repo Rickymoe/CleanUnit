@@ -59,10 +59,11 @@ export function settInnDeler(tekst, les, side) {
   throw new Error('For dype partials (sirkulær?)');
 }
 
+// `felles` (byer.json) er verdier alle byer deler, som kontakt-e-posten; byens egne data vinner ved navnekollisjon.
 // Alt som varierer per (by × side). `rot` = fra siden til nettstedets rot (css, js, bilder),
 // `by_rot` = fra siden til byens forside (menylenker til egne undersider). Stavanger ligger ett nivå
 // ned, undersidene ett til: stavanger/tjenester/ har rot ../../ og by_rot ../.
-export function sideData(by, side, byer) {
+export function sideData(by, side, byer, felles = {}) {
   const egen = by.sider && by.sider[side.id];
   if (!egen) throw new Error(`byer.json: «${by.data.by}» mangler sider.${side.id}`);
   const forside = side.id === 'forside';
@@ -73,6 +74,7 @@ export function sideData(by, side, byer) {
   const andre = byer.find((b) => b !== by);
   const andre_by_hjem = rot + (andre.mappe ? `${andre.mappe}/` : '');
   const data = {
+    ...felles,
     ...by.data,
     rot,
     by_rot,
@@ -94,7 +96,7 @@ export function sideData(by, side, byer) {
 export function byggAlle({ kilde = '.', ut = 'dist' } = {}) {
   const les = (f) => readFileSync(join(kilde, f), 'utf8');
   const layout = les('deler/layout.html');
-  const { byer } = JSON.parse(les('byer.json'));
+  const { byer, felles } = JSON.parse(les('byer.json'));
   rmSync(ut, { recursive: true, force: true });
   for (const mappe of DELTE_MAPPER) {
     cpSync(join(kilde, mappe), join(ut, mappe), {
@@ -105,7 +107,7 @@ export function byggAlle({ kilde = '.', ut = 'dist' } = {}) {
   const skrevet = [];
   for (const by of byer) {
     for (const side of SIDER) {
-      const html = fyllMal(settInnDeler(layout, les, side), sideData(by, side, byer));
+      const html = fyllMal(settInnDeler(layout, les, side), sideData(by, side, byer, felles));
       const mappe = join(ut, by.mappe, side.sti);
       mkdirSync(mappe, { recursive: true });
       const sti = join(mappe, 'index.html');

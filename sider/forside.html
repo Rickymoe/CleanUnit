@@ -22,15 +22,14 @@
     {{#er_oslo}}<p class="hero__ingress"><strong>Profesjonelt renhold for bedrifter, skoler og barnehager.</strong><br>Etablert 2007, offentlig godkjent, Miljøfyrtårn, ingen underleverandører.</p>
     {{/er_oslo}}{{^er_oslo}}<p class="hero__ingress"><!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte&nbsp;– ingen underleverandører.</p>
     {{/er_oslo}}  </div>
-  <!-- Egen bys telefonnummer er primærknappen. Sekundærknappen kommer fra
-       byer.json og er tom til tilbudsskjemaet (Formspree) er på plass — en
-       tom verdi rendrer ingen knapp, så ingen død lenke går live. -->
+  <!-- Kontaktlinja: «Kontakt oss på <e-post> eller ring <telefon>» (Marit: kunden ønsker e-post/telefon, ikke skjema).
+       E-posten kommer fra byer.json (felles.kontakt_epost, ikke bekreftet), telefonen er byens egen. -->
   <div class="hero__knapper">
+    <p class="hero__kontakt">Kontakt oss på <a href="mailto:{{kontakt_epost}}">{{kontakt_epost}}</a> eller</p>
     <a class="knapp knapp--fyll" href="tel:{{telefon}}">Ring oss – {{telefon_visning}}</a>
-    {{hero_knapp_sekundaer}}
   </div>
   <!-- Scenen (Marits illustrasjon, modernisert, 2026-10-03): varebil, by, sol og ballong i ett bilde, så
-       heroen ikke lenger trenger egen sol, bybakgrunn eller rutebånd. Bildene er dekorative (tom alt).
+       heroen ikke lenger trenger egen sol, bybakgrunn eller rutebånd. Bildene er dekorative (tom alt). Hver by har sin egen scene ({{hero_bilde}} i byer.json): Oslo og Stavanger har hver sin scene; varebilen med logo er tegnet inn i Stavanger-bildet, så .hero__scene-merke skjules der).
        Rekkevidde-linja ligger under veien i scenen (Marit 2026-10-05). Himmelen i bildet er en nesten flat farge (#9AD2D5): toppen tones ut mot sidens
        bakgrunn og bunnen mot neste seksjon i CSS, så det ikke er noen kant. «CleanUNIT» på varebilen er
        ekte logo lagt oppå den blanke siden (AI-bilder kan ikke gjengi tekst). .hero__sti-start er
@@ -38,12 +37,12 @@
   <div class="hero__scene">
    <div class="hero__scene-ramme">
     <picture class="hero__scene-sommer">
-      <source srcset="{{rot}}bilder/hero-scene.webp" type="image/webp">
-      <img class="hero__scene-bilde" src="{{rot}}bilder/hero-scene.jpg" alt="" width="2172" height="724" fetchpriority="high">
+      <source srcset="{{rot}}bilder/{{hero_bilde}}.webp" type="image/webp">
+      <img class="hero__scene-bilde" src="{{rot}}bilder/{{hero_bilde}}.jpg" alt="" width="2172" height="724" fetchpriority="high">
     </picture>
     <picture class="hero__scene-vinter">
-      <source srcset="{{rot}}bilder/hero-scene-vinter.webp" type="image/webp">
-      <img class="hero__scene-bilde" src="{{rot}}bilder/hero-scene-vinter.jpg" alt="" width="2172" height="724">
+      <source srcset="{{rot}}bilder/{{hero_bilde}}-vinter.webp" type="image/webp">
+      <img class="hero__scene-bilde" src="{{rot}}bilder/{{hero_bilde}}-vinter.jpg" alt="" width="2172" height="724">
     </picture>
     <img class="hero__scene-merke" src="{{rot}}bilder/logo-cleanunit-varebil-full.svg" alt="" width="626" height="244">
     <span class="hero__sti-start"></span>
@@ -128,8 +127,7 @@
       <picture><source srcset="{{rot}}bilder/logo-kg.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kg.png" alt="" width="1140" height="237"></picture>
       <picture><source srcset="{{rot}}bilder/logo-kanvas.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kanvas.png" alt="" width="394" height="166"></picture>
       <picture><source srcset="{{rot}}bilder/logo-medistim.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-medistim.png" alt="" width="1198" height="174"></picture>
-      <picture><source srcset="{{rot}}bilder/logo-pioner.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-pioner.png" alt="" width="180" height="117"></picture>{{/er_oslo}}{{^er_oslo}}<picture><source srcset="{{rot}}bilder/logo-nvh.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-nvh.png" alt="" width="136" height="100"></picture>
-      <picture><source srcset="{{rot}}bilder/logo-kanvas.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kanvas.png" alt="" width="394" height="166"></picture>
+      <picture><source srcset="{{rot}}bilder/logo-pioner.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-pioner.png" alt="" width="180" height="117"></picture>{{/er_oslo}}{{^er_oslo}}<picture><source srcset="{{rot}}bilder/logo-kanvas.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kanvas.png" alt="" width="394" height="166"></picture>
       <picture><source srcset="{{rot}}bilder/logo-kg.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kg.png" alt="" width="1140" height="237"></picture>
       <picture><source srcset="{{rot}}bilder/logo-medistim.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-medistim.png" alt="" width="1198" height="174"></picture>{{/er_oslo}}
     </a>

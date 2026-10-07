@@ -6,7 +6,6 @@ export function initSider() {
   flaateInn(reduksjon)
   glansSveip(reduksjon)
   stiNedover(reduksjon)
-  tilbudSkjema()
   sideNav()
 }
 
@@ -396,77 +395,6 @@ function stiNedover(reduksjon) {
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => { hoyvann = reduksjon ? 1 : 0; bygg() })
   }
-}
-
-/* Tilbudsskjemaet (2026-09-27). Kilden har %%FORMSPREE_ID%% som plassholder, og
-   deploy-workflowen bytter den mot en ekte ID fra secrets (FORMSPREE_ID_OSLO /
-   FORMSPREE_ID_STAVANGER). Er plassholderen fortsatt der — lokal kjøring, eller
-   en deploy der hemmeligheten ikke er satt — finnes det ingen mottaker.
-
-   Skjemaet VISES likevel (Ricky, 2026-09-27: seksjonen skal se ferdig ut før
-   abonnementet er på plass). Da må ingenting kunne sendes: send-knappen er
-   `disabled` i markup, varselet øverst i kortet forklarer hvorfor, og vi
-   kobler ikke på innsendingen i det hele tatt før ID-en finnes. Vi fanger
-   likevel submit og stopper den, så Enter i et felt ikke laster siden på nytt.
-
-   Selve innsendingen følger mønsteret fra Kuvaas: POST til Formspree med
-   FormData og Accept: application/json, tre tilstander (skjema / kvittering /
-   feilboks med ring-og-e-post-fallback). Formspree bruker feltet som heter
-   «email» som svar-til-adresse, derfor heter e-postfeltet det og ikke «epost». */
-function tilbudSkjema() {
-  const skjema = document.getElementById('tilbud-skjema')
-  if (!skjema) return
-
-  const knapp = skjema.querySelector('button[type="submit"]')
-  const feil = document.getElementById('tilbud-feil')
-  const kvittering = document.getElementById('tilbud-kvittering')
-  if (!knapp || !feil || !kvittering) return
-  const knappTekst = knapp.textContent
-  const varsel = document.getElementById('tilbud-varsel')
-
-  const endepunkt = skjema.dataset.endpoint || ''
-  const klar = endepunkt !== '' && !endepunkt.includes('%%FORMSPREE_ID%%')
-
-  if (!klar) {
-    // Ingen mottaker: skjemaet står synlig, men knappen forblir låst og
-    // varselet står. Vi stopper innsendingen uansett, så Enter i et felt ikke
-    // laster siden på nytt med skjemafelt som query-streng.
-    skjema.addEventListener('submit', (e) => e.preventDefault())
-    return
-  }
-
-  knapp.disabled = false
-  // Varselet om at abonnementet mangler er en intern melding som bare skal
-  // stå så lenge skjemaet ikke virker. Nå virker det, så da går den ut.
-  if (varsel) varsel.hidden = true
-
-  skjema.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    knapp.disabled = true
-    knapp.textContent = 'Sender …'
-    feil.hidden = true
-
-    try {
-      const svar = await fetch(endepunkt, {
-        method: 'POST',
-        body: new FormData(skjema),
-        headers: { Accept: 'application/json' },
-      })
-      if (!svar.ok) throw new Error('server')
-
-      skjema.hidden = true
-      feil.hidden = true
-      kvittering.hidden = false
-      // Flytt fokus til kvitteringen, ellers står fokus igjen på en knapp som
-      // nettopp forsvant. role="status" sørger for at den leses opp.
-      kvittering.tabIndex = -1
-      kvittering.focus()
-    } catch {
-      knapp.disabled = false
-      knapp.textContent = knappTekst
-      feil.hidden = false
-    }
-  })
 }
 
 // Toppmeny: mobilmenyen åpnes av knappen (lukkes av Escape, et trykk på en lenke eller et trykk

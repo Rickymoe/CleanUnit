@@ -1,4 +1,9 @@
 {
+  "felles": {
+    "_merknad": "IKKE BEKREFTET: Marit skrev «post@cleanunit» uten .no. Bytt adressen her, ett sted, så følger hero-linja og kontaktseksjonen. Oslo-telefonen (21 55 56 80) står under byer[].data.telefon; Maritts signatur har mobil 97 19 59 93.",
+    "kontakt_epost": "post@cleanunit.no",
+    "jobb_epost": "jobb@cleanunit.no"
+  },
   "byer": [
     {
       "mappe": "",
@@ -12,14 +17,13 @@
       "data": {
         "by": "Oslo",
         "body_klasse": "by--oslo",
+        "hero_bilde": "hero-scene",
+        "tema_farge": "#00595B",
         "og_url": "https://rickymoe.github.io/CleanUnit/",
         "hovedtittel": "Renhold i Oslo, Asker og Bærum",
         "rekkevidde": "Vi rengjør i hele Oslo, Asker og Bærum.",
         "telefon": "+4721555680",
         "telefon_visning": "21 55 56 80",
-        "hero_knapp_sekundaer": "",
-        "tilbud_epost": "renhold@cleanunit.no",
-        "tilbud_emne": "Ny tilbudsforespørsel – Oslo",
         "om_kontorer": "Clean Unit har i dag over 100 ansatte, fordelt på kontoret i Nydalen, Oslo og et eget kontor i Stavanger.",
         "er_oslo": "1",
         "andre_by_navn": "Stavanger"
@@ -37,14 +41,13 @@
       "data": {
         "by": "Stavanger",
         "body_klasse": "by--stavanger",
+        "hero_bilde": "hero-stavanger",
+        "tema_farge": "#5A2848",
         "og_url": "https://rickymoe.github.io/CleanUnit/stavanger/",
         "hovedtittel": "Renhold i Stavanger",
         "rekkevidde": "Vi rengjør i Stavanger og omegn.",
         "telefon": "+4790065009",
         "telefon_visning": "900 65 009",
-        "hero_knapp_sekundaer": "",
-        "tilbud_epost": "thord@cleanunit.no",
-        "tilbud_emne": "Ny tilbudsforespørsel – Stavanger",
         "om_kontorer": "<!-- UTKAST: Stavanger-kontorets egen beskrivelse (antall ansatte m.m.) venter på Marit/Christopher -->Kontoret vårt i Stavanger er en del av Clean Unit, med hovedkontor i Nydalen, Oslo.",
         "er_oslo": "",
         "andre_by_navn": "Oslo"

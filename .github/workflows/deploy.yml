@@ -29,43 +29,6 @@ jobs:
           node --test test/*.test.js
           node bygg.js
 
-      # Ett Formspree-skjema per by (Oslo -> renhold@, Stavanger -> thord@), så
-      # hvert kontor får bare sin egen post. ID-ene ligger i secrets og havner
-      # aldri i git-historikken — kilden har %%FORMSPREE_ID%% som plassholder.
-      #
-      # Er en secret tom, må plassholderen stå igjen: bytter vi den mot en tom
-      # streng, står endepunktet igjen uten skjema-ID, og da lurer gatingen i
-      # js/main.js seg selv til å tro at ID-en finnes og viser et skjema som
-      # ikke kan sende. Derfor sjekker vi at den har innhold først.
-      #
-      # Alle fem sider per by har skjemaet, ikke bare forsiden. Tellingen under
-      # gjør «feil antall sider» til en feil i stedet for at undersidene stille
-      # blir stående med plassholderen (skjemaet ser ferdig ut, men sendingen er
-      # sperret, så feilen ville vært usynlig i produksjon).
-      - name: Sett inn Formspree-ID-ene
-        env:
-          ID_OSLO: ${{ secrets.FORMSPREE_ID_OSLO }}
-          ID_STAVANGER: ${{ secrets.FORMSPREE_ID_STAVANGER }}
-        run: |
-          # $1 = by, $2 = ID, resten = byens fem sider.
-          injiser() {
-            by="$1"; id="$2"; shift 2
-            if [ "$#" -ne 5 ]; then
-              echo "::error::$by: forventet 5 sider, fant $#"
-              exit 1
-            fi
-            if [ -z "$id" ]; then
-              echo "::warning::$by: ingen Formspree-ID satt — skjemaene forblir låst"
-              return 0
-            fi
-            for f in "$@"; do
-              sed -i "s|%%FORMSPREE_ID%%|$id|g" "$f"
-            done
-            echo "$by: Formspree-ID satt inn i $# sider"
-          }
-          injiser Oslo "$ID_OSLO" $(find dist -name index.html -not -path 'dist/stavanger/*' | sort)
-          injiser Stavanger "$ID_STAVANGER" $(find dist/stavanger -name index.html | sort)
-
       - name: Fjern kommentarer fra HTML/CSS/JS
         run: |
           test "$(find dist -name '*.html' | wc -l)" -eq 10
