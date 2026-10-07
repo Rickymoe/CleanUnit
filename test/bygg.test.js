@@ -297,6 +297,27 @@ test('Hero: scene med rekkevidde-linje, uten de gamle rutebåndet, bybakgrunnen 
   }
 });
 
+// Marit 2026-10-07: «Ingen strek på bilen – kun logo, gjerne litt lenger ned for luft over». Turkisbuen er malt ut av
+// rasterbildene (hero-scene*, varebil-hero.svg, og Stavanger-scenene som tegnes av den), logoen står lavere (68 %).
+// Selve bildeinnholdet kan ikke testes uten bildebibliotek, så testen låser det som kan måles: logoposisjonen, at
+// varebil-hero.svg beholder størrelsen (hjullinja i CSS regner med 347×154,4 og rasteret 347×145) og at logoen i den
+// fulgte med nedover (y 9,0 → 20,2 = +1,55 % av 724).
+test('Varebil: logoen står lavere (68 %), og varebil-hero.svg beholder størrelse og logo-posisjon', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\.hero__scene-merke \{ position: absolute; left: 19\.4%; top: 68%; width: 5\.5%;/, 'logoen på varebilen skal stå på top: 68 %');
+  assert.doesNotMatch(css, /top: 66\.45%/, 'den gamle logoposisjonen (66,45 %) skal være borte');
+  const svg = les('bilder/varebil-hero.svg');
+  assert.match(svg, /viewBox="0 0 347 154\.4" width="347" height="154"/, 'varebil-hero.svg må beholde størrelsen (hjullinja i CSS)');
+  assert.match(svg, /<image width="347" height="145" /, 'rasteret skal fortsatt være 347×145');
+  assert.match(svg, /<svg x="41\.4" y="20\.2" width="119\.5" height="46\.6"/, 'logoen i varebil-hero.svg skal stå 11,2 enheter lavere (y 20,2)');
+  const raster = Buffer.from(svg.match(/base64,([A-Za-z0-9+\/=]+)/)[1], 'base64');
+  assert.equal(raster.toString('latin1', 0, 4), 'RIFF');
+  assert.equal(raster.toString('latin1', 8, 12), 'WEBP');
+  assert.equal(raster.toString('latin1', 12, 16), 'VP8X', 'rasteret skal ha alfa (VP8X)');
+  assert.equal(raster.readUIntLE(24, 3) + 1, 347, 'rasterbredden');
+  assert.equal(raster.readUIntLE(27, 3) + 1, 145, 'rasterhøyden');
+});
+
 // Glansen (Ricky 2026-09-30). Tre behandlinger som alle legger hvitt lys på
 // flater som allerede finnes — se --glans-*-tokensene i css/style.css. Testen
 // finnes fordi ingen av dem har innhold å telle: forsvinner en av dem, feiler

@@ -1119,8 +1119,8 @@ html.vinter { --himmel: #93CED3; }
   position: absolute; left: 0; right: 0; top: 90.5%; margin: 0 auto; max-width: none; text-align: center; line-height: 1.2;
   font-size: clamp(1.25rem, 3.5vw, 2.5rem); color: #595959; /* Maritts farge i mockupen (595959); stor tekst, så 4,2:1 mot himmelen holder (3:1) */
 }
-/* Varebilens blanke side: ca. 23 % / 73-78 % av bildet, 5,6 % bredt (målt). Egen logovariant (bilder/logo-cleanunit-varebil.svg): bare ordmerket, mørke farger. */
-.hero__scene-merke { position: absolute; left: 19.4%; top: 66.45%; width: 5.5%; height: auto; }
+/* Varebilens blanke side: ca. 23 % / 73-78 % av bildet, 5,6 % bredt (målt). Uten turkisbuen (Marit 2026-10-07: «kun logo»); logoen står 1,55 % av bildehøyden lavere (68 %) så det blir luft over den. Egen logovariant (bilder/logo-cleanunit-varebil.svg): bare ordmerket, mørke farger. */
+.hero__scene-merke { position: absolute; left: 19.4%; top: 68%; width: 5.5%; height: auto; }
 .hero__sti-start { position: absolute; left: 9%; top: 84%; width: 0; height: 0; }
 @media (max-width: 48rem) {
   .hero__scene { padding-bottom: 1.5rem; }
