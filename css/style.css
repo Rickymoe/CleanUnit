@@ -901,6 +901,11 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .kontakt__kontorer { display: grid; gap: var(--s-5); }
 .kontakt__kontorer h3 { color: var(--teal-mork); font-size: var(--t-lg); }
 .kontakt__kontorer p { margin-top: var(--s-1); color: var(--tekst-svak); font-size: var(--t-sm); }
+.kontakt__kontorer .kontakt__adresse {
+  display: inline-block; padding-block: .7rem; margin-block: -.7rem; /* 44 px trykkflate uten å flytte kortet */
+  color: var(--teal-mork); text-decoration: underline; text-underline-offset: 3px;
+}
+@media (hover: hover) { .kontakt__adresse:hover { text-decoration-thickness: 2px; } }
 .kontakt__orgnr { color: var(--tekst-svak); } /* opacity .8 ga 3,25:1 mot --teal-lys */
 .kontakt__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-4); }
 .kontakt__bylenke {

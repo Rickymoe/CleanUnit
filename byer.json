@@ -24,6 +24,8 @@
         "rekkevidde": "Vi rengjør i hele Oslo, Asker og Bærum.",
         "telefon": "+4721555680",
         "telefon_visning": "21 55 56 80",
+        "adresse": "Gunnar Schjelderups vei 9, 0485 Oslo",
+        "kart_url": "https://www.google.com/maps/search/?api=1&query=Gunnar%20Schjelderups%20vei%209%2C%200485%20Oslo",
         "om_kontorer": "Clean Unit har i dag over 100 ansatte, fordelt på kontoret i Nydalen, Oslo og et eget kontor i Stavanger.",
         "er_oslo": "1",
         "andre_by_navn": "Stavanger"
@@ -48,6 +50,8 @@
         "rekkevidde": "Vi rengjør i Stavanger og omegn.",
         "telefon": "+4790065009",
         "telefon_visning": "900 65 009",
+        "adresse": "Bryggerikaien 16, 4014 Stavanger",
+        "kart_url": "https://www.google.com/maps/search/?api=1&query=Bryggerikaien%2016%2C%204014%20Stavanger",
         "om_kontorer": "<!-- UTKAST: Stavanger-kontorets egen beskrivelse (antall ansatte m.m.) venter på Marit/Christopher -->Kontoret vårt i Stavanger er en del av Clean Unit, med hovedkontor i Nydalen, Oslo.",
         "er_oslo": "",
         "andre_by_navn": "Oslo"

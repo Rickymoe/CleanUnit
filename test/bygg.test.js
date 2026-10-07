@@ -927,6 +927,22 @@ test('Kontakt-kortet: øverst to knapper, «Ring oss – <telefon>» (fylt) og �
   }
 });
 
+test('Kontakt-kortet: adressen er en lenke til Google Maps med nøyaktig den viste adressen URL-kodet', () => {
+  const ADRESSE = { Oslo: 'Gunnar Schjelderups vei 9, 0485 Oslo', Stavanger: 'Bryggerikaien 16, 4014 Stavanger' };
+  for (const s of alleSider()) {
+    const k = les(s.fil).match(/<section class="stopp--kontakt"[\s\S]*?<\/section>/)[0];
+    const m = k.match(/<a class="kontakt__adresse" ([^>]*)>([^<]*)<span aria-hidden="true">↗<\/span><\/a>/);
+    assert.ok(m, `${s.fil}: adresselenken mangler`);
+    const vist = m[2].trim();
+    assert.equal(vist, ADRESSE[s.by], `${s.fil}: viste adresse`);
+    const href = m[1].match(/href="([^"]+)"/)[1];
+    assert.equal(href, `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(vist)}`, `${s.fil}: href følger den viste adressen`);
+    assert.match(m[1], /target="_blank"/, s.fil);
+    assert.match(m[1], /rel="[^"]*noopener[^"]*"/, s.fil);
+    assert.match(m[1], new RegExp(`aria-label="${vist} – åpne i Google Maps \\(ny fane\\)"`), `${s.fil}: aria-label`);
+  }
+});
+
 test('Oslo: ingen Stavanger-tekster på noen av de fem sidene', () => {
   const h = synlig(heleBy('Oslo'));
   for (const t of ['thord@cleanunit.no', '900 65 009', 'Thord Hegre', 'To kontorer, samme standard', 'Hva koster renhold for dere?', 'Bryggerikaien']) {
