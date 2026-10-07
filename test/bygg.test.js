@@ -832,7 +832,7 @@ test('Stavanger: ingen Oslo-tekster på noen av de fem sidene, men egne tekster 
     'rundt 100 kunder', 'over 70 barnehager', 'Fra to personer med hver sin mopp', 'Trenger dere en ny renholdsleverandør?', '21 55 56 80', 'renhold@cleanunit.no']) {
     assert.ok(!h.includes(t), `Oslo-teksten «${t}» lekker inn i Stavanger`);
   }
-  for (const t of ['To kontorer, samme standard', 'Hva koster renhold for dere?', 'thord@cleanunit.no', '900 65 009', 'Thor D.']) {
+  for (const t of ['To kontorer, samme standard', 'Hva koster renhold for dere?', 'thord@cleanunit.no', '900 65 009', 'Thord Hegre']) {
     assert.ok(h.includes(t), `Stavanger mangler «${t}»`);
   }
   for (const s of alleSider().filter((x) => x.by === 'Stavanger')) {
@@ -863,7 +863,7 @@ test('Kontakt-kortet: post@cleanunit.no som eneste kunde-e-post, telefonen kun i
 
 test('Oslo: ingen Stavanger-tekster på noen av de fem sidene', () => {
   const h = synlig(heleBy('Oslo'));
-  for (const t of ['thord@cleanunit.no', '900 65 009', 'Thor D.', 'To kontorer, samme standard', 'Hva koster renhold for dere?', 'Bryggerikaien']) {
+  for (const t of ['thord@cleanunit.no', '900 65 009', 'Thord Hegre', 'To kontorer, samme standard', 'Hva koster renhold for dere?', 'Bryggerikaien']) {
     assert.ok(!h.includes(t), `Stavanger-teksten «${t}» lekker inn i Oslo (bortsett fra kontaktblokkens ene bylenke)`);
   }
 });
@@ -902,4 +902,15 @@ test('Oslo: heroens grå ingress er nøyaktig de tre punktene, uten underleveran
 test('Stavanger: heroens ingress er uendret', () => {
   assert.equal(heroIngress('test/ut/stavanger/index.html'),
     '<!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte&nbsp;– ingen underleverandører.');
+});
+
+test('Stavanger-lederen heter Thord Hegre, daglig leder (Enhetsregisteret), aldri «Thor D.»', () => {
+  for (const s of alleSider().filter((x) => x.by === 'Stavanger')) {
+    const h = les(s.fil);
+    assert.ok(!h.includes('Thor D.'), `${s.fil}: «Thor D.» var en feiltolking av thord@ — navnet er Thord Hegre`);
+    assert.ok(!h.includes('Leder Stavanger'), `${s.fil}: tittelen er Daglig leder`);
+    assert.match(h, /<strong>Thord Hegre<\/strong><span>Daglig leder<\/span>/, `${s.fil}: kontaktkortet har navn og tittel`);
+    assert.match(h, /team-initialer" aria-hidden="true">TH</, `${s.fil}: initialene er TH`);
+  }
+  assert.match(les(sideFil('Stavanger', 'om_oss')), /<h4>Thord Hegre<\/h4>\s*<p class="team-rolle">Daglig leder<\/p>/, 'Om oss-kortet');
 });
