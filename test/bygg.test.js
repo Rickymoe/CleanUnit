@@ -649,11 +649,13 @@ const derforSeksjon = (by) => {
   return h.slice(start, h.indexOf('</section>', start));
 };
 
-test('Derfor (Oslo): ett kort med Marits eksakte tekst, ingen av de fire gamle kortene', () => {
+test('Derfor (Oslo): to kort som til sammen er Marits eksakte tekst, ingen av de fire gamle kortene', () => {
   const d = derforSeksjon('Oslo');
-  assert.equal((d.match(/class="derfor-kort"/g) || []).length, 1);
-  assert.equal((d.match(/<p>/g) || []).length, 1);
-  assert.ok(d.includes(`<p>${MARIT_DERFOR}</p>`), 'Marits tekst står ikke ordrett');
+  const tekster = [...d.matchAll(/<div class="derfor-kort"><p>([^<]*)<\/p><\/div>/g)].map((m) => m[1]);
+  assert.equal((d.match(/class="derfor-kort"/g) || []).length, 2);
+  assert.equal(tekster.length, 2);
+  assert.equal((d.match(/<p>/g) || []).length, 2);
+  assert.equal(tekster.join(' '), MARIT_DERFOR, 'Marits tekst står ikke ordrett');
   assert.doesNotMatch(d, /<h3|<li|derfor-liste/);
   for (const g of ['Fast renholder', 'Rask kommunikasjon', 'Tett oppfølging']) assert.ok(!d.includes(`>${g}<`), g);
   assert.ok(!d.includes('>Systematisk kvalitetsoppfølging<'));
@@ -663,6 +665,7 @@ test('Derfor (Stavanger): ett kort uten ubekreftet år/område, UTKAST-kommentar
   const d = derforSeksjon('Stavanger');
   assert.equal((d.match(/class="derfor-kort"/g) || []).length, 1);
   assert.equal((d.match(/<p>/g) || []).length, 1);
+  assert.match(d, /derfor-rad--en/);
   assert.doesNotMatch(d, /siden 2007|Oslo og omegn|rundt 100/);
   assert.ok(d.includes('Vi benytter ikke underleverandører i det daglige renholdet.'));
   assert.doesNotMatch(d, /<h3|<li/);
