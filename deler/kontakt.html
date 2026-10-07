@@ -1,4 +1,5 @@
 <!-- KONTAKT. Tilbudsskjemaet er fjernet på kundens ønske: kunden ønsker e-post og telefon i stedet.
+     Øverst i kortet står de som to knapper (som i heroen på forsiden): «Ring oss» og «Send e-post».
      Kontaktadressene kommer fra byer.json (felles.kontakt_epost, byens telefon), så de byttes ett sted. -->
 <section class="stopp--kontakt" id="kontakt">
   <div class="wrap">
@@ -12,8 +13,9 @@
         {{/er_oslo}}
     <div class="kontakt-layout">
       <div class="kontakt__info">
-        <div class="kontakt__direkte">
-          <p><strong>Kontakt oss på <a href="mailto:{{kontakt_epost}}">{{kontakt_epost}}</a> eller ring <a href="tel:{{telefon}}">{{telefon_visning}}</a></strong></p>
+        <div class="kontakt__knapper">
+          <a class="knapp knapp--fyll" href="tel:{{telefon}}">Ring oss – {{telefon_visning}}</a>
+          <a class="knapp knapp--omriss" href="mailto:{{kontakt_epost}}">Send e-post</a>
         </div>
         <div class="kontakt__kontorer">
           {{#er_oslo}}<div>

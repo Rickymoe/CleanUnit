@@ -761,7 +761,8 @@ test('Kontakt: Kontakt er menyvalg i headeren; hero har to knapper (telefon og e
 test('Kontakt: seksjonen fortsetter bakgrunnsvekslingen, uten skjema', () => {
   const css = les('css/style.css');
   assert.match(css, /\n\.stopp--kontakt \{ padding-block: var\(--seksjon-y\); background: var\(--teal-lys\); \}/);
-  assert.match(css, /\.kontakt__direkte \{/, 'headeren på kontaktkortet mangler');
+  assert.match(css, /\.kontakt__knapper \{/, 'knapperaden på kontaktkortet mangler');
+  assert.doesNotMatch(css, /kontakt__direkte/, 'gammel toppboks-CSS');
   // hidden-attributtet må faktisk skjule.
   assert.match(css, /\[hidden\] \{ display: none; \}/);
 });
@@ -841,9 +842,9 @@ test('Stavanger: ingen Oslo-tekster på noen av de fem sidene, men egne tekster 
   }
 });
 
-// Kunden vil ha én kontaktadresse: kortet har post@ i toppboksen og telefonen kun der, ingen egen
+// Kunden vil ha én kontaktadresse: kortet har post@ og telefonen som to knapper øverst og telefonen kun der, ingen egen
 // kanal-linje (telefon · e-post) under adressen. Mobilnumrene i personradene er greit.
-test('Kontakt-kortet: post@cleanunit.no som eneste kunde-e-post, telefonen kun i toppboksen', () => {
+test('Kontakt-kortet: post@cleanunit.no som eneste kunde-e-post, telefonen kun i toppknappen', () => {
   for (const s of alleSider()) {
     const h = les(s.fil);
     assert.doesNotMatch(h, /renhold@cleanunit\.no/, `${s.fil}: gammel Oslo-adresse`);
@@ -854,10 +855,28 @@ test('Kontakt-kortet: post@cleanunit.no som eneste kunde-e-post, telefonen kun i
     assert.deepEqual(k.match(/mailto:[^"]+/g), ['mailto:post@cleanunit.no'], `${s.fil}: skal ha én e-post`);
     assert.doesNotMatch(k, /kontakt__kanal/, `${s.fil}: egen telefon · e-post-linje`);
     const tlf = s.by === 'Oslo' ? '21 55 56 80' : '900 65 009';
-    const boks = k.match(/<div class="kontakt__direkte">[\s\S]*?<\/div>/)[0];
-    assert.equal(boks.split(tlf).length - 1, 1, `${s.fil}: telefonen skal stå én gang i toppboksen`);
+    const boks = k.match(/<div class="kontakt__knapper">[\s\S]*?<\/div>/)[0];
+    assert.equal(boks.split(tlf).length - 1, 1, `${s.fil}: telefonen skal stå én gang i knapperaden`);
     const utenBoksOgPersoner = k.replace(boks, '').replace(/<ul class="kontakt__personer">[\s\S]*?<\/ul>/, '');
-    assert.ok(!utenBoksOgPersoner.includes(tlf) && !/href="tel:/.test(utenBoksOgPersoner), `${s.fil}: telefon utenfor toppboksen/personradene`);
+    assert.ok(!utenBoksOgPersoner.includes(tlf) && !/href="tel:/.test(utenBoksOgPersoner), `${s.fil}: telefon utenfor knapperaden/personradene`);
+  }
+});
+
+test('Kontakt-kortet: øverst to knapper, «Ring oss – <telefon>» (fylt) og «Send e-post» (omriss)', () => {
+  for (const s of alleSider()) {
+    const k = les(s.fil).match(/<section class="stopp--kontakt"[\s\S]*?<\/section>/)[0];
+    const tlf = s.by === 'Oslo' ? '21 55 56 80' : '900 65 009';
+    const tlfHref = s.by === 'Oslo' ? '+4721555680' : '+4790065009';
+    const rad = k.match(/<div class="kontakt__knapper">([\s\S]*?)<\/div>/);
+    assert.ok(rad, `${s.fil}: knapperaden mangler`);
+    assert.ok(k.indexOf('kontakt__knapper') < k.indexOf('kontakt__kontorer'), `${s.fil}: knappene skal stå over kontorene`);
+    const lenker = [...rad[1].matchAll(/<a ([^>]*)>([^<]*)<\/a>/g)].map((m) => [m[1].trim(), m[2]]);
+    assert.deepEqual(lenker, [
+      [`class="knapp knapp--fyll" href="tel:${tlfHref}"`, `Ring oss – ${tlf}`],
+      ['class="knapp knapp--omriss" href="mailto:post@cleanunit.no"', 'Send e-post'],
+    ], `${s.fil}: knappene i Kontakt-kortet`);
+    assert.doesNotMatch(k, /Kontakt oss på/, `${s.fil}: den gamle tekstlinja`);
+    assert.doesNotMatch(k, /renhold@|thord@/, s.fil);
   }
 });
 
