@@ -1270,21 +1270,10 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
   .side-hode__by img { display: block; height: 100%; width: auto; }
 }
 
-/* ── Stavanger: mer burgunder (Marit: Stavanger skal se tydeligere annerledes ut enn Oslo) ───────────
-   Samme logo og samme palett, men Maritts burgunder (RGB 117, 53, 93 = --burgunder) bærer handling,
-   overskriftsaksenter og mørke flater i stedet for den mørke grønnen. De tre tokenene under er de
-   samme som Oslo bruker for handling/mørk flate/lys flate, så alle regler som bruker dem følger med:
-   --teal (knapper, lenker, eyebrow) = burgunder 9,6:1 mot hvit; --teal-mork (footer, tillitsblokk)
-   = mørk burgunder 11,6:1 mot hvit tekst; --teal-lys = svak burgunderflate. Heroscenen har eget
-   bybilde (bilder/hero-stavanger*, tegnet av verktoy/hero-stavanger.py) med samme himmelfarge som
-   Oslo, så overgangene mot siden er uendret. Logoen på varebilen er tegnet inn i bildet. */
-.by--stavanger {
-  --teal: var(--burgunder);
-  --teal-mork: #5A2848;
-  --teal-lys: #F5EBF1;
-}
+/* ── Stavanger: eget bybilde, samme palett som Oslo ───────────────────────────────────────────────
+   Stavanger har sin egen heroscene (bilder/hero-stavanger*, tegnet av verktoy/hero-stavanger.py) med samme
+   himmelfarge som Oslo. Fargene er de samme grønne tokenene som Oslo; Ricky bestemte 2026-10-07 mot et
+   burgunder tema. Logoen på varebilen er tegnet inn i bildet. */
 .by--stavanger .hero__scene-merke { display: none; }
-/* Tjenestesymbolene (de grønne rundmerkene) tones ned i Stavanger: mindre og dempet, siden de grønne
-   merkene ellers drar siden tilbake mot Oslo-uttrykket (Marit tror ikke Stavanger-lederen bruker symbolene likt). */
+/* Tjenestesymbolene (rundmerkene) er mindre og dempet i Stavanger (Marit tror ikke Stavanger-lederen bruker symbolene likt). */
 .by--stavanger .tjeneste-kort__ikon { height: 3.5rem; opacity: .85; }
-.by--stavanger .tjeneste-kort { border-top: 3px solid var(--burgunder); }

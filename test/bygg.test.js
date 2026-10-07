@@ -708,12 +708,13 @@ test('Kontakt: seksjonen fortsetter bakgrunnsvekslingen, uten skjema', () => {
   assert.match(css, /\[hidden\] \{ display: none; \}/);
 });
 
-test('Stavanger: eget tema (burgunder), eget bybilde og dempede symboler, Oslo uendret', () => {
+test('Stavanger: samme grønne palett som Oslo, eget bybilde og dempede symboler, Oslo uendret', () => {
   const css = les('css/style.css');
-  assert.match(css, /\.by--stavanger \{\s*--teal: var\(--burgunder\);/);
+  assert.doesNotMatch(css, /\.by--stavanger[^{]*\{[^}]*--teal/, 'Stavanger skal ikke overstyre fargetokenene');
+  assert.doesNotMatch(css, /\.by--stavanger[^{]*\{[^}]*(5A2848|F5EBF1|--burgunder)/, 'ingen burgunder tema for Stavanger');
   assert.match(css, /\.by--stavanger \.tjeneste-kort__ikon \{/);
   assert.doesNotMatch(css, /\.by--oslo \{[^}]*--teal:/);
-  assert.match(les('test/ut/stavanger/index.html'), /name="theme-color" content="#5A2848"/);
+  assert.match(les('test/ut/stavanger/index.html'), /name="theme-color" content="#00595B"/);
   assert.match(les('test/ut/index.html'), /name="theme-color" content="#00595B"/);
   assert.doesNotMatch(les('test/ut/stavanger/index.html'), /hero-scene/, 'Stavanger skal ikke bruke Oslo-scenen');
   assert.doesNotMatch(les('test/ut/index.html'), /hero-stavanger/, 'Oslo skal ikke bruke Stavanger-scenen');
