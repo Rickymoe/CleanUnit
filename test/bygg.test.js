@@ -445,7 +445,7 @@ test('tjenester/: Oslo har sju tjenestekort med «Les mer», Stavanger seks, beg
     assert.equal((h.match(/<details class="tjeneste-mer">/g) || []).length, antall, `${by}: «Les mer» på hvert kort`);
     for (const t of navn) assert.match(h, new RegExp(`<h3>${t}</h3>`), `${by}: ${t}`);
     assert.match(h, /class="tjeneste-kort kort--vindu"/, `${by}: vindusrammen`);
-    assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Renhold tilpasset stedet du driver</h2></div>'), `${by}: vask-overskriften`);
+    assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Renhold tilpasset deres arbeidssted</h2></div>'), `${by}: vask-overskriften`);
     assert.match(h, /<section class="stopp--tjenester" id="tjenester">/, by);
     assert.doesNotMatch(h.slice(h.indexOf('id="tjenester"'), h.indexOf('</section>', h.indexOf('id="tjenester"'))), /class="eyebrow"/, `${by}: eyebrowen er H1 nå`);
   }
@@ -465,6 +465,29 @@ test('referanser/: Oslo har seks sitatkort (BSN, Dr. Brandt, Kanvas, KG, Medisti
   }
   assert.ok(les(sideFil('Oslo', 'referanser')).includes('rundt 100 kunder'), 'Oslo: ledeteksten');
   assert.ok(!les(sideFil('Stavanger', 'referanser')).includes('Boligstiftelsen Nydalen'), 'Stavanger: ingen Oslo-sitater');
+});
+test('Overskriften er Maritts «Renhold tilpasset deres arbeidssted» og den gamle teksten er borte overalt', () => {
+  for (const by of ['Oslo', 'Stavanger']) {
+    for (const side of ['forside', 'tjenester']) {
+      const h = les(sideFil(by, side));
+      assert.ok(h.includes('<h2 data-vask>Renhold tilpasset deres arbeidssted</h2>'), `${by}/${side}: ny overskrift`);
+      assert.ok(!h.includes('stedet du driver'), `${by}/${side}: gammel overskrift`);
+    }
+  }
+});
+test('referanser/: Stålverkskroken-kortet har egen logo (png + webp finnes) i Oslo og Stavanger', () => {
+  for (const by of ['Oslo', 'Stavanger']) {
+    const fil = sideFil(by, 'referanser');
+    const h = les(fil);
+    const kort = h.split('<li class="sitat-kort">').find((k) => k.includes('Stålverkskroken barnehage'));
+    assert.ok(kort, `${by}: Stålverkskroken-kortet`);
+    const m = kort.match(/<img [^>]*class="sitat-logo" src="((?:\.\.\/)*bilder\/logo-staalverkskroken\.png)" alt="" width="640" height="193">/);
+    assert.ok(m, `${by}: sitat-logo-bildet i kortet`);
+    assert.match(kort, /<source srcset="(?:\.\.\/)*bilder\/logo-staalverkskroken\.webp" type="image\/webp">/, `${by}: webp-kilde`);
+    const absolutt = join(dirname(fil), m[1]);
+    assert.ok(existsSync(absolutt), `${by}: ${m[1]} finnes ikke`);
+    assert.ok(existsSync(absolutt.replace(/\.png$/, '.webp')), `${by}: webp finnes ikke`);
+  }
 });
 test('CSS: referanser-siden har --base-bakgrunn (aldri himmel rett under himmel-hodet)', () => {
   assert.match(les('css/style.css'), /\.side--referanser \.stopp--referanser \{ background: var\(--base\); \}/);
@@ -509,13 +532,13 @@ test('CSS: miljø-siden er hvit, og scroll-margin-listen kjenner #miljo', () => 
 const KONTAKT_H2 = { Oslo: 'Trenger dere en ny renholdsleverandør?', Stavanger: 'Hva koster renhold for dere?' };
 const VASK = {
   Oslo: {
-    forside: ['Renhold tilpasset stedet du driver'], tjenester: ['Renhold tilpasset stedet du driver'],
+    forside: ['Renhold tilpasset deres arbeidssted'], tjenester: ['Renhold tilpasset deres arbeidssted'],
     referanser: ['Dette sier kundene våre'],
     om_oss: ['Fra to personer med hver sin mopp', 'Renholderne er de viktigste'],
     miljo: ['Godkjent, ansvarlig og til stede'],
   },
   Stavanger: {
-    forside: ['Renhold tilpasset stedet du driver'], tjenester: ['Renhold tilpasset stedet du driver'],
+    forside: ['Renhold tilpasset deres arbeidssted'], tjenester: ['Renhold tilpasset deres arbeidssted'],
     referanser: ['Dette sier kundene våre'],
     om_oss: ['To kontorer, samme standard', 'Renholderne er de viktigste'],
     miljo: ['Godkjent, ansvarlig og til stede'],
@@ -552,14 +575,14 @@ test('Forsiden: tre tjenestekort uten «Les mer», én «Se alle tjenester →»
     assert.equal((sek.slice(0, kortSlutt).match(/class="tekst-lenke"/g) || []).length, 0, `${by}: ingen lenke inne i kortene`);
     navn.forEach((t, i) => assert.ok(sek.indexOf(`<h3>${t}</h3>`) > (i ? sek.indexOf(`<h3>${navn[i - 1]}</h3>`) : -1), `${by}: ${t} i rekkefølge`));
     assert.doesNotMatch(h, /class="sitat-kort"|<blockquote/, `${by}: forsiden viser ikke sitater`);
-    assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Renhold tilpasset stedet du driver</h2></div>'), by);
+    assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Renhold tilpasset deres arbeidssted</h2></div>'), by);
   }
 });
 
-test('Forsiden: kunderaden lenker til referanser/ (Oslo 5 logoer, Stavanger 3), i riktig rekkefølge', () => {
+test('Forsiden: kunderaden lenker til referanser/ (Oslo 6 logoer, Stavanger 4), i riktig rekkefølge', () => {
   for (const [by, logoer] of [
-    ['Oslo', ['logo-bsn', 'logo-kg', 'logo-kanvas', 'logo-medistim', 'logo-pioner']],
-    ['Stavanger', ['logo-kanvas', 'logo-kg', 'logo-medistim']],
+    ['Oslo', ['logo-bsn', 'logo-kg', 'logo-kanvas', 'logo-medistim', 'logo-pioner', 'logo-staalverkskroken']],
+    ['Stavanger', ['logo-kanvas', 'logo-kg', 'logo-medistim', 'logo-staalverkskroken']],
   ]) {
     const h = les(sideFil(by, 'forside'));
     const start = h.indexOf('<section class="stopp--kunder" id="kunder">');

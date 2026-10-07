@@ -210,7 +210,7 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
    til ved å sette attributtet). 2026-09-26: «Jobb hos oss»-overskriften
    («Renholderne er de viktigste») mistet sveipet — den står rett under
    flåten, og to animasjoner etter hverandre der ble for mye. Igjen: ÉN
-   overskrift, «Renhold tilpasset stedet du driver».
+   overskrift, «Renhold tilpasset deres arbeidssted».
    Utløses av scroll (IntersectionObserver i
    main.js, som også slår på html.js-vask — uten den er overskriftene alltid
    synlige), én gang per overskrift, litt kortere enn i heroen. Overskriften
@@ -1238,6 +1238,12 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
    wrap − 2×24 rad-padding − 2×1 kant), så to logoer må være ≤ 103 px hver. 100 px (6.25rem)
    gir 100 + 32 + 100 = 232 px og går opp på 320/360/390. Navn-reserven holder samme bredde,
    så en kunde uten logofil ikke blir bredere enn logoboksen. */
+/* Seks logoer på én linje fra 64rem: .kunde-rad er bare ~892 px innvendig ved 1024 og ~942 px fra 1152 px
+   (wrap 68rem − padding − kant), og 6 × 9rem + 5 × 2rem = 1024 px rakk ikke. 6 × 8rem + 5 × 1rem = 848 px. */
+@media (min-width: 64rem) {
+  .kunde-rad { column-gap: var(--s-4); }
+  .kunde-rad img, .kunde-rad__navn { width: 8rem; }
+}
 @media (max-width: 30rem) {
   .kunde-rad img { width: 6.25rem; }
   .kunde-rad__navn { width: 6.25rem; }

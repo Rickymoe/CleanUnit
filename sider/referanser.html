@@ -66,15 +66,10 @@
         </blockquote>
       </li>
       <li class="sitat-kort">
-        <!-- UTKAST: cleanunit.no bruker "Barnehagenett-logo.png" for denne
-             referansen — det er logoen til nettverket/plattformen
-             barnehagenett.no, ikke Stålverkskroken barnehages egen logo.
-             Ikke lagt inn her før Ricky bekrefter om det er riktig å
-             bruke. Stålverkskroken tilhører kjeden Barnehagenett; Marit
-             sendte logofilene på e-post — de ligger ikke i repoet
-             ennå. Ikke finn på en logo; legg filene i bilder/ og et
-             <picture>-element her. Uten logo faller dette kortet tilbake til full bredde
-             på teksten (se .sitat-kort i CSS). -->
+        <picture>
+          <source srcset="{{rot}}bilder/logo-staalverkskroken.webp" type="image/webp">
+          <img loading="lazy" decoding="async" class="sitat-logo" src="{{rot}}bilder/logo-staalverkskroken.png" alt="" width="640" height="193">
+        </picture>
         <blockquote>
           <p>Vi er veldig fornøyde med samarbeidet, kommunikasjonen samt rengjøringen av våre lokaler.</p>
           <footer>Trine Hofseth<br>Stålverkskroken barnehage</footer>
