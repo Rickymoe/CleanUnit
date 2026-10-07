@@ -649,27 +649,50 @@ const derforSeksjon = (by) => {
   return h.slice(start, h.indexOf('</section>', start));
 };
 
-test('Derfor (Oslo): to kort som til sammen er Marits eksakte tekst, ingen av de fire gamle kortene', () => {
+const derforKort = (d) => [...d.matchAll(/<div class="derfor-kort">([\s\S]*?)<\/div>/g)].map((m) => m[1]);
+const sjekkKort = (kort, ikon, overskrift, f) => {
+  const m = kort.match(/^<img class="derfor-kort__ikon" src="((?:\.\.\/)*bilder\/(ikon-[a-z-]+\.svg))" alt="" width="60" height="60" loading="lazy" decoding="async"><h3>([^<]*)<\/h3><p>([^<]*)<\/p>$/);
+  assert.ok(m, `${f}: kortet har ikke formen symbol + h3 + ett avsnitt`);
+  assert.equal(m[2], ikon, f);
+  assert.equal(m[3], overskrift, f);
+  assert.ok(existsSync(`bilder/${ikon}`), `${f}: bilder/${ikon} finnes ikke`);
+  assert.match(les(`bilder/${ikon}`), /fill="#008789"/, `${f}: symbolet er ikke grønt`);
+  assert.doesNotMatch(les(`bilder/${ikon}`), /75355D/i, `${f}: burgunder i symbolet`);
+  return m[4];
+};
+
+test('Derfor (Oslo): to kort med grønt symbol + h3 + ett avsnitt, avsnittene er Marits eksakte tekst', () => {
   const d = derforSeksjon('Oslo');
-  const tekster = [...d.matchAll(/<div class="derfor-kort"><p>([^<]*)<\/p><\/div>/g)].map((m) => m[1]);
+  const kort = derforKort(d);
   assert.equal((d.match(/class="derfor-kort"/g) || []).length, 2);
-  assert.equal(tekster.length, 2);
+  assert.equal(kort.length, 2);
   assert.equal((d.match(/<p>/g) || []).length, 2);
+  assert.equal((d.match(/<h3>/g) || []).length, 2);
+  const tekster = [sjekkKort(kort[0], 'ikon-erfaring.svg', 'Erfaring', 'Oslo 1'), sjekkKort(kort[1], 'ikon-dette-far-du.svg', 'Dette får du', 'Oslo 2')];
   assert.equal(tekster.join(' '), MARIT_DERFOR, 'Marits tekst står ikke ordrett');
-  assert.doesNotMatch(d, /<h3|<li|derfor-liste/);
+  assert.doesNotMatch(d, /75355D|burgunder/i);
+  assert.doesNotMatch(d, /<li|derfor-liste/);
   for (const g of ['Fast renholder', 'Rask kommunikasjon', 'Tett oppfølging']) assert.ok(!d.includes(`>${g}<`), g);
-  assert.ok(!d.includes('>Systematisk kvalitetsoppfølging<'));
 });
 
-test('Derfor (Stavanger): ett kort uten ubekreftet år/område, UTKAST-kommentaren står i kilden', () => {
+test('Derfor (Stavanger): ett kort med grønt skjold-symbol + «Dette får du» + teksten, uten Oslo-påstander, UTKAST står i kilden', () => {
   const d = derforSeksjon('Stavanger');
+  const kort = derforKort(d);
   assert.equal((d.match(/class="derfor-kort"/g) || []).length, 1);
+  assert.equal(kort.length, 1);
   assert.equal((d.match(/<p>/g) || []).length, 1);
   assert.match(d, /derfor-rad--en/);
-  assert.doesNotMatch(d, /siden 2007|Oslo og omegn|rundt 100/);
-  assert.ok(d.includes('Vi benytter ikke underleverandører i det daglige renholdet.'));
-  assert.doesNotMatch(d, /<h3|<li/);
+  const tekst = sjekkKort(kort[0], 'ikon-dette-far-du.svg', 'Dette får du', 'Stavanger');
+  assert.equal(tekst, 'Vi tilbyr faste renholdere, rask kommunikasjon og systematisk kvalitetsoppfølging. Vi benytter ikke underleverandører i det daglige renholdet.');
+  assert.doesNotMatch(d, /siden 2007|Oslo og omegn|rundt 100|Erfaring|75355D|burgunder/i);
   assert.ok(les('sider/forside.html').includes('<!-- UTKAST: Stavangers egen tekst venter på Marit (år, antall kunder, område) -->'));
+});
+
+test('CSS: Derfor-kortenes overskrift er --teal-mork og CSS-en har ingen burgunder i kortreglene', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\.derfor-kort h3 \{ color: var\(--teal-mork\); \}/);
+  const regler = css.split('\n').filter((l) => /^\.derfor-/.test(l)).join('\n');
+  assert.doesNotMatch(regler, /75355D|burgunder/i);
 });
 
 test('CSS: scroll-margin-listen følger forsidens og undersidenes ids', () => {
