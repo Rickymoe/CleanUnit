@@ -839,3 +839,24 @@ test('Stien begynner i heroscenen: JS og CSS peker på samme startpunkt', () => 
   assert.match(js, /document\.querySelector\('\.hero__sti-start'\)/, 'stiNedover finner ikke startpunktet i scenen');
   assert.match(les('css/style.css'), /\.hero__sti-start \{ position: absolute;/, 'startpunktet er ikke plassert i CSS');
 });
+
+// Marit: «Kun 1 linje med 3 punkter» og «ingen underleverandør» bort fra heroen. Den grå
+// ingressen er teksten etter <br>, under den fete taglinen. Stavangers hero er et eget utkast.
+const heroIngress = (fil) => {
+  const m = les(fil).match(/<p class="hero__ingress">([\s\S]*?)<\/p>/);
+  assert.ok(m, `${fil}: fant ikke .hero__ingress`);
+  return m[1];
+};
+
+test('Oslo: heroens grå ingress er nøyaktig de tre punktene, uten underleverandører', () => {
+  const [tagline, grå, ...rest] = heroIngress('test/ut/index.html').split('<br>');
+  assert.equal(rest.length, 0);
+  assert.equal(tagline, '<strong>Profesjonelt renhold for bedrifter, skoler og barnehager.</strong>');
+  assert.equal(grå, 'Etablert 2007, offentlig godkjent, Miljøfyrtårn');
+  assert.ok(!/underleverandør/i.test(tagline + grå));
+});
+
+test('Stavanger: heroens ingress er uendret', () => {
+  assert.equal(heroIngress('test/ut/stavanger/index.html'),
+    '<!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte&nbsp;– ingen underleverandører.');
+});
