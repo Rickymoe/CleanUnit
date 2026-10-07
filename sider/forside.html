@@ -56,25 +56,10 @@
 <section class="stopp--derfor" id="derfor">
   <div class="wrap">
     <h2 class="visually-hidden">Derfor velger våre kunder Clean Unit</h2>
-    <ul class="derfor-liste">
-      <li>
-        <h3>Fast renholder</h3>
-        <p>Renholderen kjenner lokalene, rutinene og kunden.</p>
-      </li>
-      <li>
-        <h3>Rask kommunikasjon</h3>
-        <p>Det skal være enkelt å komme i kontakt med oss når noe må avklares eller endres.</p>
-      </li>
-      <li>
-        <h3>Tett oppfølging</h3>
-        <p>Vi følger opp både ansatte, kvalitet og kundens behov gjennom hele avtalen.</p>
-      </li>
-      <li>
-        <!-- UTKAST: Marit har bare overskriften «Systematisk kvalitetsoppfølging» her; teksten er satt sammen av hennes formulering under «Fast daglig renhold». Bekreft. -->
-        <h3>Systematisk kvalitetsoppfølging</h3>
-        <p>Faste kontaktpersoner og systematisk kvalitetsoppfølging gjennom hele avtalen.</p>
-      </li>
-    </ul>
+    <div class="derfor-kort">
+      {{#er_oslo}}<p>Clean Unit har levert profesjonelt renhold siden 2007, og vi rengjør rundt 100 virksomheter i Oslo og omegn. Vi tilbyr faste renholdere, rask kommunikasjon og systematisk kvalitetsoppfølging. Vi benytter ikke underleverandører i det daglige renholdet.</p>{{/er_oslo}}{{^er_oslo}}<!-- UTKAST: Stavangers egen tekst venter på Marit (år, antall kunder, område) -->
+      <p>Vi tilbyr faste renholdere, rask kommunikasjon og systematisk kvalitetsoppfølging. Vi benytter ikke underleverandører i det daglige renholdet.</p>{{/er_oslo}}
+    </div>
   </div>
 </section>
 <section class="stopp--tjenester" id="tjenester">

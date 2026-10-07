@@ -28,7 +28,7 @@ function debounce(fn, ms) {
 function kortReveal(reduksjon) {
   if (reduksjon) return
   const kort = document.querySelectorAll(
-    '.tjeneste-kort, .sitat-kort, .miljo-kort, .derfor-liste > li, .tillit-liste > li, .om-foto-plassholder'
+    '.tjeneste-kort, .sitat-kort, .miljo-kort, .derfor-kort, .tillit-liste > li, .om-foto-plassholder'
   )
   if (!kort.length) return
   if (!('IntersectionObserver' in window)) {
@@ -198,9 +198,9 @@ function overskriftVask(reduksjon) {
    endrer seg når Quicksand bytter ut fallback-fonten). */
 // Nodene speiler forsidens seksjoner (stien finnes bare på forsiden). anker = elementet i seksjonen
 // noden festes til (standard eyebrowen); fra = «midt» (eyebrowens midtlinje, som før) eller «topp»
-// (24 px under toppen, for «Derfor»-listen som er et høyt element uten eyebrow).
+// (24 px under toppen, for «Derfor»-kortet som er et høyt element uten eyebrow).
 const STI_SEKSJONER = [
-  { sel: '#derfor', navn: 'Derfor Clean Unit', anker: '.derfor-liste', fra: 'topp' },
+  { sel: '#derfor', navn: 'Derfor Clean Unit', anker: '.derfor-kort', fra: 'topp' },
   { sel: '#tjenester', navn: 'Tjenester' },
   { sel: '#kunder', navn: 'Referanser' },
   { sel: '#kontakt', navn: 'Kontakt' },

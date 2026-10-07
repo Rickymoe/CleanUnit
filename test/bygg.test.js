@@ -607,7 +607,7 @@ test('Stien: nodene speiler forsidens seksjoner, hver finnes med anker, og bare 
   assert.deepEqual(ider, ['derfor', 'tjenester', 'kunder', 'kontakt'], 'sti-nodene');
   for (const by of ['Oslo', 'Stavanger']) {
     const h = les(sideFil(by, 'forside'));
-    for (const [id, anker] of [['derfor', 'derfor-liste'], ['tjenester', 'eyebrow'], ['kunder', 'eyebrow'], ['kontakt', 'eyebrow']]) {
+    for (const [id, anker] of [['derfor', 'derfor-kort'], ['tjenester', 'eyebrow'], ['kunder', 'eyebrow'], ['kontakt', 'eyebrow']]) {
       const start = h.indexOf(`id="${id}"`);
       assert.ok(start > -1, `${by}: mangler #${id}`);
       assert.match(h.slice(start, h.indexOf('</section>', start)), new RegExp(`class="${anker}"`), `${by}: #${id} mangler .${anker} (stien ankrer til den)`);
@@ -619,6 +619,33 @@ test('Stien: nodene speiler forsidens seksjoner, hver finnes med anker, og bare 
   }
   assert.match(js, /document\.querySelector\('\.hero__sti-start'\)/, 'stiNedover finner ikke startpunktet');
 });
+const MARIT_DERFOR = 'Clean Unit har levert profesjonelt renhold siden 2007, og vi rengjør rundt 100 virksomheter i Oslo og omegn. Vi tilbyr faste renholdere, rask kommunikasjon og systematisk kvalitetsoppfølging. Vi benytter ikke underleverandører i det daglige renholdet.';
+const derforSeksjon = (by) => {
+  const h = les(sideFil(by, 'forside'));
+  const start = h.indexOf('id="derfor"');
+  return h.slice(start, h.indexOf('</section>', start));
+};
+
+test('Derfor (Oslo): ett kort med Marits eksakte tekst, ingen av de fire gamle kortene', () => {
+  const d = derforSeksjon('Oslo');
+  assert.equal((d.match(/class="derfor-kort"/g) || []).length, 1);
+  assert.equal((d.match(/<p>/g) || []).length, 1);
+  assert.ok(d.includes(`<p>${MARIT_DERFOR}</p>`), 'Marits tekst står ikke ordrett');
+  assert.doesNotMatch(d, /<h3|<li|derfor-liste/);
+  for (const g of ['Fast renholder', 'Rask kommunikasjon', 'Tett oppfølging']) assert.ok(!d.includes(`>${g}<`), g);
+  assert.ok(!d.includes('>Systematisk kvalitetsoppfølging<'));
+});
+
+test('Derfor (Stavanger): ett kort uten ubekreftet år/område, UTKAST-kommentaren står i kilden', () => {
+  const d = derforSeksjon('Stavanger');
+  assert.equal((d.match(/class="derfor-kort"/g) || []).length, 1);
+  assert.equal((d.match(/<p>/g) || []).length, 1);
+  assert.doesNotMatch(d, /siden 2007|Oslo og omegn|rundt 100/);
+  assert.ok(d.includes('Vi benytter ikke underleverandører i det daglige renholdet.'));
+  assert.doesNotMatch(d, /<h3|<li/);
+  assert.ok(les('sider/forside.html').includes('<!-- UTKAST: Stavangers egen tekst venter på Marit (år, antall kunder, område) -->'));
+});
+
 test('CSS: scroll-margin-listen følger forsidens og undersidenes ids', () => {
   assert.match(les('css/style.css'), /#derfor, #tjenester, #kunder, #miljo, #jobb-hos-oss, #kontakt \{ scroll-margin-top: 3\.75rem; \}/);
 });

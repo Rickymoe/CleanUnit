@@ -989,21 +989,12 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   /* Heroscenen ender i himmelfargen. Flaten tones inn fra den i stedet for å starte med en rett kant. */
   background: linear-gradient(to bottom, var(--himmel) 0, var(--teal-lys) 6rem);
 }
-.derfor-liste {
-  list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-5); grid-template-columns: 1fr;
+.derfor-kort {
+  max-width: 52rem; margin-inline: auto; background: #fff; border-radius: var(--radius);
+  padding: var(--s-6) var(--s-5); text-align: center;
 }
-.derfor-liste li { background: #fff; border-radius: var(--radius); padding: var(--s-5); transition: transform .2s, box-shadow .2s; }
-@media (hover: hover) {
-  .derfor-liste li:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0, 89, 91, .35); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .derfor-liste li { transition: none; }
-  .derfor-liste li:hover { transform: none; }
-}
-.derfor-liste h3 { color: var(--teal-mork); font-size: var(--t-lg); }
-.derfor-liste p { margin-top: var(--s-2); color: var(--tekst-svak); font-size: var(--t-sm); }
-@media (min-width: 36rem) { .derfor-liste { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 64rem) { .derfor-liste { grid-template-columns: repeat(4, 1fr); } }
+.derfor-kort p { max-width: 65ch; margin-inline: auto; color: var(--tekst); font-size: 1.125rem; line-height: 1.6; }
+@media (min-width: 48rem) { .derfor-kort { padding: var(--s-6) var(--s-8); } }
 
 /* Sju tjenester stablet oppå hverandre i én kolonne (Ricky 2026-10-04): med flere kolonner og like
    høyder ble naboen strukket hver gang et kort ble åpnet med «Les mer». Fra 36rem ligger ikonet til
