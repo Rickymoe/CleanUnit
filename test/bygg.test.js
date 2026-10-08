@@ -878,7 +878,7 @@ const synlig = (h) => h.replace(/<!--[\s\S]*?-->/g, '');
 test('Stavanger: ingen Oslo-tekster på noen av de fem sidene, men egne tekster og eget kontor', () => {
   const h = synlig(heleBy('Stavanger'));
   for (const t of ['Marit Byfuglien', 'Mari Pedersen', 'Guro Klingenberg', 'Boligstiftelsen Nydalen', 'Dr. Brandt', 'logo-pioner', 'logo-bsn',
-    'rundt 100 kunder', 'over 100 kunder i Oslo', 'over 70 barnehager', 'Flere av våre ansatte har jobbet i Clean Unit i over ti år', 'Fra to personer med hver sin mopp', 'Trenger dere en ny renholdsleverandør?', '21 55 56 80', 'renhold@cleanunit.no']) {
+    'rundt 100 kunder', 'over 100 kunder i Oslo', 'Flere av våre ansatte har jobbet i Clean Unit i over ti år', 'Fra to personer med hver sin mopp', 'Trenger dere en ny renholdsleverandør?', '21 55 56 80', 'renhold@cleanunit.no']) {
     assert.ok(!h.includes(t), `Oslo-teksten «${t}» lekker inn i Stavanger`);
   }
   for (const t of ['To kontorer, samme standard', 'Hva koster renhold for dere?', 'thord@cleanunit.no', '900 65 009', 'Thord Hegre']) {
@@ -1150,24 +1150,27 @@ test('Tekstsjekk: alle fire ansattsitatene (Monika S, Urszula, Aneta, Vilma) st�
     assert.equal((h.match(/class="sitat-kort"/g) || []).length, 4, `${by}: fire ansattsitater`);
   }
 });
-test('Tekstsjekk: Oslo har kundetallene og NS-INSTA, Stavanger har dem ikke og nevner aldri Oslo i innholdet', () => {
+test('Tekstsjekk: Oslo har NS-INSTA, Stavanger har det ikke; barnehage-setningen står i begge byer (erfaring fra Oslo, Ricky 2026-10-08), ellers nevnes aldri Oslo i Stavangers innhold', () => {
   const o = les(sideFil('Oslo', 'tjenester')); const st = les(sideFil('Stavanger', 'tjenester'));
   assert.ok(o.includes('utfører i dag renhold i over 70 barnehager i Oslo og omegn') && !o.includes('sørger vi for vikar'), 'Oslo');
   assert.ok(o.includes('NS-INSTA 800'), 'Oslo: NS-INSTA 800');
   const main = st.slice(st.indexOf('<main'), st.indexOf('id="kontakt"'));
   assert.ok(main.includes('<h3>Renhold av barnehager</h3>') && main.length > 5000, 'Stavanger: innholdsutsnittet er med');
+  const setning = 'Vi har rengjort barnehager siden 2007 og utfører i dag renhold i over 70 barnehager i Oslo og omegn.';
+  assert.ok(main.includes(`<p>${setning}</p>`), 'Stavanger: barnehage-setningen står, erfaringen er Clean Units (fra Oslo)');
+  const utenSetning = main.replace(setning, '');
   for (const forbudt of ['over 70', 'over 100', 'NS-INSTA', 'Oslo', 'om lag 90 prosent', 'Ti års', 'siden 2007']) {
-    assert.ok(!main.includes(forbudt), `Stavanger Tjenester: «${forbudt}» skal ikke stå`);
+    assert.ok(!utenSetning.includes(forbudt), `Stavanger Tjenester: «${forbudt}» skal ikke stå utenom barnehage-setningen`);
   }
   assert.ok(main.includes('i Stavanger og omegn.</p>'), 'Stavanger: intro nevner Stavanger og omegn');
   assert.ok(!les(sideFil('Stavanger', 'om_oss')).includes('Flere av våre ansatte har jobbet'), 'Stavanger: ingen Oslo-ansatttekst');
 });
 
-test('Tjenester: Stavanger-siden er Oslo-siden med byen byttet, minus de to Oslo-setningene', () => {
+test('Tjenester: Stavanger-siden er Oslo-siden med byen byttet, minus NS-INSTA-avsnittet', () => {
   const tekster = (by, fra, til) => {
     const h = les(sideFil(by, 'tjenester'));
     const m = h.slice(h.indexOf('<main'), h.indexOf('id="kontakt"'));
-    return { h3: [...m.matchAll(/<h3>([^<]*)<\/h3>/g)].map((x) => x[1]), p: [...m.matchAll(/<p>([^<]*)<\/p>/g)].map((x) => x[1].replaceAll(fra, til)) };
+    return { h3: [...m.matchAll(/<h3>([^<]*)<\/h3>/g)].map((x) => x[1]), p: [...m.matchAll(/<p>([^<]*)<\/p>/g)].map((x) => x[1].replaceAll('Oslo og omegn', til).replaceAll('Stavanger og omegn', til)) };
   };
   const o = tekster('Oslo', 'Oslo og omegn', '@@'); const st = tekster('Stavanger', 'Stavanger og omegn', '@@');
   assert.deepEqual(st.h3, o.h3, 'samme overskrifter i samme rekkefølge');
@@ -1175,10 +1178,9 @@ test('Tjenester: Stavanger-siden er Oslo-siden med byen byttet, minus de to Oslo
   const bare = o.p.filter((x) => !st.p.includes(x));
   assert.deepEqual(bare, [
     'Vi følger opp renholdskvaliteten gjennom jevnlige kontroller og dialog med både renholderne og kunden. For kunder som ønsker det, kan vi også tilby renhold med kvalitetskrav og kontroller etter NS-INSTA 800, en norsk standard for måling og vurdering av renholdskvalitet.',
-    'Vi har rengjort barnehager siden 2007 og utfører i dag renhold i over 70 barnehager i @@.',
   ], 'det eneste som bare står i Oslo');
   assert.deepEqual(st.p.filter((x) => !o.p.includes(x)), [], 'Stavanger har ingen egne avsnitt');
-  assert.equal(o.p.length - st.p.length, 2);
+  assert.equal(o.p.length - st.p.length, 1);
   assert.ok(o.p.some((x) => x.includes('@@')) && st.p.some((x) => x.includes('@@')), 'byen er byttet i introen');
 });
 
