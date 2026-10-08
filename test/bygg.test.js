@@ -1228,8 +1228,9 @@ test('CSS: personene i Kontakt-kortet står i to kolonner, men under hverandre m
   assert.match(css, /@media \(min-width: 64rem\) and \(max-width: 67\.99rem\) \{ \.kontakt__personer \{ grid-template-columns: minmax\(0, 1fr\); \} \}/, 'én kolonne i det trange området');
 });
 
-test('CSS: Kontakt-kortet (firma og personer) har litt mørkere bakgrunn (--base) enn «Ta kontakt»-boksen (hvit)', () => {
+test('CSS: Kontakt-kortet (firma og personer) har samme bakgrunn som kortene på Tjenester (--teal-lys), «Ta kontakt»-boksen er hvit', () => {
   const css = les('css/style.css');
-  assert.match(css, /\n\.kontakt__info \{ background: var\(--base\);/, 'kortet bruker --base');
+  assert.match(css, /\n\.kontakt__info \{ background: var\(--teal-lys\);/, 'kortet bruker --teal-lys, som .tjeneste-kort');
+  assert.match(css, /\n\.tjeneste-kort \{[^}]*background: var\(--teal-lys\);/, 'Tjenester-kortene bruker --teal-lys');
   assert.match(css, /\.kontakt__handling \{ background: var\(--flate\);/, 'boksen er fortsatt hvit');
 });
