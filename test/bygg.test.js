@@ -167,7 +167,8 @@ test('Toppmeny: ekte lenker til de fire undersidene, aria-current på gjeldende 
     const sti = STIER[s.id];
     const mal = s.by === 'Oslo' ? `test/ut/stavanger/${sti}index.html` : `test/ut/${sti}index.html`;
     assert.ok(existsSync(mal), `${s.fil}: andre-by-målet ${mal} finnes ikke`);
-    assert.equal((nav.match(/side-nav__kontakt/g) || []).length, 0, `${s.fil}: ingen Kontakt-knapp`);
+    assert.equal((nav.match(/<a class="side-nav__kontakt knapp knapp--omriss" href="#kontakt">Kontakt<\/a>/g) || []).length, 1, `${s.fil}: én Kontakt-knapp i raden (mobil)`);
+    assert.ok(nav.indexOf('side-nav__kontakt') < nav.indexOf('side-nav__bryter'), `${s.fil}: knappen står før hamburgeren i tabrekkefølgen`);
   }
 });
 
@@ -1173,4 +1174,14 @@ test('Stavanger-bybildet er Oslo-scenen med mer burgunder: samme mål, logoen p�
     assert.equal(s.readUIntLE(26, 2) & 0x3fff, o.readUIntLE(26, 2) & 0x3fff, `${stav}.webp: samme bredde som Oslo-scenen`);
     assert.equal(s.readUIntLE(28, 2) & 0x3fff, o.readUIntLE(28, 2) & 0x3fff, `${stav}.webp: samme høyde som Oslo-scenen`);
   }
+});
+
+test('Toppmeny: Kontakt-knappen er bare synlig i mobilvisning (≤ 62rem), menyvalget skjules da, og knappen lukker menyen', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\n\.side-nav__kontakt \{ display: none; \}/, 'skjult på desktop');
+  const mobil = css.slice(css.indexOf('@media (max-width: 62rem) {\n  .side-nav__rad'));
+  assert.match(mobil, /\.side-nav__kontakt \{ display: inline-flex; order: 2; margin-left: auto; min-height: 44px;/, 'synlig, 44 px høy, til høyre i mobilvisning');
+  assert.match(mobil, /\.side-nav__bryter \{ order: 3; margin-left: 0; \}/, 'hamburgeren ligger etter knappen');
+  assert.match(mobil, /\.side-nav__meny li:has\(> a\[href="#kontakt"\]\) \{ display: none; \}/, 'menyvalget Kontakt skjules når knappen vises');
+  assert.match(les('js/main.js'), /querySelector\('\.side-nav__kontakt'\)\?\.addEventListener\('click', \(\) => sett\(false\)\)/, 'knappen lukker menyen');
 });

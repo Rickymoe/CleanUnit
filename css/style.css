@@ -921,6 +921,9 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .side-nav__logo { display: block; flex: none; line-height: 0; border-radius: 8px; }
 .side-nav__logo svg { display: block; width: 2.6rem; height: 2.6rem; }
 .side-nav__bryter { display: none; }
+/* «Kontakt»-knappen er bare synlig i mobilvisning (Ricky 2026-10-08): ved siden av hamburgeren, så veien til å ta kontakt ikke ligger bak menyen.
+   På desktop er Kontakt fortsatt et vanlig menyvalg (Marit ba om det, c681cc1). */
+.side-nav__kontakt { display: none; }
 .side-nav__meny { display: flex; align-items: center; gap: var(--s-4); flex: 1; min-width: 0; }
 .side-nav__meny ul { list-style: none; margin: 0 auto 0 var(--s-3); padding: 0; display: flex; gap: var(--s-1); flex-wrap: wrap; }
 .side-nav__lenke {
@@ -937,7 +940,9 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 #derfor, #tjenester, #kunder, #miljo, #jobb-hos-oss, #kontakt { scroll-margin-top: 3.75rem; }
 @media (max-width: 62rem) {
   .side-nav__rad { gap: var(--s-3); }
-  .side-nav__bryter { order: 3; margin-left: auto; }
+  .side-nav__kontakt { display: inline-flex; order: 2; margin-left: auto; min-height: 44px; justify-content: center; }
+  .side-nav__bryter { order: 3; margin-left: 0; }
+  .side-nav__meny li:has(> a[href="#kontakt"]) { display: none; } /* knappen i raden erstatter menyvalget, ikke begge */
   html.js .side-nav__bryter {
     display: inline-flex; flex: none; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem;
     border: 1px solid #7A9593; border-radius: 10px; background: var(--base); cursor: pointer; color: var(--teal-mork);
