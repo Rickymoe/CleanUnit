@@ -923,7 +923,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .side-nav__bryter { display: none; }
 /* «Kontakt»-knappen er bare synlig i mobilvisning (Ricky 2026-10-08): ved siden av hamburgeren, så veien til å ta kontakt ikke ligger bak menyen.
    På desktop er Kontakt fortsatt et vanlig menyvalg (Marit ba om det, c681cc1). */
-.side-nav__kontakt { display: none; }
+.side-nav__kontakt { display: none; border-color: var(--burgunder); } /* burgunder kant (Ricky 2026-10-08), teal skrift som i de andre knappene */
 .side-nav__meny { display: flex; align-items: center; gap: var(--s-4); flex: 1; min-width: 0; }
 .side-nav__meny ul { list-style: none; margin: 0 auto 0 var(--s-3); padding: 0; display: flex; gap: var(--s-1); flex-wrap: wrap; }
 .side-nav__lenke {
