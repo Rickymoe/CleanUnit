@@ -49,7 +49,6 @@
   --glans-b: 30%;            /* det brede båndets halve bredde */
   --glans-bred: .28;         /* styrken på det brede båndet */
   --glans-skarp: .5;         /* styrken på den skarpe kanten inne i refleksen */
-  --glans-sveip: .95;        /* tørkesveipets styrke — se merknaden i regelen */
   --glans-topp: .45;         /* lyset som faller ned fra overkanten av ruta */
   --glans-speil: .45;        /* speilbildet av bilen i bakken */
   --glans-speil-fade: 60%;   /* hvor langt ned speilbildet rekker før det dør */
@@ -378,42 +377,8 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 .kort--vindu > h3,
 .kort--vindu > p { position: relative; z-index: 1; }
 
-/* Tørkesveipet: glasset tørkes over én gang når kortet kommer inn i bildet,
-   og blir så stående stille. Klassen settes av glansSveip() i main.js, som
-   observerer kortet — ikke av en CSS-regel alene, fordi det skal skje ÉN
-   gang og på det tidspunktet kortet faktisk ses.
-   Én gang og ikke i løkke: to evige sveip (vinduet og seglet) var det jeg
-   bygget i laben, og Ricky droppet seglet. Et sveip som går én gang leser
-   dessuten som noe som ble GJORT RENT, som er hele poenget med glansen her,
-   mens et sveip som går hvert tredje sekund leser som en fidget på en side
-   som allerede har fjernet scroll-avsløringen fordi den forstyrret lesingen.
-   Uten JS står den stille refleksen igjen alene — altså hele behandlingen
-   minus bevegelsen, ikke et ødelagt kort. */
-.kort--vindu::after {
-  content: ""; position: absolute; inset: 8.5px; border-radius: 5.5px;
-  pointer-events: none;
-  /* Styrken er målt, ikke gjettet. Kortet er --teal-lys (#E7F4F4), altså
-     nesten hvitt, så et hvitt sveip har et TAK på 25 av 255 i rødkanalen
-     (255 − 230) — det finnes ikke mer å hente. Med labens 0,55 nådde båndet
-     bare +14 av de 25 (målt i en tekstfri sone av kortet), og på skjermbilder
-     var sveipet praktisk talt usynlig. 0,95 henter inn resten av taket, og
-     båndet er gjort smalere (20 % mot 26 %) så det leser som en linje som
-     farer over ruta og ikke som et slør som legger seg på den. */
-  background: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / var(--glans-sveip)) 50%, transparent 100%);
-  background-size: 20% 100%;
-  background-repeat: no-repeat;
-  /* Båndet står utenfor ruta i begge ender, så «ingen animasjon» og
-     «animasjonen er ferdig» er samme usynlige tilstand. */
-  background-position: -140% 0;
-}
-.kort--vindu.glans-sveip::after { animation: glans-tork 3000ms ease-in-out forwards; }
-@keyframes glans-tork {
-  0%   { background-position: -140% 0; }
-  100% { background-position: 240% 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .kort--vindu.glans-sveip::after { animation: none; }
-}
+/* Tørkesveipet (glasset tørkes over én gang når kortet kom i bilde) er fjernet 2026-10-08 (Ricky: det hvite båndet lå over
+   teksten og så ut som en feil). Den stille refleksen over står igjen alene. */
 /* Tjenestemerkene er runde, flate SVG-merker med lang skygge i kundens egen stil
    (verktoy/symboler.py; Ricky 2026-10-01: «vi bygger symboler selv fra bunn»).
    Deres egne merker er store, og detaljene forsvinner under ~60 px, så de står

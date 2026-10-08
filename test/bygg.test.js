@@ -208,7 +208,6 @@ test('main.js: hver init-funksjon verner mot manglende elementer', () => {
     ['function overskriftVask', /if \(!overskrifter\.length\) return/],
     ['function kortReveal', /if \(!kort\.length\) return/],
     ['function flaateInn', /if \(reduksjon \|\| !flaate\) return/],
-    ['function glansSveip', /if \(reduksjon \|\| !kort\) return/],
     ['function stiNedover', /if \(!rad \|\| !linje \|\| !hero \|\| !footer\) return/],
   ]) {
     const start = js.indexOf(fn);
@@ -336,20 +335,12 @@ test('Glans: vindusglasset finnes i CSS-en (speilet i bakken gikk ut med den gam
     'glansen følger ikke vindusrammen (8,5 px innrykk, 5,5 px radius)');
 });
 
-test('Glans: sveipet går én gang, og bare når bevegelse er greit', () => {
-  const js = les('js/main.js');
-  assert.match(initKropp(js), /glansSveip\(reduksjon\)/, 'glansSveip kalles ikke fra initSider()');
-  const kropp = js.slice(js.indexOf('function glansSveip'), js.indexOf('function glansSveip') + 900);
-  assert.match(kropp, /if \(reduksjon \|\| !kort\) return/, 'sveipet gates ikke på redusert bevegelse');
-  // Uten disconnect ville sveipet gått på nytt hver gang kortet kom inn i
-  // bildet igjen — altså en løkke, som er nøyaktig det vi valgte bort.
-  assert.match(kropp, /observer\.disconnect\(\)/, 'sveipet kobles ikke fra etter første gang');
+test('Glans: Vindusvask-kortet har den stille refleksen, men ikke tørkesveipet (fjernet 2026-10-08)', () => {
   const css = les('css/style.css');
-  // Klassen settes ved sidelast, men medie-queryen leses fortløpende: slår
-  // brukeren på redusert bevegelse etter at siden er lastet, er det CSS-en og
-  // ikke JS-en som må stoppe sveipet.
-  assert.match(css, /prefers-reduced-motion: reduce\) \{\s*\.kort--vindu\.glans-sveip::after \{ animation: none; \}/,
-    'CSS-en fanger ikke redusert bevegelse satt etter sidelast');
+  const js = les('js/main.js');
+  assert.match(css, /\.kort--vindu::before \{/, 'den stille refleksen skal bli stående');
+  assert.doesNotMatch(css, /glans-sveip|glans-tork|\.kort--vindu::after/, 'tørkesveipet er fjernet fra CSS');
+  assert.doesNotMatch(js, /glansSveip|glans-sveip/, 'tørkesveipet er fjernet fra JS');
 });
 
 // Veinett-teppet (dekning-nett) lever bare i footeren, og det gamle navngitte Oslo-kartet med

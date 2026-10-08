@@ -4,7 +4,6 @@ export function initSider() {
   overskriftVask(reduksjon)
   kortReveal(reduksjon)
   flaateInn(reduksjon)
-  glansSveip(reduksjon)
   stiNedover(reduksjon)
   sideNav()
 }
@@ -82,36 +81,6 @@ function flaateInn(reduksjon) {
     { rootMargin: '0px 0px -12% 0px', threshold: 0.25 }
   )
   observer.observe(flaate)
-}
-
-// Vinduskortet: glasset tørkes over ÉN gang når kortet kommer inn i bildet,
-// og blir så stående stille (Ricky 2026-09-30). Her settes bare klassen som
-// starter CSS-animasjonen (se .kort--vindu.glans-sveip i style.css).
-//
-// Én gang og ikke i løkke: et sveip som går hvert tredje sekund er uro på en
-// side som allerede har fjernet scroll-avsløringen fordi den forstyrret
-// lesingen, og det fortsetter for alltid hvis fanen blir stående åpen. Et
-// sveip som går én gang leser som noe som ble gjort rent, som er poenget.
-//
-// Ulikt flaateInn over, som MÅ sette klassen sin for at bilene skal havne
-// riktig: her er klassen bare bevegelsen. Mangler IntersectionObserver, eller
-// står nettleseren på redusert bevegelse, gjør vi ingenting — og kortet står
-// igjen med den stille refleksen, som er hele behandlingen minus bevegelsen.
-function glansSveip(reduksjon) {
-  const kort = document.querySelector('.kort--vindu')
-  if (reduksjon || !kort) return
-  if (!('IntersectionObserver' in window)) return
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return
-        kort.classList.add('glans-sveip')
-        observer.disconnect()
-      })
-    },
-    { threshold: 0.5 }
-  )
-  observer.observe(kort)
 }
 
 // Logoen i heroen: hele logoen avsløres i ett sveip fra venstre («Vask», ren
