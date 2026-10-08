@@ -1178,7 +1178,7 @@ test('Stavanger-bybildet er Oslo-scenen med mer burgunder: samme mål, logoen p�
 
 test('Toppmeny: Kontakt-knappen er bare synlig i mobilvisning (≤ 62rem), menyvalget skjules da, og knappen lukker menyen', () => {
   const css = les('css/style.css');
-  assert.match(css, /\n\.side-nav__kontakt \{ display: none; border-color: var\(--burgunder\); \}/, 'skjult på desktop, med burgunder kant');
+  assert.match(css, /\n\.side-nav__kontakt \{ display: none; border-color: var\(--burgunder\); color: var\(--burgunder\); \}/, 'skjult på desktop, med burgunder kant og skrift');
   const mobil = css.slice(css.indexOf('@media (max-width: 62rem) {\n  .side-nav__rad'));
   assert.match(mobil, /\.side-nav__kontakt \{ display: inline-flex; order: 2; margin-left: auto; min-height: 44px;/, 'synlig, 44 px høy, til høyre i mobilvisning');
   assert.match(mobil, /\.side-nav__bryter \{ order: 3; margin-left: 0; \}/, 'hamburgeren ligger etter knappen');
