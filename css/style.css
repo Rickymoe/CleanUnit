@@ -866,7 +866,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 /* Kontaktinfoen (Ricky 2026-10-03): kontorer og personer flyttet hit fra footeren, nå med mørk tekst på lys bunn. */
 .kontakt__info { display: grid; gap: var(--s-5); align-content: start; }
 /* Kontaktinfoen står på et hvitt kort. */
-.kontakt__info { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(0, 89, 91, .08); }
+.kontakt__info { background: var(--base); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(0, 89, 91, .08); } /* litt mørkere enn «Ta kontakt»-boksen (Ricky 2026-10-08): hovedveien er hvit, direkte-kortet er roligere */
 .kontakt__kontorer { display: grid; gap: var(--s-5); }
 .kontakt__kontorer h3 { color: var(--teal-mork); font-size: var(--t-lg); }
 .kontakt__kontorer p { margin-top: var(--s-1); color: var(--tekst-svak); font-size: var(--t-sm); }

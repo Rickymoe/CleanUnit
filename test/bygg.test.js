@@ -1227,3 +1227,9 @@ test('CSS: personene i Kontakt-kortet står i to kolonner, men under hverandre m
   assert.match(css, /@media \(min-width: 48rem\) \{ \.kontakt__personer \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); column-gap: var\(--s-4\); \} \}/, 'to kolonner med smalere mellomrom');
   assert.match(css, /@media \(min-width: 64rem\) and \(max-width: 67\.99rem\) \{ \.kontakt__personer \{ grid-template-columns: minmax\(0, 1fr\); \} \}/, 'én kolonne i det trange området');
 });
+
+test('CSS: Kontakt-kortet (firma og personer) har litt mørkere bakgrunn (--base) enn «Ta kontakt»-boksen (hvit)', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\n\.kontakt__info \{ background: var\(--base\);/, 'kortet bruker --base');
+  assert.match(css, /\.kontakt__handling \{ background: var\(--flate\);/, 'boksen er fortsatt hvit');
+});
