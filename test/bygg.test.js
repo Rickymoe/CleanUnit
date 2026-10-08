@@ -942,7 +942,7 @@ test('Kontakt: «Ta kontakt»-boksen har to like omrissknapper, «Ring oss – <
     const tlfHref = s.by === 'Oslo' ? '+4721555680' : '+4790065009';
     const rad = k.match(/<div class="kontakt__knapper">([\s\S]*?)<\/div>/);
     assert.ok(rad, `${s.fil}: knapperaden mangler`);
-    assert.match(k, /<div class="kontakt__handling">\s*<h3>Ta kontakt<\/h3>\s*<p class="kontakt__lede">[^<]+<\/p>\s*<div class="kontakt__knapper">/, `${s.fil}: boksen heter «Ta kontakt», har ingressen og så knappene`);
+    assert.match(k, /<div class="kontakt__handling">\s*<div class="kontakt__tittel"><img [^>]*>\s*<h3>Ta kontakt<\/h3><\/div>\s*<p class="kontakt__lede">[^<]+<\/p>\s*<div class="kontakt__knapper">/, `${s.fil}: boksen heter «Ta kontakt», har ingressen og så knappene`);
     assert.doesNotMatch(k.slice(0, k.indexOf('class="kontakt-layout"')), /stopp__lede/, `${s.fil}: ingen ingress over kortene, den står i boksen`);
     assert.ok(k.indexOf('kontakt__knapper') < k.indexOf('kontakt__personer'), `${s.fil}: knappene står før personene i markupen (øverst på mobil)`);
     const lenker = [...rad[1].matchAll(/<a ([^>]*)>([^<]*)<\/a>/g)].map((m) => [m[1].trim(), m[2]]);
@@ -1110,4 +1110,14 @@ test('Kontakt: lenka til den andre byen ligger utenfor kortet, og fra 64rem unde
   const css = les('css/style.css');
   assert.match(css, /grid-template-areas: "handling info" "bylenke info"/, 'lenka i venstre kolonne under boksen');
   assert.match(css, /\.kontakt__bylenke \{ grid-area: bylenke;/, 'grid-område for lenka');
+});
+
+test('Kontakt: begge kortene har et dekorativt ikon foran overskriften (alt tom, finnes i bilder/, burgunder, 44 px)', () => {
+  for (const s of alleSider()) {
+    const k = kontaktKort(s.fil);
+    const ikoner = [...k.matchAll(/<div class="kontakt__tittel"><img class="kontakt__ikon" src="((?:\.\.\/)*)bilder\/([a-z-]+\.svg)" alt="" width="44" height="44"[^>]*><h3>([^<]+)<\/h3><\/div>/g)];
+    assert.deepEqual(ikoner.map((m) => [m[2], m[3]]), [['ikon-ta-kontakt.svg', 'Ta kontakt'], ['ikon-firma.svg', s.by === 'Oslo' ? 'Clean Unit Renhold AS' : 'Clean Unit Stavanger AS']], `${s.fil}: to ikoner foran overskriftene`);
+  }
+  for (const f of ['ikon-ta-kontakt.svg', 'ikon-firma.svg']) assert.match(les(`bilder/${f}`), /fill="#75355D"/, `${f}: burgunder`);
+  assert.match(les('css/style.css'), /\.kontakt__ikon \{[^}]*width: 2\.75rem; height: 2\.75rem;/, 'ikonet er 44 px, som initialsirklene');
 });

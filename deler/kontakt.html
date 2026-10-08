@@ -11,7 +11,7 @@
     {{#er_oslo}}<div class="vask-boks"><h2 data-vask>Trenger dere en ny renholdsleverandør?</h2></div>{{/er_oslo}}{{^er_oslo}}<div class="vask-boks"><h2 data-vask>Hva koster renhold for dere?</h2></div>{{/er_oslo}}
     <div class="kontakt-layout">
       <div class="kontakt__handling">
-        <h3>Ta kontakt</h3>
+        <div class="kontakt__tittel"><img class="kontakt__ikon" src="{{rot}}bilder/ikon-ta-kontakt.svg" alt="" width="44" height="44"><h3>Ta kontakt</h3></div>
         {{#er_oslo}}<p class="kontakt__lede">Vi tar gjerne en uforpliktende prat. Send oss en e-post eller ring, og fortell litt om lokalene og behovet deres, så kommer vi tilbake med et tilbud. Befaring og tilbud er kostnadsfritt.</p>{{/er_oslo}}{{^er_oslo}}<p class="kontakt__lede">Send oss en e-post eller ring, og fortell litt om lokalene og behovet deres, så kommer vi tilbake med et tilbud. Vi vasker for barnehager, skoler, kontorer og bilforhandlere — og tilpasser opplegget etter hvordan dere jobber.</p>{{/er_oslo}}
         <div class="kontakt__knapper">
           <a class="knapp knapp--omriss" href="tel:{{telefon}}">Ring oss – {{telefon_visning}}</a>
@@ -21,12 +21,12 @@
       <div class="kontakt__info">
         <div class="kontakt__kontorer">
           {{#er_oslo}}<div>
-            <h3>Clean Unit Renhold AS</h3>
+            <div class="kontakt__tittel"><img class="kontakt__ikon" src="{{rot}}bilder/ikon-firma.svg" alt="" width="44" height="44"><h3>Clean Unit Renhold AS</h3></div>
             <p><a class="kontakt__adresse" href="{{kart_url}}" target="_blank" rel="noopener noreferrer" aria-label="{{adresse}} – åpne i Google Maps (ny fane)">{{adresse}} <span aria-hidden="true">↗</span></a></p>
             <p class="kontakt__orgnr">Org.nr 895 215 902</p>
           </div>{{/er_oslo}}
           {{^er_oslo}}<div>
-            <h3>Clean Unit Stavanger AS</h3>
+            <div class="kontakt__tittel"><img class="kontakt__ikon" src="{{rot}}bilder/ikon-firma.svg" alt="" width="44" height="44"><h3>Clean Unit Stavanger AS</h3></div>
             <p><!-- UTKAST: Brønnøysundregistrene oppgir registrert adresse Nedre
                  Holmegate 30, 4006 Stavanger — avviker fra denne besøksadressen
                  hentet fra cleanunit.no 2026-09-12. Bekreft hvilken som skal
