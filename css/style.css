@@ -1279,10 +1279,11 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
   .side-hode__by img { display: block; height: 100%; width: auto; }
 }
 
-/* ── Stavanger: eget bybilde, samme palett som Oslo ───────────────────────────────────────────────
-   Stavanger har sin egen heroscene (bilder/hero-stavanger*, tegnet av verktoy/hero-stavanger.py) med samme
-   himmelfarge som Oslo. Fargene er de samme grønne tokenene som Oslo; Ricky bestemte 2026-10-07 mot et
-   burgunder tema. Logoen på varebilen er tegnet inn i bildet. */
-.by--stavanger .hero__scene-merke { display: none; }
+/* ── Stavanger: eget bybilde, samme palett som Oslo, men med mer burgunder ───────────────────────────
+   Stavanger-scenene (bilder/hero-stavanger*) er Oslo-scenene med bygningenes teal-flater omfarget til Maritts burgunder
+   (verktoy/hero-stavanger-burgunder.py; Marit 2026-10-07: «Samme logo og fargebruk som i Oslo, men litt mer burgunder
+   slik at det blir en større forskjell»). Komposisjonen er identisk, så logoen på varebilen (.hero__scene-merke) og
+   sti-starten ligger på samme sted som i Oslo; bildene har blank varebil. Resten av siden er fortsatt grønn: Ricky
+   bestemte 2026-10-07 mot et helt burgunder tema, det gjelder bare bybildet. */
 /* Tjenestesymbolene (rundmerkene) er mindre og dempet i Stavanger (Marit tror ikke Stavanger-lederen bruker symbolene likt). */
 .by--stavanger .tjeneste-kort__ikon { height: 3.5rem; opacity: .85; }

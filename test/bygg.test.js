@@ -1153,3 +1153,21 @@ test('Tekstsjekk: Oslo-tekstene er endret i Oslo, mens Stavanger beholder sine e
   assert.ok(!les(sideFil('Stavanger', 'om_oss')).includes('Flere av våre ansatte har jobbet'), 'Stavanger: ingen Oslo-ansatttekst');
 });
 
+
+test('Stavanger-bybildet er Oslo-scenen med mer burgunder: samme mål, logoen på varebilen vises, verktøyet finnes', () => {
+  const css = les('css/style.css');
+  assert.doesNotMatch(css, /\.by--stavanger \.hero__scene-merke \{ display: none/, 'logoen skal legges på varebilen i Stavanger også (bildet har blank varebil)');
+  assert.match(les('sider/forside.html'), /class="hero__scene-merke"/, 'logo-overlegget finnes i forsiden');
+  assert.ok(existsSync('verktoy/hero-stavanger-burgunder.py'), 'verktøyet som lager Stavanger-scenene mangler');
+  for (const gammel of ['verktoy/hero-stavanger.py', 'verktoy/hero-stavanger-raster.mjs', 'verktoy/hero-stavanger-webp.py']) {
+    assert.ok(!existsSync(gammel), `${gammel}: den gamle generatoren tegner ikke lenger de nåværende bildene`);
+  }
+  const bytes = (f) => readFileSync(f);
+  for (const [oslo, stav] of [['hero-scene', 'hero-stavanger'], ['hero-scene-vinter', 'hero-stavanger-vinter']]) {
+    const o = bytes(`bilder/${oslo}.webp`); const s = bytes(`bilder/${stav}.webp`);
+    assert.ok(!o.equals(s), `${stav}.webp skal være en egen scene`);
+    // WebP-filer av typen VP8 har bredde/høyde i rasterhodet (se den eldre rastertesten): samme mål som Oslo
+    assert.equal(s.readUIntLE(26, 2) & 0x3fff, o.readUIntLE(26, 2) & 0x3fff, `${stav}.webp: samme bredde som Oslo-scenen`);
+    assert.equal(s.readUIntLE(28, 2) & 0x3fff, o.readUIntLE(28, 2) & 0x3fff, `${stav}.webp: samme høyde som Oslo-scenen`);
+  }
+});
