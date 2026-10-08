@@ -1,9 +1,10 @@
 # Genererer de to «Derfor»-symbolene (bilder/ikon-erfaring.svg, bilder/ikon-dette-far-du.svg):
-# flate, runde, grønn mørk (#008789) med hvit glyf, uten skygge, i samme stil som tjenestesymbolene.
+# flate, runde, burgunder (#75355D, Maritts burgunder) med hvit glyf, uten skygge, i samme stil som tjenestesymbolene.
+# Var grønne (#008789) til 2026-10-08, da Ricky ba om å prøve burgunder.
 # Kjør: python3 verktoy/symboler-derfor.py
 import os
 
-GRONN = '#008789'
+BURGUNDER = '#75355D'
 STREK = 'fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"'
 GLYFER = {
     # kalender med hake (Erfaring)
@@ -15,6 +16,6 @@ GLYFER = {
 rot = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'bilder')
 for navn, glyf in GLYFER.items():
     svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">'
-           f'<circle cx="32" cy="32" r="32" fill="{GRONN}"/><g {STREK}>{glyf}</g></svg>\n')
+           f'<circle cx="32" cy="32" r="32" fill="{BURGUNDER}"/><g {STREK}>{glyf}</g></svg>\n')
     with open(os.path.join(rot, f'ikon-{navn}.svg'), 'w') as f:
         f.write(svg)

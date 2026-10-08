@@ -677,12 +677,11 @@ const sjekkKort = (kort, ikon, overskrift, f) => {
   assert.equal(m[2], ikon, f);
   assert.equal(m[3], overskrift, f);
   assert.ok(existsSync(`bilder/${ikon}`), `${f}: bilder/${ikon} finnes ikke`);
-  assert.match(les(`bilder/${ikon}`), /fill="#008789"/, `${f}: symbolet er ikke grønt`);
-  assert.doesNotMatch(les(`bilder/${ikon}`), /75355D/i, `${f}: burgunder i symbolet`);
+  assert.match(les(`bilder/${ikon}`), /fill="#75355D"/, `${f}: symbolet er ikke burgunder (Ricky 2026-10-08)`);
   return m[4];
 };
 
-test('Derfor (Oslo): to kort med grønt symbol + h3 + ett avsnitt, avsnittene er Marits eksakte tekst', () => {
+test('Derfor (Oslo): to kort med burgunder symbol + h3 + ett avsnitt, avsnittene er Marits eksakte tekst', () => {
   const d = derforSeksjon('Oslo');
   const kort = derforKort(d);
   assert.equal((d.match(/class="derfor-kort"/g) || []).length, 2);
@@ -696,7 +695,7 @@ test('Derfor (Oslo): to kort med grønt symbol + h3 + ett avsnitt, avsnittene er
   for (const g of ['Fast renholder', 'Rask kommunikasjon', 'Tett oppfølging']) assert.ok(!d.includes(`>${g}<`), g);
 });
 
-test('Derfor (Stavanger): ett kort med grønt skjold-symbol + «Dette får du» + teksten, uten Oslo-påstander, UTKAST står i kilden', () => {
+test('Derfor (Stavanger): ett kort med burgunder skjold-symbol + «Dette får du» + teksten, uten Oslo-påstander, UTKAST står i kilden', () => {
   const d = derforSeksjon('Stavanger');
   const kort = derforKort(d);
   assert.equal((d.match(/class="derfor-kort"/g) || []).length, 1);
