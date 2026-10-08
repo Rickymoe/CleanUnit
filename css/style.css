@@ -887,13 +887,18 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
    [hidden]-regelen nederst må fortsatt ligge sist: den deler spesifisitet med
    en klasse, så rekkefølgen avgjør. */
 .stopp--kontakt { padding-block: var(--seksjon-y); background: var(--teal-lys); }
-.kontakt-layout { margin-top: var(--s-5); max-width: 40rem; }
-/* Nederst i kortet (etter personene, før lenka til den andre byen): ring/e-post som knapper, samme par og mål som .hero__knapper, men venstrejustert
-   fordi kortets tekst er venstrejustert. Ingen egen boks: knappene står rett på det hvite kortet. */
-.kontakt__knapper { display: flex; gap: var(--s-3); flex-wrap: wrap; }
+.kontakt-layout { margin-top: var(--s-5); max-width: 40rem; display: grid; gap: var(--s-5); }
+/* «Ta kontakt»-boksen (Ricky 2026-10-08): ring/e-post som egen hvit boks. Står først i markupen, så den ligger øverst på mobil;
+   fra 64rem (1024 px) flyttes den til høyre for kortet med grid-områder (kortet 40rem, boksen opptil 22rem). Smalere står den øverst, for ved 768 px ble kortet
+   341 px bredt, med navn og e-post som brøt midt i ordet. Knappene er alltid stablet og like brede. */
+.kontakt__handling { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(0, 89, 91, .08); display: grid; gap: var(--s-4); align-content: start; }
+.kontakt__handling h3 { color: var(--teal-mork); font-size: var(--t-lg); }
+.kontakt__knapper { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-3); }
 .kontakt__knapper .knapp { min-height: 44px; justify-content: center; }
-@media (max-width: 36rem) {
-  .kontakt__knapper { flex-direction: column; align-items: stretch; }
+@media (min-width: 64rem) {
+  .kontakt-layout { max-width: none; grid-template-columns: minmax(0, 40rem) minmax(0, 22rem); grid-template-areas: "info handling"; align-items: start; column-gap: var(--s-5); }
+  .kontakt__info { grid-area: info; }
+  .kontakt__handling { grid-area: handling; }
 }
 
 /* Kontaktinfoen (Ricky 2026-10-03): kontorer og personer flyttet hit fra footeren, nå med mørk tekst på lys bunn. */
@@ -909,7 +914,6 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 }
 @media (hover: hover) { .kontakt__adresse:hover { text-decoration-thickness: 2px; } }
 .kontakt__orgnr { color: var(--tekst-svak); } /* opacity .8 ga 3,25:1 mot --teal-lys */
-.kontakt__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); }
 .kontakt__bylenke {
   display: inline-block; justify-self: start; margin-top: 0; padding-block: .6rem; /* 44 px trykkflate, bare så bred som teksten */
   color: var(--teal-mork); font-weight: 600; text-decoration: underline;

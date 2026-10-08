@@ -1,5 +1,6 @@
 <!-- KONTAKT. Tilbudsskjemaet er fjernet på kundens ønske: kunden ønsker e-post og telefon i stedet.
-     Nederst i kortet (etter personene, før lenka til den andre byen) står to knapper som i heroen: «Ring oss» og «Send e-post».
+     «Ta kontakt»-boksen med de to knappene («Ring oss», «Send e-post») står FØRST i markupen: på mobil øverst over kortet, fra 64rem
+     til høyre for det (CSS-grid, Ricky 2026-10-08). Kortet med kontor, personer og lenke til den andre byen kommer etterpå.
      Kontaktadressene kommer fra byer.json (felles.kontakt_epost, byens telefon), så de byttes ett sted. -->
 <section class="stopp--kontakt" id="kontakt">
   <div class="wrap">
@@ -12,6 +13,13 @@
         <p class="stopp__lede">Send oss en e-post eller ring, og fortell litt om lokalene og behovet deres, så kommer vi tilbake med et tilbud. Vi vasker for barnehager, skoler, kontorer og bilforhandlere — og tilpasser opplegget etter hvordan dere jobber.</p>
         {{/er_oslo}}
     <div class="kontakt-layout">
+      <div class="kontakt__handling">
+        <h3>Ta kontakt</h3>
+        <div class="kontakt__knapper">
+          <a class="knapp knapp--fyll" href="tel:{{telefon}}">Ring oss – {{telefon_visning}}</a>
+          <a class="knapp knapp--omriss" href="mailto:{{kontakt_epost}}">Send e-post</a>
+        </div>
+      </div>
       <div class="kontakt__info">
         <div class="kontakt__kontorer">
           {{#er_oslo}}<div>
@@ -41,10 +49,6 @@
             <div><strong>Thord Hegre</strong><span>Daglig leder</span><a href="tel:+4790065009">900 65 009</a><a href="mailto:{{epost_thord}}">{{epost_thord}}</a></div>
           </li>{{/er_oslo}}
         </ul>
-        <div class="kontakt__knapper">
-          <a class="knapp knapp--fyll" href="tel:{{telefon}}">Ring oss – {{telefon_visning}}</a>
-          <a class="knapp knapp--omriss" href="mailto:{{kontakt_epost}}">Send e-post</a>
-        </div>
         <a class="kontakt__bylenke" href="{{andre_by_hjem}}">Gå til Clean Unit {{andre_by_navn}} →</a>
       </div>
     </div>

@@ -914,12 +914,13 @@ test('Kontakt-kortet: e-post kun post@ i knappen og personenes egne adresser und
   }
 });
 
-test('Kontakt-kortet: rekkefølgen er kontor, personer, knapper, lenke til den andre byen; adressene står bare i byer.json', () => {
+test('Kontakt: «Ta kontakt»-boksen står først i markupen (øverst på mobil); kortet har kontor, personer, lenke til den andre byen; adressene står bare i byer.json', () => {
   for (const s of alleSider()) {
     const k = kontaktKort(s.fil);
-    const pos = ['kontakt__kontorer', 'kontakt__personer', 'kontakt__knapper', 'kontakt__bylenke'].map((x) => k.indexOf(`class="${x}`));
+    const pos = ['kontakt__handling', 'kontakt__info', 'kontakt__kontorer', 'kontakt__personer', 'kontakt__bylenke'].map((x) => k.indexOf(`class="${x}`));
     assert.ok(pos.every((p) => p >= 0), `${s.fil}: en del mangler ${pos}`);
-    assert.deepEqual([...pos].sort((a, b) => a - b), pos, `${s.fil}: knappene skal stå etter personene og før bylenken`);
+    assert.deepEqual([...pos].sort((a, b) => a - b), pos, `${s.fil}: boksen først, så kortet (kontor, personer, bylenke)`);
+    assert.ok(k.indexOf('kontakt__knapper') > k.indexOf('class="kontakt__handling') && k.indexOf('kontakt__knapper') < k.indexOf('class="kontakt__info'), `${s.fil}: knappene ligger i boksen, utenfor kortet`);
   }
   const mal = les('deler/kontakt.html');
   assert.doesNotMatch(mal, /[\w.-]+@[\w.-]+\.no/, 'ingen adresser hardkodet i malen');
@@ -934,14 +935,15 @@ test('Kontakt-kortet: e-postlenkene har samme stil som telefonlenkene og 44 px t
   assert.match(css, /\.kontakt__personer li > div a \{ overflow-wrap: anywhere; \}/);
 });
 
-test('Kontakt-kortet: to knapper, «Ring oss – <telefon>» og «Send e-post», begge omriss, nederst etter personene', () => {
+test('Kontakt: «Ta kontakt»-boksen har to knapper, fylt «Ring oss – <telefon>» og omriss «Send e-post», og står før kortet', () => {
   for (const s of alleSider()) {
     const k = les(s.fil).match(/<section class="stopp--kontakt"[\s\S]*?<\/section>/)[0];
     const tlf = s.by === 'Oslo' ? '21 55 56 80' : '900 65 009';
     const tlfHref = s.by === 'Oslo' ? '+4721555680' : '+4790065009';
     const rad = k.match(/<div class="kontakt__knapper">([\s\S]*?)<\/div>/);
     assert.ok(rad, `${s.fil}: knapperaden mangler`);
-    assert.ok(k.indexOf('kontakt__knapper') > k.indexOf('kontakt__personer'), `${s.fil}: knappene skal stå under personene`);
+    assert.match(k, /<div class="kontakt__handling">\s*<h3>Ta kontakt<\/h3>\s*<div class="kontakt__knapper">/, `${s.fil}: boksen heter «Ta kontakt»`);
+    assert.ok(k.indexOf('kontakt__knapper') < k.indexOf('kontakt__personer'), `${s.fil}: knappene står før personene i markupen (øverst på mobil)`);
     const lenker = [...rad[1].matchAll(/<a ([^>]*)>([^<]*)<\/a>/g)].map((m) => [m[1].trim(), m[2]]);
     assert.deepEqual(lenker, [
       [`class="knapp knapp--fyll" href="tel:${tlfHref}"`, `Ring oss – ${tlf}`],
@@ -1077,4 +1079,12 @@ test('CSS: Kunder bruker samme seksjons-padding som de andre seksjonene', () => 
   for (const v of ['.stopp--tjenester {', '.stopp--om {', '.stopp--jobb {', '.stopp--kontakt {']) assert.equal(pad(v), 'var(--seksjon-y)', v);
   assert.equal(pad('.stopp--kunder {'), pad('.stopp--kontakt {'));
   assert.doesNotMatch(css, /brukes ikke på nettsiden/, 'burgunder-kommentaren er ikke utdatert');
+});
+
+test('CSS: «Ta kontakt»-boksen ligger til høyre for kortet fra 64rem (grid-områder), knappene er stablet og like brede', () => {
+  const css = les('css/style.css');
+  assert.match(css, /@media \(min-width: 64rem\) \{\s*\.kontakt-layout \{[^}]*grid-template-areas: "info handling"/, 'to områder fra 64rem');
+  assert.match(css, /\.kontakt__handling \{ grid-area: handling; \}/);
+  assert.match(css, /\.kontakt__knapper \{ display: flex; flex-direction: column; align-items: stretch;/, 'stablet og like brede');
+  assert.doesNotMatch(css, /\.kontakt__(info|handling)[^{]*\{[^}]*[^-]order:/, 'ingen order-triks: markup-rekkefølgen er lese- og tabrekkefølgen');
 });
