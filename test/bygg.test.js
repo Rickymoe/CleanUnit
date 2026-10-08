@@ -942,7 +942,8 @@ test('Kontakt: «Ta kontakt»-boksen har to knapper, fylt «Ring oss – <telefo
     const tlfHref = s.by === 'Oslo' ? '+4721555680' : '+4790065009';
     const rad = k.match(/<div class="kontakt__knapper">([\s\S]*?)<\/div>/);
     assert.ok(rad, `${s.fil}: knapperaden mangler`);
-    assert.match(k, /<div class="kontakt__handling">\s*<h3>Ta kontakt<\/h3>\s*<div class="kontakt__knapper">/, `${s.fil}: boksen heter «Ta kontakt»`);
+    assert.match(k, /<div class="kontakt__handling">\s*<h3>Ta kontakt<\/h3>\s*<p class="kontakt__lede">[^<]+<\/p>\s*<div class="kontakt__knapper">/, `${s.fil}: boksen heter «Ta kontakt», har ingressen og så knappene`);
+    assert.doesNotMatch(k.slice(0, k.indexOf('class="kontakt-layout"')), /stopp__lede/, `${s.fil}: ingen ingress over kortene, den står i boksen`);
     assert.ok(k.indexOf('kontakt__knapper') < k.indexOf('kontakt__personer'), `${s.fil}: knappene står før personene i markupen (øverst på mobil)`);
     const lenker = [...rad[1].matchAll(/<a ([^>]*)>([^<]*)<\/a>/g)].map((m) => [m[1].trim(), m[2]]);
     assert.deepEqual(lenker, [

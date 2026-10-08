@@ -893,6 +893,8 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
    341 px bredt, med navn og e-post som brøt midt i ordet. Knappene er alltid stablet og like brede. */
 .kontakt__handling { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(0, 89, 91, .08); display: grid; gap: var(--s-4); align-content: start; }
 .kontakt__handling h3 { color: var(--teal-mork); font-size: var(--t-lg); }
+/* Ingressen står i boksen (Ricky 2026-10-08): den handler om å ringe og skrive, og fyller høyden så boksen blir nesten like høy som kortet. */
+.kontakt__lede { margin: 0; color: var(--tekst-svak); }
 .kontakt__knapper { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-3); }
 .kontakt__knapper .knapp { min-height: 44px; justify-content: center; }
 @media (min-width: 64rem) {
