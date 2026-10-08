@@ -944,7 +944,7 @@ test('Kontakt-kortet: to knapper, «Ring oss – <telefon>» og «Send e-post»,
     assert.ok(k.indexOf('kontakt__knapper') > k.indexOf('kontakt__personer'), `${s.fil}: knappene skal stå under personene`);
     const lenker = [...rad[1].matchAll(/<a ([^>]*)>([^<]*)<\/a>/g)].map((m) => [m[1].trim(), m[2]]);
     assert.deepEqual(lenker, [
-      [`class="knapp knapp--omriss" href="tel:${tlfHref}"`, `Ring oss – ${tlf}`],
+      [`class="knapp knapp--fyll" href="tel:${tlfHref}"`, `Ring oss – ${tlf}`],
       ['class="knapp knapp--omriss" href="mailto:post@cleanunit.no"', 'Send e-post'],
     ], `${s.fil}: knappene i Kontakt-kortet`);
     assert.doesNotMatch(k, /Kontakt oss på/, `${s.fil}: den gamle tekstlinja`);
@@ -1021,14 +1021,17 @@ test('Stavanger-lederen heter Thord Hegre, daglig leder (Enhetsregisteret), aldr
   assert.match(les(sideFil('Stavanger', 'om_oss')), /<h4>Thord Hegre<\/h4>\s*<p class="team-rolle">Daglig leder<\/p>/, 'Om oss-kortet');
 });
 
-test('CSS: heroens og Kontakt-kortets to knapper er omriss på hvit bunn med grønn ramme og grønn skrift', () => {
+test('CSS: heroens to knapper er omriss (grønn ramme, hvit bunn, grønn skrift); i Kontakt-kortet er «Ring oss» fylt og «Send e-post» omriss', () => {
   const css = les('css/style.css');
   assert.match(css, /\.knapp \{[^}]*border: 2px solid var\(--teal\);/, 'grønn ramme');
   assert.match(css, /\n\.knapp--omriss \{ background: #fff; color: var\(--teal\); \}/, 'hvit bunn, grønn skrift');
   assert.doesNotMatch(css, /\.knapp--omriss:hover \{[^}]*color: #fff/, 'hover skal ikke bli hvit skrift');
-  for (const f of ['sider/forside.html', 'deler/kontakt.html']) {
-    assert.doesNotMatch(les(f), /knapp--fyll/, `${f}: ingen fylt knapp i telefon/e-post-paret`);
-  }
+  assert.doesNotMatch(les('sider/forside.html'), /knapp--fyll/, 'heroen: ingen fylt knapp (Marit ba om to omrissknapper)');
+  const k = les('deler/kontakt.html');
+  assert.equal((k.match(/knapp--fyll/g) || []).length, 1, 'Kontakt-kortet: kun én fylt knapp («Ring oss»)');
+  assert.match(k, /class="knapp knapp--fyll" href="tel:/, 'den fylte er telefonknappen');
+  assert.match(k, /class="knapp knapp--omriss" href="mailto:/, 'e-postknappen er omriss');
+  assert.match(css, /\n\.knapp--fyll \{ background: var\(--teal\); color: #fff; \}/, 'fylt: grønn bunn, hvit skrift');
 });
 
 test('«Derfor»-kortene har hover-løft som de andre kortene: kun med mus, ikke ved redusert bevegelse', () => {
@@ -1068,11 +1071,10 @@ test('Kontakt: «Gå til Clean Unit …»-lenka er bare så bred som teksten', (
   assert.match(regelBlokk(les('css/style.css'), '.kontakt__bylenke {'), /justify-self: start/);
 });
 
-test('CSS: Kunder bruker samme seksjons-padding som de andre seksjonene, og .knapp--fyll er borte', () => {
+test('CSS: Kunder bruker samme seksjons-padding som de andre seksjonene', () => {
   const css = les('css/style.css');
   const pad = (v) => (regelBlokk(css, v).match(/padding-block: ([^;]+);/) || [])[1];
   for (const v of ['.stopp--tjenester {', '.stopp--om {', '.stopp--jobb {', '.stopp--kontakt {']) assert.equal(pad(v), 'var(--seksjon-y)', v);
   assert.equal(pad('.stopp--kunder {'), pad('.stopp--kontakt {'));
-  assert.doesNotMatch(css, /knapp--fyll/);
   assert.doesNotMatch(css, /brukes ikke på nettsiden/, 'burgunder-kommentaren er ikke utdatert');
 });
