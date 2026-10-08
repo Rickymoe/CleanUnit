@@ -1058,7 +1058,7 @@ test('Kontakt: person-lenkene har 44 px trykkflate på touch uten negativ marg, 
 
 test('Kontakt: Oslos to personer står side om side fra 48rem, Stavanger har én rad som ikke strekkes', () => {
   const css = les('css/style.css');
-  assert.match(css, /@media \(min-width: 48rem\) \{ \.kontakt__personer \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); column-gap: var\(--s-5\); \} \}/);
+  assert.match(css, /@media \(min-width: 48rem\) \{ \.kontakt__personer \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); column-gap: var\(--s-4\); \} \}/);
   assert.doesNotMatch(regelBlokk(css, '.kontakt__personer {'), /grid-template-columns/, 'under 48rem stablet');
   const kontakt = les('deler/kontakt.html');
   const oslo = kontakt.slice(kontakt.indexOf('<ul class="kontakt__personer">'), kontakt.indexOf('</ul>'));
@@ -1214,4 +1214,16 @@ test('CSS: «Derfor»-kortene er kompakte: smalere rad (46rem), 3 rem symbol, 1 
   assert.match(css, /\.derfor-kort__ikon \{[^}]*width: 3rem; height: 3rem;/, 'symbol 3 rem');
   assert.match(css, /\.derfor-rad--en \{[^}]*max-width: 24rem;/, 'Stavangers ene kort er også smalere');
   assert.match(css, /@media \(min-width: 48rem\) \{\s*\.derfor-rad \{[^}]*\}\s*\.derfor-rad--en \{[^}]*\}\s*\.derfor-kort \{ padding: var\(--s-5\) var\(--s-6\); \}/, 'mindre padding fra 48rem');
+});
+
+test('CSS: «Ta kontakt»-boksen og kortet deler bredden 50/50 fra 64rem (to like kolonner)', () => {
+  const css = les('css/style.css');
+  assert.match(css, /@media \(min-width: 64rem\) \{\s*\.kontakt-layout \{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);[^}]*grid-template-areas: "handling info"/, 'to like kolonner');
+  assert.doesNotMatch(css, /grid-template-columns: minmax\(0, 22rem\) minmax\(0, 40rem\)/, 'ikke lenger 22rem/40rem');
+});
+
+test('CSS: personene i Kontakt-kortet står i to kolonner, men under hverandre mellom 64rem og 68rem (kortet er da for smalt for e-postadressene)', () => {
+  const css = les('css/style.css');
+  assert.match(css, /@media \(min-width: 48rem\) \{ \.kontakt__personer \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); column-gap: var\(--s-4\); \} \}/, 'to kolonner med smalere mellomrom');
+  assert.match(css, /@media \(min-width: 64rem\) and \(max-width: 67\.99rem\) \{ \.kontakt__personer \{ grid-template-columns: minmax\(0, 1fr\); \} \}/, 'én kolonne i det trange området');
 });

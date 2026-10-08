@@ -845,7 +845,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .stopp--kontakt { padding-block: var(--seksjon-y); background: var(--teal-lys); }
 .kontakt-layout { margin-top: var(--s-5); max-width: 40rem; display: grid; gap: var(--s-5); }
 /* «Ta kontakt»-boksen (Ricky 2026-10-08): ring/e-post som egen hvit boks. Står først i markupen, så den ligger øverst på mobil;
-   fra 64rem (1024 px) står den til VENSTRE for kortet (hovedveien først, Ricky 2026-10-08) med grid-områder (boksen opptil 22rem, kortet 40rem). Smalere står den øverst, for ved 768 px ble kortet
+   fra 64rem (1024 px) står den til VENSTRE for kortet (hovedveien først, Ricky 2026-10-08) med grid-områder (boksen og kortet deler bredden 50/50, Ricky 2026-10-08). Smalere står den øverst, for ved 768 px ble kortet
    341 px bredt, med navn og e-post som brøt midt i ordet. Knappene er alltid stablet og like brede. */
 .kontakt__handling { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(0, 89, 91, .08); display: grid; gap: var(--s-4); align-content: start; }
 .kontakt__handling h3 { color: var(--teal-mork); font-size: var(--t-lg); }
@@ -857,7 +857,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .kontakt__knapper { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-3); }
 .kontakt__knapper .knapp { min-height: 44px; justify-content: center; }
 @media (min-width: 64rem) {
-  .kontakt-layout { max-width: none; grid-template-columns: minmax(0, 22rem) minmax(0, 40rem); grid-template-areas: "handling info" "bylenke info"; grid-template-rows: auto 1fr; align-items: start; column-gap: var(--s-5); }
+  .kontakt-layout { max-width: none; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "handling info" "bylenke info"; grid-template-rows: auto 1fr; align-items: start; column-gap: var(--s-5); }
   .kontakt__info { grid-area: info; }
   .kontakt__handling { grid-area: handling; }
   .kontakt__bylenke { grid-area: bylenke; margin-top: calc(var(--s-3) * -1); }
@@ -898,7 +898,10 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .kontakt__personer li > div a { overflow-wrap: anywhere; }
 @media (pointer: coarse) { .kontakt__personer li > div a { display: inline-flex; align-items: center; justify-self: start; min-height: 44px; } }
 /* Fra 48rem står de to personene i Oslo side om side (like kolonner); Stavanger har én og beholder den til venstre. */
-@media (min-width: 48rem) { .kontakt__personer { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-5); } }
+@media (min-width: 48rem) { .kontakt__personer { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-4); } }
+/* Fra 64rem er kortet bare halve bredden (50/50 med «Ta kontakt»-boksen) og blir smalest rundt 1024 px: der får ikke to personkolonner plass
+   til «renhold@cleanunit.no» (ble brutt midt i ordet), så personene står under hverandre til kortet er bredt nok (68rem, ca. 10 px slakk). */
+@media (min-width: 64rem) and (max-width: 67.99rem) { .kontakt__personer { grid-template-columns: minmax(0, 1fr); } }
 
 /* Må ligge sist: samme spesifisitet som en klasse, så rekkefølgen avgjør. */
 [hidden] { display: none; }
