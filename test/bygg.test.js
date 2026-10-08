@@ -714,8 +714,8 @@ test('CSS: Derfor-kortenes overskrift er --teal-mork og CSS-en har ingen burgund
   assert.match(css, /\.derfor-kort h3 \{ color: var\(--teal-mork\); \}/);
   const kort = css.match(/\n\.derfor-kort \{[^}]*\}/)[0];
   assert.match(kort, /background: #fff;/, 'hvit bakgrunn');
-  assert.match(kort, /border: 2px solid var\(--teal\);/, 'grønn ramme');
-  assert.match(css, /\.derfor-kort p \{ color: var\(--teal-mork\);/, 'grønn brødtekst');
+  assert.doesNotMatch(kort, /border:/, 'kortene har ingen ramme (rammen gjelder heroknappene)');
+  assert.match(css, /\.derfor-kort p \{ color: var\(--tekst\);/, 'vanlig brødtekstfarge');
   const regler = css.split('\n').filter((l) => /^\.derfor-/.test(l)).join('\n');
   assert.doesNotMatch(regler, /75355D|burgunder/i);
 });
@@ -799,7 +799,7 @@ test('Kontakt: Kontakt er menyvalg i headeren; hero har to knapper (telefon og e
     const lenker = knapper.match(/<a [^>]*>/g) || [];
     assert.equal(lenker.length, 2, `${s.fil}: heroen skal ha nøyaktig to handlinger`);
     assert.equal((knapper.match(/class="knapp/g) || []).length, 2, `${s.fil}: to knapper`);
-    assert.match(lenker[0], /class="knapp knapp--fyll" href="tel:\+47\d+"/, `${s.fil}: telefonknappen først`);
+    assert.match(lenker[0], /class="knapp knapp--omriss" href="tel:\+47\d+"/, `${s.fil}: telefonknappen først`);
     assert.match(knapper, new RegExp(`href="tel:\\+47\\d+">Ring oss – ${s.by === 'Oslo' ? '21 55 56 80' : '900 65 009'}`), `${s.fil}: «Ring oss» med byens telefon`);
     assert.equal(lenker[1], `<a class="knapp knapp--omriss" href="mailto:${KONTAKT_EPOST}">`, `${s.fil}: e-postknappen er omriss-knapp`);
     assert.match(knapper, />Send e-post<\/a>/, `${s.fil}: e-postknappen heter bare «Send e-post» (Ricky 2026-10-07), uten adressen`);
@@ -935,7 +935,7 @@ test('Kontakt-kortet: e-postlenkene har samme stil som telefonlenkene og 44 px t
   assert.match(css, /\.kontakt__personer li > div a \{ overflow-wrap: anywhere; \}/);
 });
 
-test('Kontakt-kortet: to knapper, «Ring oss – <telefon>» (fylt) og «Send e-post» (omriss), nederst etter personene', () => {
+test('Kontakt-kortet: to knapper, «Ring oss – <telefon>» og «Send e-post», begge omriss, nederst etter personene', () => {
   for (const s of alleSider()) {
     const k = les(s.fil).match(/<section class="stopp--kontakt"[\s\S]*?<\/section>/)[0];
     const tlf = s.by === 'Oslo' ? '21 55 56 80' : '900 65 009';
@@ -945,7 +945,7 @@ test('Kontakt-kortet: to knapper, «Ring oss – <telefon>» (fylt) og «Send e-
     assert.ok(k.indexOf('kontakt__knapper') > k.indexOf('kontakt__personer'), `${s.fil}: knappene skal stå under personene`);
     const lenker = [...rad[1].matchAll(/<a ([^>]*)>([^<]*)<\/a>/g)].map((m) => [m[1].trim(), m[2]]);
     assert.deepEqual(lenker, [
-      [`class="knapp knapp--fyll" href="tel:${tlfHref}"`, `Ring oss – ${tlf}`],
+      [`class="knapp knapp--omriss" href="tel:${tlfHref}"`, `Ring oss – ${tlf}`],
       ['class="knapp knapp--omriss" href="mailto:post@cleanunit.no"', 'Send e-post'],
     ], `${s.fil}: knappene i Kontakt-kortet`);
     assert.doesNotMatch(k, /Kontakt oss på/, `${s.fil}: den gamle tekstlinja`);
@@ -1020,4 +1020,14 @@ test('Stavanger-lederen heter Thord Hegre, daglig leder (Enhetsregisteret), aldr
     assert.match(h, /team-initialer" aria-hidden="true">TH</, `${s.fil}: initialene er TH`);
   }
   assert.match(les(sideFil('Stavanger', 'om_oss')), /<h4>Thord Hegre<\/h4>\s*<p class="team-rolle">Daglig leder<\/p>/, 'Om oss-kortet');
+});
+
+test('CSS: heroens og Kontakt-kortets to knapper er omriss på hvit bunn med grønn ramme og grønn skrift', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\.knapp \{[^}]*border: 2px solid var\(--teal\);/, 'grønn ramme');
+  assert.match(css, /\n\.knapp--omriss \{ background: #fff; color: var\(--teal\); \}/, 'hvit bunn, grønn skrift');
+  assert.doesNotMatch(css, /\.knapp--omriss:hover \{[^}]*color: #fff/, 'hover skal ikke bli hvit skrift');
+  for (const f of ['sider/forside.html', 'deler/kontakt.html']) {
+    assert.doesNotMatch(les(f), /knapp--fyll/, `${f}: ingen fylt knapp i telefon/e-post-paret`);
+  }
 });

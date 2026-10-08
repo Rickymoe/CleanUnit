@@ -84,10 +84,10 @@ a { color: inherit; }
   border: 2px solid var(--teal); text-decoration: none; transition: background-color .2s, color .2s, transform .2s;
 }
 .knapp--fyll { background: var(--teal); color: #fff; }
-.knapp--omriss { color: var(--teal); }
+.knapp--omriss { background: #fff; color: var(--teal); } /* Marit 2026-10-08: begge kontaktknappene grønn ramme, hvit bunn, grønn skrift (5,2:1) */
 @media (hover: hover) {
   .knapp--fyll:hover { background: var(--teal-mork); border-color: var(--teal-mork); }
-  .knapp--omriss:hover { background: var(--teal); color: #fff; }
+  .knapp--omriss:hover { background: var(--teal-lys); }
   /* :not(:disabled) fordi en låst <button class="knapp"> ellers løfter seg
      under pekeren som om den var klikkbar. <a class="knapp"> rammes ikke. */
   .knapp:not(:disabled):hover { transform: translateY(-1px); }
@@ -1004,11 +1004,11 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
    i én kolonnes bredde. Tekstkort, så ingen hover-løft. */
 .derfor-rad { display: grid; gap: var(--s-5); grid-template-columns: minmax(0, 1fr); max-width: 60rem; margin-inline: auto; }
 .derfor-kort {
-  background: #fff; border: 2px solid var(--teal); border-radius: var(--radius); /* Marit 2026-10-08: grønn ramme, hvit bunn, grønn skrift */
+  background: #fff; border-radius: var(--radius);
   padding: var(--s-6) var(--s-5); text-align: center;
   display: flex; align-items: center; justify-content: center;
 }
-.derfor-kort p { color: var(--teal-mork); font-size: 1.125rem; line-height: 1.6; }
+.derfor-kort p { color: var(--tekst); font-size: 1.125rem; line-height: 1.6; }
 /* Alle kort har symbol + overskrift over teksten (Oslos to og Stavangers ene). Innholdet stables fra
    toppen, så symbolene står likt i Oslos to kort. */
 .derfor-kort:has(.derfor-kort__ikon) { flex-direction: column; justify-content: flex-start; gap: var(--s-3); }
