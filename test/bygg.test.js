@@ -208,6 +208,7 @@ test('main.js: hver init-funksjon verner mot manglende elementer', () => {
     ['function overskriftVask', /if \(!overskrifter\.length\) return/],
     ['function kortReveal', /if \(!kort\.length\) return/],
     ['function flaateInn', /if \(reduksjon \|\| !flaate\) return/],
+    ['function glansSveip', /if \(reduksjon \|\| !kort\) return/],
     ['function stiNedover', /if \(!rad \|\| !linje \|\| !hero \|\| !footer\) return/],
   ]) {
     const start = js.indexOf(fn);
@@ -317,15 +318,33 @@ test('Varebil: logoen står lavere (68 %), og varebil-hero.svg beholder størrel
   assert.equal(raster.readUIntLE(27, 3) + 1, 145, 'rasterhøyden');
 });
 
-// Glansen (Ricky 2026-09-30) er fjernet igjen 2026-10-08: først tørkesveipet, så selve refleksen i vindusglasset.
-// Testen under holder at ingen av delene kommer tilbake ubemerket.
-test('Vindusvask-kortet har vindusrammen, men ingen glans: hverken refleks (::before) eller tørkesveip (fjernet 2026-10-08)', () => {
+// Glansen (Ricky 2026-09-30): den faste refleksen i vindusglasset er fjernet 2026-10-08 (blekte teksten), tørkesveipet er beholdt (Ricky likte animasjonen).
+// Testene under holder begge deler.
+test('Vindusvask-kortet har vindusrammen og tørkesveipet, men ingen fast refleks (::before fjernet 2026-10-08)', () => {
   const css = les('css/style.css');
-  const js = les('js/main.js');
   assert.match(css, /\.kort--vindu \{\s*box-shadow:\s*inset 0 0 0 2px var\(--teal\)/, 'vindusrammen skal bli stående');
-  assert.doesNotMatch(css, /\.kort--vindu::(before|after)|glans-sveip|glans-tork|--glans-/, 'ingen refleks, sveip eller glans-tokens i CSS');
-  assert.doesNotMatch(css, /\.kort--vindu > (picture|h3|p)/, 'innholdet trenger ikke løftes over en refleks som ikke finnes');
-  assert.doesNotMatch(js, /glansSveip|glans-sveip/, 'ingen glans i JS');
+  assert.doesNotMatch(css, /\.kort--vindu::before/, 'den faste refleksen skal ikke komme tilbake');
+  assert.match(css, /\.kort--vindu::after \{/, 'tørkesveipet finnes');
+  for (const el of ['img', 'h3', 'p', 'details']) {
+    assert.match(css, new RegExp(`\\.kort--vindu > ${el}[,\\s{][\\s\\S]*?z-index: 1; \\}`), `${el} på vinduskortet løftes over sveipet så det ikke vaskes ut`);
+  }
+  assert.match(css, /--glans-sveip: \.95;/, 'sveipets styrke er definert');
+});
+
+test('Glans: sveipet går én gang, og bare når bevegelse er greit', () => {
+  const js = les('js/main.js');
+  assert.match(initKropp(js), /glansSveip\(reduksjon\)/, 'glansSveip kalles ikke fra initSider()');
+  const kropp = js.slice(js.indexOf('function glansSveip'), js.indexOf('function glansSveip') + 900);
+  assert.match(kropp, /if \(reduksjon \|\| !kort\) return/, 'sveipet gates ikke på redusert bevegelse');
+  // Uten disconnect ville sveipet gått på nytt hver gang kortet kom inn i
+  // bildet igjen — altså en løkke, som er nøyaktig det vi valgte bort.
+  assert.match(kropp, /observer\.disconnect\(\)/, 'sveipet kobles ikke fra etter første gang');
+  const css = les('css/style.css');
+  // Klassen settes ved sidelast, men medie-queryen leses fortløpende: slår
+  // brukeren på redusert bevegelse etter at siden er lastet, er det CSS-en og
+  // ikke JS-en som må stoppe sveipet.
+  assert.match(css, /prefers-reduced-motion: reduce\) \{\s*\.kort--vindu\.glans-sveip::after \{ animation: none; \}/,
+    'CSS-en fanger ikke redusert bevegelse satt etter sidelast');
 });
 
 // Veinett-teppet (dekning-nett) lever bare i footeren, og det gamle navngitte Oslo-kartet med
