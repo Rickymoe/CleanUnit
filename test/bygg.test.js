@@ -1206,3 +1206,12 @@ test('Toppmeny: menyvalget «Kontakt» er burgunder på fast lys bakgrunn, også
   assert.match(css, /\.side-nav__lenke\[href="#kontakt"\]:hover \{ color: var\(--burgunder\); \}/, 'forblir burgunder under pekeren');
   assert.ok(css.indexOf('.side-nav__lenke[href="#kontakt"]:hover') > css.indexOf('.side-nav__lenke:hover {'), 'hover-regelen for Kontakt kommer etter den generelle (samme spesifisitet)');
 });
+
+test('CSS: «Derfor»-kortene er kompakte: smalere rad (46rem), 3 rem symbol, 1 rem tekst og mindre luft (Ricky 2026-10-08)', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\.derfor-rad \{[^}]*max-width: 46rem;/, 'raden er smalere enn 60rem');
+  assert.match(css, /\.derfor-kort p \{ color: var\(--tekst\); font-size: 1rem; line-height: 1\.55; \}/, 'tekst 1 rem');
+  assert.match(css, /\.derfor-kort__ikon \{[^}]*width: 3rem; height: 3rem;/, 'symbol 3 rem');
+  assert.match(css, /\.derfor-rad--en \{[^}]*max-width: 24rem;/, 'Stavangers ene kort er også smalere');
+  assert.match(css, /@media \(min-width: 48rem\) \{\s*\.derfor-rad \{[^}]*\}\s*\.derfor-rad--en \{[^}]*\}\s*\.derfor-kort \{ padding: var\(--s-5\) var\(--s-6\); \}/, 'mindre padding fra 48rem');
+});
