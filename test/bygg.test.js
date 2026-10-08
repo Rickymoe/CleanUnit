@@ -510,7 +510,7 @@ test('CSS: referanser-siden har --base-bakgrunn (aldri himmel rett under himmel-
   assert.match(les('css/style.css'), /\.side--referanser \.stopp--referanser \{ background: var\(--base\); \}/);
 });
 test('om-oss/: «Om oss», flåten og «Jobb hos oss» (åpen søknad, ansattsitater) står på samme side', () => {
-  for (const [by, sitater] of [['Oslo', 4], ['Stavanger', 3]]) {
+  for (const [by, sitater] of [['Oslo', 4], ['Stavanger', 4]]) {
     const h = les(sideFil(by, 'om_oss'));
     assert.match(h, /<section class="stopp--om" id="om-oss">/, by);
     assert.match(h, /<section class="stopp--jobb" id="jobb-hos-oss">/, by);
@@ -1119,7 +1119,7 @@ test('Kontakt: begge kortene har et dekorativt ikon foran overskriften (alt tom,
 });
 
 // Tekstsjekk 1 (Marit, 2026-10-08): kommaet i «fast, daglig renhold» er fjernet overalt, den nye
-// Jobb hos oss-overskriften gjelder begge byer, og ansattsitatene: Monika er signert «Monika S» (etter «Vilma: / Monika S»), Vilma står som fjerde sitat i Oslo til Marit har svart.
+// Jobb hos oss-overskriften gjelder begge byer, og ansattsitatene: Monika er signert «Monika S» (etter «Vilma: / Monika S»), alle fire sitatene står i begge byer (felles kultur og arbeidsmiljø).
 test('Tekstsjekk: «fast, daglig renhold» (med komma) står ingen steder i kildene eller de bygde sidene', () => {
   const kilder = [...['forside', 'tjenester', 'referanser', 'om-oss', 'miljo'].map((n) => `sider/${n}.html`), 'deler/kontakt.html', 'deler/layout.html', 'byer.json'];
   for (const f of [...kilder, ...alleSider().map((x) => x.fil)]) assert.doesNotMatch(les(f), /fast, daglig/i, f);
@@ -1133,7 +1133,7 @@ test('Tekstsjekk: «Renholderne er våre viktigste medarbeidere» står på Om o
     assert.ok(h.includes('Det er renholderne som hver dag sørger for at kundene våre møter en ren arbeidsplass.'), `${by}: ny ingress`);
   }
 });
-test('Tekstsjekk: ansattsitatene: Monika er signert «Monika S», Vilma står bare i Oslo (fjerde sitat), Urszula og Aneta står i begge byer', () => {
+test('Tekstsjekk: alle fire ansattsitatene (Monika S, Urszula, Aneta, Vilma) står i begge byer: kultur og arbeidsmiljø er felles (Ricky 2026-10-08)', () => {
   const sitat = (by, navn) => {
     const h = les(sideFil(by, 'om_oss'));
     const i = h.indexOf(`<footer>— ${navn}</footer>`);
@@ -1143,12 +1143,10 @@ test('Tekstsjekk: ansattsitatene: Monika er signert «Monika S», Vilma står ba
     const h = les(sideFil(by, 'om_oss'));
     assert.ok(h.includes('<footer>— Monika S</footer>') && !h.includes('<footer>— Monika</footer>'), `${by}: Monika er signert Monika S`);
     assert.ok(sitat(by, 'Monika S').startsWith('<p>Mitt eventyr med Clean Unit begynte for 9 år siden.'), `${by}: Monikas tekst er uendret`);
+    assert.ok(sitat(by, 'Vilma').startsWith('<p>Jeg har jobbet i Clean Unit siden 2013. Dette er det første stedet'), `${by}: Vilma står`);
     assert.ok(h.includes('<footer>— Urszula</footer>') && h.includes('<footer>— Aneta</footer>'), `${by}: Urszula og Aneta står`);
+    assert.equal((h.match(/class="sitat-kort"/g) || []).length, 4, `${by}: fire ansattsitater`);
   }
-  assert.ok(sitat('Oslo', 'Vilma').startsWith('<p>Jeg har jobbet i Clean Unit siden 2013. Dette er det første stedet'), 'Oslo: Vilma står (fjerde sitat)');
-  assert.equal(sitat('Stavanger', 'Vilma'), null, 'Stavanger: ingen Vilma');
-  assert.equal((les(sideFil('Oslo', 'om_oss')).match(/class="sitat-kort"/g) || []).length, 4, 'Oslo: fire ansattsitater');
-  assert.equal((les(sideFil('Stavanger', 'om_oss')).match(/class="sitat-kort"/g) || []).length, 3, 'Stavanger: tre ansattsitater');
 });
 test('Tekstsjekk: Oslo-tekstene er endret i Oslo, mens Stavanger beholder sine egne tjenestetekster', () => {
   const o = les(sideFil('Oslo', 'tjenester')); const st = les(sideFil('Stavanger', 'tjenester'));
