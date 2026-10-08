@@ -438,7 +438,7 @@ function sideNav() {
   })
   meny.addEventListener('click', (e) => { if (e.target.closest('a')) sett(false) })
   // Kontakt-knappen i raden (bare mobil) ligger utenfor menyen: den lukker også en åpen meny, så siden ikke blir stående med menyen over seg.
-  nav.querySelector('.side-nav__kontakt')?.addEventListener('click', () => sett(false))
+  nav.querySelector('.side-nav__kontakt--mobil')?.addEventListener('click', () => sett(false))
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && bryter.getAttribute('aria-expanded') === 'true') { sett(false); bryter.focus() }
   })

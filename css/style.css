@@ -921,9 +921,12 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .side-nav__logo { display: block; flex: none; line-height: 0; border-radius: 8px; }
 .side-nav__logo svg { display: block; width: 2.6rem; height: 2.6rem; }
 .side-nav__bryter { display: none; }
-/* «Kontakt»-knappen er bare synlig i mobilvisning (Ricky 2026-10-08): ved siden av hamburgeren, så veien til å ta kontakt ikke ligger bak menyen.
-   På desktop er Kontakt fortsatt et vanlig menyvalg (Marit ba om det, c681cc1). */
-.side-nav__kontakt { display: none; border-color: var(--burgunder); color: var(--burgunder); } /* burgunder kant og skrift (Ricky 2026-10-08), 8,7:1 mot hvit */
+/* «Kontakt» er en knapp med burgunder kant og skrift (Ricky 2026-10-08, 8,7:1 mot hvit), ikke et menyvalg. Det er to lenker til #kontakt,
+   én per visning, så rekkefølgen i markupen og tabrekkefølgen følger det man ser: --desktop står helt til høyre etter menyen, --mobil
+   står i raden mellom logoen og hamburgeren (se mobilreglene under). Den som ikke hører til visningen er display: none, så skjermlesere
+   ikke får to. Marit ba tidligere (c681cc1) om menyvalg i stedet for knapp; Ricky valgte likevel knapp på begge. */
+.side-nav__kontakt { border-color: var(--burgunder); color: var(--burgunder); flex: none; }
+.side-nav__kontakt--mobil { display: none; }
 .side-nav__meny { display: flex; align-items: center; gap: var(--s-4); flex: 1; min-width: 0; }
 .side-nav__meny ul { list-style: none; margin: 0 auto 0 var(--s-3); padding: 0; display: flex; gap: var(--s-1); flex-wrap: wrap; }
 .side-nav__lenke {
@@ -931,21 +934,18 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   font: 600 var(--t-sm)/1.2 var(--sans); text-decoration: none;
 }
 .side-nav__lenke[aria-current="page"] { color: var(--teal-mork); box-shadow: inset 0 -2px 0 var(--teal); border-radius: 8px 8px 0 0; }
-/* «Kontakt» i menyen er burgunder (Ricky 2026-10-08), også under pekeren; den er et handlingsvalg og ikke en side, så den har aldri aria-current. */
-.side-nav__lenke[href="#kontakt"] { color: var(--burgunder); }
 .side-nav__by { color: var(--teal-mork); font: 600 var(--t-sm)/1.2 var(--sans); text-decoration: none; white-space: nowrap; padding: .6rem .5rem; }
 @media (hover: hover) {
   .side-nav__lenke:hover { background: var(--teal-lys); color: var(--teal-mork); }
-  .side-nav__lenke[href="#kontakt"]:hover { color: var(--burgunder); }
   .side-nav__by:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 .side-nav a:focus-visible, .side-nav__bryter:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 #derfor, #tjenester, #kunder, #miljo, #jobb-hos-oss, #kontakt { scroll-margin-top: 3.75rem; }
 @media (max-width: 62rem) {
   .side-nav__rad { gap: var(--s-3); }
-  .side-nav__kontakt { display: inline-flex; order: 2; margin-left: auto; min-height: 44px; justify-content: center; }
+  .side-nav__kontakt--mobil { display: inline-flex; order: 2; margin-left: auto; min-height: 44px; justify-content: center; }
+  .side-nav__kontakt--desktop { display: none; }
   .side-nav__bryter { order: 3; margin-left: 0; }
-  .side-nav__meny li:has(> a[href="#kontakt"]) { display: none; } /* knappen i raden erstatter menyvalget, ikke begge */
   html.js .side-nav__bryter {
     display: inline-flex; flex: none; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem;
     border: 1px solid #7A9593; border-radius: 10px; background: var(--base); cursor: pointer; color: var(--teal-mork);

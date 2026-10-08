@@ -147,28 +147,29 @@ test('Alle interne lenker, bilder, stilark og import løser seg fra hver side', 
   }
 });
 
-test('Toppmeny: ekte lenker til de fire undersidene, aria-current på gjeldende side, Kontakt = #kontakt, andre by ↗ til samme underside', () => {
+test('Toppmeny: ekte lenker til de fire undersidene, aria-current på gjeldende side, Kontakt er knapp (#kontakt), andre by ↗ til samme underside', () => {
   const forventet = [['tjenester', 'Tjenester', 'tjenester/'], ['referanser', 'Referanser', 'referanser/'], ['om_oss', 'Om oss', 'om-oss/'], ['miljo', 'Miljø', 'miljo/']];
   for (const s of alleSider()) {
     const h = les(s.fil);
     const nav = h.slice(h.indexOf('<header class="side-nav"'), h.indexOf('</header>'));
     const lenker = [...nav.matchAll(/<a class="side-nav__lenke" href="([^"]+)"([^>]*)>([^<]+)</g)];
-    assert.deepEqual(lenker.map((m) => m[3]), ['Tjenester', 'Referanser', 'Om oss', 'Miljø', 'Kontakt'], `${s.fil}: menyrekkefølgen`);
+    assert.deepEqual(lenker.map((m) => m[3]), ['Tjenester', 'Referanser', 'Om oss', 'Miljø'], `${s.fil}: menyrekkefølgen (Kontakt er knapp, ikke menyvalg)`);
     const dybde = s.id === 'forside' ? '' : '../';
     forventet.forEach(([id, , sti], i) => {
       assert.equal(lenker[i][1], `${dybde}${sti}`, `${s.fil}: href for ${id}`);
       assert.equal(lenker[i][2], id === s.id ? ' aria-current="page"' : '', `${s.fil}: aria-current for ${id}`);
     });
-    assert.equal(lenker[4][1], '#kontakt');
-    assert.equal(lenker[4][2], '', `${s.fil}: Kontakt skal aldri ha aria-current`);
     const andre = s.by === 'Oslo' ? 'Stavanger' : 'Oslo';
     const by = nav.match(/class="side-nav__by" href="([^"]+)">([^<]+) </);
     assert.equal(by[2], andre, `${s.fil}: andre by`);
     const sti = STIER[s.id];
     const mal = s.by === 'Oslo' ? `test/ut/stavanger/${sti}index.html` : `test/ut/${sti}index.html`;
     assert.ok(existsSync(mal), `${s.fil}: andre-by-målet ${mal} finnes ikke`);
-    assert.equal((nav.match(/<a class="side-nav__kontakt knapp knapp--omriss" href="#kontakt">Kontakt<\/a>/g) || []).length, 1, `${s.fil}: én Kontakt-knapp i raden (mobil)`);
-    assert.ok(nav.indexOf('side-nav__kontakt') < nav.indexOf('side-nav__bryter'), `${s.fil}: knappen står før hamburgeren i tabrekkefølgen`);
+    assert.equal((nav.match(/<a class="side-nav__kontakt side-nav__kontakt--mobil knapp knapp--omriss" href="#kontakt">Kontakt<\/a>/g) || []).length, 1, `${s.fil}: én mobilknapp`);
+    assert.equal((nav.match(/<a class="side-nav__kontakt side-nav__kontakt--desktop knapp knapp--omriss" href="#kontakt">Kontakt<\/a>/g) || []).length, 1, `${s.fil}: én desktopknapp`);
+    assert.ok(nav.indexOf('side-nav__kontakt--mobil') < nav.indexOf('side-nav__bryter'), `${s.fil}: mobilknappen står før hamburgeren i tabrekkefølgen`);
+    assert.ok(nav.indexOf('side-nav__kontakt--desktop') > nav.indexOf('</nav>'), `${s.fil}: desktopknappen står etter menyen (helt til høyre)`);
+    assert.ok(!/<li><a class="side-nav__lenke" href="#kontakt"/.test(nav), `${s.fil}: Kontakt er ikke lenger et menyvalg`);
   }
 });
 
@@ -782,11 +783,10 @@ test('Kontakt: e-post og telefon samlet ett sted (byer.json), uten hardkodede ko
   assert.doesNotMatch(felles._merknad, /IKKE BEKREFTET/);
 });
 
-test('Kontakt: Kontakt er menyvalg i headeren; hero har to knapper (telefon og e-post) på alle forsider', () => {
+test('Kontakt: Kontakt er knapp i headeren (#kontakt); hero har to knapper (telefon og e-post) på alle forsider', () => {
   for (const s of alleSider()) {
     const h = les(s.fil);
-    assert.match(h, /class="side-nav__lenke" href="#kontakt">Kontakt</, `${s.fil}: menyvalget Kontakt peker på #kontakt`);
-    assert.match(h, /<a class="side-nav__lenke" href="#kontakt">/, s.fil);
+    assert.equal((h.match(/class="side-nav__kontakt side-nav__kontakt--(mobil|desktop) knapp knapp--omriss" href="#kontakt">Kontakt</g) || []).length, 2, `${s.fil}: Kontakt-knappene peker på #kontakt`);
     if (s.id !== 'forside') continue;
     const i = h.indexOf('<div class="hero__knapper">');
     const knapper = h.slice(i, h.indexOf('</div>', i));
@@ -1176,14 +1176,16 @@ test('Stavanger-bybildet er Oslo-scenen med mer burgunder: samme mål, logoen p�
   }
 });
 
-test('Toppmeny: Kontakt-knappen er bare synlig i mobilvisning (≤ 62rem), menyvalget skjules da, og knappen lukker menyen', () => {
+test('Toppmeny: Kontakt er en burgunder knapp, desktopknappen helt til høyre og mobilknappen ved hamburgeren (≤ 62rem), den ene skjult når den andre vises', () => {
   const css = les('css/style.css');
-  assert.match(css, /\n\.side-nav__kontakt \{ display: none; border-color: var\(--burgunder\); color: var\(--burgunder\); \}/, 'skjult på desktop, med burgunder kant og skrift');
+  assert.match(css, /\n\.side-nav__kontakt \{ border-color: var\(--burgunder\); color: var\(--burgunder\); flex: none; \}/, 'burgunder kant og skrift på begge');
+  assert.match(css, /\n\.side-nav__kontakt--mobil \{ display: none; \}/, 'mobilknappen er skjult på desktop');
   const mobil = css.slice(css.indexOf('@media (max-width: 62rem) {\n  .side-nav__rad'));
-  assert.match(mobil, /\.side-nav__kontakt \{ display: inline-flex; order: 2; margin-left: auto; min-height: 44px;/, 'synlig, 44 px høy, til høyre i mobilvisning');
+  assert.match(mobil, /\.side-nav__kontakt--mobil \{ display: inline-flex; order: 2; margin-left: auto; min-height: 44px;/, 'mobilknappen: synlig, 44 px, til høyre');
+  assert.match(mobil, /\.side-nav__kontakt--desktop \{ display: none; \}/, 'desktopknappen skjules på mobil');
   assert.match(mobil, /\.side-nav__bryter \{ order: 3; margin-left: 0; \}/, 'hamburgeren ligger etter knappen');
-  assert.match(mobil, /\.side-nav__meny li:has\(> a\[href="#kontakt"\]\) \{ display: none; \}/, 'menyvalget Kontakt skjules når knappen vises');
-  assert.match(les('js/main.js'), /querySelector\('\.side-nav__kontakt'\)\?\.addEventListener\('click', \(\) => sett\(false\)\)/, 'knappen lukker menyen');
+  assert.doesNotMatch(css, /side-nav__lenke\[href="#kontakt"\]|li:has\(> a\[href="#kontakt"\]\)/, 'ingen rester av Kontakt som menyvalg');
+  assert.match(les('js/main.js'), /querySelector\('\.side-nav__kontakt--mobil'\)\?\.addEventListener\('click', \(\) => sett\(false\)\)/, 'mobilknappen lukker menyen');
 });
 
 test('Varebil: bakskjermen er reparert av verktoy/varebil-bakskjerm.py, og rasteret i varebil-hero.svg er fortsatt et 347×145 WebP', () => {
@@ -1200,9 +1202,3 @@ test('Varebil: bakskjermen er reparert av verktoy/varebil-bakskjerm.py, og raste
   assert.equal(webp.readUIntLE(27, 3) + 1, 145, 'rasterhøyden');
 });
 
-test('Toppmeny: menyvalget «Kontakt» er burgunder, også under pekeren', () => {
-  const css = les('css/style.css');
-  assert.match(css, /\n\.side-nav__lenke\[href="#kontakt"\] \{ color: var\(--burgunder\); \}/, 'burgunder skrift');
-  assert.match(css, /\.side-nav__lenke\[href="#kontakt"\]:hover \{ color: var\(--burgunder\); \}/, 'forblir burgunder under pekeren');
-  assert.ok(css.indexOf('.side-nav__lenke[href="#kontakt"]:hover') > css.indexOf('.side-nav__lenke:hover {'), 'hover-regelen for Kontakt kommer etter den generelle (samme spesifisitet)');
-});

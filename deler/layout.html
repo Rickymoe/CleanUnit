@@ -57,7 +57,7 @@ addEventListener("load", function () {
 <header class="side-nav" id="topp">
   <div class="wrap side-nav__rad">
     <a class="side-nav__logo" href="{{logo_href}}" aria-label="{{logo_label}}"><svg viewBox="501.55 -34.9 104 104" width="104" height="104" aria-hidden="true" focusable="false"><circle cx="569.0" cy="-7.5" r="25.7" fill="#87CAC9"/><circle cx="530.2" cy="27.8" r="17.8" fill="#008789"/><circle cx="551.2" cy="58.4" r="9.0" fill="#AED1D1"/></svg></a>
-    <a class="side-nav__kontakt knapp knapp--omriss" href="#kontakt">Kontakt</a>
+    <a class="side-nav__kontakt side-nav__kontakt--mobil knapp knapp--omriss" href="#kontakt">Kontakt</a>
     <button class="side-nav__bryter" type="button" aria-expanded="false" aria-controls="side-nav-meny"><span class="side-nav__bryter-ikon" aria-hidden="true"></span><span class="visually-hidden">Meny</span></button>
     <nav class="side-nav__meny" id="side-nav-meny" aria-label="Hovedmeny">
       <ul>
@@ -65,10 +65,10 @@ addEventListener("load", function () {
         <li><a class="side-nav__lenke" href="{{by_rot}}referanser/"{{aktiv_referanser}}>Referanser</a></li>
         <li><a class="side-nav__lenke" href="{{by_rot}}om-oss/"{{aktiv_om_oss}}>Om oss</a></li>
         <li><a class="side-nav__lenke" href="{{by_rot}}miljo/"{{aktiv_miljo}}>Miljø</a></li>
-        <li><a class="side-nav__lenke" href="#kontakt">Kontakt</a></li>
       </ul>
       <a class="side-nav__by" href="{{andre_by_href}}">{{andre_by_navn}} <span aria-hidden="true">↗</span></a>
     </nav>
+    <a class="side-nav__kontakt side-nav__kontakt--desktop knapp knapp--omriss" href="#kontakt">Kontakt</a>
   </div>
 </header>
 <main id="innhold">
