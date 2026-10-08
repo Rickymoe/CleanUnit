@@ -663,7 +663,7 @@ test('Stien: nodene speiler forsidens seksjoner, hver finnes med anker, og bare 
   }
   assert.match(js, /document\.querySelector\('\.hero__sti-start'\)/, 'stiNedover finner ikke startpunktet');
 });
-const MARIT_DERFOR = 'Clean Unit har levert profesjonelt renhold siden 2007, og vi rengjør rundt 100 virksomheter i Oslo og omegn. Vi tilbyr faste renholdere, rask kommunikasjon og systematisk kvalitetsoppfølging. Vi benytter ikke underleverandører i det daglige renholdet.';
+const MARIT_DERFOR = 'Clean Unit har levert profesjonelt renhold siden 2007, og vi leverer i dag renhold til over 100 kunder i Oslo og omegn. Vi tilbyr faste renholdere, rask kommunikasjon og systematisk kvalitetsoppfølging. Vi benytter ikke underleverandører i det daglige renholdet.';
 const derforSeksjon = (by) => {
   const h = les(sideFil(by, 'forside'));
   const start = h.indexOf('id="derfor"');
@@ -705,13 +705,17 @@ test('Derfor (Stavanger): ett kort med grønt skjold-symbol + «Dette får du» 
   assert.match(d, /derfor-rad--en/);
   const tekst = sjekkKort(kort[0], 'ikon-dette-far-du.svg', 'Dette får du', 'Stavanger');
   assert.equal(tekst, 'Vi tilbyr faste renholdere, rask kommunikasjon og systematisk kvalitetsoppfølging. Vi benytter ikke underleverandører i det daglige renholdet.');
-  assert.doesNotMatch(d, /siden 2007|Oslo og omegn|rundt 100|Erfaring|75355D|burgunder/i);
+  assert.doesNotMatch(d, /siden 2007|Oslo og omegn|rundt 100|over 100 kunder|Erfaring|75355D|burgunder/i);
   assert.ok(les('sider/forside.html').includes('<!-- UTKAST: Stavangers egen tekst venter på Marit (år, antall kunder, område) -->'));
 });
 
 test('CSS: Derfor-kortenes overskrift er --teal-mork og CSS-en har ingen burgunder i kortreglene', () => {
   const css = les('css/style.css');
   assert.match(css, /\.derfor-kort h3 \{ color: var\(--teal-mork\); \}/);
+  const kort = css.match(/\n\.derfor-kort \{[^}]*\}/)[0];
+  assert.match(kort, /background: #fff;/, 'hvit bakgrunn');
+  assert.match(kort, /border: 2px solid var\(--teal\);/, 'grønn ramme');
+  assert.match(css, /\.derfor-kort p \{ color: var\(--teal-mork\);/, 'grønn brødtekst');
   const regler = css.split('\n').filter((l) => /^\.derfor-/.test(l)).join('\n');
   assert.doesNotMatch(regler, /75355D|burgunder/i);
 });
@@ -891,16 +895,18 @@ test('Stavanger: ingen Oslo-tekster på noen av de fem sidene, men egne tekster 
 
 // Kunden vil ha én kontaktadresse: kortet har post@ og telefonen som to knapper øverst og telefonen kun der, ingen egen
 // kanal-linje (telefon · e-post) under adressen. Mobilnumrene i personradene er greit.
-test('Kontakt-kortet: post@cleanunit.no som eneste kunde-e-post, telefonen kun i toppknappen', () => {
+const PERSON_EPOST = { Oslo: ['renhold@cleanunit.no', 'post@cleanunit.no'], Stavanger: ['thord@cleanunit.no'] };
+const kontaktKort = (f) => les(f).match(/<section class="stopp--kontakt"[\s\S]*?<\/section>/)[0];
+test('Kontakt-kortet: e-post kun post@ i knappen og personenes egne adresser under telefonen, ingen andre', () => {
   for (const s of alleSider()) {
-    const h = les(s.fil);
-    assert.doesNotMatch(h, /renhold@cleanunit\.no/, `${s.fil}: gammel Oslo-adresse`);
-    const kort = h.match(/<section class="stopp--kontakt"[\s\S]*?<\/section>/);
-    assert.ok(kort, `${s.fil}: Kontakt-kortet mangler`);
-    const k = kort[0];
-    assert.doesNotMatch(k, /thord@cleanunit\.no|renhold@cleanunit\.no/, `${s.fil}: gammel adresse i kortet`);
-    assert.deepEqual(k.match(/mailto:[^"]+/g), ['mailto:post@cleanunit.no'], `${s.fil}: skal ha én e-post`);
+    const k = kontaktKort(s.fil);
     assert.doesNotMatch(k, /kontakt__kanal/, `${s.fil}: egen telefon · e-post-linje`);
+    const forventet = [...PERSON_EPOST[s.by].map((e) => `mailto:${e}`), 'mailto:post@cleanunit.no'];
+    assert.deepEqual((k.match(/mailto:[^"]+/g) || []).sort(), forventet.sort(), `${s.fil}: mailto-lenkene i kortet`);
+    assert.deepEqual((k.match(/[\w.-]+@[\w.-]+/g) || []).filter((a) => !a.startsWith('mailto')).sort(),
+      [...PERSON_EPOST[s.by].flatMap((e) => [e]), ...PERSON_EPOST[s.by], 'post@cleanunit.no'].sort(), `${s.fil}: alle adresser i kortet`);
+    const personer = [...k.match(/<ul class="kontakt__personer">[\s\S]*?<\/ul>/)[0].matchAll(/<div><strong>[^<]*<\/strong><span>[^<]*<\/span><a href="tel:[^"]+">[^<]+<\/a><a href="mailto:([^"]+)">([^<]+)<\/a><\/div>/g)];
+    assert.deepEqual(personer.map((m) => [m[1], m[2]]), PERSON_EPOST[s.by].map((e) => [e, e]), `${s.fil}: e-posten står rett etter telefonen i hver personrad`);
     const tlf = s.by === 'Oslo' ? '21 55 56 80' : '900 65 009';
     const boks = k.match(/<div class="kontakt__knapper">[\s\S]*?<\/div>/)[0];
     assert.equal(boks.split(tlf).length - 1, 1, `${s.fil}: telefonen skal stå én gang i knapperaden`);
@@ -909,21 +915,40 @@ test('Kontakt-kortet: post@cleanunit.no som eneste kunde-e-post, telefonen kun i
   }
 });
 
-test('Kontakt-kortet: øverst to knapper, «Ring oss – <telefon>» (fylt) og «Send e-post» (omriss)', () => {
+test('Kontakt-kortet: rekkefølgen er kontor, personer, knapper, lenke til den andre byen; adressene står bare i byer.json', () => {
+  for (const s of alleSider()) {
+    const k = kontaktKort(s.fil);
+    const pos = ['kontakt__kontorer', 'kontakt__personer', 'kontakt__knapper', 'kontakt__bylenke'].map((x) => k.indexOf(`class="${x}`));
+    assert.ok(pos.every((p) => p >= 0), `${s.fil}: en del mangler ${pos}`);
+    assert.deepEqual([...pos].sort((a, b) => a - b), pos, `${s.fil}: knappene skal stå etter personene og før bylenken`);
+  }
+  const mal = les('deler/kontakt.html');
+  assert.doesNotMatch(mal, /[\w.-]+@[\w.-]+\.no/, 'ingen adresser hardkodet i malen');
+  const { byer } = JSON.parse(les('byer.json'));
+  assert.deepEqual([byer[0].data.epost_marit, byer[0].data.epost_mari, byer[1].data.epost_thord], ['renhold@cleanunit.no', 'post@cleanunit.no', 'thord@cleanunit.no']);
+});
+
+test('Kontakt-kortet: e-postlenkene har samme stil som telefonlenkene og 44 px trykkflate på touch, og kan brytes', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\.kontakt__personer a \{ color: var\(--teal-mork\)/);
+  assert.match(css, /@media \(pointer: coarse\) \{ \.kontakt__personer li > div a \{[^}]*padding-block: \.7rem/);
+  assert.match(css, /\.kontakt__personer li > div a \{ overflow-wrap: anywhere; \}/);
+});
+
+test('Kontakt-kortet: to knapper, «Ring oss – <telefon>» (fylt) og «Send e-post» (omriss), nederst etter personene', () => {
   for (const s of alleSider()) {
     const k = les(s.fil).match(/<section class="stopp--kontakt"[\s\S]*?<\/section>/)[0];
     const tlf = s.by === 'Oslo' ? '21 55 56 80' : '900 65 009';
     const tlfHref = s.by === 'Oslo' ? '+4721555680' : '+4790065009';
     const rad = k.match(/<div class="kontakt__knapper">([\s\S]*?)<\/div>/);
     assert.ok(rad, `${s.fil}: knapperaden mangler`);
-    assert.ok(k.indexOf('kontakt__knapper') < k.indexOf('kontakt__kontorer'), `${s.fil}: knappene skal stå over kontorene`);
+    assert.ok(k.indexOf('kontakt__knapper') > k.indexOf('kontakt__personer'), `${s.fil}: knappene skal stå under personene`);
     const lenker = [...rad[1].matchAll(/<a ([^>]*)>([^<]*)<\/a>/g)].map((m) => [m[1].trim(), m[2]]);
     assert.deepEqual(lenker, [
       [`class="knapp knapp--fyll" href="tel:${tlfHref}"`, `Ring oss – ${tlf}`],
       ['class="knapp knapp--omriss" href="mailto:post@cleanunit.no"', 'Send e-post'],
     ], `${s.fil}: knappene i Kontakt-kortet`);
     assert.doesNotMatch(k, /Kontakt oss på/, `${s.fil}: den gamle tekstlinja`);
-    assert.doesNotMatch(k, /renhold@|thord@/, s.fil);
   }
 });
 
