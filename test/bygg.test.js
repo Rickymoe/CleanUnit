@@ -1031,3 +1031,12 @@ test('CSS: heroens og Kontakt-kortets to knapper er omriss på hvit bunn med gr�
     assert.doesNotMatch(les(f), /knapp--fyll/, `${f}: ingen fylt knapp i telefon/e-post-paret`);
   }
 });
+
+test('«Derfor»-kortene har hover-løft som de andre kortene: kun med mus, ikke ved redusert bevegelse', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\.derfor-kort \{[^}]*transition: transform \.2s, box-shadow \.2s;/, 'kortet har overgang');
+  assert.match(css, /@media \(hover: hover\) \{\s*\.derfor-kort:hover \{ transform: translateY\(-4px\); box-shadow:/, 'hover er gated på (hover: hover)');
+  assert.match(css, /\.derfor-kort:hover \.derfor-kort__ikon \{ transform: scale\(1\.08\); \}/, 'symbolet vokser litt');
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{\s*\.derfor-kort, \.derfor-kort__ikon \{ transition: none; \}\s*\.derfor-kort:hover, \.derfor-kort:hover \.derfor-kort__ikon \{ transform: none; \}/, 'slått av ved redusert bevegelse');
+});
+

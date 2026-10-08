@@ -1001,18 +1001,29 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 }
 /* To kort side om side fra 48rem (like brede og like høye: grid strekker radens celler), ett over
    hverandre under. Stavanger har bare ett kort (første setning er ikke bekreftet der): det sentreres
-   i én kolonnes bredde. Tekstkort, så ingen hover-løft. */
+   i én kolonnes bredde. Hover-løft: se under .derfor-kort. */
 .derfor-rad { display: grid; gap: var(--s-5); grid-template-columns: minmax(0, 1fr); max-width: 60rem; margin-inline: auto; }
 .derfor-kort {
   background: #fff; border-radius: var(--radius);
   padding: var(--s-6) var(--s-5); text-align: center;
   display: flex; align-items: center; justify-content: center;
+  transition: transform .2s, box-shadow .2s;
 }
 .derfor-kort p { color: var(--tekst); font-size: 1.125rem; line-height: 1.6; }
+/* Hover-løft på «Derfor»-kortene (Ricky 2026-10-08), samme grep som .tjeneste-kort og .sitat-kort: løft + skygge
+   og et lite vekst på symbolet, gated på mus (hover:hover) og slått av ved reduced motion. */
+@media (hover: hover) {
+  .derfor-kort:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0, 89, 91, .35); }
+  .derfor-kort:hover .derfor-kort__ikon { transform: scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .derfor-kort, .derfor-kort__ikon { transition: none; }
+  .derfor-kort:hover, .derfor-kort:hover .derfor-kort__ikon { transform: none; }
+}
 /* Alle kort har symbol + overskrift over teksten (Oslos to og Stavangers ene). Innholdet stables fra
    toppen, så symbolene står likt i Oslos to kort. */
 .derfor-kort:has(.derfor-kort__ikon) { flex-direction: column; justify-content: flex-start; gap: var(--s-3); }
-.derfor-kort__ikon { display: block; flex: none; width: 3.75rem; height: 3.75rem; }
+.derfor-kort__ikon { display: block; flex: none; width: 3.75rem; height: 3.75rem; transition: transform .2s; }
 .derfor-kort h3 { color: var(--teal-mork); }
 @media (min-width: 48rem) {
   .derfor-rad { grid-template-columns: repeat(2, minmax(0, 1fr)); }
