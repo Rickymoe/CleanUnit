@@ -510,7 +510,7 @@ test('CSS: referanser-siden har --base-bakgrunn (aldri himmel rett under himmel-
   assert.match(les('css/style.css'), /\.side--referanser \.stopp--referanser \{ background: var\(--base\); \}/);
 });
 test('om-oss/: «Om oss», flåten og «Jobb hos oss» (åpen søknad, ansattsitater) står på samme side', () => {
-  for (const [by, sitater] of [['Oslo', 4], ['Stavanger', 3]]) {
+  for (const [by, sitater] of [['Oslo', 3], ['Stavanger', 3]]) {
     const h = les(sideFil(by, 'om_oss'));
     assert.match(h, /<section class="stopp--om" id="om-oss">/, by);
     assert.match(h, /<section class="stopp--jobb" id="jobb-hos-oss">/, by);
@@ -846,7 +846,7 @@ test('Maritts innhold (Oppsett ny nettside) står på Oslo-siden: sju tjenester,
     'Gulvvedlikehold', 'Vindusvask', 'Hygieneartikler']) {
     assert.match(h, new RegExp(`<h3>${t}</h3>`), `tjeneste: ${t}`);
   }
-  for (const t of ['BSN – Boligstiftelsen Nydalen', 'Dr. Brandt', 'Vilma', 'Marit Byfuglien', 'Mari Pedersen',
+  for (const t of ['BSN – Boligstiftelsen Nydalen', 'Dr. Brandt', 'Marit Byfuglien', 'Mari Pedersen',
     'Guro Klingenberg Schei', 'Miljøfyrtårn siden 2011',
     'Medlem av Virke og med tariffavtale', 'Offentlig godkjent renholdsbedrift', 'Hvorfor vi velger bort underleverandører',
     'Trenger dere en ny renholdsleverandør?']) {
@@ -1119,7 +1119,7 @@ test('Kontakt: begge kortene har et dekorativt ikon foran overskriften (alt tom,
 });
 
 // Tekstsjekk 1 (Marit, 2026-10-08): kommaet i «fast, daglig renhold» er fjernet overalt, den nye
-// Jobb hos oss-overskriften gjelder begge byer, og ansattsitatene (Vilma/Monika) er ikke rørt.
+// Jobb hos oss-overskriften gjelder begge byer, og ansattsitatene er justert etter «Vilma: / Monika S» (Vilma bort, Monika → Monika S).
 test('Tekstsjekk: «fast, daglig renhold» (med komma) står ingen steder i kildene eller de bygde sidene', () => {
   const kilder = [...['forside', 'tjenester', 'referanser', 'om-oss', 'miljo'].map((n) => `sider/${n}.html`), 'deler/kontakt.html', 'deler/layout.html', 'byer.json'];
   for (const f of [...kilder, ...alleSider().map((x) => x.fil)]) assert.doesNotMatch(les(f), /fast, daglig/i, f);
@@ -1133,15 +1133,17 @@ test('Tekstsjekk: «Renholderne er våre viktigste medarbeidere» står på Om o
     assert.ok(h.includes('Det er renholderne som hver dag sørger for at kundene våre møter en ren arbeidsplass.'), `${by}: ny ingress`);
   }
 });
-test('Tekstsjekk: ansattsitatene (Vilma, Monika) er uendret, Vilma bare i Oslo', () => {
-  const sitat = (by, navn) => {
-    const jobb = les(sideFil(by, 'om_oss'));
-    const i = jobb.indexOf(`<footer>— ${navn}</footer>`);
-    return i < 0 ? null : jobb.slice(jobb.lastIndexOf('<p>', i), i);
-  };
-  assert.ok(sitat('Oslo', 'Vilma').startsWith('<p>Jeg har jobbet i Clean Unit siden 2013. Dette er det første stedet'), 'Oslo: Vilma');
-  assert.equal(sitat('Stavanger', 'Vilma'), null, 'Stavanger: ingen Vilma');
-  for (const by of ['Oslo', 'Stavanger']) assert.ok(sitat(by, 'Monika').startsWith('<p>Mitt eventyr med Clean Unit begynte for 9 år siden.'), `${by}: Monika`);
+test('Tekstsjekk: ansattsitatene: Vilma er tatt bort (Marit/Ricky 2026-10-08), Monika er signert «Monika S», Urszula og Aneta står, i begge byer', () => {
+  for (const by of ['Oslo', 'Stavanger']) {
+    const h = les(sideFil(by, 'om_oss'));
+    assert.ok(!h.includes('Vilma'), `${by}: Vilma er borte`);
+    assert.ok(!h.includes('siden 2013. Dette er det første stedet'), `${by}: Vilmas sitat er borte`);
+    assert.ok(h.includes('<footer>— Monika S</footer>') && !h.includes('<footer>— Monika</footer>'), `${by}: Monika er signert Monika S`);
+    const i = h.indexOf('<footer>— Monika S</footer>');
+    assert.ok(h.slice(h.lastIndexOf('<p>', i), i).startsWith('<p>Mitt eventyr med Clean Unit begynte for 9 år siden.'), `${by}: Monikas tekst er uendret`);
+    assert.ok(h.includes('<footer>— Urszula</footer>') && h.includes('<footer>— Aneta</footer>'), `${by}: Urszula og Aneta står`);
+    assert.equal((h.match(/class="sitat-kort"/g) || []).length, 3, `${by}: tre ansattsitater`);
+  }
 });
 test('Tekstsjekk: Oslo-tekstene er endret i Oslo, mens Stavanger beholder sine egne tjenestetekster', () => {
   const o = les(sideFil('Oslo', 'tjenester')); const st = les(sideFil('Stavanger', 'tjenester'));
