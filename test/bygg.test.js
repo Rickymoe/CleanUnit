@@ -1071,7 +1071,7 @@ test('Kontakt: Oslos to personer står side om side fra 48rem, Stavanger har én
 });
 
 test('Kontakt: «Gå til Clean Unit …»-lenka er bare så bred som teksten', () => {
-  assert.match(regelBlokk(les('css/style.css'), '.kontakt__bylenke {'), /justify-self: start/);
+  assert.match(les('css/style.css'), /\.kontakt__bylenke \{[^}]*justify-self: start/);
 });
 
 test('CSS: Kunder bruker samme seksjons-padding som de andre seksjonene', () => {
@@ -1098,4 +1098,16 @@ test('Kontakt: personene står under overskriften «Eller kontakt direkte», del
   const css = les('css/style.css');
   assert.match(css, /\.kontakt__alternativ \{ border-top: 1px solid var\(--gronn-mellom\);/, 'delelinja på gruppen');
   assert.doesNotMatch(css, /\.kontakt__personer \{[^}]*border-top/, 'ikke dobbel delelinje');
+});
+
+test('Kontakt: lenka til den andre byen ligger utenfor kortet, og fra 64rem under boksen til venstre', () => {
+  for (const s of alleSider()) {
+    const k = kontaktKort(s.fil);
+    const kort = k.slice(k.indexOf('class="kontakt__info"'), k.indexOf('class="kontakt__bylenke"'));
+    assert.ok(kort.length > 0 && !kort.includes('kontakt__bylenke'), `${s.fil}: lenka kommer etter kortet`);
+    assert.match(k, /<\/ul>\s*<\/div>\s*<\/div>\s*<a class="kontakt__bylenke"/, `${s.fil}: lenka kommer etter at både gruppen og kortet er lukket`);
+  }
+  const css = les('css/style.css');
+  assert.match(css, /grid-template-areas: "handling info" "bylenke info"/, 'lenka i venstre kolonne under boksen');
+  assert.match(css, /\.kontakt__bylenke \{ grid-area: bylenke;/, 'grid-område for lenka');
 });

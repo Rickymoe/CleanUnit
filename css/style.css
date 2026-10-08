@@ -898,9 +898,10 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .kontakt__knapper { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-3); }
 .kontakt__knapper .knapp { min-height: 44px; justify-content: center; }
 @media (min-width: 64rem) {
-  .kontakt-layout { max-width: none; grid-template-columns: minmax(0, 22rem) minmax(0, 40rem); grid-template-areas: "handling info"; align-items: start; column-gap: var(--s-5); }
+  .kontakt-layout { max-width: none; grid-template-columns: minmax(0, 22rem) minmax(0, 40rem); grid-template-areas: "handling info" "bylenke info"; grid-template-rows: auto 1fr; align-items: start; column-gap: var(--s-5); }
   .kontakt__info { grid-area: info; }
   .kontakt__handling { grid-area: handling; }
+  .kontakt__bylenke { grid-area: bylenke; margin-top: calc(var(--s-3) * -1); }
 }
 
 /* Kontaktinfoen (Ricky 2026-10-03): kontorer og personer flyttet hit fra footeren, nå med mørk tekst på lys bunn. */

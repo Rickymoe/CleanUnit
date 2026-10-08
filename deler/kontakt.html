@@ -1,7 +1,7 @@
 <!-- KONTAKT. Tilbudsskjemaet er fjernet på kundens ønske: kunden ønsker e-post og telefon i stedet.
      «Ta kontakt»-boksen med de to knappene («Ring oss», «Send e-post») står FØRST i markupen: på mobil øverst over kortet, fra 64rem
-     til VENSTRE for det (CSS-grid, Ricky 2026-10-08: hovedveien først, alternativet etterpå). Kortet med kontor, «Eller kontakt direkte» (personene)
-     og lenke til den andre byen kommer etterpå.
+     til VENSTRE for det (CSS-grid, Ricky 2026-10-08: hovedveien først, alternativet etterpå). Kortet med kontor og «Eller kontakt direkte» (personene) kommer etterpå,
+     så lenka til den andre byen (utenfor kortet; fra 64rem står den under boksen til venstre).
      Kontaktadressene kommer fra byer.json (felles.kontakt_epost, byens telefon), så de byttes ett sted. -->
 <section class="stopp--kontakt" id="kontakt">
   <div class="wrap">
@@ -50,8 +50,8 @@
           </li>{{/er_oslo}}
         </ul>
         </div>
-        <a class="kontakt__bylenke" href="{{andre_by_hjem}}">Gå til Clean Unit {{andre_by_navn}} →</a>
       </div>
+      <a class="kontakt__bylenke" href="{{andre_by_hjem}}">Gå til Clean Unit {{andre_by_navn}} →</a>
     </div>
   </div>
 </section>
