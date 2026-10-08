@@ -452,10 +452,11 @@ test('Flåten: skjules bare bak html.js, og vises igjen ved reduced motion', () 
   assert.match(les('js/main.js'), /flaateInn\(reduksjon\)/)
 })
 
-test('tjenester/: Oslo har sju tjenestekort med «Les mer», Stavanger seks, begge med vindusrammen og vask-overskriften', () => {
+const TJ_NAVN = ['Fast daglig renhold', 'Renhold av barnehager', 'Hovedrengjøring', 'Teppe- og møbelrens', 'Gulvvedlikehold', 'Hygieneartikler', 'Vindusvask'];
+test('tjenester/: begge byer har de samme sju tjenestekortene med «Les mer», vindusrammen og vask-overskriften', () => {
   for (const [by, antall, navn] of [
-    ['Oslo', 7, ['Fast daglig renhold', 'Renhold av barnehager', 'Hovedrengjøring', 'Teppe- og møbelrens', 'Gulvvedlikehold', 'Vindusvask', 'Hygieneartikler']],
-    ['Stavanger', 6, ['Fast daglig renhold', 'Barnehagerenhold', 'Hovedrengjøring', 'Hygieneartikler', 'Gulvbehandling', 'Vinduspuss']],
+    ['Oslo', 7, TJ_NAVN],
+    ['Stavanger', 7, TJ_NAVN],
   ]) {
     const h = les(sideFil(by, 'tjenester'));
     assert.equal((h.match(/class="tjeneste-kort[\s"]/g) || []).length, antall, `${by}: antall tjenestekort`);
@@ -976,8 +977,8 @@ test('Oslo: ingen Stavanger-tekster på noen av de fem sidene', () => {
 
 test('Stavanger: UTKAST-merkene står igjen på det som ikke er bekreftet', () => {
   const forside = les('sider/forside.html');
-  assert.match(forside, /UTKAST: sammendrag av Hovedrengjøring, Gulvbehandling, Vinduspuss og Hygieneartikler/);
-  assert.match(les('sider/tjenester.html'), /UTKAST: «Les mer»-tekstene er Maritts tekster fra Oslo-siden, gjenbrukt/);
+  assert.match(forside, /UTKAST: sammendrag av Hovedrengjøring, Teppe- og møbelrens, Gulvvedlikehold, Vindusvask og Hygieneartikler, lik Oslo/);
+  assert.match(les('sider/tjenester.html'), /UTKAST: Hele Tjenester-siden er lik i begge byer \(Ricky 2026-10-08\); bekreft med Marit\/Christopher at Stavanger leverer Teppe- og møbelrens og Vindusvask\./);
   assert.match(les('byer.json'), /UTKAST: Stavanger-kontorets egen beskrivelse/);
 });
 
@@ -1149,13 +1150,54 @@ test('Tekstsjekk: alle fire ansattsitatene (Monika S, Urszula, Aneta, Vilma) st�
     assert.equal((h.match(/class="sitat-kort"/g) || []).length, 4, `${by}: fire ansattsitater`);
   }
 });
-test('Tekstsjekk: Oslo-tekstene er endret i Oslo, mens Stavanger beholder sine egne tjenestetekster', () => {
+test('Tekstsjekk: Oslo har kundetallene og NS-INSTA, Stavanger har dem ikke og nevner aldri Oslo i innholdet', () => {
   const o = les(sideFil('Oslo', 'tjenester')); const st = les(sideFil('Stavanger', 'tjenester'));
   assert.ok(o.includes('utfører i dag renhold i over 70 barnehager i Oslo og omegn') && !o.includes('sørger vi for vikar'), 'Oslo');
   assert.ok(o.includes('NS-INSTA 800'), 'Oslo: NS-INSTA 800');
-  assert.ok(st.includes('om lag 90 prosent av våre oppdrag') && !st.includes('NS-INSTA'), 'Stavanger: egen kort-tekst, ingen NS-INSTA');
+  const main = st.slice(st.indexOf('<main'), st.indexOf('id="kontakt"'));
+  assert.ok(main.includes('<h3>Renhold av barnehager</h3>') && main.length > 5000, 'Stavanger: innholdsutsnittet er med');
+  for (const forbudt of ['over 70', 'over 100', 'NS-INSTA', 'Oslo', 'om lag 90 prosent', 'Ti års', 'siden 2007']) {
+    assert.ok(!main.includes(forbudt), `Stavanger Tjenester: «${forbudt}» skal ikke stå`);
+  }
+  assert.ok(main.includes('i Stavanger og omegn.</p>'), 'Stavanger: intro nevner Stavanger og omegn');
   assert.ok(!les(sideFil('Stavanger', 'om_oss')).includes('Flere av våre ansatte har jobbet'), 'Stavanger: ingen Oslo-ansatttekst');
 });
+
+test('Tjenester: Stavanger-siden er Oslo-siden med byen byttet, minus de to Oslo-setningene', () => {
+  const tekster = (by, fra, til) => {
+    const h = les(sideFil(by, 'tjenester'));
+    const m = h.slice(h.indexOf('<main'), h.indexOf('id="kontakt"'));
+    return { h3: [...m.matchAll(/<h3>([^<]*)<\/h3>/g)].map((x) => x[1]), p: [...m.matchAll(/<p>([^<]*)<\/p>/g)].map((x) => x[1].replaceAll(fra, til)) };
+  };
+  const o = tekster('Oslo', 'Oslo og omegn', '@@'); const st = tekster('Stavanger', 'Stavanger og omegn', '@@');
+  assert.deepEqual(st.h3, o.h3, 'samme overskrifter i samme rekkefølge');
+  assert.equal(st.h3.length, 7);
+  const bare = o.p.filter((x) => !st.p.includes(x));
+  assert.deepEqual(bare, [
+    'Vi følger opp renholdskvaliteten gjennom jevnlige kontroller og dialog med både renholderne og kunden. For kunder som ønsker det, kan vi også tilby renhold med kvalitetskrav og kontroller etter NS-INSTA 800, en norsk standard for måling og vurdering av renholdskvalitet.',
+    'Vi har rengjort barnehager siden 2007 og utfører i dag renhold i over 70 barnehager i @@.',
+  ], 'det eneste som bare står i Oslo');
+  assert.deepEqual(st.p.filter((x) => !o.p.includes(x)), [], 'Stavanger har ingen egne avsnitt');
+  assert.equal(o.p.length - st.p.length, 2);
+  assert.ok(o.p.some((x) => x.includes('@@')) && st.p.some((x) => x.includes('@@')), 'byen er byttet i introen');
+});
+
+test('Forsiden: Stavanger har samme tjenestelinje som Oslo', () => {
+  const linje = (by) => les(sideFil(by, 'forside')).match(/<h3>Temporært renhold og hygieneartikler<\/h3>\s*<p>([^<]*)<\/p>/)[1];
+  assert.equal(linje('Stavanger'), 'Hovedrengjøring, tepper og møbler, gulv, vinduer og hygieneartikler – som enkeltoppdrag eller planlagt gjennom året.');
+  assert.equal(linje('Stavanger'), linje('Oslo'));
+});
+
+test('Meta: Tjenester-beskrivelsen er lik i begge byer bortsett fra byen, og Oslo-miljøet sier «med tariffavtale»', () => {
+  const byer = JSON.parse(les('byer.json')).byer;
+  const [o, st] = byer.map((b) => b.sider);
+  assert.equal(st.tjenester.beskrivelse, o.tjenester.beskrivelse.replace('Oslo og omegn', 'Stavanger og omegn'));
+  assert.ok(st.tjenester.beskrivelse.endsWith('vindusvask og hygieneartikler i Stavanger og omegn.'));
+  assert.match(o.miljo.beskrivelse, /med tariffavtale og medlem av Virke/);
+  assert.doesNotMatch(o.miljo.beskrivelse, /tariffbundet/);
+  assert.deepEqual(byer.map((b) => b.data.omegn), ['Oslo og omegn', 'Stavanger og omegn']);
+});
+
 
 
 test('Stavanger-bybildet er Oslo-scenen med mer burgunder: samme mål, logoen på varebilen vises, verktøyet finnes', () => {
