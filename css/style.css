@@ -931,9 +931,12 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   font: 600 var(--t-sm)/1.2 var(--sans); text-decoration: none;
 }
 .side-nav__lenke[aria-current="page"] { color: var(--teal-mork); box-shadow: inset 0 -2px 0 var(--teal); border-radius: 8px 8px 0 0; }
+/* «Kontakt» i menyen er burgunder (Ricky 2026-10-08), også under pekeren; den er et handlingsvalg og ikke en side, så den har aldri aria-current. */
+.side-nav__lenke[href="#kontakt"] { color: var(--burgunder); }
 .side-nav__by { color: var(--teal-mork); font: 600 var(--t-sm)/1.2 var(--sans); text-decoration: none; white-space: nowrap; padding: .6rem .5rem; }
 @media (hover: hover) {
   .side-nav__lenke:hover { background: var(--teal-lys); color: var(--teal-mork); }
+  .side-nav__lenke[href="#kontakt"]:hover { color: var(--burgunder); }
   .side-nav__by:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 .side-nav a:focus-visible, .side-nav__bryter:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }

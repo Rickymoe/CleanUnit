@@ -1199,3 +1199,10 @@ test('Varebil: bakskjermen er reparert av verktoy/varebil-bakskjerm.py, og raste
   assert.equal(webp.readUIntLE(24, 3) + 1, 347, 'rasterbredden');
   assert.equal(webp.readUIntLE(27, 3) + 1, 145, 'rasterhøyden');
 });
+
+test('Toppmeny: menyvalget «Kontakt» er burgunder, også under pekeren', () => {
+  const css = les('css/style.css');
+  assert.match(css, /\n\.side-nav__lenke\[href="#kontakt"\] \{ color: var\(--burgunder\); \}/, 'burgunder skrift');
+  assert.match(css, /\.side-nav__lenke\[href="#kontakt"\]:hover \{ color: var\(--burgunder\); \}/, 'forblir burgunder under pekeren');
+  assert.ok(css.indexOf('.side-nav__lenke[href="#kontakt"]:hover') > css.indexOf('.side-nav__lenke:hover {'), 'hover-regelen for Kontakt kommer etter den generelle (samme spesifisitet)');
+});
