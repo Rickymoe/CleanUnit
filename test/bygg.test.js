@@ -1185,3 +1185,17 @@ test('Toppmeny: Kontakt-knappen er bare synlig i mobilvisning (≤ 62rem), menyv
   assert.match(mobil, /\.side-nav__meny li:has\(> a\[href="#kontakt"\]\) \{ display: none; \}/, 'menyvalget Kontakt skjules når knappen vises');
   assert.match(les('js/main.js'), /querySelector\('\.side-nav__kontakt'\)\?\.addEventListener\('click', \(\) => sett\(false\)\)/, 'knappen lukker menyen');
 });
+
+test('Varebil: bakskjermen er reparert av verktoy/varebil-bakskjerm.py, og rasteret i varebil-hero.svg er fortsatt et 347×145 WebP', () => {
+  assert.ok(existsSync('verktoy/varebil-bakskjerm.py'), 'verktøyet som reparerer bakskjermen mangler');
+  const svg = les('bilder/varebil-hero.svg');
+  const m = svg.match(/<image[^>]*href="data:image\/webp;base64,([^"]+)"/);
+  assert.ok(m, 'rasteret skal være et innebygd WebP');
+  const webp = Buffer.from(m[1], 'base64');
+  assert.equal(webp.toString('ascii', 0, 4), 'RIFF');
+  assert.equal(webp.toString('ascii', 8, 12), 'WEBP');
+  // VP8X-hode (alfa): bredde og høyde minus 1 som 24 bit fra byte 24 og 27
+  assert.equal(webp.toString('ascii', 12, 16), 'VP8X', 'alfa krever VP8X');
+  assert.equal(webp.readUIntLE(24, 3) + 1, 347, 'rasterbredden');
+  assert.equal(webp.readUIntLE(27, 3) + 1, 145, 'rasterhøyden');
+});
