@@ -922,13 +922,14 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .side-nav__logo svg { display: block; width: 2.6rem; height: 2.6rem; }
 .side-nav__bryter { display: none; }
 /* «Kontakt» er en knapp med burgunder kant og skrift (Ricky 2026-10-08, 8,7:1 mot hvit), ikke et menyvalg. Det er to lenker til #kontakt,
-   én per visning, så rekkefølgen i markupen og tabrekkefølgen følger det man ser: --desktop står helt til høyre etter menyen, --mobil
+   én per visning, så rekkefølgen i markupen og tabrekkefølgen følger det man ser: --desktop står rett etter «Miljø» i menyen (Ricky 2026-10-08), --mobil
    står i raden mellom logoen og hamburgeren (se mobilreglene under). Den som ikke hører til visningen er display: none, så skjermlesere
    ikke får to. Marit ba tidligere (c681cc1) om menyvalg i stedet for knapp; Ricky valgte likevel knapp på begge. */
 .side-nav__kontakt { border-color: var(--burgunder); color: var(--burgunder); flex: none; }
 .side-nav__kontakt--mobil { display: none; }
+.side-nav__kontakt--desktop { margin-right: auto; } /* står rett etter «Miljø» i menyen; margen skyver «Stavanger ↗» helt til høyre */
 .side-nav__meny { display: flex; align-items: center; gap: var(--s-4); flex: 1; min-width: 0; }
-.side-nav__meny ul { list-style: none; margin: 0 auto 0 var(--s-3); padding: 0; display: flex; gap: var(--s-1); flex-wrap: wrap; }
+.side-nav__meny ul { list-style: none; margin: 0 0 0 var(--s-3); padding: 0; display: flex; gap: var(--s-1); flex-wrap: wrap; }
 .side-nav__lenke {
   display: block; padding: .6rem .75rem; border-radius: 8px; color: var(--tekst);
   font: 600 var(--t-sm)/1.2 var(--sans); text-decoration: none;

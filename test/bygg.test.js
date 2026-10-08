@@ -168,7 +168,7 @@ test('Toppmeny: ekte lenker til de fire undersidene, aria-current på gjeldende 
     assert.equal((nav.match(/<a class="side-nav__kontakt side-nav__kontakt--mobil knapp knapp--omriss" href="#kontakt">Kontakt<\/a>/g) || []).length, 1, `${s.fil}: én mobilknapp`);
     assert.equal((nav.match(/<a class="side-nav__kontakt side-nav__kontakt--desktop knapp knapp--omriss" href="#kontakt">Kontakt<\/a>/g) || []).length, 1, `${s.fil}: én desktopknapp`);
     assert.ok(nav.indexOf('side-nav__kontakt--mobil') < nav.indexOf('side-nav__bryter'), `${s.fil}: mobilknappen står før hamburgeren i tabrekkefølgen`);
-    assert.ok(nav.indexOf('side-nav__kontakt--desktop') > nav.indexOf('</nav>'), `${s.fil}: desktopknappen står etter menyen (helt til høyre)`);
+    assert.ok(nav.indexOf('side-nav__kontakt--desktop') > nav.indexOf('</ul>') && nav.indexOf('side-nav__kontakt--desktop') < nav.indexOf('side-nav__by'), `${s.fil}: desktopknappen står rett etter menylista (etter Miljø), før «Stavanger ↗»`);
     assert.ok(!/<li><a class="side-nav__lenke" href="#kontakt"/.test(nav), `${s.fil}: Kontakt er ikke lenger et menyvalg`);
   }
 });
@@ -1176,10 +1176,12 @@ test('Stavanger-bybildet er Oslo-scenen med mer burgunder: samme mål, logoen p�
   }
 });
 
-test('Toppmeny: Kontakt er en burgunder knapp, desktopknappen helt til høyre og mobilknappen ved hamburgeren (≤ 62rem), den ene skjult når den andre vises', () => {
+test('Toppmeny: Kontakt er en burgunder knapp, desktopknappen rett etter Miljø og mobilknappen ved hamburgeren (≤ 62rem), den ene skjult når den andre vises', () => {
   const css = les('css/style.css');
   assert.match(css, /\n\.side-nav__kontakt \{ border-color: var\(--burgunder\); color: var\(--burgunder\); flex: none; \}/, 'burgunder kant og skrift på begge');
   assert.match(css, /\n\.side-nav__kontakt--mobil \{ display: none; \}/, 'mobilknappen er skjult på desktop');
+  assert.match(css, /\n\.side-nav__kontakt--desktop \{ margin-right: auto; \}/, 'desktopknappen skyver «Stavanger ↗» til høyre');
+  assert.match(css, /\.side-nav__meny ul \{ list-style: none; margin: 0 0 0 var\(--s-3\);/, 'menylista skal ikke lenger ta all ledig plass (margin-right: auto er flyttet til knappen)');
   const mobil = css.slice(css.indexOf('@media (max-width: 62rem) {\n  .side-nav__rad'));
   assert.match(mobil, /\.side-nav__kontakt--mobil \{ display: inline-flex; order: 2; margin-left: auto; min-height: 44px;/, 'mobilknappen: synlig, 44 px, til høyre');
   assert.match(mobil, /\.side-nav__kontakt--desktop \{ display: none; \}/, 'desktopknappen skjules på mobil');
