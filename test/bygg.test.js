@@ -638,7 +638,7 @@ test('Forsiden: rekkefølge derfor → tjenester → kunder → kontakt, og kund
     assert.ok(pos.every((p, i) => p > -1 && (i === 0 || p > pos[i - 1])), `${by}: rekkefølgen ${pos}`);
   }
   const css = les('css/style.css');
-  assert.match(css, /\.stopp--kunder \{ padding-block: var\(--s-8\); background: var\(--base\); \}/);
+  assert.match(css, /\.stopp--kunder \{ padding-block: var\(--seksjon-y\); background: var\(--base\); \}/);
   assert.match(css, /\.kunde-rad \{[^}]*background: var\(--flate\)/, 'logoene har hvit bakgrunn i filene: raden må ha hvitt kort');
   assert.match(css, /\.kunde-rad img \{[^}]*object-fit: contain/);
   assert.match(css, /\.tekst-lenke \{[^}]*min-height: 2\.75rem/, '44 px trykkflate');
@@ -930,7 +930,7 @@ test('Kontakt-kortet: rekkefølgen er kontor, personer, knapper, lenke til den a
 test('Kontakt-kortet: e-postlenkene har samme stil som telefonlenkene og 44 px trykkflate på touch, og kan brytes', () => {
   const css = les('css/style.css');
   assert.match(css, /\.kontakt__personer a \{ color: var\(--teal-mork\)/);
-  assert.match(css, /@media \(pointer: coarse\) \{ \.kontakt__personer li > div a \{[^}]*padding-block: \.7rem/);
+  assert.match(css, /@media \(pointer: coarse\) \{ \.kontakt__personer li > div a \{[^}]*min-height: 44px/);
   assert.match(css, /\.kontakt__personer li > div a \{ overflow-wrap: anywhere; \}/);
 });
 
@@ -1039,3 +1039,40 @@ test('«Derfor»-kortene har hover-løft som de andre kortene: kun med mus, ikke
   assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{\s*\.derfor-kort, \.derfor-kort__ikon \{ transition: none; \}\s*\.derfor-kort:hover, \.derfor-kort:hover \.derfor-kort__ikon \{ transform: none; \}/, 'slått av ved redusert bevegelse');
 });
 
+
+// Kontakt-revisjon 2026-10-08 (funn 1, 5, 6, 7).
+const regelBlokk = (css, velger) => { const i = css.indexOf(velger); return i < 0 ? '' : css.slice(i, css.indexOf('}', i) + 1); };
+const mediaBlokk = (css, start) => { const i = css.indexOf(start); return i < 0 ? '' : css.slice(i, css.indexOf('}', css.indexOf('}', i) + 1) + 1); };
+
+test('Kontakt: person-lenkene har 44 px trykkflate på touch uten negativ marg, og er kompakte med mus', () => {
+  const css = les('css/style.css');
+  const touch = mediaBlokk(css, '@media (pointer: coarse) { .kontakt__personer');
+  assert.match(touch, /min-height: 44px/);
+  assert.match(touch, /display: inline-flex/);
+  assert.doesNotMatch(touch, /margin/, 'ingen (negativ) marg: telefon og e-post skal ikke overlappe');
+  assert.doesNotMatch(regelBlokk(css, '.kontakt__personer li > div a {'), /min-height|margin/, 'uten touch er lenkene kompakte');
+});
+
+test('Kontakt: Oslos to personer står side om side fra 48rem, Stavanger har én rad som ikke strekkes', () => {
+  const css = les('css/style.css');
+  assert.match(css, /@media \(min-width: 48rem\) \{ \.kontakt__personer \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); column-gap: var\(--s-5\); \} \}/);
+  assert.doesNotMatch(regelBlokk(css, '.kontakt__personer {'), /grid-template-columns/, 'under 48rem stablet');
+  const kontakt = les('deler/kontakt.html');
+  const oslo = kontakt.slice(kontakt.indexOf('<ul class="kontakt__personer">'), kontakt.indexOf('</ul>'));
+  const del = (s, a, b) => s.slice(s.indexOf(a), s.indexOf(b));
+  assert.equal((del(oslo, '{{#er_oslo}}', '{{^er_oslo}}').match(/<li>/g) || []).length, 2, 'Oslo: to rader');
+  assert.equal((oslo.slice(oslo.indexOf('{{^er_oslo}}')).match(/<li>/g) || []).length, 1, 'Stavanger: én rad');
+});
+
+test('Kontakt: «Gå til Clean Unit …»-lenka er bare så bred som teksten', () => {
+  assert.match(regelBlokk(les('css/style.css'), '.kontakt__bylenke {'), /justify-self: start/);
+});
+
+test('CSS: Kunder bruker samme seksjons-padding som de andre seksjonene, og .knapp--fyll er borte', () => {
+  const css = les('css/style.css');
+  const pad = (v) => (regelBlokk(css, v).match(/padding-block: ([^;]+);/) || [])[1];
+  for (const v of ['.stopp--tjenester {', '.stopp--om {', '.stopp--jobb {', '.stopp--kontakt {']) assert.equal(pad(v), 'var(--seksjon-y)', v);
+  assert.equal(pad('.stopp--kunder {'), pad('.stopp--kontakt {'));
+  assert.doesNotMatch(css, /knapp--fyll/);
+  assert.doesNotMatch(css, /brukes ikke på nettsiden/, 'burgunder-kommentaren er ikke utdatert');
+});

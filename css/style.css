@@ -6,7 +6,7 @@
        Mørk grønn   PMS 327U          CMYK 90,5,45,0     #008789
        Mellomgrønn  PMS 7472U         CMYK 45,3,20,0     #87CAC9
        Lys grønn    PMS 7472U 50 %    CMYK 27,2,13,0     #AED1D1
-       Burgunder    RGB 117,53,93                         #75355D   (i Marits palett, men brukes ikke på nettsiden)
+       Burgunder    RGB 117,53,93                         #75355D   (i Marits palett; brukes i initialsirklene, P-skiltet, aktiv sti-node og de to Derfor-symbolene)
      Disse fem er merkefargene og brukes slik de er til flater, ikon og stor grafikk.
      Under dem ligger tre AVLEDEDE verdier som er mørkere enn merkefargen, fordi tekst og
      knapper må ha 4,5:1 (merkegrønn #008789 gir 4,35:1 mot hvit, #87CAC9 og #AED1D1 under
@@ -83,10 +83,8 @@ a { color: inherit; }
   font: 700 var(--t-sm)/1 var(--sans); padding: 13px 20px; border-radius: 999px;
   border: 2px solid var(--teal); text-decoration: none; transition: background-color .2s, color .2s, transform .2s;
 }
-.knapp--fyll { background: var(--teal); color: #fff; }
 .knapp--omriss { background: #fff; color: var(--teal); } /* Marit 2026-10-08: begge kontaktknappene grønn ramme, hvit bunn, grønn skrift (5,2:1) */
 @media (hover: hover) {
-  .knapp--fyll:hover { background: var(--teal-mork); border-color: var(--teal-mork); }
   .knapp--omriss:hover { background: var(--teal-lys); }
   /* :not(:disabled) fordi en låst <button class="knapp"> ellers løfter seg
      under pekeren som om den var klikkbar. <a class="knapp"> rammes ikke. */
@@ -886,7 +884,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
    en klasse, så rekkefølgen avgjør. */
 .stopp--kontakt { padding-block: var(--seksjon-y); background: var(--teal-lys); }
 .kontakt-layout { margin-top: var(--s-5); max-width: 40rem; }
-/* Øverst i kortet: ring/e-post som knapper, samme par og mål som .hero__knapper, men venstrejustert
+/* Nederst i kortet (etter personene, før lenka til den andre byen): ring/e-post som knapper, samme par og mål som .hero__knapper, men venstrejustert
    fordi kortets tekst er venstrejustert. Ingen egen boks: knappene står rett på det hvite kortet. */
 .kontakt__knapper { display: flex; gap: var(--s-3); flex-wrap: wrap; }
 .kontakt__knapper .knapp { min-height: 44px; justify-content: center; }
@@ -909,7 +907,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .kontakt__orgnr { color: var(--tekst-svak); } /* opacity .8 ga 3,25:1 mot --teal-lys */
 .kontakt__knapper { display: flex; flex-wrap: wrap; gap: var(--s-3); }
 .kontakt__bylenke {
-  display: inline-block; margin-top: 0; padding-block: .6rem; /* 44 px trykkflate */
+  display: inline-block; justify-self: start; margin-top: 0; padding-block: .6rem; /* 44 px trykkflate, bare så bred som teksten */
   color: var(--teal-mork); font-weight: 600; text-decoration: underline;
   text-underline-offset: .2em;
 }
@@ -921,9 +919,13 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .kontakt__personer li > div { display: grid; gap: .1rem; min-width: 0; }
 .kontakt__personer strong { color: var(--tekst); font-size: var(--t-base); }
 .kontakt__personer a { color: var(--teal-mork); text-underline-offset: 3px; }
-/* Telefon og e-post er begge lenker i personraden: lik størrelse, 44 px trykkflate på touch uten å flytte raden, lange adresser får bryte. */
+/* Telefon og e-post er begge lenker i personraden: lik størrelse, lange adresser får bryte.
+   På touch får hver lenke en egen 44 px høy trykkflate (ingen negativ marg, så telefon og e-post aldri overlapper);
+   med mus er de kompakte som før. */
 .kontakt__personer li > div a { overflow-wrap: anywhere; }
-@media (pointer: coarse) { .kontakt__personer li > div a { display: inline-block; padding-block: .7rem; margin-block: -.7rem; } }
+@media (pointer: coarse) { .kontakt__personer li > div a { display: inline-flex; align-items: center; justify-self: start; min-height: 44px; } }
+/* Fra 48rem står de to personene i Oslo side om side (like kolonner); Stavanger har én og beholder den til venstre. */
+@media (min-width: 48rem) { .kontakt__personer { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-5); } }
 
 /* Må ligge sist: samme spesifisitet som en klasse, så rekkefølgen avgjør. */
 [hidden] { display: none; }
@@ -1255,7 +1257,7 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
    noe element som skal festes i bunnen, og lenken trenger avstanden sin selv. `+` holder regelen
    låst til lenken som følger tjeneste-griden på forsiden — undersidene har ingen .tekst-lenke. */
 .tjeneste-grid + .tekst-lenke { margin-top: var(--s-5); }
-.stopp--kunder { padding-block: var(--s-8); background: var(--base); }
+.stopp--kunder { padding-block: var(--seksjon-y); background: var(--base); }
 .stopp--kunder h2 { font-size: var(--t-lg); }
 /* Logofilene har hvit bakgrunn: rett på --base ville de blitt hvite rektangler. Derfor ett hvitt kort. */
 .kunde-rad {
