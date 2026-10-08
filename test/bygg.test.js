@@ -917,7 +917,7 @@ test('Kontakt-kortet: e-post kun post@ i knappen og personenes egne adresser und
 test('Kontakt: «Ta kontakt»-boksen står først i markupen (øverst på mobil); kortet har kontor, personer, lenke til den andre byen; adressene står bare i byer.json', () => {
   for (const s of alleSider()) {
     const k = kontaktKort(s.fil);
-    const pos = ['kontakt__handling', 'kontakt__info', 'kontakt__kontorer', 'kontakt__personer', 'kontakt__bylenke'].map((x) => k.indexOf(`class="${x}`));
+    const pos = ['kontakt__handling', 'kontakt__info', 'kontakt__kontorer', 'kontakt__alternativ', 'kontakt__personer', 'kontakt__bylenke'].map((x) => k.indexOf(`class="${x}`));
     assert.ok(pos.every((p) => p >= 0), `${s.fil}: en del mangler ${pos}`);
     assert.deepEqual([...pos].sort((a, b) => a - b), pos, `${s.fil}: boksen først, så kortet (kontor, personer, bylenke)`);
     assert.ok(k.indexOf('kontakt__knapper') > k.indexOf('class="kontakt__handling') && k.indexOf('kontakt__knapper') < k.indexOf('class="kontakt__info'), `${s.fil}: knappene ligger i boksen, utenfor kortet`);
@@ -1081,10 +1081,20 @@ test('CSS: Kunder bruker samme seksjons-padding som de andre seksjonene', () => 
   assert.doesNotMatch(css, /brukes ikke på nettsiden/, 'burgunder-kommentaren er ikke utdatert');
 });
 
-test('CSS: «Ta kontakt»-boksen ligger til høyre for kortet fra 64rem (grid-områder), knappene er stablet og like brede', () => {
+test('CSS: «Ta kontakt»-boksen ligger til venstre for kortet fra 64rem (grid-områder), knappene er stablet og like brede', () => {
   const css = les('css/style.css');
-  assert.match(css, /@media \(min-width: 64rem\) \{\s*\.kontakt-layout \{[^}]*grid-template-areas: "info handling"/, 'to områder fra 64rem');
+  assert.match(css, /@media \(min-width: 64rem\) \{\s*\.kontakt-layout \{[^}]*grid-template-areas: "handling info"/, 'boksen til venstre, kortet til høyre fra 64rem');
   assert.match(css, /\.kontakt__handling \{ grid-area: handling; \}/);
   assert.match(css, /\.kontakt__knapper \{ display: flex; flex-direction: column; align-items: stretch;/, 'stablet og like brede');
   assert.doesNotMatch(css, /\.kontakt__(info|handling)[^{]*\{[^}]*[^-]order:/, 'ingen order-triks: markup-rekkefølgen er lese- og tabrekkefølgen');
+});
+
+test('Kontakt: personene står under overskriften «Eller kontakt direkte», delelinja ligger på gruppen og ikke på lista', () => {
+  for (const s of alleSider()) {
+    const k = kontaktKort(s.fil);
+    assert.match(k, /<div class="kontakt__alternativ">\s*<h4>Eller kontakt direkte<\/h4>\s*<ul class="kontakt__personer">/, `${s.fil}: overskrift rett over personlista`);
+  }
+  const css = les('css/style.css');
+  assert.match(css, /\.kontakt__alternativ \{ border-top: 1px solid var\(--gronn-mellom\);/, 'delelinja på gruppen');
+  assert.doesNotMatch(css, /\.kontakt__personer \{[^}]*border-top/, 'ikke dobbel delelinje');
 });

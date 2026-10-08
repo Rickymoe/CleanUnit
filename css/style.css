@@ -889,14 +889,14 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .stopp--kontakt { padding-block: var(--seksjon-y); background: var(--teal-lys); }
 .kontakt-layout { margin-top: var(--s-5); max-width: 40rem; display: grid; gap: var(--s-5); }
 /* «Ta kontakt»-boksen (Ricky 2026-10-08): ring/e-post som egen hvit boks. Står først i markupen, så den ligger øverst på mobil;
-   fra 64rem (1024 px) flyttes den til høyre for kortet med grid-områder (kortet 40rem, boksen opptil 22rem). Smalere står den øverst, for ved 768 px ble kortet
+   fra 64rem (1024 px) står den til VENSTRE for kortet (hovedveien først, Ricky 2026-10-08) med grid-områder (boksen opptil 22rem, kortet 40rem). Smalere står den øverst, for ved 768 px ble kortet
    341 px bredt, med navn og e-post som brøt midt i ordet. Knappene er alltid stablet og like brede. */
 .kontakt__handling { background: var(--flate); border-radius: var(--radius); padding: var(--s-5); box-shadow: 0 1px 3px rgba(0, 89, 91, .08); display: grid; gap: var(--s-4); align-content: start; }
 .kontakt__handling h3 { color: var(--teal-mork); font-size: var(--t-lg); }
 .kontakt__knapper { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-3); }
 .kontakt__knapper .knapp { min-height: 44px; justify-content: center; }
 @media (min-width: 64rem) {
-  .kontakt-layout { max-width: none; grid-template-columns: minmax(0, 40rem) minmax(0, 22rem); grid-template-areas: "info handling"; align-items: start; column-gap: var(--s-5); }
+  .kontakt-layout { max-width: none; grid-template-columns: minmax(0, 22rem) minmax(0, 40rem); grid-template-areas: "handling info"; align-items: start; column-gap: var(--s-5); }
   .kontakt__info { grid-area: info; }
   .kontakt__handling { grid-area: handling; }
 }
@@ -920,7 +920,10 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   text-underline-offset: .2em;
 }
 @media (hover: hover) { .kontakt__bylenke:hover { text-decoration-thickness: 2px; } }
-.kontakt__personer { list-style: none; margin: 0; padding: var(--s-4) 0 0; border-top: 1px solid var(--gronn-mellom); display: grid; gap: var(--s-3); font-size: var(--t-sm); color: var(--tekst-svak); }
+.kontakt__personer { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); font-size: var(--t-sm); color: var(--tekst-svak); }
+/* Personene er den direkte veien (alternativet til «Ta kontakt»-boksen): egen overskrift under delelinja. */
+.kontakt__alternativ { border-top: 1px solid var(--gronn-mellom); padding-top: var(--s-4); display: grid; gap: var(--s-3); }
+.kontakt__alternativ h4 { margin: 0; color: var(--tekst-svak); font-size: var(--t-sm); font-weight: 600; }
 /* Personene som små rader med burgunder initialsirkel (samme .team-initialer som i «Om oss», bare mindre): navn, rolle, telefon. */
 .kontakt__personer li { display: flex; align-items: center; gap: var(--s-3); }
 .kontakt__personer .team-initialer { width: 2.75rem; height: 2.75rem; font-size: var(--t-sm); }

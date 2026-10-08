@@ -1,6 +1,7 @@
 <!-- KONTAKT. Tilbudsskjemaet er fjernet på kundens ønske: kunden ønsker e-post og telefon i stedet.
      «Ta kontakt»-boksen med de to knappene («Ring oss», «Send e-post») står FØRST i markupen: på mobil øverst over kortet, fra 64rem
-     til høyre for det (CSS-grid, Ricky 2026-10-08). Kortet med kontor, personer og lenke til den andre byen kommer etterpå.
+     til VENSTRE for det (CSS-grid, Ricky 2026-10-08: hovedveien først, alternativet etterpå). Kortet med kontor, «Eller kontakt direkte» (personene)
+     og lenke til den andre byen kommer etterpå.
      Kontaktadressene kommer fra byer.json (felles.kontakt_epost, byens telefon), så de byttes ett sted. -->
 <section class="stopp--kontakt" id="kontakt">
   <div class="wrap">
@@ -36,6 +37,8 @@
             <p class="kontakt__orgnr">Org.nr 929 085 019</p>
           </div>{{/er_oslo}}
         </div>
+        <div class="kontakt__alternativ">
+          <h4>Eller kontakt direkte</h4>
         <ul class="kontakt__personer">
           {{#er_oslo}}<li>
             <span class="team-initialer" aria-hidden="true">MB</span>
@@ -49,6 +52,7 @@
             <div><strong>Thord Hegre</strong><span>Daglig leder</span><a href="tel:+4790065009">900 65 009</a><a href="mailto:{{epost_thord}}">{{epost_thord}}</a></div>
           </li>{{/er_oslo}}
         </ul>
+        </div>
         <a class="kontakt__bylenke" href="{{andre_by_hjem}}">Gå til Clean Unit {{andre_by_navn}} →</a>
       </div>
     </div>
