@@ -37,22 +37,6 @@
      bevisst mørkere enn merkets #B6B6B6 for å leses; 3,05:1 mot hvit). De gamle
      --logo-gra, --logo-turkis-* og --logo-tekst-* hørte til tekst-ordmerket og er fjernet. */
   --logo-tagline-gra: #666666; /* 5,3:1 mot --base — grunnfargen i taglinen, så «Renhold»-tenningen (--teal) er tydelig */
-  /* Glansen (Ricky 2026-09-30: «jeg savner noe glossy på siden»). Glans er
-     tolket som BEVIS og ikke som pynt: de tre behandlingene under legger
-     lys på flater som allerede finnes — vindusglasset på tjenestekortet
-     (.kort--vindu); speilbildet av varebilen i bakken gikk ut med den gamle heroen.
-     Ingen nye flater, ingen
-     nye farger utenfor paletten: alt er hvitt lys med varierende styrke.
-     Alle tallene står her så de kan justeres på ett sted. Verdiene er valgt
-     av Ricky i lab-glans.html (et kast-av-dokument, ikke i repoet). */
-  --glans-v: 115deg;         /* refleksens vinkel på vindusglasset */
-  --glans-b: 30%;            /* det brede båndets halve bredde */
-  --glans-bred: .28;         /* styrken på det brede båndet */
-  --glans-skarp: .5;         /* styrken på den skarpe kanten inne i refleksen */
-  --glans-topp: .45;         /* lyset som faller ned fra overkanten av ruta */
-  --glans-speil: .45;        /* speilbildet av bilen i bakken */
-  --glans-speil-fade: 60%;   /* hvor langt ned speilbildet rekker før det dør */
-  --glans-speil-blur: 1px;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; overflow-x: clip; background: var(--base); }
@@ -342,40 +326,8 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
       0 12px 24px -12px rgba(0, 89, 91, .35);
   }
 }
-/* Refleks i vindusglasset på «Vinduspuss» (Ricky 2026-09-30).
-   Kortet har allerede en vindusramme (inset 8,5 px), så glansen er ikke et
-   nytt lag utenpå kortet — den ligger INNI ruta. Innrykket og radien er
-   derfor ikke valgt fritt: 8,5 px er den innerste rammelinja, og 5,5 px er
-   kortets egen --radius (14 px) minus innrykket, altså den radien ruta
-   faktisk har akkurat der. Flyttes rammen, må disse følge.
-   Lyset er tre lineære gradienter og ikke én: en svak lysning som faller ned
-   fra overkanten, ett bredt og mykt bånd, og ett smalt og skarpt bånd
-   forskjøvet inni det brede. Med bare det brede båndet (målt i laben, 34 %
-   halvbredde) dekket refleksen over to tredeler av ruta og leste som dugg,
-   ikke som glass.
-   Den ligger på ::before og ikke ::after fordi et posisjonert pseudo-element
-   males OVER statisk innhold i samme element: en «::after» la seg oppå ordet
-   «Vinduspuss» og vasket ut teksten (sett på skjermbilde i laben). Innholdet
-   løftes derfor under (innholdet får position:relative og z-index:1).
-   Kontrast: hvit glans under mørk tekst kan bare øke kontrasten, og glansen
-   legger ingen ny flate under noen av tegnene. */
-.kort--vindu::before {
-  content: ""; position: absolute; inset: 8.5px; border-radius: 5.5px;
-  pointer-events: none;
-  background:
-    linear-gradient(to bottom, rgb(255 255 255 / var(--glans-topp)) 0, transparent 16%),
-    linear-gradient(var(--glans-v),
-      transparent calc(50% + var(--glans-b) * .45),
-      rgb(255 255 255 / var(--glans-skarp)) calc(50% + var(--glans-b) * .62),
-      transparent calc(50% + var(--glans-b) * .78)),
-    linear-gradient(var(--glans-v),
-      transparent calc(50% - var(--glans-b)),
-      rgb(255 255 255 / var(--glans-bred)) 50%,
-      transparent calc(50% + var(--glans-b)));
-}
-.kort--vindu > picture,
-.kort--vindu > h3,
-.kort--vindu > p { position: relative; z-index: 1; }
+/* Refleksen i vindusglasset er fjernet 2026-10-08 (Ricky: det lyse, semi-hvite feltet over høyre halvdel av kortet virket
+   som en feil og blekte teksten). Kortet beholder vindusrammen over. */
 
 /* Tørkesveipet (glasset tørkes over én gang når kortet kom i bilde) er fjernet 2026-10-08 (Ricky: det hvite båndet lå over
    teksten og så ut som en feil). Den stille refleksen over står igjen alene. */

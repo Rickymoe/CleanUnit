@@ -317,30 +317,15 @@ test('Varebil: logoen står lavere (68 %), og varebil-hero.svg beholder størrel
   assert.equal(raster.readUIntLE(27, 3) + 1, 145, 'rasterhøyden');
 });
 
-// Glansen (Ricky 2026-09-30). Tre behandlinger som alle legger hvitt lys på
-// flater som allerede finnes — se --glans-*-tokensene i css/style.css. Testen
-// finnes fordi ingen av dem har innhold å telle: forsvinner en av dem, feiler
-// ingenting, siden ser bare annerledes ut. Det er samme stillhet som gjorde at
-// de døde sti-lenkene kunne ligge uoppdaget i fire dager.
-test('Glans: vindusglasset finnes i CSS-en (speilet i bakken gikk ut med den gamle heroen)', () => {
-  const css = les('css/style.css');
-  // Vindusglasset: refleksen ligger inni kortets egen ramme (8,5 px), så den
-  // måler seg etter rammen og ikke etter kortet. Innholdet må være løftet over
-  // den — ellers maler det posisjonerte pseudo-elementet oppå teksten, som var
-  // den dyreste feilen i laben («Vinduspuss» ble vasket ut).
-  assert.match(css, /\.kort--vindu::before \{/, 'refleksen i vindusglasset mangler');
-  assert.match(css, /\.kort--vindu > picture,[\s\S]*?z-index: 1; \}/,
-    'innholdet på vinduskortet løftes ikke over refleksen');
-  assert.match(css, /inset: 8\.5px; border-radius: 5\.5px/,
-    'glansen følger ikke vindusrammen (8,5 px innrykk, 5,5 px radius)');
-});
-
-test('Glans: Vindusvask-kortet har den stille refleksen, men ikke tørkesveipet (fjernet 2026-10-08)', () => {
+// Glansen (Ricky 2026-09-30) er fjernet igjen 2026-10-08: først tørkesveipet, så selve refleksen i vindusglasset.
+// Testen under holder at ingen av delene kommer tilbake ubemerket.
+test('Vindusvask-kortet har vindusrammen, men ingen glans: hverken refleks (::before) eller tørkesveip (fjernet 2026-10-08)', () => {
   const css = les('css/style.css');
   const js = les('js/main.js');
-  assert.match(css, /\.kort--vindu::before \{/, 'den stille refleksen skal bli stående');
-  assert.doesNotMatch(css, /glans-sveip|glans-tork|\.kort--vindu::after/, 'tørkesveipet er fjernet fra CSS');
-  assert.doesNotMatch(js, /glansSveip|glans-sveip/, 'tørkesveipet er fjernet fra JS');
+  assert.match(css, /\.kort--vindu \{\s*box-shadow:\s*inset 0 0 0 2px var\(--teal\)/, 'vindusrammen skal bli stående');
+  assert.doesNotMatch(css, /\.kort--vindu::(before|after)|glans-sveip|glans-tork|--glans-/, 'ingen refleks, sveip eller glans-tokens i CSS');
+  assert.doesNotMatch(css, /\.kort--vindu > (picture|h3|p)/, 'innholdet trenger ikke løftes over en refleks som ikke finnes');
+  assert.doesNotMatch(js, /glansSveip|glans-sveip/, 'ingen glans i JS');
 });
 
 // Veinett-teppet (dekning-nett) lever bare i footeren, og det gamle navngitte Oslo-kartet med
