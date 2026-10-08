@@ -935,7 +935,7 @@ test('Kontakt-kortet: e-postlenkene har samme stil som telefonlenkene og 44 px t
   assert.match(css, /\.kontakt__personer li > div a \{ overflow-wrap: anywhere; \}/);
 });
 
-test('Kontakt: «Ta kontakt»-boksen har to knapper, fylt «Ring oss – <telefon>» og omriss «Send e-post», og står før kortet', () => {
+test('Kontakt: «Ta kontakt»-boksen har to like omrissknapper, «Ring oss – <telefon>» og «Send e-post», og står før kortet', () => {
   for (const s of alleSider()) {
     const k = les(s.fil).match(/<section class="stopp--kontakt"[\s\S]*?<\/section>/)[0];
     const tlf = s.by === 'Oslo' ? '21 55 56 80' : '900 65 009';
@@ -947,7 +947,7 @@ test('Kontakt: «Ta kontakt»-boksen har to knapper, fylt «Ring oss – <telefo
     assert.ok(k.indexOf('kontakt__knapper') < k.indexOf('kontakt__personer'), `${s.fil}: knappene står før personene i markupen (øverst på mobil)`);
     const lenker = [...rad[1].matchAll(/<a ([^>]*)>([^<]*)<\/a>/g)].map((m) => [m[1].trim(), m[2]]);
     assert.deepEqual(lenker, [
-      [`class="knapp knapp--fyll" href="tel:${tlfHref}"`, `Ring oss – ${tlf}`],
+      [`class="knapp knapp--omriss" href="tel:${tlfHref}"`, `Ring oss – ${tlf}`],
       ['class="knapp knapp--omriss" href="mailto:post@cleanunit.no"', 'Send e-post'],
     ], `${s.fil}: knappene i Kontakt-kortet`);
     assert.doesNotMatch(k, /Kontakt oss på/, `${s.fil}: den gamle tekstlinja`);
@@ -1024,17 +1024,17 @@ test('Stavanger-lederen heter Thord Hegre, daglig leder (Enhetsregisteret), aldr
   assert.match(les(sideFil('Stavanger', 'om_oss')), /<h4>Thord Hegre<\/h4>\s*<p class="team-rolle">Daglig leder<\/p>/, 'Om oss-kortet');
 });
 
-test('CSS: heroens to knapper er omriss (grønn ramme, hvit bunn, grønn skrift); i Kontakt-kortet er «Ring oss» fylt og «Send e-post» omriss', () => {
+test('CSS: heroens og «Ta kontakt»-boksens to knapper er like: omriss med grønn ramme, hvit bunn og grønn skrift', () => {
   const css = les('css/style.css');
   assert.match(css, /\.knapp \{[^}]*border: 2px solid var\(--teal\);/, 'grønn ramme');
   assert.match(css, /\n\.knapp--omriss \{ background: #fff; color: var\(--teal\); \}/, 'hvit bunn, grønn skrift');
   assert.doesNotMatch(css, /\.knapp--omriss:hover \{[^}]*color: #fff/, 'hover skal ikke bli hvit skrift');
-  assert.doesNotMatch(les('sider/forside.html'), /knapp--fyll/, 'heroen: ingen fylt knapp (Marit ba om to omrissknapper)');
   const k = les('deler/kontakt.html');
-  assert.equal((k.match(/knapp--fyll/g) || []).length, 1, 'Kontakt-kortet: kun én fylt knapp («Ring oss»)');
-  assert.match(k, /class="knapp knapp--fyll" href="tel:/, 'den fylte er telefonknappen');
-  assert.match(k, /class="knapp knapp--omriss" href="mailto:/, 'e-postknappen er omriss');
-  assert.match(css, /\n\.knapp--fyll \{ background: var\(--teal\); color: #fff; \}/, 'fylt: grønn bunn, hvit skrift');
+  for (const f of ['sider/forside.html', 'deler/kontakt.html']) {
+    assert.doesNotMatch(les(f), /knapp--fyll/, `${f}: begge knappene er like (omriss), ingen fylt (Ricky 2026-10-08)`);
+  }
+  assert.doesNotMatch(css, /knapp--fyll/, 'ubrukt fylt-stil er fjernet');
+  assert.equal((k.match(/class="knapp knapp--omriss"/g) || []).length, 2, '«Ta kontakt»-boksen: to like omrissknapper');
 });
 
 test('«Derfor»-kortene har hover-løft som de andre kortene: kun med mus, ikke ved redusert bevegelse', () => {

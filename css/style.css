@@ -84,12 +84,8 @@ a { color: inherit; }
   border: 2px solid var(--teal); text-decoration: none; transition: background-color .2s, color .2s, transform .2s;
 }
 .knapp--omriss { background: #fff; color: var(--teal); } /* Marit 2026-10-08: begge kontaktknappene grønn ramme, hvit bunn, grønn skrift (5,2:1) */
-/* Kun «Ring oss» i Kontakt-kortet (Ricky 2026-10-08: knappene ble anonyme ved siden av personene): fylt primær, hvit skrift på --teal 5,15:1.
-   Heroen beholder Maritts to omrissknapper. */
-.knapp--fyll { background: var(--teal); color: #fff; }
 @media (hover: hover) {
   .knapp--omriss:hover { background: var(--teal-lys); }
-  .knapp--fyll:hover { background: var(--teal-mork); border-color: var(--teal-mork); }
   /* :not(:disabled) fordi en låst <button class="knapp"> ellers løfter seg
      under pekeren som om den var klikkbar. <a class="knapp"> rammes ikke. */
   .knapp:not(:disabled):hover { transform: translateY(-1px); }
