@@ -484,7 +484,8 @@ test('referanser/: Oslo har seks sitatkort (BSN, Dr. Brandt, Kanvas, KG, Medisti
     assert.match(h, /<div class="side-hode side-hode--ned-base">/, `${by}: hodet toner ned til --base`);
     assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Dette sier kundene våre</h2></div>'), by);
   }
-  assert.ok(les(sideFil('Oslo', 'referanser')).includes('rundt 100 kunder'), 'Oslo: ledeteksten');
+  assert.ok(les(sideFil('Oslo', 'referanser')).includes('over 100 kunder i Oslo og omegn'), 'Oslo: ledeteksten');
+  assert.ok(!les(sideFil('Oslo', 'referanser')).includes('rundt 100 kunder'), 'Oslo: det gamle tallet er borte');
   assert.ok(!les(sideFil('Stavanger', 'referanser')).includes('Boligstiftelsen Nydalen'), 'Stavanger: ingen Oslo-sitater');
 });
 test('Overskriften er Maritts «Renhold tilpasset deres arbeidssted» og den gamle teksten er borte overalt', () => {
@@ -534,7 +535,7 @@ test('miljo/: fire detaljkort på hvit flate (aldri himmel under himmel-hodet), 
     const h = les(sideFil(by, 'miljo'));
     assert.match(h, /<section class="stopp--tillit" id="miljo">/, by);
     assert.equal((h.match(/<article class="miljo-kort">/g) || []).length, 4, `${by}: antall miljø-kort`);
-    for (const t of ['Miljøfyrtårn siden 2011', 'Medlem av Virke og tariffbundet', 'Offentlig godkjent renholdsbedrift', 'Hvorfor vi velger bort underleverandører']) {
+    for (const t of ['Miljøfyrtårn siden 2011', 'Medlem av Virke og med tariffavtale', 'Offentlig godkjent renholdsbedrift', 'Hvorfor vi velger bort underleverandører']) {
       assert.ok(h.includes(`<h3>${t}</h3>`), `${by}: ${t}`);
     }
     assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Godkjent, ansvarlig og til stede</h2></div>'), by);
@@ -555,13 +556,13 @@ const VASK = {
   Oslo: {
     forside: ['Renhold tilpasset deres arbeidssted'], tjenester: ['Renhold tilpasset deres arbeidssted'],
     referanser: ['Dette sier kundene våre'],
-    om_oss: ['Fra to personer med hver sin mopp', 'Renholderne er de viktigste'],
+    om_oss: ['Fra to personer med hver sin mopp', 'Renholderne er våre viktigste medarbeidere'],
     miljo: ['Godkjent, ansvarlig og til stede'],
   },
   Stavanger: {
     forside: ['Renhold tilpasset deres arbeidssted'], tjenester: ['Renhold tilpasset deres arbeidssted'],
     referanser: ['Dette sier kundene våre'],
-    om_oss: ['To kontorer, samme standard', 'Renholderne er de viktigste'],
+    om_oss: ['To kontorer, samme standard', 'Renholderne er våre viktigste medarbeidere'],
     miljo: ['Godkjent, ansvarlig og til stede'],
   },
 };test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
@@ -852,7 +853,7 @@ test('Maritts innhold (Oppsett ny nettside) står på Oslo-siden: sju tjenester,
   }
   for (const t of ['BSN – Boligstiftelsen Nydalen', 'Dr. Brandt', 'Vilma', 'Marit Byfuglien', 'Mari Pedersen',
     'Guro Klingenberg Schei', 'Miljøfyrtårn siden 2011',
-    'Medlem av Virke og tariffbundet', 'Offentlig godkjent renholdsbedrift', 'Hvorfor vi velger bort underleverandører',
+    'Medlem av Virke og med tariffavtale', 'Offentlig godkjent renholdsbedrift', 'Hvorfor vi velger bort underleverandører',
     'Trenger dere en ny renholdsleverandør?']) {
     assert.ok(h.includes(t), `mangler «${t}»`);
   }
@@ -880,7 +881,7 @@ const synlig = (h) => h.replace(/<!--[\s\S]*?-->/g, '');
 test('Stavanger: ingen Oslo-tekster på noen av de fem sidene, men egne tekster og eget kontor', () => {
   const h = synlig(heleBy('Stavanger'));
   for (const t of ['Marit Byfuglien', 'Mari Pedersen', 'Guro Klingenberg', 'Boligstiftelsen Nydalen', 'Dr. Brandt', 'logo-pioner', 'logo-bsn',
-    'rundt 100 kunder', 'over 70 barnehager', 'Fra to personer med hver sin mopp', 'Trenger dere en ny renholdsleverandør?', '21 55 56 80', 'renhold@cleanunit.no']) {
+    'rundt 100 kunder', 'over 100 kunder i Oslo', 'over 70 barnehager', 'Flere av våre ansatte har jobbet i Clean Unit i over ti år', 'Fra to personer med hver sin mopp', 'Trenger dere en ny renholdsleverandør?', '21 55 56 80', 'renhold@cleanunit.no']) {
     assert.ok(!h.includes(t), `Oslo-teksten «${t}» lekker inn i Stavanger`);
   }
   for (const t of ['To kontorer, samme standard', 'Hva koster renhold for dere?', 'thord@cleanunit.no', '900 65 009', 'Thord Hegre']) {
@@ -1121,3 +1122,37 @@ test('Kontakt: begge kortene har et dekorativt ikon foran overskriften (alt tom,
   for (const f of ['ikon-ta-kontakt.svg', 'ikon-firma.svg']) assert.match(les(`bilder/${f}`), /fill="#75355D"/, `${f}: burgunder`);
   assert.match(les('css/style.css'), /\.kontakt__ikon \{[^}]*width: 2\.75rem; height: 2\.75rem;/, 'ikonet er 44 px, som initialsirklene');
 });
+
+// Tekstsjekk 1 (Marit, 2026-10-08): kommaet i «fast, daglig renhold» er fjernet overalt, den nye
+// Jobb hos oss-overskriften gjelder begge byer, og ansattsitatene (Vilma/Monika) er ikke rørt.
+test('Tekstsjekk: «fast, daglig renhold» (med komma) står ingen steder i kildene eller de bygde sidene', () => {
+  const kilder = [...['forside', 'tjenester', 'referanser', 'om-oss', 'miljo'].map((n) => `sider/${n}.html`), 'deler/kontakt.html', 'deler/layout.html', 'byer.json'];
+  for (const f of [...kilder, ...alleSider().map((x) => x.fil)]) assert.doesNotMatch(les(f), /fast, daglig/i, f);
+  assert.match(les('sider/tjenester.html'), /fast daglig renhold/);
+});
+test('Tekstsjekk: «Renholderne er våre viktigste medarbeidere» står på Om oss i begge byer, den gamle h2-en er borte', () => {
+  for (const by of ['Oslo', 'Stavanger']) {
+    const h = les(sideFil(by, 'om_oss'));
+    assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Renholderne er våre viktigste medarbeidere</h2></div>'), by);
+    assert.ok(!h.includes('Renholderne er de viktigste</h2>'), `${by}: gammel h2`);
+    assert.ok(h.includes('Det er renholderne som hver dag sørger for at kundene våre møter en ren arbeidsplass.'), `${by}: ny ingress`);
+  }
+});
+test('Tekstsjekk: ansattsitatene (Vilma, Monika) er uendret, Vilma bare i Oslo', () => {
+  const sitat = (by, navn) => {
+    const jobb = les(sideFil(by, 'om_oss'));
+    const i = jobb.indexOf(`<footer>— ${navn}</footer>`);
+    return i < 0 ? null : jobb.slice(jobb.lastIndexOf('<p>', i), i);
+  };
+  assert.ok(sitat('Oslo', 'Vilma').startsWith('<p>Jeg har jobbet i Clean Unit siden 2013. Dette er det første stedet'), 'Oslo: Vilma');
+  assert.equal(sitat('Stavanger', 'Vilma'), null, 'Stavanger: ingen Vilma');
+  for (const by of ['Oslo', 'Stavanger']) assert.ok(sitat(by, 'Monika').startsWith('<p>Mitt eventyr med Clean Unit begynte for 9 år siden.'), `${by}: Monika`);
+});
+test('Tekstsjekk: Oslo-tekstene er endret i Oslo, mens Stavanger beholder sine egne tjenestetekster', () => {
+  const o = les(sideFil('Oslo', 'tjenester')); const st = les(sideFil('Stavanger', 'tjenester'));
+  assert.ok(o.includes('utfører i dag renhold i over 70 barnehager i Oslo og omegn') && !o.includes('sørger vi for vikar'), 'Oslo');
+  assert.ok(o.includes('NS-INSTA 800'), 'Oslo: NS-INSTA 800');
+  assert.ok(st.includes('om lag 90 prosent av våre oppdrag') && !st.includes('NS-INSTA'), 'Stavanger: egen kort-tekst, ingen NS-INSTA');
+  assert.ok(!les(sideFil('Stavanger', 'om_oss')).includes('Flere av våre ansatte har jobbet'), 'Stavanger: ingen Oslo-ansatttekst');
+});
+
