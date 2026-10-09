@@ -1201,18 +1201,11 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
 .sti__node--aktiv { fill: var(--burgunder); stroke: var(--burgunder); }
 .team-initialer { background: var(--burgunder); color: #fff; }
 .parkering__p { color: #fff; background: var(--burgunder); border-radius: 4px; padding: .1em .45em; }
-/* Ansattsitatene: stort sitattegn i venstre marg (utenfor teksten, så linjelengden er uendret) og navnet i burgunder.
-   Kun «Jobb hos oss»; kundesitatene under Referanser har logo i venstre kolonne og beholder dagens utseende. */
-.stopp--jobb .sitat-kort { position: relative; padding-left: 3.5rem; }
-.stopp--jobb .sitat-kort::before {
-  content: "\201C"; position: absolute; left: 1rem; top: .75rem;
-  font: 800 3.2rem/1 Georgia, "Times New Roman", serif; color: var(--burgunder); /* dekor, ikke tekst */
-}
+/* Ansattsitatene har en tegnet avatar i venstre kolonne (Marit 2026-10-09: bilder eller tegninger?), i stedet for det store sitattegnet i margen
+   (avataren er det som bærer «en person sier dette»). Navnet står i burgunder. Kun «Jobb hos oss»; kundesitatene under Referanser har logo. */
+.stopp--jobb .sitat-kort { align-items: flex-start; }
+.sitat-avatar { flex: none; display: block; width: 4rem; height: 4rem; }
 .stopp--jobb .sitat-kort footer { color: var(--burgunder); }
-@media (min-width: 36rem) {
-  .stopp--jobb .sitat-kort { padding-left: 4.5rem; }
-  .stopp--jobb .sitat-kort::before { left: 1.1rem; top: .9rem; font-size: 4.2rem; }
-}
 
 /* ── Undersider (flerside, 2026-10-06) ────────────────────────────────────────────────────────────
    Hodet erstatter heroen: H1 på himmelen, tonet inn fra --base øverst (headeren er gjennomsiktig
