@@ -20,18 +20,24 @@
       </div>
       <div class="kontakt__info">
         <div class="kontakt__kontorer">
-          {{#er_oslo}}<div>
-            <div class="kontakt__tittel"><img class="kontakt__ikon" src="{{rot}}bilder/ikon-firma.svg" alt="" width="44" height="44"><h3>Clean Unit Renhold AS</h3></div>
+          {{#er_oslo}}<div class="kontakt__firma">
+            <img class="kontakt__ikon" src="{{rot}}bilder/ikon-firma.svg" alt="" width="44" height="44">
+            <div>
+              <h3>Clean Unit Renhold AS</h3>
             <p><a class="kontakt__adresse" href="{{kart_url}}" target="_blank" rel="noopener noreferrer" aria-label="{{adresse}} – åpne i Google Maps (ny fane)">{{adresse}} <span aria-hidden="true">↗</span></a></p>
             <p class="kontakt__orgnr">Org.nr 895 215 902</p>
+            </div>
           </div>{{/er_oslo}}
-          {{^er_oslo}}<div>
-            <div class="kontakt__tittel"><img class="kontakt__ikon" src="{{rot}}bilder/ikon-firma.svg" alt="" width="44" height="44"><h3>Clean Unit Stavanger AS</h3></div>
+          {{^er_oslo}}<div class="kontakt__firma">
+            <img class="kontakt__ikon" src="{{rot}}bilder/ikon-firma.svg" alt="" width="44" height="44">
+            <div>
+              <h3>Clean Unit Stavanger AS</h3>
             <p><!-- UTKAST: Brønnøysundregistrene oppgir registrert adresse Nedre
                  Holmegate 30, 4006 Stavanger — avviker fra denne besøksadressen
                  hentet fra cleanunit.no 2026-09-12. Bekreft hvilken som skal
                  brukes --><a class="kontakt__adresse" href="{{kart_url}}" target="_blank" rel="noopener noreferrer" aria-label="{{adresse}} – åpne i Google Maps (ny fane)">{{adresse}} <span aria-hidden="true">↗</span></a></p>
             <p class="kontakt__orgnr">Org.nr 929 085 019</p>
+            </div>
           </div>{{/er_oslo}}
         </div>
         <div class="kontakt__alternativ" role="group" aria-label="Kontakt direkte">

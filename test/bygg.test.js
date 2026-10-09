@@ -1114,7 +1114,10 @@ test('Kontakt: begge kortene har et dekorativt ikon foran overskriften (alt tom,
   for (const s of alleSider()) {
     const k = kontaktKort(s.fil);
     const ikoner = [...k.matchAll(/<div class="kontakt__tittel"><img class="kontakt__ikon" src="((?:\.\.\/)*)bilder\/([a-z-]+\.svg)" alt="" width="44" height="44"[^>]*><h3>([^<]+)<\/h3><\/div>/g)];
-    assert.deepEqual(ikoner.map((m) => [m[2], m[3]]), [['ikon-ta-kontakt.svg', 'Ta kontakt'], ['ikon-firma.svg', s.by === 'Oslo' ? 'Clean Unit Renhold AS' : 'Clean Unit Stavanger AS']], `${s.fil}: to ikoner foran overskriftene`);
+    assert.deepEqual(ikoner.map((m) => [m[2], m[3]]), [['ikon-ta-kontakt.svg', 'Ta kontakt']], `${s.fil}: ikonet foran «Ta kontakt»`);
+    // Firmaikonet står som initialene ved personene: ikon til venstre, overskrift + adresse + org.nr i kolonnen ved siden av.
+    const firma = [...k.matchAll(/<div class="kontakt__firma">\s*<img class="kontakt__ikon" src="((?:\.\.\/)*)bilder\/ikon-firma\.svg" alt="" width="44" height="44"[^>]*>\s*<div>\s*<h3>([^<]+)<\/h3>[\s\S]*?kontakt__adresse[\s\S]*?kontakt__orgnr[\s\S]*?<\/div>\s*<\/div>/g)];
+    assert.deepEqual(firma.map((m) => m[2]), [s.by === 'Oslo' ? 'Clean Unit Renhold AS' : 'Clean Unit Stavanger AS'], `${s.fil}: firmaet med ikon, adresse og org.nr`);
   }
   assert.match(les('bilder/ikon-ta-kontakt.svg'), /fill="#75355D"/, 'ikon-ta-kontakt.svg: burgunder');
   // Firmaikonet er logoens tre bobler i logoens egne farger (Marit: bygningen så ut som en bensinpumpe), uten burgunder sirkel.

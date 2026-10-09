@@ -853,7 +853,10 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 /* Ikon foran overskriften i begge kort (Ricky 2026-10-08, prøve): rund burgunder sirkel som initialsirklene og «Derfor»-symbolene. */
 .kontakt__tittel { display: flex; align-items: center; gap: var(--s-3); }
 .kontakt__ikon { flex: none; display: block; width: 2.75rem; height: 2.75rem; }
-.kontakt__kontorer .kontakt__ikon { width: 4rem; height: 4rem; } /* boblene (Marit: ikke bensinpumpe) trenger mer plass enn den runde ikonbrikken */
+/* Firmaet står som personene under: ikonet (boblene) der initialene står, og overskrift, adresse og org.nr i kolonnen ved siden av (Ricky 2026-10-09). */
+.kontakt__firma { display: flex; align-items: center; gap: var(--s-3); }
+.kontakt__firma > div { display: grid; gap: .1rem; min-width: 0; }
+.kontakt__kontorer .kontakt__ikon { width: 4rem; height: 4rem; }
 /* Ingressen står i boksen (Ricky 2026-10-08): den handler om å ringe og skrive, og fyller høyden så boksen blir nesten like høy som kortet. */
 .kontakt__lede { margin: 0; color: var(--tekst-svak); }
 .kontakt__knapper { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-3); }
@@ -1050,8 +1053,8 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 
 /* Jobb hos oss: Ansatte (tekst og gruppebilde) */
 .ansatte { display: grid; gap: var(--s-5); margin-top: var(--s-6); }
-.ansatte__bilde { margin: 0; }
-.ansatte__bilde img { display: block; width: 100%; height: auto; border-radius: var(--radius); }
+.ansatte__bilder { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+.ansatte__bilder img { display: block; width: 100%; height: auto; aspect-ratio: 540 / 308; object-fit: cover; border-radius: var(--radius); }
 .stopp--jobb .ansatte h3 { margin-top: 0; }
 .ansatte__tekst p { margin-top: var(--s-3); color: var(--tekst-svak); max-width: 60ch; }
 @media (min-width: 56rem) { .ansatte { grid-template-columns: 1.15fr 1fr; align-items: center; gap: var(--s-6); } }
