@@ -281,7 +281,7 @@ test('Stavanger: egen tittel, eget telefonnummer, lenke til Oslo i footeren', ()
 // Heroen er en scene (Marits illustrasjon, modernisert, 2026-10-03): varebil, by, sol og ballong i ett
 // bilde. Den erstattet bybakgrunnen, solen og rutebåndet med varebilen og de fire kundetypene.
 test('Hero: scene med rekkevidde-linje, uten de gamle rutebåndet, bybakgrunnen og solen', () => {
-  for (const [f, linje] of [['test/ut/index.html', 'Vi rengjør i hele Oslo, Asker og Bærum\\.'], ['test/ut/stavanger/index.html', 'Vi rengjør i Stavanger og omegn\\.']]) {
+  for (const [f, linje] of [['test/ut/index.html', 'Vi rengjør i hele Oslo, Asker og Bærum'], ['test/ut/stavanger/index.html', 'Vi rengjør i Stavanger og omegn']]) {
     const h = les(f);
     assert.match(h, new RegExp(`<p class="hero__rekkevidde">${linje}</p>`), f);
     assert.match(h, /<div class="hero__scene">/, f);
