@@ -886,7 +886,6 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .kontakt__personer { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); font-size: var(--t-sm); color: var(--tekst-svak); }
 /* Personene er den direkte veien (alternativet til «Ta kontakt»-boksen): egen overskrift under delelinja. */
 .kontakt__alternativ { border-top: 1px solid var(--gronn-mellom); padding-top: var(--s-4); display: grid; gap: var(--s-3); }
-.kontakt__alternativ h4 { margin: 0; color: var(--tekst-svak); font-size: var(--t-sm); font-weight: 600; }
 /* Personene som små rader med burgunder initialsirkel (samme .team-initialer som i «Om oss», bare mindre): navn, rolle, telefon. */
 .kontakt__personer li { display: flex; align-items: center; gap: var(--s-3); }
 .kontakt__personer .team-initialer { width: 2.75rem; height: 2.75rem; font-size: var(--t-sm); }

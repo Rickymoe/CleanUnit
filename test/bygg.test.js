@@ -1088,10 +1088,10 @@ test('CSS: «Ta kontakt»-boksen ligger til venstre for kortet fra 64rem (grid-o
   assert.doesNotMatch(css, /\.kontakt__(info|handling)[^{]*\{[^}]*[^-]order:/, 'ingen order-triks: markup-rekkefølgen er lese- og tabrekkefølgen');
 });
 
-test('Kontakt: personene står under overskriften «Eller kontakt direkte», delelinja ligger på gruppen og ikke på lista', () => {
+test('Kontakt: personlista har ingen synlig overskrift (Marit 2026-10-09), men et navn for skjermlesere; delelinja ligger på gruppen og ikke på lista', () => {
   for (const s of alleSider()) {
     const k = kontaktKort(s.fil);
-    assert.match(k, /<div class="kontakt__alternativ">\s*<h4>Eller kontakt direkte<\/h4>\s*<ul class="kontakt__personer">/, `${s.fil}: overskrift rett over personlista`);
+    assert.match(k, /<div class="kontakt__alternativ" role="group" aria-label="Kontakt direkte">\s*<ul class="kontakt__personer">/, `${s.fil}: personlista har navn uten synlig overskrift`);
   }
   const css = les('css/style.css');
   assert.match(css, /\.kontakt__alternativ \{ border-top: 1px solid var\(--gronn-mellom\);/, 'delelinja på gruppen');
