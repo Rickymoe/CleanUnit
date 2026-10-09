@@ -1,3 +1,4 @@
+# ERSTATTET 2026-10-09 av verktoy/hero-stavanger-hus.py (Stavanger-husene er nå tegnet på nytt i stedet for omfarget). Beholdt som historikk.
 # Lager Stavanger-scenene (bilder/hero-stavanger*.jpg/.webp) av Oslo-scenene (bilder/hero-scene*.jpg).
 # Marit 2026-10-07: «Samme logo og fargebruk som i Oslo, men litt mer burgunder slik at det blir en større forskjell.»
 # Samme komposisjon og samme ankere (varebil-logo, sti-start) som Oslo, så ingen CSS-justering per by trengs.
