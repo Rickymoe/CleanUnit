@@ -853,6 +853,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 /* Ikon foran overskriften i begge kort (Ricky 2026-10-08, prøve): rund burgunder sirkel som initialsirklene og «Derfor»-symbolene. */
 .kontakt__tittel { display: flex; align-items: center; gap: var(--s-3); }
 .kontakt__ikon { flex: none; display: block; width: 2.75rem; height: 2.75rem; }
+.kontakt__kontorer .kontakt__ikon { width: 4rem; height: 4rem; } /* boblene (Marit: ikke bensinpumpe) trenger mer plass enn den runde ikonbrikken */
 /* Ingressen står i boksen (Ricky 2026-10-08): den handler om å ringe og skrive, og fyller høyden så boksen blir nesten like høy som kortet. */
 .kontakt__lede { margin: 0; color: var(--tekst-svak); }
 .kontakt__knapper { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-3); }

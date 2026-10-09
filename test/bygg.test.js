@@ -1116,7 +1116,10 @@ test('Kontakt: begge kortene har et dekorativt ikon foran overskriften (alt tom,
     const ikoner = [...k.matchAll(/<div class="kontakt__tittel"><img class="kontakt__ikon" src="((?:\.\.\/)*)bilder\/([a-z-]+\.svg)" alt="" width="44" height="44"[^>]*><h3>([^<]+)<\/h3><\/div>/g)];
     assert.deepEqual(ikoner.map((m) => [m[2], m[3]]), [['ikon-ta-kontakt.svg', 'Ta kontakt'], ['ikon-firma.svg', s.by === 'Oslo' ? 'Clean Unit Renhold AS' : 'Clean Unit Stavanger AS']], `${s.fil}: to ikoner foran overskriftene`);
   }
-  for (const f of ['ikon-ta-kontakt.svg', 'ikon-firma.svg']) assert.match(les(`bilder/${f}`), /fill="#75355D"/, `${f}: burgunder`);
+  assert.match(les('bilder/ikon-ta-kontakt.svg'), /fill="#75355D"/, 'ikon-ta-kontakt.svg: burgunder');
+  // Firmaikonet er logoens tre bobler i logoens egne farger (Marit: bygningen så ut som en bensinpumpe), uten burgunder sirkel.
+  const firma = les('bilder/ikon-firma.svg');
+  for (const farge of ['#87CAC9', '#008789', '#AED1D1']) assert.ok(firma.includes(`fill="${farge}"`), `ikon-firma.svg: ${farge}`);
   assert.match(les('css/style.css'), /\.kontakt__ikon \{[^}]*width: 2\.75rem; height: 2\.75rem;/, 'ikonet er 44 px, som initialsirklene');
 });
 
