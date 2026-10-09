@@ -1244,11 +1244,9 @@ test('Varebil: bakskjermen er reparert av verktoy/varebil-bakskjerm.py, og raste
   assert.equal(webp.readUIntLE(27, 3) + 1, 145, 'rasterhøyden');
 });
 
-test('Toppmeny: menyvalget «Kontakt» er burgunder på fast lys bakgrunn, også under pekeren', () => {
+test('Toppmeny: menyvalget «Kontakt» ser ut som de andre menyvalgene (ingen egen farge eller bakgrunn)', () => {
   const css = les('css/style.css');
-  assert.match(css, /\n\.side-nav__lenke\[href="#kontakt"\] \{ color: var\(--burgunder\); background: var\(--teal-lys\); \}/, 'burgunder skrift på lys bakgrunn hele tiden');
-  assert.match(css, /\.side-nav__lenke\[href="#kontakt"\]:hover \{ color: var\(--burgunder\); \}/, 'forblir burgunder under pekeren');
-  assert.ok(css.indexOf('.side-nav__lenke[href="#kontakt"]:hover') > css.indexOf('.side-nav__lenke:hover {'), 'hover-regelen for Kontakt kommer etter den generelle (samme spesifisitet)');
+  assert.doesNotMatch(css, /\.side-nav__lenke\[href="#kontakt"\](:hover)? \{/, 'ingen egen regel for Kontakt-lenka i menyen');
 });
 
 test('CSS: «Derfor»-kortene er kompakte: smalere rad (46rem), 3 rem symbol, 1 rem tekst og mindre luft (Ricky 2026-10-08)', () => {
