@@ -286,6 +286,13 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 @media (max-width: 48rem) {
   .hero { --logo-skrift: clamp(3.6rem, 11.5vw, 5.6rem); }
   .hero__ingress { font-size: var(--t-sm); }
+  /* Stavanger: den tvungne brytningen i ingressen («…restauranter / kinoer og
+     barnehager.») ga tre linjer på telefon (förste del tar to). Skjul br-en så
+     teksten flyter og balanserer til to linjer, og skjul sekundærlinjen
+     «Direkte ansatte …» (den står på desktop og i meta-beskrivelsen).
+     Kun Stavanger — Oslo-ingressen er urørt (Ricky 2026-10-12). */
+  .by--stavanger .hero__ingress br { display: none; }
+  .by--stavanger .hero__ingress .ingress-direkte { display: none; }
   .hero__rekkevidde { font-size: var(--t-sm); margin-top: var(--s-2); }
 }
 
