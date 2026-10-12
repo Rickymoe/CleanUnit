@@ -180,9 +180,11 @@
         <p>Vi har fokus på riktige teknikker og ergonomi i hverdagen, og en bedriftsavtale med SATS gir alle ansatte tilbud om trening til redusert pris.</p>
       </div>
     </div>
-    {{/er_oslo}}{{^er_oslo}}<!-- Marit 2026-10-12: Stavanger får «Ansatte»-avsnittet, men ikke Oslo-bildene og de to Oslo-spesifikke avsnittene (over ti år, SATS-avtalen). -->
-    <h3>Ansatte</h3>
-    <p>Renhold er ofte en usynlig jobb. Arbeidet utføres gjerne etter at andre har gått hjem, og mange renholdere jobber alene på forskjellige arbeidssteder. Derfor legger vi stor vekt på lederkontakt, opplæring og oppfølging.</p>{{/er_oslo}}<h3>Dette sier de som jobber hos oss</h3>
+    {{/er_oslo}}{{^er_oslo}}<!-- Marit 2026-10-12: Stavanger får «Ansatte»-avsnittet, men ikke Oslo-bildene og de to Oslo-spesifikke avsnittene (over ti år, SATS-avtalen). Teksten ligger i .ansatte__tekst som på Oslo, så den får samme dempede farge og lesebredde; løs i seksjonen ble den mørkere enn Oslo-varianten. -->
+    <div class="ansatte__tekst">
+      <h3>Ansatte</h3>
+      <p>Renhold er ofte en usynlig jobb. Arbeidet utføres gjerne etter at andre har gått hjem, og mange renholdere jobber alene på forskjellige arbeidssteder. Derfor legger vi stor vekt på lederkontakt, opplæring og oppfølging.</p>
+    </div>{{/er_oslo}}<h3>Dette sier de som jobber hos oss</h3>
     <ul class="sitat-liste">
       <li class="sitat-kort">
         <img class="sitat-avatar" src="{{rot}}bilder/avatar-1.svg" alt="" width="64" height="64">
