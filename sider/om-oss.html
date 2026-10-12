@@ -151,7 +151,8 @@
     <!-- Vaskesveipet ble tatt bort 2026-09-26 (to animasjoner etter hverandre rett under flåten ble for mye), og
          satt tilbake 2026-10-05 på Rickys ønske, sammen med «Dette sier kundene våre». -->
     <div class="vask-boks"><h2 data-vask>Renholderne er våre viktigste medarbeidere</h2></div>
-    <p class="stopp__lede">Det er renholderne som hver dag sørger for at kundene våre møter en ren arbeidsplass. Derfor legger vi stor vekt på god opplæring, tett oppfølging og gode arbeidsforhold. Vi er stolte av å ha mange ansatte som har vært med oss i mange år, og som kjenner både kundene våre og faget godt.</p>
+    <!-- Marit 2026-10-12: bare Stavanger sier «siden oppstarten i Stavanger»; siste setning er det eneste som skiller de to. -->
+    {{#er_oslo}}<p class="stopp__lede">Det er renholderne som hver dag sørger for at kundene våre møter en ren arbeidsplass. Derfor legger vi stor vekt på god opplæring, tett oppfølging og gode arbeidsforhold. Vi er stolte av å ha mange ansatte som har vært med oss i mange år, og som kjenner både kundene våre og faget godt.</p>{{/er_oslo}}{{^er_oslo}}<p class="stopp__lede">Det er renholderne som hver dag sørger for at kundene våre møter en ren arbeidsplass. Derfor legger vi stor vekt på god opplæring, tett oppfølging og gode arbeidsforhold. Vi er stolte av å ha mange ansatte som har vært med oss siden oppstarten i Stavanger, og som kjenner både kundene våre og faget godt.</p>{{/er_oslo}}
     {{#er_oslo}}<div class="ansatte">
       <!-- Fire like store ruter i stedet for ett stort gruppebilde (Marit 2026-10-09: «så blir det ikke så tydelig hvem de er»); dekorative, så tom alt. -->
       <div class="ansatte__bilder">
