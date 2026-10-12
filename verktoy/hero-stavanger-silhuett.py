@@ -52,16 +52,18 @@ def gamle_stavanger(d, s, x0, x1, hoyde=34, tak=24):
         i += 1
 
 
-def domkirken(d, s, x):
-    """Langt skip med bratt tak og et firkantet vesttårn med kort spir."""
-    rect(d, s, x - 70, BUNN - 70, x + 4, BUNN)                       # skipet
-    poly(d, s, [(x - 74, BUNN - 70), (x - 33, BUNN - 104), (x + 8, BUNN - 70)])
-    rect(d, s, x + 4, BUNN - 150, x + 44, BUNN)                      # vesttårnet
-    poly(d, s, [(x + 1, BUNN - 150), (x + 24, BUNN - 188), (x + 47, BUNN - 150)])
-    rect(d, s, x + 23, BUNN - 214, x + 25.5, BUNN - 188)             # spiret
-    rect(d, s, x + 19, BUNN - 207, x + 29.5, BUNN - 205)             # korset
-    rect(d, s, x + 44, BUNN - 82, x + 70, BUNN)                      # sidebygning
-    poly(d, s, [(x + 41, BUNN - 82), (x + 57, BUNN - 100), (x + 73, BUNN - 82)])
+def domkirken(d, s, x, k=1.0):
+    """Langt skip med bratt tak og et firkantet vesttårn med kort spir. k skalerer høyden (tårnet må nå
+    over hustakene for å synes bak byen)."""
+    def H(h): return BUNN - h * k
+    rect(d, s, x - 70, H(70), x + 4, BUNN)                       # skipet
+    poly(d, s, [(x - 74, H(70)), (x - 33, H(104)), (x + 8, H(70))])
+    rect(d, s, x + 4, H(150), x + 44, BUNN)                      # vesttårnet
+    poly(d, s, [(x + 1, H(150)), (x + 24, H(188)), (x + 47, H(150))])
+    rect(d, s, x + 23, H(214), x + 25.5, H(188))                 # spiret
+    rect(d, s, x + 19, H(207), x + 29.5, H(205))                 # korset
+    rect(d, s, x + 44, H(82), x + 70, BUNN)                      # sidebygning
+    poly(d, s, [(x + 41, H(82)), (x + 57, H(100)), (x + 73, H(82))])
 
 
 def valbergtaarnet(d, s, x):
@@ -86,11 +88,12 @@ def sverd_i_fjell(d, s, x):
         sirkel(d, s, x + dx + tilt * 0.4, top - 2, 4.5)
 
 
-def plattform(d, s, x, skala=1.0):
-    """Oljeplattform: tre bein med tverrstag, dekk, bolig, boretårn, kran og fakkel."""
+def plattform(d, s, x, skala=1.0, loft=0):
+    """Oljeplattform: tre bein med tverrstag, dekk, bolig, boretårn, kran og fakkel. loft hever hele plattformen
+    (den står lenger bak i landskapet, over bakken som uansett skjules av forgrunnen)."""
     k = skala
     def X(v): return x + v * k
-    def Y(v): return BUNN - v * k
+    def Y(v): return BUNN - v * k - loft
     for lx in (-34, 0, 34):
         poly(d, s, [(X(lx - 5), Y(0)), (X(lx - 3), Y(66)), (X(lx + 3), Y(66)), (X(lx + 5), Y(0))])
     poly(d, s, [(X(-34), Y(8)), (X(0), Y(58)), (X(0), Y(52)), (X(-34), Y(2))])
@@ -109,6 +112,7 @@ def plattform(d, s, x, skala=1.0):
 
 
 PREIK_TOPP = BUNN - 262
+PREIK_X = 600                   # fjellet og stupets skyggeside må flyttes sammen (én kilde til x)
 
 
 def preikestolen(d, s, x):
@@ -189,9 +193,9 @@ def stavanger(a, vinter):
     himmelaktig = (np.abs(ut - himmel).max(2) < 9)
     for bx, by, br in BOBLER:
         himmelaktig &= (xx - bx) ** 2 + (yy - by) ** 2 > (br + 6) ** 2
-    langt = lag(lambda d, s: (gamle_stavanger(d, s, 486, 560, 30, 22), valbergtaarnet(d, s, 1488), plattform(d, s, 2085, 0.7)))
-    naer = lag(lambda d, s: (domkirken(d, s, 606), preikestolen(d, s, 262), gamle_stavanger(d, s, 696, 770, 38, 26), sverd_i_fjell(d, s, 1985), plattform(d, s, 1745, 1.2), skip(d, s, 1620, 0.8)))
-    skygge = lag(lambda d, s: preikestolen_skygge(d, s, 262))
+    langt = lag(lambda d, s: (gamle_stavanger(d, s, 640, 714, 30, 22), valbergtaarnet(d, s, 1380), plattform(d, s, 1960, 0.7, 55)))
+    naer = lag(lambda d, s: (domkirken(d, s, 1140, 1.5), preikestolen(d, s, PREIK_X), gamle_stavanger(d, s, 1170, 1244, 38, 26), sverd_i_fjell(d, s, 1800), plattform(d, s, 1480, 1.2, 55), skip(d, s, 1620, 0.8)))
+    skygge = lag(lambda d, s: preikestolen_skygge(d, s, PREIK_X))
     for alfa, styrke in ((langt, 1.4), (naer, 2.0), (skygge, 2.7)):
         farge = himmel - delta * styrke
         m = (alfa * himmelaktig)[..., None]
