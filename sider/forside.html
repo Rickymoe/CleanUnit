@@ -108,7 +108,7 @@
     <p class="eyebrow">Referanser</p>
     <!-- UTKAST: overskriften er vår, ikke Maritts. Raden er én lenke til referanser/; logoene har tom alt og lenken er skjult for tastatur/skjermleser, den synlige tekstlenken under bærer navnet. -->
     <h2>Kunder som har valgt oss</h2>
-    <a class="kunde-rad" href="{{by_rot}}referanser/" tabindex="-1" aria-hidden="true">
+    <a class="kunde-rad{{^er_oslo}} kunde-rad--tre{{/er_oslo}}" href="{{by_rot}}referanser/" tabindex="-1" aria-hidden="true">
       {{#er_oslo}}<picture><source srcset="{{rot}}bilder/logo-bsn.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-bsn.png" alt="" width="360" height="237"></picture>
       <picture><source srcset="{{rot}}bilder/logo-kg.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kg.png" alt="" width="1140" height="237"></picture>
       <picture><source srcset="{{rot}}bilder/logo-kanvas.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kanvas.png" alt="" width="394" height="166"></picture>
