@@ -281,7 +281,7 @@ test('Stavanger: egen tittel, eget telefonnummer, lenke til Oslo i footeren', ()
 // Heroen er en scene (Marits illustrasjon, modernisert, 2026-10-03): varebil, by, sol og ballong i ett
 // bilde. Den erstattet bybakgrunnen, solen og rutebåndet med varebilen og de fire kundetypene.
 test('Hero: scene med rekkevidde-linje, uten de gamle rutebåndet, bybakgrunnen og solen', () => {
-  for (const [f, linje] of [['test/ut/index.html', 'Vi rengjør i hele Oslo, Asker og Bærum'], ['test/ut/stavanger/index.html', 'Vi rengjør i Stavanger og omegn']]) {
+  for (const [f, linje] of [['test/ut/index.html', 'Vi rengjør i hele Oslo, Asker og Bærum'], ['test/ut/stavanger/index.html', 'Vi rengjør i Stavanger, Sandnes og omegn']]) {
     const h = les(f);
     assert.match(h, new RegExp(`<p class="hero__rekkevidde">${linje}</p>`), f);
     assert.match(h, /<div class="hero__scene">/, f);
@@ -469,10 +469,10 @@ test('tjenester/: begge byer har de samme sju tjenestekortene med «Les mer», v
   }
 });
 
-test('referanser/: Oslo har seks sitatkort (BSN, Dr. Brandt, Kanvas, KG, Medistim, Stålverkskroken), Stavanger fire, uten NVH, på --base-hodet', () => {
+test('referanser/: Oslo har seks sitatkort (BSN, Dr. Brandt, Kanvas, KG, Medistim, Stålverkskroken), Stavanger sine egne tre, uten NVH, på --base-hodet', () => {
   for (const [by, antall, navn] of [
     ['Oslo', 6, ['BSN – Boligstiftelsen Nydalen', 'Mariann<br>Dr. Brandt', 'Roy Kristensen Bakland<br>Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken barnehage']],
-    ['Stavanger', 4, ['Roy Kristensen Bakland<br>Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken barnehage']],
+    ['Stavanger', 3, ['Tore Ormøy<br>Dragaberget barnehage', 'Victor Husebø<br>Breitorget', 'Halvor<br>Storhaug treningssenter']],
   ]) {
     const h = les(sideFil(by, 'referanser'));
     assert.equal((h.match(/class="sitat-kort"/g) || []).length, antall, `${by}: antall sitatkort`);
@@ -483,7 +483,12 @@ test('referanser/: Oslo har seks sitatkort (BSN, Dr. Brandt, Kanvas, KG, Medisti
   }
   assert.ok(les(sideFil('Oslo', 'referanser')).includes('over 100 kunder i Oslo og omegn'), 'Oslo: ledeteksten');
   assert.ok(!les(sideFil('Oslo', 'referanser')).includes('rundt 100 kunder'), 'Oslo: det gamle tallet er borte');
-  assert.ok(!les(sideFil('Stavanger', 'referanser')).includes('Boligstiftelsen Nydalen'), 'Stavanger: ingen Oslo-sitater');
+  // Ricky 2026-10-12: de fire felles-referansene (Kanvas, KG, Medistim, Stålverkskroken) er Oslos.
+  // Stavanger har bare sine egne tre og skal ikke arve dem.
+  const stavanger = les(sideFil('Stavanger', 'referanser'));
+  for (const t of ['Boligstiftelsen Nydalen', 'Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken']) {
+    assert.ok(!stavanger.includes(t), `Stavanger: Oslo-sitatet «${t}» skal være borte`);
+  }
 });
 test('Overskriften er Maritts «Renhold tilpasset deres arbeidssted» og den gamle teksten er borte overalt', () => {
   for (const by of ['Oslo', 'Stavanger']) {
@@ -494,18 +499,37 @@ test('Overskriften er Maritts «Renhold tilpasset deres arbeidssted» og den gam
     }
   }
 });
-test('referanser/: Stålverkskroken-kortet har egen logo (png + webp finnes) i Oslo og Stavanger', () => {
-  for (const by of ['Oslo', 'Stavanger']) {
-    const fil = sideFil(by, 'referanser');
-    const h = les(fil);
-    const kort = h.split('<li class="sitat-kort">').find((k) => k.includes('Stålverkskroken barnehage'));
-    assert.ok(kort, `${by}: Stålverkskroken-kortet`);
-    const m = kort.match(/<img [^>]*class="sitat-logo" src="((?:\.\.\/)*bilder\/logo-staalverkskroken\.png)" alt="" width="640" height="193">/);
-    assert.ok(m, `${by}: sitat-logo-bildet i kortet`);
-    assert.match(kort, /<source srcset="(?:\.\.\/)*bilder\/logo-staalverkskroken\.webp" type="image\/webp">/, `${by}: webp-kilde`);
+test('referanser/: Stålverkskroken-kortet har egen logo (png + webp finnes) — kortet er Oslos', () => {
+  const fil = sideFil('Oslo', 'referanser');
+  const kort = les(fil).split('<li class="sitat-kort">').find((k) => k.includes('Stålverkskroken barnehage'));
+  assert.ok(kort, 'Oslo: Stålverkskroken-kortet');
+  const m = kort.match(/<img [^>]*class="sitat-logo" src="((?:\.\.\/)*bilder\/logo-staalverkskroken\.png)" alt="" width="640" height="193">/);
+  assert.ok(m, 'Oslo: sitat-logo-bildet i kortet');
+  assert.match(kort, /<source srcset="(?:\.\.\/)*bilder\/logo-staalverkskroken\.webp" type="image\/webp">/, 'Oslo: webp-kilde');
+  const absolutt = join(dirname(fil), m[1]);
+  assert.ok(existsSync(absolutt), `Oslo: ${m[1]} finnes ikke`);
+  assert.ok(existsSync(absolutt.replace(/\.png$/, '.webp')), 'Oslo: webp finnes ikke');
+});
+
+// Ricky 2026-10-12: Stavangers tre referanser (Dragaberget, Breitorget, Storhaug) kom inn med hver sin
+// logo fra Marit. Kortene får `<picture>` + `class="sitat-logo"`, og bildene må finnes fra /stavanger/.
+test('referanser/: Stavangers tre kort har hver sin logo (png + webp finnes)', () => {
+  const fil = sideFil('Stavanger', 'referanser');
+  const h = les(fil);
+  for (const [navn, slug, bredde, hoyde] of [
+    ['Dragaberget barnehage', 'dragaberget', 203, 177],
+    ['Breitorget', 'breitorget', 206, 50],
+    ['Storhaug treningssenter', 'storhaug', 1284, 402],
+  ]) {
+    const kort = h.split('<li class="sitat-kort">').find((k) => k.includes(navn));
+    assert.ok(kort, `Stavanger: ${navn}-kortet`);
+    // Rot-prefikset er valgfritt: undersidene på /stavanger/ ligger to nivåer ned (../../bilder/).
+    const m = kort.match(new RegExp(`<img [^>]*class="sitat-logo" src="((?:\\.\\.\\/)+bilder\\/logo-${slug}\\.png)" alt="" width="${bredde}" height="${hoyde}">`));
+    assert.ok(m, `Stavanger: sitat-logo-bildet i ${navn}-kortet`);
+    assert.match(kort, new RegExp(`<source srcset="(?:\\.\\.\\/)+bilder\\/logo-${slug}\\.webp" type="image\\/webp">`), `Stavanger: webp-kilde for ${navn}`);
     const absolutt = join(dirname(fil), m[1]);
-    assert.ok(existsSync(absolutt), `${by}: ${m[1]} finnes ikke`);
-    assert.ok(existsSync(absolutt.replace(/\.png$/, '.webp')), `${by}: webp finnes ikke`);
+    assert.ok(existsSync(absolutt), `Stavanger: ${m[1]} finnes ikke`);
+    assert.ok(existsSync(absolutt.replace(/\.png$/, '.webp')), `Stavanger: webp for ${slug} finnes ikke`);
   }
 });
 test('CSS: referanser-siden har --base-bakgrunn (aldri himmel rett under himmel-hodet)', () => {
@@ -559,7 +583,9 @@ const VASK = {
   Stavanger: {
     forside: ['Renhold tilpasset deres arbeidssted'], tjenester: ['Renhold tilpasset deres arbeidssted'],
     referanser: ['Dette sier kundene våre'],
-    om_oss: ['To kontorer, samme standard', 'Renholderne er våre viktigste medarbeidere'],
+    // Marit 2026-10-12: Stavangers egen Om oss-tekst har samme overskrift som Oslo (samme historie,
+    // datert til Stavanger). Den erstattet utkastet «To kontorer, samme standard».
+    om_oss: ['Fra to personer med hver sin mopp', 'Renholderne er våre viktigste medarbeidere'],
     miljo: ['Godkjent, ansvarlig og til stede'],
   },
 };test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
@@ -598,16 +624,16 @@ test('Forsiden: tre tjenestekort uten «Les mer», én «Se alle tjenester →»
   }
 });
 
-test('Forsiden: kunderaden lenker til referanser/ (Oslo 6 logoer, Stavanger 4), i riktig rekkefølge', () => {
-  for (const [by, logoer] of [
-    ['Oslo', ['logo-bsn', 'logo-kg', 'logo-kanvas', 'logo-medistim', 'logo-pioner', 'logo-staalverkskroken']],
-    ['Stavanger', ['logo-kanvas', 'logo-kg', 'logo-medistim', 'logo-staalverkskroken']],
+test('Forsiden: kunderaden lenker til referanser/ (Oslo 6 logoer, Stavanger sine egne 3), i riktig rekkefølge', () => {
+  for (const [by, logoer, radKlasse] of [
+    ['Oslo', ['logo-bsn', 'logo-kg', 'logo-kanvas', 'logo-medistim', 'logo-pioner', 'logo-staalverkskroken'], 'kunde-rad'],
+    ['Stavanger', ['logo-dragaberget', 'logo-breitorget', 'logo-storhaug'], 'kunde-rad kunde-rad--tre'],
   ]) {
     const h = les(sideFil(by, 'forside'));
     const start = h.indexOf('<section class="stopp--kunder" id="kunder">');
     assert.ok(start > -1, `${by}: #kunder`);
     const sek = h.slice(start, h.indexOf('</section>', start));
-    assert.match(sek, /<a class="kunde-rad" href="referanser\/" tabindex="-1" aria-hidden="true">/, `${by}: raden er lenke`);
+    assert.match(sek, new RegExp(`<a class="${radKlasse}" href="referanser\\/" tabindex="-1" aria-hidden="true">`), `${by}: raden er lenke`);
     assert.match(sek, /<a class="tekst-lenke" href="referanser\/">Se hva kundene sier →<\/a>/, `${by}: synlig tekstlenke`);
     // Rot-prefikset er valgfritt: Stavanger-forsiden ligger i /stavanger/, så logoene der
     // står som ../bilder/… Vi fanger hele src-en og løser den fra SIDENS mappe, så testen
@@ -627,6 +653,13 @@ test('Forsiden: kunderaden lenker til referanser/ (Oslo 6 logoer, Stavanger 4), 
       assert.ok(existsSync(absolutt.replace(/\.png$/, '.webp')), `${by}: ${sti} mangler .webp`);
     }
   }
+  // Ricky 2026-10-12: raden er bygget for seks logoer. Stavanger har tre, og uten egne mål klistrer de
+  // seg i midten. Reglene må ligge ETTER media-queryene, ellers deler de spesifisitet med .kunde-rad img
+  // og taper. Fanger både at reglene finnes og at de står sist.
+  const css = les('css/style.css');
+  assert.match(css, /\.kunde-rad--tre \{ justify-content: space-evenly; \}/, 'Stavanger-raden skal fordele de tre');
+  assert.match(css, /\.kunde-rad--tre img \{ width: 12rem; height: 4rem; \}/, 'Stavanger-logoene skal ha større bokser');
+  assert.ok(css.lastIndexOf('.kunde-rad--tre img') > css.lastIndexOf('.kunde-rad img'), 'reglene må stå etter .kunde-rad img, ellers vinner de ikke');
 });
 
 test('Forsiden: rekkefølge derfor → tjenester → kunder → kontakt, og kunderaden har hvitt kort på --base', () => {
@@ -877,11 +910,15 @@ const synlig = (h) => h.replace(/<!--[\s\S]*?-->/g, '');
 
 test('Stavanger: ingen Oslo-tekster på noen av de fem sidene, men egne tekster og eget kontor', () => {
   const h = synlig(heleBy('Stavanger'));
+  // Merk: overskriften «Fra to personer med hver sin mopp» er ikke lenger Oslo-spesifikk — Marit
+  // 2026-10-12 ga Stavanger sin egen Om oss-tekst med samme overskrift.
   for (const t of ['Marit Byfuglien', 'Mari Pedersen', 'Guro Klingenberg', 'Boligstiftelsen Nydalen', 'Dr. Brandt', 'logo-pioner', 'logo-bsn',
-    'rundt 100 kunder', 'over 100 kunder i Oslo', 'Flere av våre ansatte har jobbet i Clean Unit i over ti år', 'Fra to personer med hver sin mopp', 'Trenger dere en ny renholdsleverandør?', '21 55 56 80', 'renhold@cleanunit.no']) {
+    'logo-kanvas', 'logo-medistim', 'logo-staalverkskroken',
+    'rundt 100 kunder', 'over 100 kunder i Oslo', 'Flere av våre ansatte har jobbet i Clean Unit i over ti år', 'Trenger dere en ny renholdsleverandør?', '21 55 56 80', 'renhold@cleanunit.no']) {
     assert.ok(!h.includes(t), `Oslo-teksten «${t}» lekker inn i Stavanger`);
   }
-  for (const t of ['To kontorer, samme standard', 'Hva koster renhold for dere?', 'thord@cleanunit.no', '900 65 009', 'Thord Hegre']) {
+  // «To kontorer, samme standard» står ikke lenger her: Marits Om oss-tekst (2026-10-12) erstattet utkastet.
+  for (const t of ['Hva koster renhold for dere?', 'thord@cleanunit.no', '900 65 009', 'Thord Hegre']) {
     assert.ok(h.includes(t), `Stavanger mangler «${t}»`);
   }
   for (const s of alleSider().filter((x) => x.by === 'Stavanger')) {
@@ -953,7 +990,7 @@ test('Kontakt: «Ta kontakt»-boksen har to like omrissknapper, «Ring oss – <
 });
 
 test('Kontakt-kortet: adressen er en lenke til Google Maps med nøyaktig den viste adressen URL-kodet', () => {
-  const ADRESSE = { Oslo: 'Gunnar Schjelderups vei 9, 0485 Oslo', Stavanger: 'Bryggerikaien 16, 4014 Stavanger' };
+  const ADRESSE = { Oslo: 'Gunnar Schjelderups vei 9, 0485 Oslo', Stavanger: 'Nedre Holmegate 30, 4006 Stavanger' };
   for (const s of alleSider()) {
     const k = les(s.fil).match(/<section class="stopp--kontakt"[\s\S]*?<\/section>/)[0];
     const m = k.match(/<a class="kontakt__adresse" ([^>]*)>([^<]*)<span aria-hidden="true">↗<\/span><\/a>/);
@@ -970,7 +1007,7 @@ test('Kontakt-kortet: adressen er en lenke til Google Maps med nøyaktig den vis
 
 test('Oslo: ingen Stavanger-tekster på noen av de fem sidene', () => {
   const h = synlig(heleBy('Oslo'));
-  for (const t of ['thord@cleanunit.no', '900 65 009', 'Thord Hegre', 'To kontorer, samme standard', 'Hva koster renhold for dere?', 'Bryggerikaien']) {
+  for (const t of ['thord@cleanunit.no', '900 65 009', 'Thord Hegre', 'To kontorer, samme standard', 'Hva koster renhold for dere?', 'Nedre Holmegate']) {
     assert.ok(!h.includes(t), `Stavanger-teksten «${t}» lekker inn i Oslo (bortsett fra kontaktblokkens ene bylenke)`);
   }
 });
@@ -979,7 +1016,9 @@ test('Stavanger: UTKAST-merkene står igjen på det som ikke er bekreftet', () =
   const forside = les('sider/forside.html');
   assert.match(forside, /UTKAST: sammendrag av Hovedrengjøring, Teppe- og møbelrens, Gulvvedlikehold, Vindusvask og Hygieneartikler, lik Oslo/);
   assert.match(les('sider/tjenester.html'), /UTKAST: Hele Tjenester-siden er lik i begge byer \(Ricky 2026-10-08\); bekreft med Marit\/Christopher at Stavanger leverer Teppe- og møbelrens og Vindusvask\./);
-  assert.match(les('byer.json'), /UTKAST: Stavanger-kontorets egen beskrivelse/);
+  // Meta-beskrivelsen i byer.json hadde et UTKAST-merke til Marit leverte sin egen om-oss-tekst (04730e6).
+  // Nå er den bekreftet, så merket skal ikke stå der lenger.
+  assert.ok(!les('byer.json').includes('UTKAST'), 'byer.json: alle utkastene der er bekreftet');
 });
 
 // stiNedover() avslutter stille hvis startpunktet mangler: uten denne koblingen forsvinner hele
@@ -1006,9 +1045,11 @@ test('Oslo: heroens grå ingress er nøyaktig de tre punktene, uten underleveran
   assert.ok(!/underleverandør/i.test(tagline + grå));
 });
 
-test('Stavanger: heroens ingress er uendret', () => {
+// Ricky 2026-10-12 (Marits endringsark): Stavangers hero-ingress er byttet fra «Spesialister på
+// barnehagerenhold …» til byens egen linje. Begge byene har nå direkte-ansatte-løftet i heroen.
+test('Stavanger: heroens ingress er byens egen (restauranter og kinoer, direkte ansatte)', () => {
   assert.equal(heroIngress('test/ut/stavanger/index.html'),
-    '<!-- UTKAST: kunde redigerer fritt -->Spesialister på barnehagerenhold, med skoler, bilforhandlere og kontorer i tillegg. Direkte ansatte&nbsp;– ingen underleverandører.');
+    '<strong>Profesjonelt renhold for bedrifter, restauranter,<br> kinoer og barnehager.</strong><br> <span class="ingress-direkte">Direkte ansatte&nbsp;– ingen underleverandører.</span>');
 });
 
 test('Stavanger-lederen heter Thord Hegre, daglig leder (Enhetsregisteret), aldri «Thor D.»', () => {
