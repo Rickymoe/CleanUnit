@@ -469,10 +469,10 @@ test('tjenester/: begge byer har de samme sju tjenestekortene med «Les mer», v
   }
 });
 
-test('referanser/: Oslo har seks sitatkort (BSN, Dr. Brandt, Kanvas, KG, Medistim, Stålverkskroken), Stavanger sine egne tre, uten NVH, på --base-hodet', () => {
+test('referanser/: Oslo har seks sitatkort (BSN, Dr. Brandt, Kanvas, KG, Medistim, Stålverkskroken), Stavanger sine egne fire, uten NVH, på --base-hodet', () => {
   for (const [by, antall, navn] of [
     ['Oslo', 6, ['BSN – Boligstiftelsen Nydalen', 'Mariann<br>Dr. Brandt', 'Roy Kristensen Bakland<br>Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken barnehage']],
-    ['Stavanger', 3, ['Tore Ormøy<br>Dragaberget barnehage', 'Victor Husebø<br>Breitorget', 'Halvor<br>Storhaug treningssenter']],
+    ['Stavanger', 4, ['Tore Ormøy<br>Dragaberget barnehage', 'Victor Husebø<br>Breitorget', 'Halvor<br>Storhaug treningssenter', 'Kenneth Meland<br>Union']],
   ]) {
     const h = les(sideFil(by, 'referanser'));
     assert.equal((h.match(/class="sitat-kort"/g) || []).length, antall, `${by}: antall sitatkort`);
@@ -484,7 +484,7 @@ test('referanser/: Oslo har seks sitatkort (BSN, Dr. Brandt, Kanvas, KG, Medisti
   assert.ok(les(sideFil('Oslo', 'referanser')).includes('over 100 kunder i Oslo og omegn'), 'Oslo: ledeteksten');
   assert.ok(!les(sideFil('Oslo', 'referanser')).includes('rundt 100 kunder'), 'Oslo: det gamle tallet er borte');
   // Ricky 2026-10-12: de fire felles-referansene (Kanvas, KG, Medistim, Stålverkskroken) er Oslos.
-  // Stavanger har bare sine egne tre og skal ikke arve dem.
+  // Stavanger har bare sine egne fire og skal ikke arve dem.
   const stavanger = les(sideFil('Stavanger', 'referanser'));
   for (const t of ['Boligstiftelsen Nydalen', 'Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken']) {
     assert.ok(!stavanger.includes(t), `Stavanger: Oslo-sitatet «${t}» skal være borte`);
@@ -511,15 +511,16 @@ test('referanser/: Stålverkskroken-kortet har egen logo (png + webp finnes) —
   assert.ok(existsSync(absolutt.replace(/\.png$/, '.webp')), 'Oslo: webp finnes ikke');
 });
 
-// Ricky 2026-10-12: Stavangers tre referanser (Dragaberget, Breitorget, Storhaug) kom inn med hver sin
+// Ricky 2026-10-12: Stavangers fire referanser (Dragaberget, Breitorget, Storhaug, Union) kom inn med hver sin
 // logo fra Marit. Kortene får `<picture>` + `class="sitat-logo"`, og bildene må finnes fra /stavanger/.
-test('referanser/: Stavangers tre kort har hver sin logo (png + webp finnes)', () => {
+test('referanser/: Stavangers fire kort har hver sin logo (png + webp finnes)', () => {
   const fil = sideFil('Stavanger', 'referanser');
   const h = les(fil);
   for (const [navn, slug, bredde, hoyde] of [
     ['Dragaberget barnehage', 'dragaberget', 203, 177],
     ['Breitorget', 'breitorget', 206, 50],
     ['Storhaug treningssenter', 'storhaug', 1284, 402],
+    ['Kenneth Meland', 'union', 311, 249],
   ]) {
     const kort = h.split('<li class="sitat-kort">').find((k) => k.includes(navn));
     assert.ok(kort, `Stavanger: ${navn}-kortet`);
@@ -624,10 +625,10 @@ test('Forsiden: tre tjenestekort uten «Les mer», én «Se alle tjenester →»
   }
 });
 
-test('Forsiden: kunderaden lenker til referanser/ (Oslo 6 logoer, Stavanger sine egne 3), i riktig rekkefølge', () => {
+test('Forsiden: kunderaden lenker til referanser/ (Oslo 6 logoer, Stavanger sine egne 4), i riktig rekkefølge', () => {
   for (const [by, logoer, radKlasse] of [
     ['Oslo', ['logo-bsn', 'logo-kg', 'logo-kanvas', 'logo-medistim', 'logo-pioner', 'logo-staalverkskroken'], 'kunde-rad'],
-    ['Stavanger', ['logo-dragaberget', 'logo-breitorget', 'logo-storhaug'], 'kunde-rad kunde-rad--tre'],
+    ['Stavanger', ['logo-dragaberget', 'logo-breitorget', 'logo-storhaug', 'logo-union'], 'kunde-rad kunde-rad--fire'],
   ]) {
     const h = les(sideFil(by, 'forside'));
     const start = h.indexOf('<section class="stopp--kunder" id="kunder">');
@@ -653,13 +654,14 @@ test('Forsiden: kunderaden lenker til referanser/ (Oslo 6 logoer, Stavanger sine
       assert.ok(existsSync(absolutt.replace(/\.png$/, '.webp')), `${by}: ${sti} mangler .webp`);
     }
   }
-  // Ricky 2026-10-12: raden er bygget for seks logoer. Stavanger har tre, og uten egne mål klistrer de
+  // Ricky 2026-10-12: raden er bygget for seks logoer. Stavanger har fire, og uten egne mål klistrer de
   // seg i midten. Reglene må ligge ETTER media-queryene, ellers deler de spesifisitet med .kunde-rad img
   // og taper. Fanger både at reglene finnes og at de står sist.
   const css = les('css/style.css');
-  assert.match(css, /\.kunde-rad--tre \{ justify-content: space-evenly; \}/, 'Stavanger-raden skal fordele de tre');
-  assert.match(css, /\.kunde-rad--tre img \{ width: 12rem; height: 4rem; \}/, 'Stavanger-logoene skal ha større bokser');
-  assert.ok(css.lastIndexOf('.kunde-rad--tre img') > css.lastIndexOf('.kunde-rad img'), 'reglene må stå etter .kunde-rad img, ellers vinner de ikke');
+  assert.match(css, /\.kunde-rad--fire \{ justify-content: space-evenly; \}/, 'Stavanger-raden skal fordele de fire');
+  assert.match(css, /\.kunde-rad--fire img \{ height: 4rem; \}/, 'Stavanger-logoene skal ha høyere bokser');
+  assert.match(css, /\.kunde-rad--fire img \{ width: 12rem; \}/, 'Stavanger-logoene skal ha bred boks på desktop');
+  assert.ok(css.lastIndexOf('.kunde-rad--fire img') > css.lastIndexOf('.kunde-rad img'), 'reglene må stå etter .kunde-rad img, ellers vinner de ikke');
 });
 
 test('Forsiden: rekkefølge derfor → tjenester → kunder → kontakt, og kunderaden har hvitt kort på --base', () => {
