@@ -469,10 +469,10 @@ test('tjenester/: begge byer har de samme sju tjenestekortene med «Les mer», v
   }
 });
 
-test('referanser/: Oslo har sju sitatkort (BSN, Dr. Brandt, Kanvas, KG, Medistim, Stålverkskroken, MF), Stavanger sine egne fire, uten NVH, på --base-hodet', () => {
+test('referanser/: Oslo har sju sitatkort (BSN, Dr. Brandt, Kanvas, KG, Medistim, Stålverkskroken, MF), Stavanger sine egne fem, uten NVH, på --base-hodet', () => {
   for (const [by, antall, navn] of [
     ['Oslo', 7, ['BSN – Boligstiftelsen Nydalen', 'Mariann<br>Dr. Brandt', 'Roy Kristensen Bakland<br>Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken barnehage', 'Lars Fredrik<br>MF vitenskapelig høyskole']],
-    ['Stavanger', 4, ['Tore Ormøy<br>Dragaberget barnehage', 'Victor Husebø<br>Breitorget', 'Halvor<br>Storhaug treningssenter', 'Kenneth Meland<br>Union']],
+    ['Stavanger', 5, ['Tore Ormøy<br>Dragaberget barnehage', 'Victor Husebø<br>Breitorget', 'Halvor<br>Storhaug treningssenter', 'Kenneth Meland<br>Union', 'Håvard Erga']],
   ]) {
     const h = les(sideFil(by, 'referanser'));
     assert.equal((h.match(/class="sitat-kort"/g) || []).length, antall, `${by}: antall sitatkort`);
