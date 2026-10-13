@@ -1004,8 +1004,7 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
   background: linear-gradient(to bottom, var(--himmel) 0, var(--teal-lys) 6rem);
 }
 /* To kort side om side fra 48rem (like brede og like høye: grid strekker radens celler), ett over
-   hverandre under. Stavanger har bare ett kort (første setning er ikke bekreftet der): det sentreres
-   i én kolonnes bredde. Hover-løft: se under .derfor-kort. */
+   hverandre under. Begge byer har to kort. Hover-løft: se under .derfor-kort. */
 .derfor-rad { display: grid; gap: var(--s-5); grid-template-columns: minmax(0, 1fr); max-width: 46rem; margin-inline: auto; } /* var 60rem: kortene var for store (Ricky 2026-10-08) */
 .derfor-kort {
   background: #fff; border-radius: var(--radius);
@@ -1031,7 +1030,6 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .derfor-kort h3 { color: var(--teal-mork); }
 @media (min-width: 48rem) {
   .derfor-rad { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .derfor-rad--en { grid-template-columns: minmax(0, 1fr); max-width: 24rem; }
   .derfor-kort { padding: var(--s-5) var(--s-6); }
 }
 

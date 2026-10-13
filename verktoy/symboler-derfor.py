@@ -1,4 +1,5 @@
 # Genererer symbolene i samme stil: «Derfor»-kortene (bilder/ikon-erfaring.svg, bilder/ikon-dette-far-du.svg)
+# og Stavangers «Lokal og personlig oppfølging» (bilder/ikon-lokal-oppfolging.svg: kartnål, Marit 2026-10-13)
 # og Kontakt-seksjonens to kort (bilder/ikon-ta-kontakt.svg: snakkeboble, bilder/ikon-firma.svg: bygning, Ricky 2026-10-08):
 # flate, runde, burgunder (#75355D, Maritts burgunder) med hvit glyf, uten skygge, i samme stil som tjenestesymbolene.
 # Var grønne (#008789) til 2026-10-08, da Ricky ba om å prøve burgunder.
@@ -12,6 +13,8 @@ GLYFER = {
     'erfaring': '<rect x="16" y="19" width="32" height="28" rx="4"/><path d="M16 29h32M24 15v8M40 15v8"/><path d="M25 38l5 5 9-10"/>',
     # skjold med hake (Dette får du)
     'dette-far-du': '<path d="M32 14l14 5v11c0 9-6 15-14 19-8-4-14-10-14-19V19z"/><path d="M25 32l5 5 9-10"/>',
+    # kartnål med prikk (Stavangers «Lokal og personlig oppfølging»)
+    'lokal-oppfolging': '<path d="M32 50s-13-11-13-22a13 13 0 0 1 26 0c0 11-13 22-13 22z"/><circle cx="32" cy="28" r="4.5"/>',
     # snakkeboble med tre prikker («Ta kontakt»)
     'ta-kontakt': '<path d="M18 18h28a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H33l-9 8v-8h-6a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z"/><path d="M25 30h.01M32 30h.01M39 30h.01"/>',
     # bygning med vinduer (firmakortet)

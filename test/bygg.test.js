@@ -734,15 +734,18 @@ test('Derfor (Oslo): to kort med burgunder symbol + h3 + ett avsnitt, avsnittene
   for (const g of ['Fast renholder', 'Rask kommunikasjon', 'Tett oppfølging']) assert.ok(!d.includes(`>${g}<`), g);
 });
 
-test('Derfor (Stavanger): ett kort med burgunder skjold-symbol + «Dette får du» + teksten, uten Oslo-påstander, UTKAST står i kilden', () => {
+test('Derfor (Stavanger): to kort (Dette får du + Lokal og personlig oppfølging), uten Oslo-påstander, UTKAST står i kilden', () => {
   const d = derforSeksjon('Stavanger');
   const kort = derforKort(d);
-  assert.equal((d.match(/class="derfor-kort"/g) || []).length, 1);
-  assert.equal(kort.length, 1);
-  assert.equal((d.match(/<p>/g) || []).length, 1);
-  assert.match(d, /derfor-rad--en/);
-  const tekst = sjekkKort(kort[0], 'ikon-dette-far-du.svg', 'Dette får du', 'Stavanger');
-  assert.equal(tekst, 'Vi tilbyr faste renholdere, rask kommunikasjon og systematisk kvalitetsoppfølging. Vi benytter ikke underleverandører i det daglige renholdet.');
+  assert.equal((d.match(/class="derfor-kort"/g) || []).length, 2);
+  assert.equal(kort.length, 2);
+  assert.equal((d.match(/<p>/g) || []).length, 2);
+  assert.doesNotMatch(d, /derfor-rad--en/);
+  const tekst1 = sjekkKort(kort[0], 'ikon-dette-far-du.svg', 'Dette får du', 'Stavanger 1');
+  assert.equal(tekst1, 'Vi tilbyr faste renholdere, rask kommunikasjon og systematisk kvalitetsoppfølging. Vi benytter ikke underleverandører i det daglige renholdet.');
+  // Marit 2026-10-13: kort nr. 2 under bybildet, hennes eksakte tekst.
+  const tekst2 = sjekkKort(kort[1], 'ikon-lokal-oppfolging.svg', 'Lokal og personlig oppfølging', 'Stavanger 2');
+  assert.equal(tekst2, 'Hos Clean Unit Stavanger får dere kort vei til beslutninger og tett kontakt med den som følger opp renholdet.');
   assert.doesNotMatch(d, /siden 2007|Oslo og omegn|rundt 100|over 100 kunder|Erfaring|75355D|burgunder/i);
   assert.ok(les('sider/forside.html').includes('<!-- UTKAST: Stavangers egen tekst venter på Marit (år, antall kunder, område) -->'));
 });
@@ -1309,8 +1312,7 @@ test('CSS: «Derfor»-kortene er kompakte: smalere rad (46rem), 3 rem symbol, 1 
   assert.match(css, /\.derfor-rad \{[^}]*max-width: 46rem;/, 'raden er smalere enn 60rem');
   assert.match(css, /\.derfor-kort p \{ color: var\(--tekst\); font-size: 1rem; line-height: 1\.55; \}/, 'tekst 1 rem');
   assert.match(css, /\.derfor-kort__ikon \{[^}]*width: 3rem; height: 3rem;/, 'symbol 3 rem');
-  assert.match(css, /\.derfor-rad--en \{[^}]*max-width: 24rem;/, 'Stavangers ene kort er også smalere');
-  assert.match(css, /@media \(min-width: 48rem\) \{\s*\.derfor-rad \{[^}]*\}\s*\.derfor-rad--en \{[^}]*\}\s*\.derfor-kort \{ padding: var\(--s-5\) var\(--s-6\); \}/, 'mindre padding fra 48rem');
+  assert.match(css, /@media \(min-width: 48rem\) \{\s*\.derfor-rad \{[^}]*\}\s*\.derfor-kort \{ padding: var\(--s-5\) var\(--s-6\); \}/, 'mindre padding fra 48rem');
 });
 
 test('CSS: «Ta kontakt»-boksen og kortet deler bredden 50/50 fra 64rem (to like kolonner)', () => {
