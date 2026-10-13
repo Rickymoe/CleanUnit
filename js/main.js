@@ -7,6 +7,8 @@ export function initSider() {
   glansSveip(reduksjon)
   stiNedover(reduksjon)
   sideNav()
+  åpneTjenesteFraAnker()
+  addEventListener('hashchange', åpneTjenesteFraAnker)
 }
 
 function debounce(fn, ms) {
@@ -465,4 +467,13 @@ function sideNav() {
       if (e.key === 'Escape' && !privacyPanel.hasAttribute('hidden')) privacyPanel.setAttribute('hidden', '')
     })
   }
+}
+
+
+// Forsidekortene lenker til tjenester/#anker (Marit 2026-10-13). Kortet åpnes, så man lander på
+// teksten og ikke bare på overskriften. Kjører også ved hashchange (lenke på samme side).
+function åpneTjenesteFraAnker() {
+  const kort = location.hash.length > 1 && document.getElementById(decodeURIComponent(location.hash.slice(1)))
+  const mer = kort && kort.classList.contains('tjeneste-kort') && kort.querySelector('details.tjeneste-mer')
+  if (mer) mer.open = true
 }

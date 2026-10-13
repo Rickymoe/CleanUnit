@@ -619,7 +619,13 @@ test('Forsiden: tre tjenestekort uten «Les mer», én «Se alle tjenester →»
     assert.ok(lenke > kortSlutt, `${by}: lenken står etter kortene`);
     assert.ok(lenke < sek.indexOf('</div>', kortSlutt), `${by}: lenken står inne i .wrap`);
     assert.equal((sek.slice(0, kortSlutt).match(/class="tekst-lenke"/g) || []).length, 0, `${by}: ingen lenke inne i kortene`);
-    navn.forEach((t, i) => assert.ok(sek.indexOf(`<h3>${t}</h3>`) > (i ? sek.indexOf(`<h3>${navn[i - 1]}</h3>`) : -1), `${by}: ${t} i rekkefølge`));
+    // Marit 2026-10-13: hele kortet er klikkbart. Lenken ligger rundt overskriften (strukket over kortet i CSS).
+    const mal = ['tjenester/#fast-daglig-renhold', 'tjenester/#barnehager', 'tjenester/#hovedrengjoring'];
+    navn.forEach((t, i) => {
+      const h3 = `<h3><a class="kort-lenke" href="${mal[i]}">${t}</a></h3>`;
+      assert.ok(sek.includes(h3), `${by}: ${t} lenker til ${mal[i]}`);
+      assert.ok(sek.indexOf(h3) > (i ? sek.indexOf('>' + navn[i - 1] + '</a></h3>') : -1), `${by}: ${t} i rekkefølge`);
+    });
     assert.doesNotMatch(h, /class="sitat-kort"|<blockquote/, `${by}: forsiden viser ikke sitater`);
     assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Renhold tilpasset deres arbeidssted</h2></div>'), by);
   }
@@ -1234,7 +1240,7 @@ test('Tjenester: Stavanger-siden er Oslo-siden med byen byttet, minus NS-INSTA-a
 });
 
 test('Forsiden: Stavanger har samme tjenestelinje som Oslo', () => {
-  const linje = (by) => les(sideFil(by, 'forside')).match(/<h3>Temporært renhold og hygieneartikler<\/h3>\s*<p>([^<]*)<\/p>/)[1];
+  const linje = (by) => les(sideFil(by, 'forside')).match(/Temporært renhold og hygieneartikler(?:<\/a>)?<\/h3>\s*<p>([^<]*)<\/p>/)[1];
   assert.equal(linje('Stavanger'), 'Hovedrengjøring, tepper og møbler, gulv, vinduer og hygieneartikler – som enkeltoppdrag eller planlagt gjennom året.');
   assert.equal(linje('Stavanger'), linje('Oslo'));
 });
@@ -1324,4 +1330,15 @@ test('CSS: Kontakt-kortet (firma og personer) har samme bakgrunn som kortene på
   assert.match(css, /\n\.kontakt__info \{ background: var\(--teal-lys\);/, 'kortet bruker --teal-lys, som .tjeneste-kort');
   assert.match(css, /\n\.tjeneste-kort \{[^}]*background: var\(--teal-lys\);/, 'Tjenester-kortene bruker --teal-lys');
   assert.match(css, /\.kontakt__handling \{ background: var\(--flate\);/, 'boksen er fortsatt hvit');
+});
+
+test('Tjenester: «Fast daglig renhold» «Barnehager» og «Hovedrengjøring» har anker som forsidekortene lenker til, og main.js åpner «Les mer»', () => {
+  for (const by of ['Oslo', 'Stavanger']) {
+    const h = les(sideFil(by, 'tjenester'));
+    for (const [id, tittel] of [['fast-daglig-renhold', 'Fast daglig renhold'], ['barnehager', 'Renhold av barnehager'], ['hovedrengjoring', 'Hovedrengjøring']]) {
+      const m = h.match(new RegExp(`<li class="tjeneste-kort[^"]*" id="${id}">\\s*<img [^>]*>\\s*<h3>${tittel}</h3>`));
+      assert.ok(m, `${by}: #${id} sitter på kortet «${tittel}»`);
+    }
+  }
+  assert.match(les('js/main.js'), /åpneTjenesteFraAnker/, 'main.js åpner «Les mer» ved anker');
 });
