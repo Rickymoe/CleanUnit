@@ -109,13 +109,14 @@
     <p class="eyebrow">Referanser</p>
     <!-- UTKAST: overskriften er vår, ikke Maritts. Raden er én lenke til referanser/; logoene har tom alt og lenken er skjult for tastatur/skjermleser, den synlige tekstlenken under bærer navnet. -->
     <h2>Kunder som har valgt oss</h2>
-    <a class="kunde-rad{{^er_oslo}} kunde-rad--fire{{/er_oslo}}" href="{{by_rot}}referanser/" tabindex="-1" aria-hidden="true">
+    <a class="kunde-rad kunde-rad--{{#er_oslo}}sju{{/er_oslo}}{{^er_oslo}}fire{{/er_oslo}}" href="{{by_rot}}referanser/" tabindex="-1" aria-hidden="true">
       {{#er_oslo}}<picture><source srcset="{{rot}}bilder/logo-bsn.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-bsn.png" alt="" width="360" height="237"></picture>
       <picture><source srcset="{{rot}}bilder/logo-kg.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kg.png" alt="" width="1140" height="237"></picture>
       <picture><source srcset="{{rot}}bilder/logo-kanvas.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-kanvas.png" alt="" width="394" height="166"></picture>
       <picture><source srcset="{{rot}}bilder/logo-medistim.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-medistim.png" alt="" width="1198" height="174"></picture>
       <picture><source srcset="{{rot}}bilder/logo-pioner.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-pioner.png" alt="" width="180" height="117"></picture>
-      <picture><source srcset="{{rot}}bilder/logo-staalverkskroken.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-staalverkskroken.png" alt="" width="640" height="193"></picture>{{/er_oslo}}{{^er_oslo}}<picture><source srcset="{{rot}}bilder/logo-dragaberget.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-dragaberget.png" alt="" width="203" height="177"></picture>
+      <picture><source srcset="{{rot}}bilder/logo-staalverkskroken.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-staalverkskroken.png" alt="" width="640" height="193"></picture>
+      <picture><source srcset="{{rot}}bilder/logo-mf.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-mf.png" alt="" width="940" height="176"></picture>{{/er_oslo}}{{^er_oslo}}<picture><source srcset="{{rot}}bilder/logo-dragaberget.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-dragaberget.png" alt="" width="203" height="177"></picture>
       <picture><source srcset="{{rot}}bilder/logo-breitorget.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-breitorget.png" alt="" width="206" height="50"></picture>
       <picture><source srcset="{{rot}}bilder/logo-storhaug.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-storhaug.png" alt="" width="1284" height="402"></picture>
       <picture><source srcset="{{rot}}bilder/logo-union.webp" type="image/webp"><img loading="lazy" decoding="async" src="{{rot}}bilder/logo-union.png" alt="" width="311" height="249"></picture>{{/er_oslo}}

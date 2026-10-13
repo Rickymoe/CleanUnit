@@ -1278,6 +1278,11 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
   .kunde-rad img { width: 6.25rem; }
   .kunde-rad__navn { width: 6.25rem; }
 }
+/* Oslo viser sju logoer (MF kom til 2026-10-13). Raden er ~892 px innvendig fra 64rem, så 7 × 7rem + 6 × 1rem = 880 px
+   rekker akkurat (6 × 8rem gjorde det før). Under 64rem er standardbredden 9rem for stor til 4 + 3: ved 768 px (657 px
+   innvendig) gir 8,5rem fire på første rad og tre på neste, mot 3 + 3 + 1 med 9rem. */
+@media (min-width: 48rem) { .kunde-rad--sju img { width: 8.5rem; } }
+@media (min-width: 64rem) { .kunde-rad--sju img { width: 7rem; } }
 /* Stavanger viser fire kunder mot Oslos seks (Ricky 2026-10-12, Union kom til 2026-10-13). Med samme
    logobredde ble de en klase midt i en bred flate, med tomrom på begge sider. Her fordeles de
    jevnt over raden og får høyere bokser, så raden leses som nettopp en rad. Reglene står etter
