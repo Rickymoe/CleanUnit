@@ -1183,7 +1183,7 @@ test('Kontakt: begge kortene har et dekorativt ikon foran overskriften (alt tom,
 test('Tekstsjekk: «fast, daglig renhold» (med komma) står ingen steder i kildene eller de bygde sidene', () => {
   const kilder = [...['forside', 'tjenester', 'referanser', 'om-oss', 'miljo'].map((n) => `sider/${n}.html`), 'deler/kontakt.html', 'deler/layout.html', 'byer.json'];
   for (const f of [...kilder, ...alleSider().map((x) => x.fil)]) assert.doesNotMatch(les(f), /fast, daglig/i, f);
-  assert.match(les('sider/tjenester.html'), /fast daglig renhold/);
+  assert.match(les('sider/tjenester.html'), /fast daglig renhold/i);
 });
 test('Tekstsjekk: «Renholderne er våre viktigste medarbeidere» står på Om oss i begge byer, den gamle h2-en er borte', () => {
   for (const by of ['Oslo', 'Stavanger']) {
@@ -1214,13 +1214,14 @@ test('Tekstsjekk: Oslo har NS-INSTA, Stavanger har det ikke; barnehage-setningen
   assert.ok(o.includes('NS-INSTA 800'), 'Oslo: NS-INSTA 800');
   const main = st.slice(st.indexOf('<main'), st.indexOf('id="kontakt"'));
   assert.ok(main.includes('<h3>Renhold av barnehager</h3>') && main.length > 5000, 'Stavanger: innholdsutsnittet er med');
-  const setning = 'Vi har rengjort barnehager siden 2007 og utfører i dag renhold i over 70 barnehager i Oslo og omegn.';
+  const setning = 'Vi har rengjort barnehager siden 2007, og utfører i dag renhold i over 70 barnehager i Oslo og omegn.';
   assert.ok(main.includes(`<p>${setning}</p>`), 'Stavanger: barnehage-setningen står, erfaringen er Clean Units (fra Oslo)');
   const utenSetning = main.replace(setning, '');
   for (const forbudt of ['over 70', 'over 100', 'NS-INSTA', 'Oslo', 'om lag 90 prosent', 'Ti års', 'siden 2007']) {
     assert.ok(!utenSetning.includes(forbudt), `Stavanger Tjenester: «${forbudt}» skal ikke stå utenom barnehage-setningen`);
   }
-  assert.ok(main.includes('i Stavanger og omegn.</p>'), 'Stavanger: intro nevner Stavanger og omegn');
+  // Marit 2026-10-13: ingressen nevner ikke lenger byen (heroen og rekkevidde-linja gjør det).
+  assert.ok(main.includes('<p>Vi leverer daglig renhold til kontorer, private skoler, barnehager og andre kunder. Det daglige renholdet utføres av våre egne ansatte.'), 'Stavanger: Marits nye ingress');
   assert.ok(!les(sideFil('Stavanger', 'om_oss')).includes('Flere av våre ansatte har jobbet'), 'Stavanger: ingen Oslo-ansatttekst');
 });
 
