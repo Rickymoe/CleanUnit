@@ -664,7 +664,7 @@ test('Forsiden: kunderaden lenker til referanser/ (Oslo 7 logoer, Stavanger sine
   // seg i midten. Reglene må ligge ETTER media-queryene, ellers deler de spesifisitet med .kunde-rad img
   // og taper. Fanger både at reglene finnes og at de står sist.
   const css = les('css/style.css');
-  assert.match(css, /\.kunde-rad--sju img \{ width: 7rem; \}/, 'Oslo: sju logoer på 7rem fra 64rem');
+  assert.match(css, /\.kunde-rad--sju img \{ width: 12rem; height: 4rem; \}/, 'Oslo: sju logoer i 12 × 4rem-bokser fra 64rem (fire + tre)');
   assert.match(css, /\.kunde-rad--fire \{ justify-content: space-evenly; \}/, 'Stavanger-raden skal fordele de fire');
   assert.match(css, /\.kunde-rad--fire img \{ height: 4rem; \}/, 'Stavanger-logoene skal ha høyere bokser');
   assert.match(css, /\.kunde-rad--fire img \{ width: 12rem; \}/, 'Stavanger-logoene skal ha bred boks på desktop');
