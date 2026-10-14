@@ -1226,6 +1226,9 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
    (avataren er det som bærer «en person sier dette»). Navnet står i burgunder. Kun «Jobb hos oss»; kundesitatene under Referanser har logo. */
 .stopp--jobb .sitat-kort { align-items: flex-start; }
 .sitat-avatar { flex: none; display: block; width: 4rem; height: 4rem; }
+/* Et ekte portrett (Irene, Marit 2026-10-14) rundes og beskjæres av CSS; de tegnede avatarene er allerede runde SVG-er. */
+.sitat-avatar--foto { border-radius: 50%; object-fit: cover; }
+.sitat-kort > picture { flex: none; display: block; }
 .stopp--jobb .sitat-kort footer { color: var(--burgunder); }
 
 /* ── Undersider (flerside, 2026-10-06) ────────────────────────────────────────────────────────────
