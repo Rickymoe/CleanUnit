@@ -1108,6 +1108,10 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 .miljo-kort li { margin-top: var(--s-1); }
 .miljo-kort__logo { display: block; height: 3rem; width: auto; max-width: 9rem; object-fit: contain; }
 .miljo-kort__logo--bred { height: 3.25rem; max-width: 11rem; }
+/* Den offisielle «Sertifisert virksomhet»-logoen fra Miljøfyrtårn (vektor, brukes uendret; bare størrelsen settes). Horisontal variant (Ricky 2026-10-14, valgt fremfor vertikal): lavere
+   og bredere, så kortet passer med Virke- og Offentlig godkjent-kortene under. Teksten «SERTIFISERT VIRKSOMHET» må være leselig, så logoen
+   trenger en høyere boks enn den gamle 3rem-logoen. */
+.miljo-kort__logo--sert { height: 4.75rem; max-width: none; }
 
 /* ── Scenen i heroen (Marits illustrasjon, modernisert) ─────────────────────────────────────────
    Bildet har en nesten flat himmel (--himmel). Toppen av figuren tones fra sidens bakgrunn til
