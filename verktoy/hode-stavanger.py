@@ -12,6 +12,21 @@ Kjør fra repo-roten (etter hero-stavanger-hus.py og hero-stavanger-silhuett.py)
 from PIL import Image
 import numpy as np
 
+def farge_til_alfa(rgb, bakgrunn):
+    """GIMPs «farge til alfa»: hver piksel p skrives som F over bakgrunnen B med minst mulig dekning, p = a·F + (1 − a)·B. Himmelen
+    blir gjennomsiktig og motivene beholder fargen sin, så sidehodets egen bakgrunn (som er en gradient og ikke flat himmelfarge)
+    skinner gjennom. En flat himmel i bildet ga et synlig rektangel med annen form enn bandet rundt (Ricky 2026-10-14)."""
+    p = np.clip(rgb, 0, 255)
+    opp = np.where(p > bakgrunn, (p - bakgrunn) / np.maximum(255 - bakgrunn, 1), 0)
+    ned = np.where(p < bakgrunn, (bakgrunn - p) / np.maximum(bakgrunn, 1), 0)
+    alfa = np.maximum(opp, ned).max(axis=2)
+    alfa = np.clip((alfa - 0.045) / (1 - 0.045), 0, 1)       # bildestøy i himmelen (under ca. 4,5 %) skal ikke bli et synlig slør
+    trygg = np.maximum(alfa, 1e-6)[..., None]
+    f = bakgrunn + (p - bakgrunn) / trygg
+    f = np.where(alfa[..., None] > 1e-6, f, bakgrunn)
+    return np.dstack([np.clip(f, 0, 255), alfa * 255]).round().astype('uint8')
+
+
 KILDE = 'bilder/hero-stavanger.webp'
 RUTE = (1340, 40, 2100, 436)           # x0, y0, x1, y1 i scenen (2172 × 724)
 HIMMEL = np.array([0x9A, 0xD2, 0xD5], float)
@@ -95,7 +110,7 @@ def kirke_lag():
 kirke = kirke_lag()
 sky_aktig = (np.abs(ut_a - HIMMEL).max(2) < 9)[..., None]
 ut_a = np.where(sky_aktig, ut_a * (1 - kirke) + (HIMMEL - DELTA * 3.0) * kirke, ut_a)
-ut = Image.fromarray(np.clip(ut_a, 0, 255).round().astype('uint8'))
-ut.save('bilder/hode-stavanger.webp', quality=86, method=6)
-ut.save('bilder/hode-stavanger.jpg', quality=88, optimize=True)
+ut = Image.fromarray(farge_til_alfa(ut_a, HIMMEL), 'RGBA')
+ut.save('bilder/hode-stavanger.webp', quality=90, alpha_quality=100, method=6)
+ut.save('bilder/hode-stavanger.png', optimize=True)
 print(ut.size, 'sky', sky.round(1))
