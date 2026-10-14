@@ -288,11 +288,10 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
   .hero__ingress { font-size: var(--t-sm); }
   /* Stavanger: den tvungne brytningen i ingressen («…restauranter / kinoer og
      barnehager.») ga tre linjer på telefon (förste del tar to). Skjul br-en så
-     teksten flyter og balanserer til to linjer, og skjul sekundærlinjen
-     «Direkte ansatte …» (den står på desktop og i meta-beskrivelsen).
-     Kun Stavanger — Oslo-ingressen er urørt (Ricky 2026-10-12). */
+     teksten flyter og balanserer til to linjer. Sekundærlinjen «Direkte ansatte • ingen underleverandører» var skjult på telefon
+     (Ricky 2026-10-12), men vises nå også der (Ricky 2026-10-14: «vises ikke» på mobil); den er en .hero__fakta-rad som Oslos.
+     Kun Stavanger — Oslo-ingressen er urørt. */
   .by--stavanger .hero__ingress br { display: none; }
-  .by--stavanger .hero__ingress .ingress-direkte { display: none; }
   .hero__rekkevidde { font-size: var(--t-sm); margin-top: var(--s-2); }
 }
 
