@@ -1053,8 +1053,8 @@ const heroIngress = (fil) => {
 test('Oslo: heroens grå ingress er nøyaktig de tre punktene, uten underleverandører', () => {
   const [tagline, grå, ...rest] = heroIngress('test/ut/index.html').split('<br>');
   assert.equal(rest.length, 0);
-  assert.equal(tagline, '<strong>Profesjonelt renhold for bedrifter, skoler og barnehager.</strong>');
-  assert.equal(grå, 'Etablert 2007, offentlig godkjent, Miljøfyrtårn');
+  assert.equal(tagline, '<strong>Profesjonelt renhold for bedrifter, skoler og barnehager</strong>');
+  assert.equal(grå, '<span class="hero__fakta"><span>Etablert 2007</span><i aria-hidden="true"></i><span>offentlig godkjent</span><i aria-hidden="true"></i><span>Miljøfyrtårn</span></span>');
   assert.ok(!/underleverandør/i.test(tagline + grå));
 });
 
@@ -1062,7 +1062,7 @@ test('Oslo: heroens grå ingress er nøyaktig de tre punktene, uten underleveran
 // barnehagerenhold …» til byens egen linje. Begge byene har nå direkte-ansatte-løftet i heroen.
 test('Stavanger: heroens ingress er byens egen (restauranter og kinoer, direkte ansatte)', () => {
   assert.equal(heroIngress('test/ut/stavanger/index.html'),
-    '<strong>Profesjonelt renhold for bedrifter, restauranter,<br> kinoer og barnehager.</strong><br> <span class="ingress-direkte">Direkte ansatte&nbsp;– ingen underleverandører.</span>');
+    '<strong>Profesjonelt renhold for bedrifter, restauranter,<br> kinoer og barnehager</strong><br><span class="ingress-direkte hero__fakta hero__fakta--to"><span>Direkte ansatte</span><i aria-hidden="true"></i><span>ingen underleverandører</span></span>');
 });
 
 test('Stavanger-lederen heter Thord Hegre, daglig leder (Enhetsregisteret), aldri «Thor D.»', () => {

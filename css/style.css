@@ -994,6 +994,13 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 
 /* ===== Innhold fra Maritts dokument «Oppsett ny nettside» (2026-10-02), Oslo-siden ===== */
 .hero__ingress strong { color: var(--teal-mork); font-weight: 700; }
+/* Oslo-heroens tre punkter står som tre ledd på én rad i stedet for en kommaliste (Marit 2026-10-14: taglinen mister
+   punktum, og «Etablert 2007, offentlig godkjent, Miljøfyrtårn» ble rar med komma). Leddene fordeles over ingressens bredde. */
+.hero__fakta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 .75rem; margin-top: .15rem; }
+.hero__fakta--to { justify-content: center; gap: 0 .75rem; }
+.hero__fakta > span { white-space: nowrap; }
+.hero__fakta > i { flex: none; align-self: center; width: .3rem; height: .3rem; border-radius: 50%; background: var(--teal); }
+@media (max-width: 48rem) { .hero__fakta { justify-content: center; gap: 0 .45rem; font-size: .8125rem; } }
 .stopp__lede--flere { max-width: 68ch; }
 .stopp__lede--flere > p + p { margin-top: var(--s-3); }
 
@@ -1138,14 +1145,14 @@ html.vinter { --himmel: #93CED3; }
    ned i bildet, så linja ligger på den flate himmelen like under. Fargen er Maritts. */
 .hero__scene-ramme .hero__rekkevidde {
   position: absolute; left: 0; right: 0; top: 90.5%; margin: 0 auto; max-width: none; text-align: center; line-height: 1.2;
-  font-size: clamp(1.25rem, 3.5vw, 2.5rem); color: #595959; /* Maritts farge i mockupen (595959); stor tekst, så 4,2:1 mot himmelen holder (3:1) */
+  font-size: calc(2 * var(--t-base)); font-weight: 400; color: #595959; /* Maritts farge i mockupen (595959); stor tekst, så 4,2:1 mot himmelen holder (3:1) */
 }
 /* Varebilens blanke side: ca. 23 % / 73-78 % av bildet, 5,6 % bredt (målt). Uten turkisbuen (Marit 2026-10-07: «kun logo»); logoen står 1,55 % av bildehøyden lavere (68 %) så det blir luft over den. Egen logovariant (bilder/logo-cleanunit-varebil.svg): bare ordmerket, mørke farger. */
 .hero__scene-merke { position: absolute; left: 19.4%; top: 68%; width: 5.5%; height: auto; }
 .hero__sti-start { position: absolute; left: 9%; top: 84%; width: 0; height: 0; }
 @media (max-width: 48rem) {
   .hero__scene { padding-bottom: 1.5rem; }
-  .hero__scene-ramme .hero__rekkevidde { font-size: 1.15rem; font-weight: 700; color: #4F4F4F; padding-inline: 1rem; } /* under «stor tekst»-grensa, så mørkere grå (4,9:1) */
+  .hero__scene-ramme .hero__rekkevidde { font-size: var(--t-base); font-weight: 400; color: #4F4F4F; padding-inline: 1rem; } /* under «stor tekst»-grensa, så mørkere grå (4,9:1) */
   .hero__sti-start { display: none; }
 }
 /* Under 45rem beskjæres bildet (cover, 15rem høyt, forankret 35 % fra venstre) i stedet for å bli bittelite. Da er bildet
