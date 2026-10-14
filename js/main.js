@@ -401,6 +401,16 @@ function stiNedover(reduksjon) {
 
 // Toppmeny: mobilmenyen åpnes av knappen (lukkes av Escape, et trykk på en lenke eller et trykk
 // utenfor), og gjeldende side markeres med aria-current i HTML-en. Uten JS er lenkene alltid synlige.
+// Spiller av boblene i toppmenyens logo på nytt: klassen tas av og settes på igjen etter en tvungen omtegning, så animasjonene
+// (html.logo-anim .side-nav__logo .nb) starter fra begynnelsen. Redusert bevegelse styres av CSS (ingen animasjon).
+function spillNavLogoPaaNytt() {
+  const rot = document.documentElement
+  rot.classList.remove('logo-anim')
+  void rot.offsetWidth
+  rot.classList.add('logo-anim')
+  try { sessionStorage.removeItem('cuLogoKlikk') } catch (err) { /* ingen lagring */ }
+}
+
 function sideNav() {
   const nav = document.querySelector('.side-nav')
   if (!nav) return
@@ -422,6 +432,14 @@ function sideNav() {
   // navigere vanlig (se vernet under). Headeren er sticky og kan ikke brukes som anker (den ligger allerede øverst i
   // vinduet, så en lenke til den gjør ingenting). Animasjonen starter først når rullingen er
   // framme, ellers ville den gått ferdig utenfor syne.
+  // Boblene i logoen animeres når man trykker på den for å komme til forsiden (Ricky 2026-10-14). På en underside navigerer lenka
+  // vanlig, så den nye siden får beskjed via sessionStorage (leses i <head>, deler/layout.html); på forsiden spilles de av med en
+  // gang. Egen lytter FØR den som ruller til toppen, så den ikke påvirkes av tidlig retur der.
+  const logoLenke = nav.querySelector('.side-nav__logo')
+  logoLenke.addEventListener('click', () => {
+    try { sessionStorage.setItem('cuLogoKlikk', '1') } catch (err) { /* uten lagring: ingen animasjon på forsiden */ }
+    if (document.querySelector('.hero')) spillNavLogoPaaNytt()
+  })
   nav.querySelector('.side-nav__logo').addEventListener('click', (e) => {
     // Undersidene har ingen hero å rulle til: da er logoen en vanlig lenke til byens forside.
     if (!document.querySelector('.hero')) return

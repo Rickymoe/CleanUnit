@@ -943,6 +943,21 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 /* Merket i hjørnet er logoens tre bobler, samme tegning som favicon (Ricky 2026-10-03). */
 .side-nav__logo { display: block; flex: none; line-height: 0; border-radius: 8px; }
 .side-nav__logo svg { display: block; width: 2.6rem; height: 2.6rem; }
+/* Boblene i toppmenyens logo får et kort lysglimt (under 0,6 s): et skrått skinn, klippet til de tre boblene, sveiper over dem fra venstre mot
+   høyre, som lys i såpebobler (Ricky 2026-10-14: «det må noe annet enn det som finnes midt i Hero og det må ta kort tid»; valgt blant
+   «løsner», «hopp» og «glans»). Boblene står i ro, ingenting vokser eller flyter som i heroens ordmerke. Samme retning som heroens
+   «vask»-sveip. Kun første gang siden åpnes i en økt, ved oppdatering og når man trykker på logoen (html.logo-anim settes i <head>).
+   Skinnet ligger i en egen gruppe med clip-path: klippet må ligge på en gruppe som ikke beveger seg, ellers følger det med stripen. */
+.side-nav__logo .nb-skinn { opacity: 0; transform-box: view-box; }
+@keyframes nb-skinn-sveip {
+  0%   { transform: translateX(0) skewX(-18deg); opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { transform: translateX(150px) skewX(-18deg); opacity: 0; }
+}
+html.logo-anim .side-nav__logo .nb-skinn { animation: nb-skinn-sveip 520ms cubic-bezier(.45, 0, .35, 1) 60ms both; }
+@media (prefers-reduced-motion: reduce) { html.logo-anim .side-nav__logo .nb-skinn { animation: none; } }
+@media (prefers-reduced-motion: reduce) { html.logo-anim .side-nav__logo .nb { animation: none !important; } }
 .side-nav__bryter { display: none; }
 /* «Kontakt»-knappen er bare synlig i mobilvisning (Ricky 2026-10-08): ved siden av hamburgeren, så veien til å ta kontakt ikke ligger bak menyen.
    På desktop er Kontakt fortsatt et vanlig menyvalg (Marit ba om det, c681cc1). */

@@ -13,6 +13,19 @@ document.documentElement.classList.add("js");
     document.documentElement.classList.add("vinter");
   }
 })();
+// Boblene i toppmenyens logo animeres bare første gang siden åpnes i en økt, ved oppdatering (refresh) og når man har trykket
+// på logoen for å komme til forsiden (cuLogoKlikk, satt i js/main.js): ikke når man ellers går mellom sidene på nettstedet (da ville den stå og blinke på hver side). Settes her, før noe tegnes. Uten lagring
+// (privat vindu) animeres de bare ved oppdatering og ved første åpning.
+(function () {
+  try {
+    var nav = performance.getEntriesByType("navigation")[0], type = nav ? nav.type : "navigate";
+    var sett = false;
+    try { sett = !!sessionStorage.getItem("cuLogoAnim"); sessionStorage.setItem("cuLogoAnim", "1"); } catch (e) {}
+    var klikk = false;
+    try { klikk = !!sessionStorage.getItem("cuLogoKlikk"); sessionStorage.removeItem("cuLogoKlikk"); } catch (e) {}
+    if (type === "reload" || klikk || (type === "navigate" && !sett)) document.documentElement.classList.add("logo-anim");
+  } catch (e) {}
+})();
 // Nødluke: hvis js/main.js 404-er eller kaster før logoAnimer() kjører,
 // blir ordmerket (html.js .logo, klippet av clip-path) usynlig for alltid.
 // Etter 1,2 s uten .kjor: vis logoen. Sjekker selve .kjor-klassen (ikke bare
@@ -56,7 +69,7 @@ addEventListener("load", function () {
      hver side. Ingen scrollspy. Uten JS vises lenkene alltid (html.js styrer mobilmenyen). -->
 <header class="side-nav" id="topp">
   <div class="wrap side-nav__rad">
-    <a class="side-nav__logo" href="{{logo_href}}" aria-label="{{logo_label}}"><svg viewBox="501.55 -34.9 104 104" width="104" height="104" aria-hidden="true" focusable="false"><circle cx="569.0" cy="-7.5" r="25.7" fill="#87CAC9"/><circle cx="530.2" cy="27.8" r="17.8" fill="#008789"/><circle cx="551.2" cy="58.4" r="9.0" fill="#AED1D1"/></svg></a>
+    <a class="side-nav__logo" href="{{logo_href}}" aria-label="{{logo_label}}"><svg viewBox="501.55 -34.9 104 104" width="104" height="104" aria-hidden="true" focusable="false"><circle cx="569.0" cy="-7.5" r="25.7" fill="#87CAC9"/><circle cx="530.2" cy="27.8" r="17.8" fill="#008789"/><circle cx="551.2" cy="58.4" r="9.0" fill="#AED1D1"/><defs><clipPath id="nb-klipp"><circle cx="569.0" cy="-7.5" r="25.7"/><circle cx="530.2" cy="27.8" r="17.8"/><circle cx="551.2" cy="58.4" r="9.0"/></clipPath><linearGradient id="nb-skinn" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><g clip-path="url(#nb-klipp)"><rect class="nb-skinn" x="470" y="-45" width="44" height="130" fill="url(#nb-skinn)"/></g></svg></a>
     <a class="side-nav__kontakt knapp knapp--omriss" href="#kontakt">Kontakt</a>
     <button class="side-nav__bryter" type="button" aria-expanded="false" aria-controls="side-nav-meny"><span class="side-nav__bryter-ikon" aria-hidden="true"></span><span class="visually-hidden">Meny</span></button>
     <nav class="side-nav__meny" id="side-nav-meny" aria-label="Hovedmeny">
