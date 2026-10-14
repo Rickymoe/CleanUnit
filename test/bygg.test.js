@@ -472,7 +472,7 @@ test('tjenester/: begge byer har de samme sju tjenestekortene med «Les mer», v
 test('referanser/: Oslo har sju sitatkort (BSN, Dr. Brandt, Kanvas, KG, Medistim, Stålverkskroken, MF), Stavanger sine egne fem, uten NVH, på --base-hodet', () => {
   for (const [by, antall, navn] of [
     ['Oslo', 7, ['BSN – Boligstiftelsen Nydalen', 'Mariann<br>Dr. Brandt', 'Roy Kristensen Bakland<br>Utforskeren Kanvas-Barnehage', 'Kristelig Gymnasium', 'Medistim', 'Stålverkskroken barnehage', 'Lars Fredrik<br>MF vitenskapelig høyskole']],
-    ['Stavanger', 5, ['Tore Ormøy<br>Dragaberget barnehage', 'Victor Husebø<br>Breitorget', 'Halvor<br>Storhaug treningssenter', 'Kenneth Meland<br>Union', 'Håvard Erga']],
+    ['Stavanger', 5, ['Tore Ormøy<br>Dragaberget barnehage', 'Victor Husebø<br>Breitorget', 'Halvor<br>Storhaug treningssenter', 'Kenneth Meland<br>Union', 'Håvard Erga<br>Odeon']],
   ]) {
     const h = les(sideFil(by, 'referanser'));
     assert.equal((h.match(/class="sitat-kort"/g) || []).length, antall, `${by}: antall sitatkort`);
@@ -513,7 +513,7 @@ test('referanser/: Stålverkskroken-kortet har egen logo (png + webp finnes) —
 
 // Ricky 2026-10-12: Stavangers fire referanser (Dragaberget, Breitorget, Storhaug, Union) kom inn med hver sin
 // logo fra Marit. Kortene får `<picture>` + `class="sitat-logo"`, og bildene må finnes fra /stavanger/.
-test('referanser/: Stavangers fire kort har hver sin logo (png + webp finnes)', () => {
+test('referanser/: Stavangers fem kort har hver sin logo (png + webp finnes)', () => {
   const fil = sideFil('Stavanger', 'referanser');
   const h = les(fil);
   for (const [navn, slug, bredde, hoyde] of [
@@ -521,6 +521,7 @@ test('referanser/: Stavangers fire kort har hver sin logo (png + webp finnes)', 
     ['Breitorget', 'breitorget', 206, 50],
     ['Storhaug treningssenter', 'storhaug', 1284, 402],
     ['Kenneth Meland', 'union', 311, 249],
+    ['Håvard Erga', 'odeon', 387, 104],
   ]) {
     const kort = h.split('<li class="sitat-kort">').find((k) => k.includes(navn));
     assert.ok(kort, `Stavanger: ${navn}-kortet`);
@@ -631,10 +632,10 @@ test('Forsiden: tre tjenestekort uten «Les mer», én «Se alle tjenester →»
   }
 });
 
-test('Forsiden: kunderaden lenker til referanser/ (Oslo 7 logoer, Stavanger sine egne 4), i riktig rekkefølge', () => {
+test('Forsiden: kunderaden lenker til referanser/ (Oslo 7 logoer, Stavanger sine egne 5), i riktig rekkefølge', () => {
   for (const [by, logoer, radKlasse] of [
     ['Oslo', ['logo-bsn', 'logo-kg', 'logo-kanvas', 'logo-medistim', 'logo-pioner', 'logo-staalverkskroken', 'logo-mf'], 'kunde-rad kunde-rad--sju'],
-    ['Stavanger', ['logo-dragaberget', 'logo-breitorget', 'logo-storhaug', 'logo-union'], 'kunde-rad kunde-rad--fire'],
+    ['Stavanger', ['logo-dragaberget', 'logo-breitorget', 'logo-storhaug', 'logo-union', 'logo-odeon'], 'kunde-rad kunde-rad--fem'],
   ]) {
     const h = les(sideFil(by, 'forside'));
     const start = h.indexOf('<section class="stopp--kunder" id="kunder">');
@@ -665,10 +666,10 @@ test('Forsiden: kunderaden lenker til referanser/ (Oslo 7 logoer, Stavanger sine
   // og taper. Fanger både at reglene finnes og at de står sist.
   const css = les('css/style.css');
   assert.match(css, /\.kunde-rad--sju img \{ width: 12rem; height: 4rem; \}/, 'Oslo: sju logoer i 12 × 4rem-bokser fra 64rem (fire + tre)');
-  assert.match(css, /\.kunde-rad--fire \{ justify-content: space-evenly; \}/, 'Stavanger-raden skal fordele de fire');
-  assert.match(css, /\.kunde-rad--fire img \{ height: 4rem; \}/, 'Stavanger-logoene skal ha høyere bokser');
-  assert.match(css, /\.kunde-rad--fire img \{ width: 12rem; \}/, 'Stavanger-logoene skal ha bred boks på desktop');
-  assert.ok(css.lastIndexOf('.kunde-rad--fire img') > css.lastIndexOf('.kunde-rad img'), 'reglene må stå etter .kunde-rad img, ellers vinner de ikke');
+  assert.match(css, /\.kunde-rad--fem \{ justify-content: space-evenly; \}/, 'Stavanger-raden skal fordele de fem');
+  assert.match(css, /\.kunde-rad--fem img \{ height: 4rem; \}/, 'Stavanger-logoene skal ha høyere bokser');
+  assert.match(css, /\.kunde-rad--fem img \{ width: 10rem; \}/, 'Stavanger-logoene skal ha bred boks på desktop');
+  assert.ok(css.lastIndexOf('.kunde-rad--fem img') > css.lastIndexOf('.kunde-rad img'), 'reglene må stå etter .kunde-rad img, ellers vinner de ikke');
 });
 
 test('Forsiden: rekkefølge derfor → tjenester → kunder → kontakt, og kunderaden har hvitt kort på --base', () => {

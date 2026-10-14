@@ -1284,19 +1284,19 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
    med standard 9rem. */
 @media (min-width: 48rem) { .kunde-rad--sju img { width: 8.5rem; } }
 @media (min-width: 64rem) { .kunde-rad--sju img { width: 12rem; height: 4rem; } }
-/* Stavanger viser fire kunder mot Oslos seks (Ricky 2026-10-12, Union kom til 2026-10-13). Med samme
+/* Stavanger viser fem kunder mot Oslos sju (Ricky 2026-10-12, Union 2026-10-13, Odeon 2026-10-14). Med samme
    logobredde ble de en klase midt i en bred flate, med tomrom på begge sider. Her fordeles de
    jevnt over raden og får høyere bokser, så raden leses som nettopp en rad. Reglene står etter
    media-queryene over fordi de deler spesifisitet med .kunde-rad img og ellers ville tapt for dem.
-   Bredden settes bare fra 64rem (4 × 12rem + gap rekker inn i ~892 px); under det arver logoene
-   bredden fra .kunde-rad img, så fire logoer ikke brytes til to rader. */
-.kunde-rad--fire { justify-content: space-evenly; }
-.kunde-rad--fire img { height: 4rem; }
+   Bredden settes bare fra 64rem (5 × 10rem + gap rekker inn i ~892 px); under det arver logoene
+   bredden fra .kunde-rad img, så fem logoer ikke brytes til to rader. */
+.kunde-rad--fem { justify-content: space-evenly; }
+.kunde-rad--fem img { height: 4rem; }
 @media (min-width: 64rem) {
-  .kunde-rad--fire img { width: 12rem; }
+  .kunde-rad--fem img { width: 10rem; }
 }
 @media (max-width: 30rem) {
-  .kunde-rad--fire img { height: 3rem; }
+  .kunde-rad--fem img { height: 3rem; }
 }
 
 /* Luftballongen i sidehodet (Ricky 2026-10-06): en rolig figur fra hero-scenen (ballong, sky, boble) i hodets høyre
