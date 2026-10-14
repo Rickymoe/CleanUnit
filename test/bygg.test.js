@@ -517,7 +517,7 @@ test('referanser/: Stavangers fem kort har hver sin logo (png + webp finnes)', (
   const fil = sideFil('Stavanger', 'referanser');
   const h = les(fil);
   for (const [navn, slug, bredde, hoyde] of [
-    ['Dragaberget barnehage', 'dragaberget', 203, 177],
+    ['Dragaberget barnehage', 'dragaberget', 436, 403],
     ['Breitorget', 'breitorget', 206, 50],
     ['Storhaug treningssenter', 'storhaug', 1284, 402],
     ['Kenneth Meland', 'union', 311, 249],

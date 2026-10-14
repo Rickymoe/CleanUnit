@@ -27,7 +27,7 @@ UT = Path(__file__).resolve().parent.parent / 'bilder'
 
 # (kildefil, filnavn uten endelse)
 LOGOER = [
-    ('Dragaberget logo.jpg', 'logo-dragaberget'),
+    # Dragaberget: erstattet 2026-10-14 av en større PNG, se verktoy/logo-dragaberget.py
     ('Breitorget.jpg', 'logo-breitorget'),
     ('Storhaug.jpeg', 'logo-storhaug'),
 ]

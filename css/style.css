@@ -704,6 +704,7 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
    innrykk, så venstrekanten er rett. */
 @media (min-width: 36rem) {
   .sitat-kort > picture { flex: 0 0 12.5rem; display: flex; align-items: center; }
+  .sitat-logo { object-position: center; }   /* midtstilt i logokolonnen: de nesten kvadratiske logoene (Dragaberget, Union) ble ellers stående helt til venstre med et hull mot teksten; på mobil står logoen over teksten og beholder venstrekanten */
   .stopp--referanser .sitat-kort:not(:has(> picture)) { padding-left: calc(var(--s-5) + 12.5rem + var(--s-4)); }
 }
 .stopp--jobb .jobb-soknad { margin-top: var(--s-6); font-weight: 700; font-size: var(--t-md); }
@@ -1302,11 +1303,14 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
    bredden fra .kunde-rad img, så fem logoer ikke brytes til to rader. */
 .kunde-rad--fem { justify-content: space-evenly; }
 .kunde-rad--fem img { height: 4rem; }
+/* Dragabergets logo er nesten kvadratisk (436 × 403) med ordmerket nederst: i en 4rem høy boks blir teksten uleselig. Den får en høyere boks (Ricky 2026-10-14). */
+.kunde-rad--fem img.kunde-rad__hoy { height: 5.5rem; }
 @media (min-width: 64rem) {
   .kunde-rad--fem img { width: 10rem; }
 }
 @media (max-width: 30rem) {
   .kunde-rad--fem img { height: 3rem; }
+  .kunde-rad--fem img.kunde-rad__hoy { height: 4.25rem; }
 }
 
 /* Luftballongen i sidehodet (Ricky 2026-10-06): en rolig figur fra hero-scenen (ballong, sky, boble) i hodets høyre
