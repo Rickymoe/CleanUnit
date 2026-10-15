@@ -1054,7 +1054,7 @@ test('Oslo: heroens grå ingress er nøyaktig de tre punktene, uten underleveran
   const [tagline, grå, ...rest] = heroIngress('test/ut/index.html').split('<br>');
   assert.equal(rest.length, 0);
   assert.equal(tagline, '<strong>Profesjonelt renhold for bedrifter, skoler og barnehager</strong>');
-  assert.equal(grå, '<span class="hero__fakta"><span>Etablert 2007</span><i aria-hidden="true"></i><span>offentlig godkjent</span><i aria-hidden="true"></i><span>Miljøfyrtårn</span></span>');
+  assert.equal(grå, '<span class="hero__fakta"><span>Etablert 2007</span><i aria-hidden="true"></i><span>Offentlig godkjent</span><i aria-hidden="true"></i><span>Miljøfyrtårn</span></span>');
   assert.ok(!/underleverandør/i.test(tagline + grå));
 });
 

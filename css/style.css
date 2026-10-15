@@ -1358,5 +1358,7 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
    sti-starten ligger på samme sted som i Oslo; bildene har blank varebil. Resten av siden er fortsatt grønn: Ricky
    bestemte 2026-10-07 mot et helt burgunder tema, det gjelder bare bybildet. */
 /* Tjenestesymbolene (rundmerkene) er mindre og dempet i Stavanger (Marit tror ikke Stavanger-lederen bruker symbolene likt). */
-.by--stavanger, .by--oslo { --hode-by-topp: 1.1rem; --hode-by-bunn: .4rem; }
+/* Sidehodets bilde: «ballong» (standard, Marit 2026-10-15) eller «miniby» (hode-oslo/hode-stavanger, tag sidehode-miniby; bytt
+   hode_bilde/-bredde/-hoyde/-klasse i byer.json). Minibyen er høyere og trenger mindre luft over og under. */
+.side-hode__by--miniby { --hode-by-topp: 1.1rem; --hode-by-bunn: .4rem; }
 .by--stavanger .tjeneste-kort__ikon { height: 3.5rem; opacity: .85; }
