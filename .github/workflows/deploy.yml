@@ -18,11 +18,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
+
+      - name: Installer byggeverktøy (låst i package-lock.json)
+        run: npm ci
 
       - name: Test og bygg sidene fra malen
         run: |
@@ -33,16 +36,16 @@ jobs:
         run: |
           test "$(find dist -name '*.html' | wc -l)" -eq 10
           for f in $(find dist -name '*.html' | sort); do
-            npx --yes html-minifier-terser --remove-comments \
+            npx --no-install html-minifier-terser --remove-comments \
               --minify-js '{"compress":false,"mangle":false}' \
               "$f" -o "$f"
           done
-          npx --yes clean-css-cli -O1 --format keep-breaks \
+          npx --no-install cleancss -O1 --format keep-breaks \
             -o dist/css/style.css dist/css/style.css
-          npx --yes terser dist/js/main.js -f beautify \
+          npx --no-install terser dist/js/main.js -f beautify \
             -o dist/js/main.js
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
           path: dist
 
@@ -54,4 +57,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

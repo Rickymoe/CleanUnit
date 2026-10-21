@@ -6,7 +6,7 @@ import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync } from 'node:fs'
 import { join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const DELTE_MAPPER = ['css', 'js', 'bilder'];
+const DELTE_MAPPER = ['css', 'js', 'bilder', 'fonter'];
 
 // Sidene hver by får. `id` er nøkkelen i byer.json (sider.<id>), `fil` navnet på sider/<fil>.html,
 // `sti` mappa under byens rot (tom = forsiden). Hver side ligger i egen mappe med index.html, så

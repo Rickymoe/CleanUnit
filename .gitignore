@@ -8,3 +8,4 @@ dist/
 test/ut/
 __pycache__/
 *.pyc
+node_modules/

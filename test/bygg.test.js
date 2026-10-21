@@ -1349,3 +1349,19 @@ test('Tjenester: «Fast daglig renhold» «Barnehager» og «Hovedrengjøring» 
   }
   assert.match(les('js/main.js'), /åpneTjenesteFraAnker/, 'main.js åpner «Les mer» ved anker');
 });
+
+test('Skrifter: Manrope og Quicksand er selvhostet i fonter/, ingen side henter noe fra Google', () => {
+  const css = les('css/style.css');
+  for (const fil of ['manrope-latin', 'manrope-latin-ext', 'quicksand-latin', 'quicksand-latin-ext']) {
+    assert.ok(existsSync(`fonter/${fil}.woff2`), `fonter/${fil}.woff2 finnes`);
+    assert.match(css, new RegExp(`url\\("\\.\\./fonter/${fil}\\.woff2"\\)`), `@font-face peker på ${fil}`);
+  }
+  assert.doesNotMatch(les('deler/layout.html') + css, /fonts\.(googleapis|gstatic)\.com/, 'ingen Google Fonts i layout eller CSS');
+});
+
+test('deploy.yml: byggeverktøyene er låst (npm ci, ingen npx --yes) og actions er pinnet til commit-SHA', () => {
+  const y = les('.github/workflows/deploy.yml');
+  assert.match(y, /npm ci/, 'npm ci installerer fra package-lock.json');
+  assert.doesNotMatch(y, /npx --yes/, 'ingen uversjonert npx --yes');
+  for (const m of y.matchAll(/uses: (\S+)@(\S+)/g)) assert.match(m[2], /^[0-9a-f]{40}$/, `${m[1]} er pinnet til en 40-tegns commit-SHA`);
+});

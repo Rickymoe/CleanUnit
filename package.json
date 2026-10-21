@@ -4,5 +4,10 @@
   "scripts": {
     "test": "node --test test/*.test.js",
     "bygg": "node bygg.js"
+  },
+  "devDependencies": {
+    "clean-css-cli": "5.6.3",
+    "html-minifier-terser": "7.2.0",
+    "terser": "5.51.2"
   }
 }
