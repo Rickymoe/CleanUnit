@@ -45,6 +45,9 @@ jobs:
           npx --no-install terser dist/js/main.js -f beautify \
             -o dist/js/main.js
 
+      - name: Legg til lab-sidene for kunden (ikke indeksert)
+        run: cp -r lab dist/lab
+
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
           path: dist

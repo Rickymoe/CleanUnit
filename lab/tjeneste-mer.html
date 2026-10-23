@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>«Les mer»-lab — CleanUnit</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  body { background: var(--base); margin: 0; padding: 2rem 1rem 6rem; font-family: var(--sans); color: var(--tekst); }
+  .lab { max-width: 52rem; margin: 0 auto 4rem; }
+  .lab > h2 { font: 800 var(--t-lg)/1.2 var(--sans); color: var(--teal-mork); margin: 0 0 .25rem; }
+  .lab > .merk { margin: 0 0 1rem; color: var(--tekst-svak); font-size: var(--t-sm); }
+  .lab .tjeneste-grid { margin: 0; padding: 0; list-style: none; }
+  .tjeneste-kort:hover { transform: none; box-shadow: none; }
+
+  /* ---------- felles for B, C, D: kompakt knapp-lik «Les mer» med vinkel som snur ---------- */
+  :is(.v-b, .v-c, .v-d) .tjeneste-mer summary {
+    display: inline-flex; align-items: center; gap: .5rem; list-style: none; text-decoration: none;
+    padding: .55rem 1rem; border-radius: 999px; background: var(--flate); box-shadow: inset 0 0 0 1.5px var(--teal);
+  }
+  :is(.v-b, .v-c, .v-d) .tjeneste-mer summary::-webkit-details-marker { display: none; }
+  :is(.v-b, .v-c, .v-d) .tjeneste-mer summary::after {
+    content: ""; width: .5rem; height: .5rem; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+    transform: translateY(-2px) rotate(45deg); transition: transform .2s;
+  }
+  :is(.v-b, .v-c, .v-d) .tjeneste-mer[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+  :is(.v-b, .v-c, .v-d) .tjeneste-mer[open] summary { margin-bottom: var(--s-4); }
+
+  /* ---------- B: hvitt panel, ingress, avslutningslinje ---------- */
+  .v-b .tjeneste-mer > .mer-panel {
+    background: var(--flate); border-radius: 10px; padding: var(--s-5); display: grid; gap: var(--s-3);
+    border-left: 4px solid var(--teal);
+  }
+  .v-b .mer-panel p { margin: 0; color: var(--tekst-svak); max-width: 62ch; }
+  .v-b .mer-panel p:last-child {
+    margin-top: var(--s-2); padding-top: var(--s-3); border-top: 1px solid var(--teal-lys);
+    color: var(--teal-mork); font-weight: 800;
+  }
+
+  /* ---------- hover (B og C): forsiktig, bare for mus ---------- */
+  .v-b .mer-panel p, .v-c .mer-boks, .v-c .mer-boks p { transition: color .2s, box-shadow .2s, transform .2s; }
+  @media (hover: hover) {
+    .v-b .mer-panel p:not(:last-child):hover { color: var(--tekst); }
+    .v-c .mer-boks:hover { transform: translateY(-2px); box-shadow: 0 8px 16px -10px rgba(0, 89, 91, .4); }
+    .v-c .mer-boks:hover p { color: var(--tekst); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .v-b .mer-panel p, .v-c .mer-boks, .v-c .mer-boks p { transition: none; }
+    .v-c .mer-boks:hover { transform: none; }
+  }
+
+  /* ---------- hover på «Befaring og tilbud er kostnadsfrie» (B og C): en teal strek tegnes under teksten ---------- */
+  .v-b .mer-panel p:last-child, .v-c .mer-slutt {
+    width: fit-content; background: linear-gradient(var(--teal), var(--teal)) 0 100% / 0 2px no-repeat; padding-bottom: 3px;
+    transition: background-size .3s ease, color .2s;
+  }
+  @media (hover: hover) {
+    .v-b .mer-panel p:last-child:hover, .v-c .mer-slutt:hover { background-size: 100% 2px; color: var(--teal); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .v-b .mer-panel p:last-child, .v-c .mer-slutt { transition: none; }
+  }
+
+  /* ---------- C: to kolonner med små overskrifter + tilbudsstripe ---------- */
+  .v-c .mer-rutenett { display: grid; gap: var(--s-3); grid-template-columns: 1fr; }
+  @media (min-width: 44rem) { .v-c .mer-rutenett { grid-template-columns: 1fr 1fr; } }
+  .v-c .mer-boks { background: var(--flate); border-radius: 10px; padding: var(--s-4); }
+  .v-c .mer-boks h4 {
+    margin: 0 0 var(--s-2); font: 800 var(--t-xs)/1.2 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--teal);
+  }
+  .v-c .mer-boks p { margin: 0; color: var(--tekst-svak); font-size: var(--t-sm); line-height: 1.55; }
+  .v-c .mer-boks strong { font-weight: 800; }
+  .v-c .mer-boks p + p { margin-top: var(--s-2); }
+  .v-c .mer-boks--bred { grid-column: 1 / -1; }
+  .v-c .mer-slutt { grid-column: 1 / -1; margin: var(--s-1) 0 0; color: var(--teal-mork); font-weight: 800; }
+
+  /* ---------- D: tidslinje med prikker (teksten leses som trinn) ---------- */
+  .v-d .mer-trinn { list-style: none; margin: 0; padding: 0 0 0 var(--s-5); position: relative; display: grid; gap: var(--s-4); }
+  .v-d .mer-trinn::before {
+    content: ""; position: absolute; left: .45rem; top: .6rem; bottom: .6rem; width: 2px;
+    background: repeating-linear-gradient(to bottom, var(--teal) 0 6px, transparent 6px 11px);
+  }
+  .v-d .mer-trinn li { position: relative; margin: 0; color: var(--tekst-svak); max-width: 62ch; }
+  .v-d .mer-trinn li::before {
+    content: ""; position: absolute; left: calc(-1 * var(--s-5) + .1rem); top: .45rem; width: .8rem; height: .8rem; border-radius: 50%;
+    background: var(--teal); box-shadow: 0 0 0 4px var(--teal-lys);
+  }
+  .v-d .mer-trinn li.slutt { color: var(--teal-mork); font-weight: 800; }
+  .v-d .mer-trinn li.slutt::before { background: var(--burgunder); }
+</style>
+</head>
+<body>
+
+<section class="lab">
+  <h2>A · Dagens</h2>
+  <p class="merk">Uendret fra live.</p>
+  <ul class="tjeneste-grid tjeneste-grid--stablet">
+    <li class="tjeneste-kort tjeneste-kort--bred">
+      <img class="tjeneste-kort__ikon" src="../bilder/ikon-daglig-kunde.webp" alt="" width="200" height="200">
+      <h3>Fast daglig renhold</h3>
+      <p>Vi leverer daglig renhold til kontorer, private skoler, barnehager og andre virksomheter. Etter befaring avtaler vi hva som skal rengjøres, hvor ofte og hvilket kvalitetsnivå dere trenger.</p>
+      <details class="tjeneste-mer" open><summary>Les mer</summary><p>Vi tar utgangspunkt i kundens behov og tilpasser renholdet etter hva som faktisk er nødvendig. Sammen finner vi ut hvilke oppgaver som bør gjøres, og hvor ofte de trenger å utføres slik at det blir en evaluering av faktiske behov.</p><p>Målet er at renhold, behov og pris skal henge sammen.</p><p>Renholderen får en tydelig arbeidsplan og opplæring på arbeidsstedet. Vi legger vekt på kontinuitet, faste kontaktpersoner og god oppfølging.</p><p>Vi følger opp renholdskvaliteten gjennom jevnlige kontroller og dialog med både renholderne og kunden. For kunder som ønsker det, kan vi også tilby renhold med kvalitetskrav og kontroller etter NS-INSTA 800, en norsk standard for måling og vurdering av renholdskvalitet.</p><p>Behovene kan endre seg over tid, og vi justerer renholdsplanen sammen med kunden ved behov.</p><p>Befaring og tilbud er kostnadsfrie.</p></details>
+    </li>
+  </ul>
+</section>
+
+<section class="lab">
+  <h2>B · Hvitt panel</h2>
+  <p class="merk">Første avsnitt løftes som ingress, resten står rolig i en hvit flate med teal kant, og «kostnadsfrie» får en egen avslutningslinje. Knapp-lik «Les mer» med vinkel.</p>
+  <ul class="tjeneste-grid tjeneste-grid--stablet">
+    <li class="tjeneste-kort tjeneste-kort--bred v-b">
+      <img class="tjeneste-kort__ikon" src="../bilder/ikon-daglig-kunde.webp" alt="" width="200" height="200">
+      <h3>Fast daglig renhold</h3>
+      <p>Vi leverer daglig renhold til kontorer, private skoler, barnehager og andre virksomheter. Etter befaring avtaler vi hva som skal rengjøres, hvor ofte og hvilket kvalitetsnivå dere trenger.</p>
+      <details class="tjeneste-mer" open><summary>Les mer</summary><div class="mer-panel"><p>Vi tar utgangspunkt i kundens behov og tilpasser renholdet etter hva som faktisk er nødvendig. Sammen finner vi ut hvilke oppgaver som bør gjøres, og hvor ofte de trenger å utføres slik at det blir en evaluering av faktiske behov.</p><p>Målet er at renhold, behov og pris skal henge sammen.</p><p>Renholderen får en tydelig arbeidsplan og opplæring på arbeidsstedet. Vi legger vekt på kontinuitet, faste kontaktpersoner og god oppfølging.</p><p>Vi følger opp renholdskvaliteten gjennom jevnlige kontroller og dialog med både renholderne og kunden. For kunder som ønsker det, kan vi også tilby renhold med kvalitetskrav og kontroller etter NS-INSTA 800, en norsk standard for måling og vurdering av renholdskvalitet.</p><p>Behovene kan endre seg over tid, og vi justerer renholdsplanen sammen med kunden ved behov.</p><p>Befaring og tilbud er kostnadsfrie.</p></div></details>
+    </li>
+  </ul>
+</section>
+
+<section class="lab">
+  <h2>C · Rutenett (dempet)</h2>
+  <p class="merk">Teksten delt i fire hvite bokser, samme farger og skrift som resten. Ingen nye overskrifter, ingen knapp. Slutt-linja står alene under boksene.</p>
+  <ul class="tjeneste-grid tjeneste-grid--stablet">
+    <li class="tjeneste-kort tjeneste-kort--bred v-c">
+      <img class="tjeneste-kort__ikon" src="../bilder/ikon-daglig-kunde.webp" alt="" width="200" height="200">
+      <h3>Fast daglig renhold</h3>
+      <p>Vi leverer daglig renhold til kontorer, private skoler, barnehager og andre virksomheter. Etter befaring avtaler vi hva som skal rengjøres, hvor ofte og hvilket kvalitetsnivå dere trenger.</p>
+      <details class="tjeneste-mer" open><summary>Les mer</summary><div class="mer-rutenett">
+        <div class="mer-boks mer-boks--bred"><p><strong>Vi</strong> tar utgangspunkt i kundens behov og tilpasser renholdet etter hva som faktisk er nødvendig. Sammen finner vi ut hvilke oppgaver som bør gjøres, og hvor ofte de trenger å utføres slik at det blir en evaluering av faktiske behov.</p><p><strong>Målet</strong> er at renhold, behov og pris skal henge sammen.</p></div>
+        <div class="mer-boks"><p><strong>Renholderen</strong> får en tydelig arbeidsplan og opplæring på arbeidsstedet. Vi legger vekt på kontinuitet, faste kontaktpersoner og god oppfølging.</p></div>
+        <div class="mer-boks"><p><strong>Vi</strong> følger opp renholdskvaliteten gjennom jevnlige kontroller og dialog med både renholderne og kunden. For kunder som ønsker det, kan vi også tilby renhold med kvalitetskrav og kontroller etter NS-INSTA 800, en norsk standard for måling og vurdering av renholdskvalitet.</p></div>
+        <div class="mer-boks mer-boks--bred"><p><strong>Behovene</strong> kan endre seg over tid, og vi justerer renholdsplanen sammen med kunden ved behov.</p></div>
+        <p class="mer-slutt">Befaring og tilbud er kostnadsfrie.</p>
+      </div></details>
+    </li>
+  </ul>
+</section>
+
+<section class="lab">
+  <h2>D · Trinn på en stiplet linje</h2>
+  <p class="merk">Samme teksten som seks trinn langs en stiplet linje (slekt med stien og veilinja på forsiden). Sluttlinja får burgunder prikk. Ingen ny tekst.</p>
+  <ul class="tjeneste-grid tjeneste-grid--stablet">
+    <li class="tjeneste-kort tjeneste-kort--bred v-d">
+      <img class="tjeneste-kort__ikon" src="../bilder/ikon-daglig-kunde.webp" alt="" width="200" height="200">
+      <h3>Fast daglig renhold</h3>
+      <p>Vi leverer daglig renhold til kontorer, private skoler, barnehager og andre virksomheter. Etter befaring avtaler vi hva som skal rengjøres, hvor ofte og hvilket kvalitetsnivå dere trenger.</p>
+      <details class="tjeneste-mer" open><summary>Les mer</summary><ol class="mer-trinn">
+        <li>Vi tar utgangspunkt i kundens behov og tilpasser renholdet etter hva som faktisk er nødvendig. Sammen finner vi ut hvilke oppgaver som bør gjøres, og hvor ofte de trenger å utføres slik at det blir en evaluering av faktiske behov.</li>
+        <li>Målet er at renhold, behov og pris skal henge sammen.</li>
+        <li>Renholderen får en tydelig arbeidsplan og opplæring på arbeidsstedet. Vi legger vekt på kontinuitet, faste kontaktpersoner og god oppfølging.</li>
+        <li>Vi følger opp renholdskvaliteten gjennom jevnlige kontroller og dialog med både renholderne og kunden. For kunder som ønsker det, kan vi også tilby renhold med kvalitetskrav og kontroller etter NS-INSTA 800, en norsk standard for måling og vurdering av renholdskvalitet.</li>
+        <li>Behovene kan endre seg over tid, og vi justerer renholdsplanen sammen med kunden ved behov.</li>
+        <li class="slutt">Befaring og tilbud er kostnadsfrie.</li>
+      </ol></details>
+    </li>
+  </ul>
+</section>
+
+</body>
+</html>
