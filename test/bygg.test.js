@@ -632,17 +632,20 @@ test('Forsiden: tre tjenestekort uten «Les mer», én «Se alle tjenester →»
   }
 });
 
-test('Forsiden: kunderaden lenker til referanser/ (Oslo 7 logoer, Stavanger sine egne 5), i riktig rekkefølge', () => {
-  for (const [by, logoer, radKlasse] of [
-    ['Oslo', ['logo-bsn', 'logo-kg', 'logo-kanvas', 'logo-medistim', 'logo-pioner', 'logo-staalverkskroken', 'logo-mf'], 'kunde-rad kunde-rad--sju'],
-    ['Stavanger', ['logo-dragaberget', 'logo-breitorget', 'logo-storhaug', 'logo-union', 'logo-odeon'], 'kunde-rad kunde-rad--fem'],
+test('Forsiden: kundene står som logovegg som lenker til referanser/ (Oslo 7 logoer, Stavanger sine egne 5), i riktig rekkefølge', () => {
+  for (const [by, logoer, veggKlasse] of [
+    ['Oslo', ['logo-bsn', 'logo-kg', 'logo-kanvas', 'logo-medistim', 'logo-pioner', 'logo-staalverkskroken', 'logo-mf'], 'kunde-vegg kunde-vegg--atte'],
+    ['Stavanger', ['logo-dragaberget', 'logo-breitorget', 'logo-storhaug', 'logo-union', 'logo-odeon'], 'kunde-vegg kunde-vegg--seks'],
   ]) {
     const h = les(sideFil(by, 'forside'));
     const start = h.indexOf('<section class="stopp--kunder" id="kunder">');
     assert.ok(start > -1, `${by}: #kunder`);
     const sek = h.slice(start, h.indexOf('</section>', start));
-    assert.match(sek, new RegExp(`<a class="${radKlasse}" href="referanser\\/" tabindex="-1" aria-hidden="true">`), `${by}: raden er lenke`);
-    assert.match(sek, /<a class="tekst-lenke" href="referanser\/">Se hva kundene sier →<\/a>/, `${by}: synlig tekstlenke`);
+    // Logovegg (Marit valgte B 2026-10-28): skjulte logoceller + en siste, synlig lenkecelle som fyller siste rad.
+    assert.ok(sek.includes(`<div class="${veggKlasse}">`), `${by}: logoveggen`);
+    assert.equal((sek.match(/<a class="kunde-vegg__celle" href="referanser\/" tabindex="-1" aria-hidden="true">/g) || []).length, logoer.length, `${by}: én skjult celle per logo`);
+    assert.match(sek, /<a class="kunde-vegg__celle kunde-vegg__lenke" href="referanser\/">Se hva kundene sier →<\/a>/, `${by}: siste celle er synlig lenke`);
+    assert.doesNotMatch(sek, /class="tekst-lenke"|kunde-rad/, `${by}: ingen gammel rad eller lenke under veggen`);
     // Rot-prefikset er valgfritt: Stavanger-forsiden ligger i /stavanger/, så logoene der
     // står som ../bilder/… Vi fanger hele src-en og løser den fra SIDENS mappe, så testen
     // fanger feil rot-dybde (en ../ for mye eller for lite) og ikke bare logonavnet.
@@ -651,9 +654,6 @@ test('Forsiden: kunderaden lenker til referanser/ (Oslo 7 logoer, Stavanger sine
     assert.deepEqual(funnet, logoer, `${by}: logoene`);
     assert.match(sek, /<p class="eyebrow">Referanser<\/p>/, `${by}: eyebrow (stien ankrer til den)`);
     assert.equal((sek.match(/loading="lazy"/g) || []).length, logoer.length, `${by}: alle logoer lazy`);
-    const navnTekst = [...sek.matchAll(/<span class="kunde-rad__navn">([^<]+)<\/span>/g)].map((m) => m[1]);
-    assert.deepEqual(navnTekst, [], `${by}: alle logoer finnes, så ingen kunde skal være tekstnavn ennå`);
-    assert.equal(funnet.length + navnTekst.length, logoer.length, `${by}: hver kunde står i raden som logo eller som navn`);
     const mappe = dirname(sideFil(by, 'forside'));
     for (const { sti } of stier) {
       const absolutt = join(mappe, sti);
@@ -661,15 +661,11 @@ test('Forsiden: kunderaden lenker til referanser/ (Oslo 7 logoer, Stavanger sine
       assert.ok(existsSync(absolutt.replace(/\.png$/, '.webp')), `${by}: ${sti} mangler .webp`);
     }
   }
-  // Ricky 2026-10-12: raden er bygget for seks logoer. Stavanger har fire, og uten egne mål klistrer de
-  // seg i midten. Reglene må ligge ETTER media-queryene, ellers deler de spesifisitet med .kunde-rad img
-  // og taper. Fanger både at reglene finnes og at de står sist.
+  assert.match(les(sideFil('Stavanger', 'forside')), /class="kunde-vegg__hoy"/, 'Stavanger: Dragaberget (nesten kvadratisk) får høyere logo');
   const css = les('css/style.css');
-  assert.match(css, /\.kunde-rad--sju img \{ width: 12rem; height: 4rem; \}/, 'Oslo: sju logoer i 12 × 4rem-bokser fra 64rem (fire + tre)');
-  assert.match(css, /\.kunde-rad--fem \{ justify-content: space-evenly; \}/, 'Stavanger-raden skal fordele de fem');
-  assert.match(css, /\.kunde-rad--fem img \{ height: 4rem; \}/, 'Stavanger-logoene skal ha høyere bokser');
-  assert.match(css, /\.kunde-rad--fem img \{ width: 10rem; \}/, 'Stavanger-logoene skal ha bred boks på desktop');
-  assert.ok(css.lastIndexOf('.kunde-rad--fem img') > css.lastIndexOf('.kunde-rad img'), 'reglene må stå etter .kunde-rad img, ellers vinner de ikke');
+  assert.match(css, /\.kunde-vegg \{[^}]*grid-template-columns: repeat\(2/, 'logoveggen har to kolonner på mobil');
+  assert.match(css, /\(min-width: 48rem\) \{ \.kunde-vegg \{ grid-template-columns: repeat\(4/, 'Oslo: fire kolonner fra 48rem');
+  assert.match(css, /\(min-width: 48rem\) \{ \.kunde-vegg--seks \{ grid-template-columns: repeat\(3/, 'Stavanger: tre kolonner (3 + 3) fra 48rem');
 });
 
 test('Forsiden: rekkefølge derfor → tjenester → kunder → kontakt, og kunderaden har hvitt kort på --base', () => {
@@ -680,8 +676,8 @@ test('Forsiden: rekkefølge derfor → tjenester → kunder → kontakt, og kund
   }
   const css = les('css/style.css');
   assert.match(css, /\.stopp--kunder \{ padding-block: var\(--seksjon-y\); background: var\(--base\); \}/);
-  assert.match(css, /\.kunde-rad \{[^}]*background: var\(--flate\)/, 'logoene har hvit bakgrunn i filene: raden må ha hvitt kort');
-  assert.match(css, /\.kunde-rad img \{[^}]*object-fit: contain/);
+  assert.match(css, /\.kunde-vegg \{[^}]*background: var\(--flate\)/, 'logoene har hvit bakgrunn i filene: veggen må ha hvitt kort');
+  assert.match(css, /\.kunde-vegg__celle img \{[^}]*object-fit: contain/);
   assert.match(css, /\.tekst-lenke \{[^}]*min-height: 2\.75rem/, '44 px trykkflate');
 });
 

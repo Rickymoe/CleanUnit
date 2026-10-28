@@ -1296,55 +1296,27 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
 .tjeneste-grid + .tekst-lenke { margin-top: var(--s-5); }
 .stopp--kunder { padding-block: var(--seksjon-y); background: var(--base); }
 .stopp--kunder h2 { font-size: var(--t-lg); }
-/* Logofilene har hvit bakgrunn: rett på --base ville de blitt hvite rektangler. Derfor ett hvitt kort. */
-.kunde-rad {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--s-5) var(--s-6);
-  margin: var(--s-5) 0 var(--s-3); padding: var(--s-5); background: var(--flate);
-  border: 1px solid var(--teal-lys); border-radius: var(--radius);
+/* Logofilene har hvit bakgrunn: rett på --base ville de blitt hvite rektangler. Derfor ett hvitt kort (veggen). */
+/* Kundene står som logovegg på begge sider (Marit valgte «B» 2026-10-28; Ricky ville ha den på Stavanger også): like celler med tynne skillelinjer, og den åttende
+   cella er den synlige lenka, så rad to ikke ender med et hull. Cellene er lenker til referanser/ som raden var før
+   (skjult for tastatur og skjermleser, den åttende bærer navnet). Skillelinjene er box-shadow, ikke border, så cellene
+   ikke blir ulike store; veggen klipper dem mot det avrundede kortet. Oslo: sju logoer + lenke = åtte, fire kolonner fra 48rem. Stavanger: fem + lenke = seks, tre kolonner
+   (3 + 3), ellers ville fire kolonner gitt en rad med to hull. Under 48rem er det to kolonner på begge. */
+.kunde-vegg {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: var(--s-5) 0 var(--s-3);
+  background: var(--flate); border: 1px solid var(--teal-lys); border-radius: var(--radius); overflow: hidden;
 }
-.kunde-rad img { display: block; width: 9rem; height: 3rem; object-fit: contain; }
-/* Kunde uten logofil: navnet som tekst i samme boks (Ricky: aldri utelat en kunde). Ingen kunde bruker det ennå. */
-.kunde-rad__navn { display: flex; align-items: center; justify-content: center; width: 9rem; height: 3rem; text-align: center; font-weight: 700; color: var(--teal-mork); }
-
-/* På de smaleste telefonene rekker ikke to 9rem-logoer + 2rem gap inn i .kunde-rad
-   (144 + 32 + 144 = 320 px mot 310 px innvendig på 390 px), og raden ble én logo per linje.
-   Bredden er målt fram, ikke valgt: ved 320 px er den innvendige bredden 238 px (320 − 2×16
-   wrap − 2×24 rad-padding − 2×1 kant), så to logoer må være ≤ 103 px hver. 100 px (6.25rem)
-   gir 100 + 32 + 100 = 232 px og går opp på 320/360/390. Navn-reserven holder samme bredde,
-   så en kunde uten logofil ikke blir bredere enn logoboksen. */
-/* Seks logoer på én linje fra 64rem: .kunde-rad er bare ~892 px innvendig ved 1024 og ~942 px fra 1152 px
-   (wrap 68rem − padding − kant), og 6 × 9rem + 5 × 2rem = 1024 px rakk ikke. 6 × 8rem + 5 × 1rem = 848 px. */
-@media (min-width: 64rem) {
-  .kunde-rad { column-gap: var(--s-4); }
-  .kunde-rad img, .kunde-rad__navn { width: 8rem; }
+@media (min-width: 48rem) { .kunde-vegg { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 48rem) { .kunde-vegg--seks { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* Dragabergets logo er nesten kvadratisk (436 × 403) med ordmerket nederst: i 3,25rem blir teksten uleselig. Den får hele cellehøyden (6,5rem − 2 × padding). */
+.kunde-vegg__celle img.kunde-vegg__hoy { height: 5rem; }
+.kunde-vegg__celle {
+  display: grid; place-items: center; height: 6.5rem; padding: var(--s-3) var(--s-5);
+  box-shadow: 1px 0 0 var(--teal-lys), 0 1px 0 var(--teal-lys); transition: background-color .2s;
 }
-@media (max-width: 30rem) {
-  .kunde-rad img { width: 6.25rem; }
-  .kunde-rad__navn { width: 6.25rem; }
-}
-/* Oslo viser sju logoer (MF kom til 2026-10-13). Sju på én linje ble 7rem per logo, og KG og MF ble ulesbare
-   (Ricky 2026-10-13). Fra 64rem får de derfor samme boks som Stavangers (12 × 4rem), som gir fire + tre på to rader,
-   sentrert. Under 64rem gir 8,5rem fire på første rad og tre på neste ved 768 px (657 px innvendig), mot 3 + 3 + 1
-   med standard 9rem. */
-@media (min-width: 48rem) { .kunde-rad--sju img { width: 8.5rem; } }
-@media (min-width: 64rem) { .kunde-rad--sju img { width: 12rem; height: 4rem; } }
-/* Stavanger viser fem kunder mot Oslos sju (Ricky 2026-10-12, Union 2026-10-13, Odeon 2026-10-14). Med samme
-   logobredde ble de en klase midt i en bred flate, med tomrom på begge sider. Her fordeles de
-   jevnt over raden og får høyere bokser, så raden leses som nettopp en rad. Reglene står etter
-   media-queryene over fordi de deler spesifisitet med .kunde-rad img og ellers ville tapt for dem.
-   Bredden settes bare fra 64rem (5 × 10rem + gap rekker inn i ~892 px); under det arver logoene
-   bredden fra .kunde-rad img, så fem logoer ikke brytes til to rader. */
-.kunde-rad--fem { justify-content: space-evenly; }
-.kunde-rad--fem img { height: 4rem; }
-/* Dragabergets logo er nesten kvadratisk (436 × 403) med ordmerket nederst: i en 4rem høy boks blir teksten uleselig. Den får en høyere boks (Ricky 2026-10-14). */
-.kunde-rad--fem img.kunde-rad__hoy { height: 5.5rem; }
-@media (min-width: 64rem) {
-  .kunde-rad--fem img { width: 10rem; }
-}
-@media (max-width: 30rem) {
-  .kunde-rad--fem img { height: 3rem; }
-  .kunde-rad--fem img.kunde-rad__hoy { height: 4.25rem; }
-}
+.kunde-vegg__celle img { display: block; width: 100%; max-width: 10rem; height: 3.25rem; object-fit: contain; }
+.kunde-vegg__celle:hover { background: var(--teal-lys); }
+.kunde-vegg__lenke { font: 700 var(--t-sm)/1.3 var(--sans); color: var(--teal-mork); text-decoration: underline; text-underline-offset: 3px; text-align: center; }
 
 /* Luftballongen i sidehodet (Ricky 2026-10-06): en rolig figur fra hero-scenen (ballong, sky, boble) i hodets høyre
    hjørne, i samme høyrekant som innholdet. Først prøvd med hele byen, men den hadde for mange detaljer (valgte «A»).
