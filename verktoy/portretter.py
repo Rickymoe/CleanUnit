@@ -3,8 +3,8 @@
 
 Kjør:  python3 verktoy/portretter.py [ut-mappe]      (standard: bilder/)
 Per person: team-<navn>.webp/.jpg (480 px, «Om oss»-kortet) og team-<navn>-liten.webp/.jpg (240 px,
-Kontakt-raden, videre utsnitt fordi det vises som 72 px rundt). Monika: ansatt-monika.webp/.jpg (128 px,
-sitat-avataren).
+Kontakt-raden, videre utsnitt fordi det vises som 72 px rundt). Monika: ansatt-monika.webp/.jpg (288 px,
+sitat-avataren, 288 px = 3 × 96 px).
 
 Utsnittene er firkanter angitt som (senter-x, topp-y, side) i originalens piksler, målt fra miniatyrer.
 Sjekk alltid hårtoppen mot originalens topprader etter å ha endret et utsnitt."""
@@ -53,4 +53,4 @@ for navn, (fil, varianter) in PERSONER.items():
         lagre(utsnitt(im, sx, ty, s, 240 if v else 480), os.path.join(UT, f'team-{navn}{"-" + v if v else ""}'))
 
 fil, (sx, ty, s) = MONIKA
-lagre(utsnitt(ImageOps.exif_transpose(finn(fil)), sx, ty, s, 128), os.path.join(UT, 'ansatt-monika'))
+lagre(utsnitt(ImageOps.exif_transpose(finn(fil)), sx, ty, s, 288), os.path.join(UT, 'ansatt-monika'))

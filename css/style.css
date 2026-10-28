@@ -1108,6 +1108,15 @@ html.logo-anim .side-nav__logo .nb-skinn { animation: nb-skinn-sveip 520ms cubic
 /* Flex-barnet er <picture>, ikke <img>: uten flex: none lot den seg krympe og bildet ble presset smalt og beskåret. */
 .team-liste li > picture, .kontakt__personer li > picture { flex: none; display: block; }
 .team-liste li:has(.team-foto) { align-items: center; }
+/* Hover-løft på personkortene (Ricky 2026-10-28), samme grep som .sitat-kort og .derfor-kort: løft + skygge, gated på mus (hover:hover) og slått av ved reduced motion. */
+.team-liste li { transition: transform .2s, box-shadow .2s; }
+@media (hover: hover) {
+  .team-liste li:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0, 89, 91, .35); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .team-liste li { transition: none; }
+  .team-liste li:hover { transform: none; }
+}
 .team-foto--liten { width: 4.5rem; height: 4.5rem; border-radius: 50%; }
 /* Størrelsen følger kortets bredde, ikke skjermens: i høyrekolonnen på desktop er kortet bare ~300 px, og 9rem lot teksten ligge igjen med ~110 px.
    Terskelen er der 9rem + 2 × padding + gap fortsatt gir ca. 200 px til teksten (≈ 24,5rem). */
@@ -1271,7 +1280,8 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
 /* Ansattsitatene har en tegnet avatar i venstre kolonne (Marit 2026-10-09: bilder eller tegninger?), i stedet for det store sitattegnet i margen
    (avataren er det som bærer «en person sier dette»). Navnet står i burgunder. Kun «Jobb hos oss»; kundesitatene under Referanser har logo. */
 .stopp--jobb .sitat-kort { align-items: flex-start; }
-.sitat-avatar { flex: none; display: block; width: 4rem; height: 4rem; }
+/* Avatarene er 6rem på alle skjermbredder (Ricky 2026-10-28: Irene og Monika «litt større», og samme størrelse på telefon). Vilmas tegnede avatar følger med så de tre kortene har lik layout. */
+.sitat-avatar { flex: none; display: block; width: 6rem; height: 6rem; }
 /* Et ekte portrett (Irene, Marit 2026-10-14) rundes og beskjæres av CSS; de tegnede avatarene er allerede runde SVG-er. */
 .sitat-avatar--foto { border-radius: 50%; object-fit: cover; }
 .sitat-kort > picture { flex: none; display: block; }
