@@ -1322,10 +1322,10 @@ test('CSS: «Ta kontakt»-boksen og kortet deler bredden 50/50 fra 64rem (to lik
   assert.doesNotMatch(css, /grid-template-columns: minmax\(0, 22rem\) minmax\(0, 40rem\)/, 'ikke lenger 22rem/40rem');
 });
 
-test('CSS: personene i Kontakt-kortet står i to kolonner, men under hverandre mellom 64rem og 68rem (kortet er da for smalt for e-postadressene)', () => {
+test('CSS: personene i Kontakt-kortet står i to kolonner fra 48rem, men under hverandre fra 64rem (kortet er da for smalt for portrett + e-postadresse)', () => {
   const css = les('css/style.css');
   assert.match(css, /@media \(min-width: 48rem\) \{ \.kontakt__personer \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); column-gap: var\(--s-4\); \} \}/, 'to kolonner med smalere mellomrom');
-  assert.match(css, /@media \(min-width: 64rem\) and \(max-width: 67\.99rem\) \{ \.kontakt__personer \{ grid-template-columns: minmax\(0, 1fr\); \} \}/, 'én kolonne i det trange området');
+  assert.match(css, /@media \(min-width: 64rem\) \{ \.kontakt__personer \{ grid-template-columns: minmax\(0, 1fr\); \} \}/, 'én kolonne fra 64rem');
 });
 
 test('CSS: Kontakt-kortet (firma og personer) har samme bakgrunn som kortene på Tjenester (--teal-lys), «Ta kontakt»-boksen er hvit', () => {

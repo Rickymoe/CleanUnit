@@ -935,8 +935,9 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
 /* Fra 48rem står de to personene i Oslo side om side (like kolonner); Stavanger har én og beholder den til venstre. */
 @media (min-width: 48rem) { .kontakt__personer { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-4); } }
 /* Fra 64rem er kortet bare halve bredden (50/50 med «Ta kontakt»-boksen) og blir smalest rundt 1024 px: der får ikke to personkolonner plass
-   til «renhold@cleanunit.no» (ble brutt midt i ordet), så personene står under hverandre til kortet er bredt nok (68rem, ca. 10 px slakk). */
-@media (min-width: 64rem) and (max-width: 67.99rem) { .kontakt__personer { grid-template-columns: minmax(0, 1fr); } }
+   til «renhold@cleanunit.no» (ble brutt midt i ordet), så personene stod under hverandre til kortet var bredt nok (68rem, ca. 10 px slakk).
+   Med portretter på 4,5rem (2026-10-28) er det ikke slakk på noen bredde (tekstkolonnen 133 px mot 147 px for e-posten), så de står nå under hverandre fra 64rem. */
+@media (min-width: 64rem) { .kontakt__personer { grid-template-columns: minmax(0, 1fr); } }
 
 /* Må ligge sist: samme spesifisitet som en klasse, så rekkefølgen avgjør. */
 [hidden] { display: none; }
@@ -1101,6 +1102,17 @@ html.logo-anim .side-nav__logo .nb-skinn { animation: nb-skinn-sveip 520ms cubic
 }
 .team-liste p { margin-top: var(--s-1); color: var(--tekst-svak); font-size: var(--t-sm); }
 .team-liste .team-rolle { color: var(--teal); font-weight: 700; margin-top: 0; }
+/* Portretter i farger (Marit valgte farger 2026-10-28), erstatter initialsirklene på Oslo: avrundet firkant i «Om oss»,
+   rund og mindre i Kontakt-radene (egne, videre utsnitt, se verktoy/portretter.py). Stavanger har fortsatt initialer. */
+.team-foto { flex: none; display: block; width: 9rem; height: 9rem; border-radius: var(--radius); object-fit: cover; }
+/* Flex-barnet er <picture>, ikke <img>: uten flex: none lot den seg krympe og bildet ble presset smalt og beskåret. */
+.team-liste li > picture, .kontakt__personer li > picture { flex: none; display: block; }
+.team-liste li:has(.team-foto) { align-items: center; }
+.team-foto--liten { width: 4.5rem; height: 4.5rem; border-radius: 50%; }
+/* Størrelsen følger kortets bredde, ikke skjermens: i høyrekolonnen på desktop er kortet bare ~300 px, og 9rem lot teksten ligge igjen med ~110 px.
+   Terskelen er der 9rem + 2 × padding + gap fortsatt gir ca. 200 px til teksten (≈ 24,5rem). */
+.team-liste { container-type: inline-size; }
+@container (max-width: 26rem) { .team-liste .team-foto { width: 6rem; height: 6rem; } }
 
 /* Jobb hos oss: Ansatte (tekst og gruppebilde) */
 .ansatte { display: grid; gap: var(--s-5); margin-top: var(--s-6); }

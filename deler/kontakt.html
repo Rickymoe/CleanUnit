@@ -43,11 +43,11 @@
         <div class="kontakt__alternativ" role="group" aria-label="Kontakt direkte">
         <ul class="kontakt__personer">
           {{#er_oslo}}<li>
-            <span class="team-initialer" aria-hidden="true">MB</span>
+            <picture><source srcset="{{rot}}bilder/team-marit-liten.webp" type="image/webp"><img class="team-foto team-foto--liten" src="{{rot}}bilder/team-marit-liten.jpg" alt="" width="240" height="240" loading="lazy" decoding="async"></picture>
             <div><strong>Marit Byfuglien</strong><span>Daglig leder</span><a href="tel:+4797195993">971 95 993</a><a href="mailto:{{epost_marit}}">{{epost_marit}}</a></div>
           </li>
           <li>
-            <span class="team-initialer" aria-hidden="true">MP</span>
+            <picture><source srcset="{{rot}}bilder/team-mari-liten.webp" type="image/webp"><img class="team-foto team-foto--liten" src="{{rot}}bilder/team-mari-liten.jpg" alt="" width="240" height="240" loading="lazy" decoding="async"></picture>
             <div><strong>Mari Pedersen</strong><span>Markedsansvarlig</span><a href="tel:+4747298445">472 98 445</a><a href="mailto:{{epost_mari}}">{{epost_mari}}</a></div>
           </li>{{/er_oslo}}{{^er_oslo}}<li>
             <span class="team-initialer" aria-hidden="true">TH</span>
