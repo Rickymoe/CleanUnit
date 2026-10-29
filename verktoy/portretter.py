@@ -23,7 +23,7 @@ PERSONER = {
     'mari':  ('MARI_1_FARGE.jpg',  {'': (1780, 0, 3300), 'liten': (1780, 0, 3456)}),
     'age':   ('ÅGE_2_FARGE.jpg',   {'': (1680, 250, 3300), 'liten': (1680, 200, 3456)}),
 }
-MONIKA = ('Monika S.jpeg', (770, 30, 720))
+MONIKA = ('Monika S.jpeg', (770, 0, 840))
 
 
 def finn(navn):
