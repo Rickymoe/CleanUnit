@@ -45,10 +45,10 @@ const TJENESTER = { id: 'tjenester', fil: 'tjenester', sti: 'tjenester/' };
 test('sideData: rot-dybde og lenker for alle fire kombinasjonene (Stavanger-underside = dybde 2)', () => {
   const [oslo, stav] = TEST_BYER;
   const tilfeller = [
-    [oslo, FORSIDE,    { rot: '',        by_rot: '',    js_rot: './',      andre_by_hjem: 'stavanger/', andre_by_href: 'stavanger/',            logo_href: '#',    side_url: 'https://x.test/CleanUnit/' }],
-    [oslo, TJENESTER,  { rot: '../',     by_rot: '../', js_rot: '../',     andre_by_hjem: '../stavanger/', andre_by_href: '../stavanger/tjenester/', logo_href: '../', side_url: 'https://x.test/CleanUnit/tjenester/' }],
-    [stav, FORSIDE,    { rot: '../',     by_rot: '',    js_rot: '../',     andre_by_hjem: '../',        andre_by_href: '../',                   logo_href: '#',    side_url: 'https://x.test/CleanUnit/stavanger/' }],
-    [stav, TJENESTER,  { rot: '../../',  by_rot: '../', js_rot: '../../',  andre_by_hjem: '../../',      andre_by_href: '../../tjenester/',       logo_href: '../', side_url: 'https://x.test/CleanUnit/stavanger/tjenester/' }],
+    [oslo, FORSIDE,    { rot: '',        by_rot: '',    js_rot: './',      andre_by_hjem: 'stavanger/',            logo_href: '#',    side_url: 'https://x.test/CleanUnit/' }],
+    [oslo, TJENESTER,  { rot: '../',     by_rot: '../', js_rot: '../',     andre_by_hjem: '../stavanger/', logo_href: '../', side_url: 'https://x.test/CleanUnit/tjenester/' }],
+    [stav, FORSIDE,    { rot: '../',     by_rot: '',    js_rot: '../',     andre_by_hjem: '../',        logo_href: '#',    side_url: 'https://x.test/CleanUnit/stavanger/' }],
+    [stav, TJENESTER,  { rot: '../../',  by_rot: '../', js_rot: '../../',  andre_by_hjem: '../../',      logo_href: '../', side_url: 'https://x.test/CleanUnit/stavanger/tjenester/' }],
   ];
   for (const [by, side, forventet] of tilfeller) {
     const d = sideData(by, side, TEST_BYER);
@@ -164,8 +164,9 @@ test('Toppmeny: ekte lenker til de fire undersidene, aria-current på gjeldende 
     const andre = s.by === 'Oslo' ? 'Stavanger' : 'Oslo';
     const by = nav.match(/class="side-nav__by" href="([^"]+)">([^<]+) </);
     assert.equal(by[2], andre, `${s.fil}: andre by`);
-    const sti = STIER[s.id];
-    const mal = s.by === 'Oslo' ? `test/ut/stavanger/${sti}index.html` : `test/ut/${sti}index.html`;
+    const hjem = '../'.repeat((s.by === 'Oslo' ? 0 : 1) + (s.id === 'forside' ? 0 : 1)) + (s.by === 'Oslo' ? 'stavanger/' : '');
+    assert.equal(by[1], hjem, `${s.fil}: byvelgeren skal alltid peke til den andre byens forside (Marit 2026-10-29)`);
+    const mal = s.by === 'Oslo' ? 'test/ut/stavanger/index.html' : 'test/ut/index.html';
     assert.ok(existsSync(mal), `${s.fil}: andre-by-målet ${mal} finnes ikke`);
     assert.equal((nav.match(/<a class="side-nav__kontakt knapp knapp--omriss" href="#kontakt">Kontakt<\/a>/g) || []).length, 1, `${s.fil}: én Kontakt-knapp i raden (mobil)`);
     assert.ok(nav.indexOf('side-nav__kontakt') < nav.indexOf('side-nav__bryter'), `${s.fil}: knappen står før hamburgeren i tabrekkefølgen`);

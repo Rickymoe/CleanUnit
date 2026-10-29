@@ -80,7 +80,6 @@ export function sideData(by, side, byer, felles = {}) {
     by_rot,
     js_rot: rot || './',
     andre_by_hjem,
-    andre_by_href: andre_by_hjem + side.sti,
     side_klasse: side.fil,
     side_tittel: egen.tittel,
     side_beskrivelse: egen.beskrivelse,
