@@ -14,7 +14,7 @@ import numpy as np
 KILDE = 'bilder/hero-scene.webp'
 RUTE = (1335, 60, 1940, 310)
 HIMMEL = np.array([0x9A, 0xD2, 0xD5], float)
-GRONN_HUE = 148 / 360                   # frisk grønn, tydelig forskjellig fra himmelens blågrønne og sidens turkis
+LOGO_GRONN = np.array([0x00, 0x87, 0x89], float)   # den mørke boblen i logoen (Marit 2026-10-29); medianpikselen i feltene blir nøyaktig denne
 BURGUNDER = (290 / 360, 1.0)            # fargetone-intervall for ballongens felter og beltet (hue i HSV, 0–1); brunt (ca. 25°) er utenfor
 
 
@@ -42,12 +42,16 @@ def utsnitt():
 def til_gronn(a):
     ut = a.copy()
     h, w = a.shape[:2]
+    felt = []
     for y in range(h):
         for x in range(w):
             r, g, b = a[y, x] / 255
             hh, s, v = colorsys.rgb_to_hsv(r, g, b)
             if (BURGUNDER[0] <= hh <= BURGUNDER[1] or hh < 8 / 360) and s > 0.15:
-                ut[y, x] = np.array(colorsys.hsv_to_rgb(GRONN_HUE, min(1, s * 1.05), v)) * 255
+                felt.append((y, x, v))
+    v_median = np.median([v for _, _, v in felt])
+    for y, x, v in felt:
+        ut[y, x] = np.clip(LOGO_GRONN * (v / v_median), 0, 255)
     return ut
 
 
