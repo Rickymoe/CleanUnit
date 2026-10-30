@@ -72,10 +72,26 @@ def lyslenke(x0, y0, x1, y1, sag, n, seed=1):
     return snor + pærer
 
 
-def ballong(farge=BURGUNDER):
+def natt_bakgrunn(seed=11):
+    """Nattehimmel med stjerner, måne og tre kuler av snødekte åser; definerer gradientene «natt», «maane», «skinn» og filteret «glod»."""
+    r = random.Random(seed)
+    stjerner = ''.join(f'<circle cx="{r.uniform(0, B):.0f}" cy="{r.uniform(0, 620):.0f}" r="{r.choice([1.5, 2, 2.5, 3]):.1f}" fill="#fff" opacity="{r.uniform(.35, .9):.2f}"/>' for _ in range(90))
+    return f"""<defs><linearGradient id="natt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0B222B"/><stop offset="1" stop-color="#215662"/></linearGradient>
+<radialGradient id="maane" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF3C4" stop-opacity=".55"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></radialGradient>
+<radialGradient id="skinn" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFD98A" stop-opacity=".28"/><stop offset="1" stop-color="#FFD98A" stop-opacity="0"/></radialGradient>
+<filter id="glod" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="9"/></filter></defs>
+<rect width="{B}" height="{H}" fill="url(#natt)"/>{stjerner}
+<circle cx="1480" cy="190" r="190" fill="url(#maane)"/><circle cx="1480" cy="190" r="62" fill="#F7EFD0"/>
+<path d="M0 880 Q300 810 620 870 T1250 850 T1800 870 V1200 H0Z" fill="#2B6671"/>
+<path d="M0 975 Q420 905 900 970 T1800 950 V1200 H0Z" fill="#BCD6DC"/>
+<path d="M0 1075 Q500 1020 1000 1068 T1800 1050 V1200 H0Z" fill="#E4EFF2"/>"""
+
+
+def ballong(farge=BURGUNDER, natt=False):
+    hvit = '#E9EFF2' if natt else '#fff'   # om natten lyses ballongen opp av lysene, ikke av sola
     env = 'M900 130 C1150 130 1260 330 1230 520 C1210 640 1060 770 1012 810 L788 810 C740 770 590 640 570 520 C540 330 650 130 900 130Z'
     gores = ''.join(f'<ellipse cx="900" cy="470" rx="{rx}" ry="420" fill="{f}"/>'
-                    for rx, f in [(340, farge), (262, '#fff'), (184, farge), (106, '#fff'), (40, farge)])
+                    for rx, f in [(340, farge), (262, hvit), (184, farge), (106, hvit), (40, farge)])
     lenker = (lyslenke(585, 430, 1215, 430, 95, 12) + lyslenke(600, 560, 1200, 560, 85, 11) +
               lyslenke(655, 680, 1145, 680, 65, 9))
     sno_topp = ('<path d="M690 235 C720 150 810 120 900 120 C990 120 1080 150 1110 235 '
@@ -93,26 +109,57 @@ def ballong(farge=BURGUNDER):
             + ''.join(f'<line x1="{x}" y1="920" x2="{x}" y2="1024" stroke="#7B5236" stroke-width="4"/>' for x in (863, 900, 937))
             + '<path d="M820 924 C830 898 850 912 870 906 C890 898 905 914 925 906 C945 898 965 910 980 904 C992 912 982 930 974 934 L826 934Z" fill="#fff"/>')
     brenner = '<ellipse cx="900" cy="826" rx="18" ry="34" fill="#FFD54F" opacity=".95"/><ellipse cx="900" cy="832" rx="9" ry="20" fill="#fff"/>'
-    skygge = f'<ellipse cx="900" cy="1075" rx="190" ry="20" fill="#B9D8DB" opacity=".7"/>'
+    skygge = f'<ellipse cx="900" cy="1075" rx="190" ry="20" fill="{"#1E4A55" if natt else "#B9D8DB"}" opacity="{.5 if natt else .7}"/>'
+    if natt:
+        bakgrunn = natt_bakgrunn(17)
+        lenker = f'<g filter="url(#glod)" opacity=".9">{lenker}</g>{lenker}'
+        aura = '<ellipse cx="900" cy="500" rx="560" ry="520" fill="url(#skinn)"/><circle cx="900" cy="830" r="130" fill="url(#skinn)"/>'
+    else:
+        bakgrunn = f'{sky()}{sky_cloud(1330, 210, 1.15)}{sky_cloud(190, 420, .95)}{sky_cloud(1480, 520, .8)}\n{bakke()}'
+        aura = ''
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{B}" height="{H}" viewBox="0 0 {B} {H}">
-{sky()}{sky_cloud(1330, 210, 1.15)}{sky_cloud(190, 420, .95)}{sky_cloud(1480, 520, .8)}
-{bakke()}
+{bakgrunn}
 {tre(260, 1000, 1.25)}{tre(1520, 1010, 1.3)}{tre(430, 1060, .8)}{tre(1370, 1070, .75)}
-{skygge}{rep}{brenner}
+{skygge}{aura}{rep}{brenner}
 <defs><clipPath id="k"><path d="{env}"/></clipPath></defs>
-<path d="{env}" fill="#fff"/>
+<path d="{env}" fill="{hvit}"/>
 <g clip-path="url(#k)">{gores}<ellipse cx="1130" cy="520" rx="150" ry="330" fill="#000" opacity=".07"/></g>
 <g clip-path="url(#k)">{sno_topp}</g>{lenker}{kurv}
 {snofall(7)}
 </svg>'''
 
 
-def logo():
+def tekst_som_sti(tekst, storrelse, x_midt, y_grunn, farge, vekt=800):
+    """Tegner tekst som SVG-sti i Manrope (variabel skrift, instansiert til gitt vekt), så den ikke avhenger av at skriften lastes."""
+    from fontTools.ttLib import TTFont
+    from fontTools.varLib.instancer import instantiateVariableFont
+    from fontTools.pens.svgPathPen import SVGPathPen
+    from fontTools.pens.transformPen import TransformPen
+    f = instantiateVariableFont(TTFont('fonter/manrope-latin.woff2'), {'wght': vekt})
+    gs, cmap, upm = f.getGlyphSet(), f.getBestCmap(), f['head'].unitsPerEm
+    k = storrelse / upm
+    bredde = sum(f['hmtx'][cmap[ord(c)]][0] for c in tekst) * k
+    x = x_midt - bredde / 2
+    d = ''
+    for c in tekst:
+        g = cmap[ord(c)]
+        pen = SVGPathPen(gs)
+        gs[g].draw(TransformPen(pen, (k, 0, 0, -k, x, y_grunn)))
+        d += pen.getCommands()
+        x += f['hmtx'][g][0] * k
+    return f'<path d="{d}" fill="{farge}"/>'
+
+
+def logo(hilsen=False):
     kilde = Path('bilder/logo-cleanunit.svg').read_text()
     indre = re.search(r'<svg[^>]*>(.*)</svg>', kilde, re.S).group(1)
     indre = re.sub(r'<title>.*?</title>', '', indre, flags=re.S)
     # Skiltet: 1080 × 400 ved (360, 330). Logoen (626 × 192) skaleres til 880 bred, midtstilt.
-    logo_svg = f'<svg x="460" y="{330 + (400 - 270) / 2:.0f}" width="880" height="270" viewBox="0 -40 626 192">{indre}</svg>'
+    if hilsen:
+        logo_svg = (f'<svg x="550" y="352" width="700" height="215" viewBox="0 -40 626 192">{indre}</svg>'
+                    + tekst_som_sti('God jul', 100, 900, 702, BURGUNDER))
+    else:
+        logo_svg = f'<svg x="460" y="{330 + (400 - 270) / 2:.0f}" width="880" height="270" viewBox="0 -40 626 192">{indre}</svg>'
     skilt_topp = ('<path d="M330 352 C330 322 350 312 380 312 L1420 312 C1450 312 1470 322 1470 352 '
                   'C1470 372 1450 366 1425 384 C1400 396 1385 370 1355 388 C1325 404 1305 374 1275 390 '
                   'C1240 404 1220 372 1190 388 C1160 402 1135 372 1100 388 C1065 402 1045 372 1010 388 '
@@ -128,12 +175,68 @@ def logo():
 {stolper}
 <rect x="340" y="320" width="1120" height="420" rx="36" fill="#7B5236"/>
 <rect x="350" y="330" width="1100" height="400" rx="30" fill="#FFFFFF"/>
-{logo_svg}{skilt_topp}{lenke}
+{skilt_topp}{logo_svg}{lenke}
 <path d="M0 1010 C300 960 560 975 900 985 C1240 975 1500 960 1800 1010 V1200 H0Z" fill="#fff"/>
 <path d="M330 1040 C440 962 580 985 670 1015 C780 975 900 995 960 1020 C1080 968 1230 990 1330 1020 C1420 985 1470 1000 1480 1040 Z" fill="#EAF4F6"/>
 <path d="M360 1050 C470 990 590 1005 680 1030 C780 998 900 1012 960 1034 C1070 990 1220 1006 1310 1032 C1390 1004 1440 1018 1450 1050 Z" fill="#fff"/>
 {snofall(21)}
 </svg>'''
+
+
+def logo_inne(fil):
+    kilde = Path(fil).read_text()
+    return re.sub(r'<title>.*?</title>', '', re.search(r'<svg[^>]*>(.*)</svg>', kilde, re.S).group(1), flags=re.S)
+
+
+def logo_kveld():
+    """1: kveldsversjon med lys logo under en lyslenke, mørk vinterhimmel."""
+    lenke = lyslenke(40, 250, 1760, 250, 200, 30, 5)
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{B}" height="{H}" viewBox="0 0 {B} {H}">
+{natt_bakgrunn()}
+{tre(200, 1030, 1.25)}{tre(1600, 1035, 1.3)}{tre(380, 1085, .8, False)}{tre(1420, 1090, .75, False)}
+<ellipse cx="900" cy="560" rx="560" ry="260" fill="url(#skinn)"/>
+<svg x="400" y="420" width="1000" height="307" viewBox="0 -40 626 192">{logo_inne('bilder/logo-cleanunit-lys.svg')}</svg>
+<g filter="url(#glod)" opacity=".9">{lenke}</g>{lenke}
+{snofall(41, 110)}
+</svg>"""
+
+
+def logo_krans():
+    """3: grankrans med snø, lys og sløyfe rundt logoen."""
+    r = random.Random(5)
+    cx, cy = 900, 600
+    d = ''
+    for lag, steg in enumerate((4, 5, 6)):
+        for a in range(0, 360, steg):
+            R = (385 if lag == 2 else 405) + r.uniform(-26, 26)
+            x, y = cx + R * math.cos(math.radians(a)), cy + R * math.sin(math.radians(a))
+            rot = a + 90 + r.uniform(-30, 30)
+            f = r.choice([TEAL_MORK, TEAL, '#00A09E', '#006E70'])
+            d += f'<ellipse cx="{x:.0f}" cy="{y:.0f}" rx="{r.uniform(62, 88):.0f}" ry="{r.uniform(18, 26):.0f}" transform="rotate({rot:.0f} {x:.0f} {y:.0f})" fill="{f}"/>'
+    for a in range(180, 360, 6):                           # snø på kransens øvre halvdel
+        if r.random() < .62:
+            R = 402 + r.uniform(-40, 40)
+            x, y = cx + R * math.cos(math.radians(a)), cy + R * math.sin(math.radians(a))
+            d += f'<ellipse cx="{x:.0f}" cy="{y:.0f}" rx="{r.uniform(20, 34):.0f}" ry="9" transform="rotate({a + 90 + r.uniform(-20, 20):.0f} {x:.0f} {y:.0f})" fill="#fff" opacity=".96"/>'
+    farger = ['#FFD54F', '#FFF3C4', '#FFD54F', '#F6A6C1']
+    for i in range(26):
+        a = i * 360 / 26 + 4
+        x, y = cx + 404 * math.cos(math.radians(a)), cy + 404 * math.sin(math.radians(a))
+        d += f'<circle cx="{x:.0f}" cy="{y:.0f}" r="24" fill="{farger[i % 4]}" opacity=".3"/><circle cx="{x:.0f}" cy="{y:.0f}" r="10" fill="{farger[i % 4]}"/>'
+    for a in (28, 118, 203, 290, 338):
+        for dx, dy in ((0, 0), (22, 8), (8, 24)):
+            x, y = cx + 412 * math.cos(math.radians(a)) + dx, cy + 412 * math.sin(math.radians(a)) + dy
+            d += f'<circle cx="{x:.0f}" cy="{y:.0f}" r="13" fill="{BURGUNDER}"/><circle cx="{x - 4:.0f}" cy="{y - 4:.0f}" r="3.5" fill="#fff" opacity=".6"/>'
+    sloyfe = ('<path d="M900 1002 C820 930 730 958 744 1022 C758 1086 852 1056 900 1002Z" fill="#75355D"/>'
+              '<path d="M900 1002 C980 930 1070 958 1056 1022 C1042 1086 948 1056 900 1002Z" fill="#75355D"/>'
+              '<path d="M880 1018 L832 1128 L876 1108 L896 1140Z" fill="#5E2A4A"/><path d="M920 1018 L968 1128 L924 1108 L904 1140Z" fill="#5E2A4A"/>'
+              '<ellipse cx="900" cy="1012" rx="28" ry="26" fill="#5E2A4A"/>')
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{B}" height="{H}" viewBox="0 0 {B} {H}">
+{sky()}{sky_cloud(120, 420, .95)}{sky_cloud(1500, 150, 1.1)}
+<circle cx="{cx}" cy="{cy}" r="345" fill="#EAF4F6"/><circle cx="{cx}" cy="{cy}" r="332" fill="#fff"/>
+<svg x="620" y="510" width="560" height="172" viewBox="0 -40 626 192">{logo_inne('bilder/logo-cleanunit.svg')}</svg>
+{d}{sloyfe}{snofall(53, 90)}
+</svg>"""
 
 
 def eksporter(svg, navn):
@@ -142,7 +245,7 @@ def eksporter(svg, navn):
         sti.write_text(svg)
         png = UT / f'{navn}.png'
         subprocess.run(['google-chrome', '--headless=new', '--no-sandbox', '--hide-scrollbars',
-                        f'--screenshot={png.resolve()}', f'--window-size={B},{H}',
+                        f'--screenshot={png.resolve()}', f'--window-size={B},{H}', '--virtual-time-budget=3000',
                         '--default-background-color=FFFFFFFF', f'file://{sti}'],
                        check=True, capture_output=True)
     im = Image.open(UT / f'{navn}.png').convert('RGB')
@@ -154,4 +257,9 @@ def eksporter(svg, navn):
 UT.mkdir(parents=True, exist_ok=True)
 eksporter(ballong(BURGUNDER), 'jul-ballong-oslo')
 eksporter(ballong(TEAL), 'jul-ballong-stavanger')
+eksporter(ballong(BURGUNDER, natt=True), 'jul-ballong-oslo-kveld')
+eksporter(ballong(TEAL, natt=True), 'jul-ballong-stavanger-kveld')
 eksporter(logo(), 'jul-logo')
+eksporter(logo(hilsen=True), 'jul-logo-hilsen')
+eksporter(logo_kveld(), 'jul-logo-kveld')
+eksporter(logo_krans(), 'jul-logo-krans')
