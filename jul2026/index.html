@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jul 2026 – bildebank – CleanUnit</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  body { margin: 0; padding: var(--s-6) 0 var(--s-8); background: var(--base); color: var(--tekst); font-family: var(--sans); }
+  .jul__topp { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); margin-bottom: var(--s-6); }
+  .jul__topp img { display: block; height: 2.25rem; width: auto; }
+  .jul h1 { font-size: clamp(var(--t-2xl), 5vw, var(--t-3xl)); color: var(--teal-mork); margin: 0 0 var(--s-3); }
+  .jul__ingress { max-width: 42rem; margin: 0 0 var(--s-6); color: var(--tekst-svak); font-size: var(--t-md); }
+  .jul__rutenett { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-5); grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 48rem) { .jul__rutenett { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .jul__kort { background: var(--flate); border: 1px solid var(--teal-lys); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+  .jul__kort img.jul__bilde { display: block; width: 100%; height: auto; background: var(--himmel); }
+  .jul__kort--bred { grid-column: 1 / -1; }
+  .jul__tekst { padding: var(--s-4) var(--s-5) var(--s-5); display: grid; gap: var(--s-3); }
+  .jul__tekst h2 { font-size: var(--t-lg); color: var(--teal-mork); }
+  .jul__tekst p { margin: 0; color: var(--tekst-svak); font-size: var(--t-sm); }
+  .jul__knapper { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .jul__knapper .knapp { cursor: pointer; font-family: var(--sans); }
+  .jul__status { min-height: 1.4em; font-size: var(--t-sm); color: var(--teal-mork); font-weight: 700; }
+  .jul__rad { margin-top: var(--s-6); color: var(--tekst-svak); font-size: var(--t-sm); max-width: 42rem; }
+</style>
+</head>
+<body>
+<main class="wrap jul">
+  <div class="jul__topp">
+    <img src="../bilder/logo-cleanunit.svg" alt="CleanUnit" width="190" height="58">
+  </div>
+  <p class="eyebrow">Jul 2026</p>
+  <h1>Bildebank til julekortet</h1>
+  <p class="jul__ingress">Fem julebilder i CleanUnits stil. Trykk «Kopier» og lim rett inn i Word, eller last ned filen og bruk <em>Sett inn → Bilde</em>.</p>
+
+  <ul class="jul__rutenett">
+    <li class="jul__kort jul__kort--bred">
+      <img class="jul__bilde" src="bilder/jul-oslo-vinter.jpg" width="2172" height="724" alt="Vinterbyen Oslo med snø, juletrær, varebil og luftballong" data-navn="cleanunit-oslo-vinter" data-png="bilder/jul-oslo-vinter.png">
+      <div class="jul__tekst">
+        <h2>Oslo i vinterdrakt</h2>
+        <p>Vinterbildet fra forsiden, nå med logo på varebilen. 2172 × 724 px.</p>
+        <div class="jul__knapper"></div><div class="jul__status" role="status"></div>
+      </div>
+    </li>
+    <li class="jul__kort jul__kort--bred">
+      <img class="jul__bilde" src="bilder/jul-stavanger-vinter.jpg" width="2172" height="724" alt="Vinterbyen Stavanger med fargerike trehus, havn og snø" data-navn="cleanunit-stavanger-vinter" data-png="bilder/jul-stavanger-vinter.png">
+      <div class="jul__tekst">
+        <h2>Stavanger i vinterdrakt</h2>
+        <p>Vinterbildet fra Stavanger-siden, nå med logo på varebilen. 2172 × 724 px.</p>
+        <div class="jul__knapper"></div><div class="jul__status" role="status"></div>
+      </div>
+    </li>
+    <li class="jul__kort">
+      <img class="jul__bilde" src="bilder/jul-ballong-oslo.jpg" width="1800" height="1200" alt="Luftballong i burgunder og hvitt med snø på toppen og julelys, mellom snødekte graner" data-navn="cleanunit-jul-ballong-oslo" data-png="bilder/jul-ballong-oslo.png">
+      <div class="jul__tekst">
+        <h2>Luftballongen, Oslo</h2>
+        <p>Burgunder ballong med snø på toppen og julelys. 1800 × 1200 px.</p>
+        <div class="jul__knapper"></div><div class="jul__status" role="status"></div>
+      </div>
+    </li>
+    <li class="jul__kort">
+      <img class="jul__bilde" src="bilder/jul-ballong-stavanger.jpg" width="1800" height="1200" alt="Luftballong i grønt og hvitt med snø på toppen og julelys, mellom snødekte graner" data-navn="cleanunit-jul-ballong-stavanger" data-png="bilder/jul-ballong-stavanger.png">
+      <div class="jul__tekst">
+        <h2>Luftballongen, Stavanger</h2>
+        <p>Grønn ballong med snø på toppen og julelys. 1800 × 1200 px.</p>
+        <div class="jul__knapper"></div><div class="jul__status" role="status"></div>
+      </div>
+    </li>
+    <li class="jul__kort">
+      <img class="jul__bilde" src="bilder/jul-logo.jpg" width="1800" height="1200" alt="CleanUnit-logoen på et skilt i snøen med julelys og pyntede graner" data-navn="cleanunit-jul-logo" data-png="bilder/jul-logo.png">
+      <div class="jul__tekst">
+        <h2>Logoen i snøen</h2>
+        <p>CleanUnit-skiltet med snø på toppen og lyslenke. 1800 × 1200 px.</p>
+        <div class="jul__knapper"></div><div class="jul__status" role="status"></div>
+      </div>
+    </li>
+  </ul>
+  <p class="jul__rad">Alle bildene er jpg eller png, som Word tåler godt. Siden er ikke lenket fra menyen og vises ikke i søkemotorer.</p>
+</main>
+<script>
+  // Knapper per bilde: Kopier (til utklippstavlen som png, så Word limer det inn), Last ned JPG, Last ned PNG (der det finnes).
+  document.querySelectorAll('.jul__kort').forEach(function (kort) {
+    var bilde = kort.querySelector('.jul__bilde');
+    var knapper = kort.querySelector('.jul__knapper');
+    var status = kort.querySelector('.jul__status');
+    function knapp(tekst, fn) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'knapp'; b.textContent = tekst;
+      b.addEventListener('click', fn); knapper.appendChild(b);
+    }
+    function lenke(tekst, href, fil) {
+      var a = document.createElement('a');
+      a.className = 'knapp knapp--omriss'; a.textContent = tekst; a.href = href; a.download = fil;
+      knapper.appendChild(a);
+    }
+    function si(t) { status.textContent = t; }
+    knapp('Kopier bilde', function () {
+      var c = document.createElement('canvas');
+      c.width = bilde.naturalWidth; c.height = bilde.naturalHeight;
+      c.getContext('2d').drawImage(bilde, 0, 0);
+      c.toBlob(function (blob) {
+        if (!blob || !navigator.clipboard || !window.ClipboardItem) { si('Kopiering virker ikke her. Bruk «Last ned» i stedet.'); return; }
+        navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+          .then(function () { si('Kopiert. Lim inn i Word med Ctrl+V.'); })
+          .catch(function () { si('Kopiering ble stoppet av nettleseren. Bruk «Last ned» i stedet.'); });
+      }, 'image/png');
+    });
+    lenke('Last ned JPG', bilde.getAttribute('src'), bilde.dataset.navn + '.jpg');
+    if (bilde.dataset.png) lenke('Last ned PNG', bilde.dataset.png, bilde.dataset.navn + '.png');
+  });
+</script>
+</body>
+</html>
