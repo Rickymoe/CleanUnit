@@ -12,6 +12,7 @@ UT = Path('jul2026/bilder/julen')
 SW = 11.8                                   # strektykkelse i logoen (stammen på L)
 GRA, TEAL_LYS = '#8E9595', '#87CAC9'
 GAP, MELLOMROM = 24, 64                     # mellom bokstaver / ord, målt i logoen
+GAP_TALL = 13                               # tettere mellom sifrene i årstallet (Ricky: «litt tettere»)
 
 logo = Path('bilder/logo-cleanunit.svg').read_text()
 stier = re.findall(r'<path[^>]* d="([^"]+)"', logo)
@@ -38,7 +39,7 @@ S0 = strek('M25 85.9 A19.1 29.1 0 1 0 25.01 85.9Z', 50)
 S6 = strek('M5.9 121 A19.1 23.1 0 1 0 44.1 121 A19.1 23.1 0 1 0 5.9 121Z M5.9 121 C5.9 98 16 85.9 31 85.9 C36 85.9 40.5 87.2 44 90', 50)
 
 
-def linje(glyfer, farge, x0=0):
+def linje(glyfer, farge, x0=0, gap=GAP):
     """Setter glyfene etter hverandre fra x0; returnerer (svg, høyre kant)."""
     x, ut = x0, ''
     for g in glyfer:
@@ -47,8 +48,8 @@ def linje(glyfer, farge, x0=0):
         else:
             ut += (f'<path transform="translate({x:.2f} 0)" d="{g["d"]}" fill="none" stroke="{farge}" stroke-width="{SW}" '
                    f'{g.get("ekstra", "")}/>')
-        x += g['w'] + GAP
-    return ut, x - GAP
+        x += g['w'] + gap
+    return ut, x - gap
 
 
 def bredde(glyfer):
@@ -63,7 +64,7 @@ def julen_logo(lys=False):
     f1, f2 = ('#FFFFFF', TEAL_LYS) if lys else (GRA, TEAL_LYS)
     bobler = ('#87CAC9', '#3DB8B5', '#AED1D1') if lys else ('#3AAFAF', '#008789', '#87CAC9')
     s1, h1 = linje(JULEN, f1)
-    s2, h2 = linje(AAR, f2, h1 + MELLOMROM)
+    s2, h2 = linje(AAR, f2, h1 + MELLOMROM, GAP_TALL)
     b = [(h2 - 56.2, -7.5, 25.7), (h2 - 94.9, 27.8, 17.8), (h2 - 74, 58.4, 9.0)]
     cirkler = ''.join(f'<circle cx="{x:.1f}" cy="{y}" r="{r}" fill="{c}"/>' for (x, y, r), c in zip(b, bobler))
     return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -40 {h2 + 1:.1f} 192" role="img" aria-label="Julen 2026">{cirkler}{s1}{s2}</svg>', h2 + 1
