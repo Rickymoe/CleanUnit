@@ -23,6 +23,20 @@
   .jul__knapper { display: flex; flex-wrap: wrap; gap: var(--s-2); }
   .jul__knapper .knapp { cursor: pointer; font-family: var(--sans); }
   .jul__status { min-height: 1.4em; font-size: var(--t-sm); color: var(--teal-mork); font-weight: 700; }
+  .jul__del { margin: var(--s-8) 0 var(--s-2); font-size: var(--t-2xl); color: var(--teal-mork); }
+  .jul__del-tekst { margin: 0 0 var(--s-5); max-width: 42rem; color: var(--tekst-svak); }
+  .logo__rutenett { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-5); grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 48rem) { .logo__rutenett { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .logo__kort { background: var(--flate); border: 1px solid var(--teal-lys); border-radius: var(--radius); overflow: hidden; }
+  .logo__visning { display: grid; place-items: center; padding: var(--s-6) var(--s-5); }
+  .logo__visning img { display: block; width: 100%; max-width: 20rem; height: auto; }
+  .logo__visning--lys { background: #fff; background-image: linear-gradient(45deg, #EEF3F4 25%, transparent 25%, transparent 75%, #EEF3F4 75%), linear-gradient(45deg, #EEF3F4 25%, transparent 25%, transparent 75%, #EEF3F4 75%); background-size: 24px 24px; background-position: 0 0, 12px 12px; }
+  .logo__visning--mork { background: linear-gradient(#0B222B, #215662); }
+  .logo__rader { list-style: none; margin: 0; padding: var(--s-2) var(--s-5) var(--s-5); display: grid; gap: var(--s-3); }
+  .logo__rad { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-4); }
+  .logo__rad strong { display: block; font-size: var(--t-base); color: var(--tekst); }
+  .logo__rad span { font-size: var(--t-sm); color: var(--tekst-svak); }
+  .logo__status { min-height: 1.4em; padding: 0 var(--s-5) var(--s-4); font-size: var(--t-sm); color: var(--teal-mork); font-weight: 700; }
   .jul__rad { margin-top: var(--s-6); color: var(--tekst-svak); font-size: var(--t-sm); max-width: 42rem; }
 </style>
 </head>
@@ -133,6 +147,30 @@
       </div>
     </li>
   </ul>
+  <h2 class="jul__del">Logoen alene</h2>
+  <p class="jul__del-tekst">Gjennomsiktig PNG i tre størrelser, uten bakgrunn. Bruk den vanlige logoen på lys bakgrunn og den lyse på mørk bakgrunn.</p>
+  <ul class="logo__rutenett">
+    <li class="logo__kort">
+      <div class="logo__visning logo__visning--lys"><img src="bilder/logo/cleanunit-logo-middels.png" width="800" height="245" alt="CleanUnit-logoen med grå og turkis tekst"></div>
+      <div class="jul__tekst"><h2>Vanlig logo, til lys bakgrunn</h2></div>
+      <ul class="logo__rader">
+        <li class="logo__rad" data-src="bilder/logo/cleanunit-logo-liten.png" data-navn="cleanunit-logo-liten"><div><strong>Liten</strong><span>400 × 123 px</span></div><div class="jul__knapper"></div></li>
+        <li class="logo__rad" data-src="bilder/logo/cleanunit-logo-middels.png" data-navn="cleanunit-logo-middels"><div><strong>Middels</strong><span>800 × 245 px</span></div><div class="jul__knapper"></div></li>
+        <li class="logo__rad" data-src="bilder/logo/cleanunit-logo-stor.png" data-navn="cleanunit-logo-stor"><div><strong>Stor</strong><span>1600 × 491 px</span></div><div class="jul__knapper"></div></li>
+      </ul>
+      <div class="logo__status" role="status"></div>
+    </li>
+    <li class="logo__kort">
+      <div class="logo__visning logo__visning--mork"><img src="bilder/logo/cleanunit-logo-lys-middels.png" width="800" height="245" alt="CleanUnit-logoen med hvit og lys turkis tekst på mørk bakgrunn"></div>
+      <div class="jul__tekst"><h2>Lys logo, til mørk bakgrunn</h2></div>
+      <ul class="logo__rader">
+        <li class="logo__rad" data-src="bilder/logo/cleanunit-logo-lys-liten.png" data-navn="cleanunit-logo-lys-liten"><div><strong>Liten</strong><span>400 × 123 px</span></div><div class="jul__knapper"></div></li>
+        <li class="logo__rad" data-src="bilder/logo/cleanunit-logo-lys-middels.png" data-navn="cleanunit-logo-lys-middels"><div><strong>Middels</strong><span>800 × 245 px</span></div><div class="jul__knapper"></div></li>
+        <li class="logo__rad" data-src="bilder/logo/cleanunit-logo-lys-stor.png" data-navn="cleanunit-logo-lys-stor"><div><strong>Stor</strong><span>1600 × 491 px</span></div><div class="jul__knapper"></div></li>
+      </ul>
+      <div class="logo__status" role="status"></div>
+    </li>
+  </ul>
   <p class="jul__rad">Alle bildene er jpg eller png, som Word tåler godt. Siden er ikke lenket fra menyen og vises ikke i søkemotorer.</p>
 </main>
 <script>
@@ -165,6 +203,25 @@
     });
     lenke('Last ned JPG', bilde.getAttribute('src'), bilde.dataset.navn + '.jpg');
     if (bilde.dataset.png) lenke('Last ned PNG', bilde.dataset.png, bilde.dataset.navn + '.png');
+  });
+
+  // Logoene alene: Kopier og Last ned per størrelse (PNG med gjennomsiktighet beholdes).
+  document.querySelectorAll('.logo__rad').forEach(function (rad) {
+    var knapper = rad.querySelector('.jul__knapper');
+    var status = rad.closest('.logo__kort').querySelector('.logo__status');
+    var kilde = rad.dataset.src, navn = rad.dataset.navn;
+    var kopier = document.createElement('button');
+    kopier.type = 'button'; kopier.className = 'knapp'; kopier.textContent = 'Kopier';
+    kopier.addEventListener('click', function () {
+      if (!navigator.clipboard || !window.ClipboardItem) { status.textContent = 'Kopiering virker ikke her. Bruk «Last ned» i stedet.'; return; }
+      fetch(kilde).then(function (r) { return r.blob(); })
+        .then(function (blob) { return navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); })
+        .then(function () { status.textContent = 'Kopiert. Lim inn i Word med Ctrl+V.'; })
+        .catch(function () { status.textContent = 'Kopiering ble stoppet av nettleseren. Bruk «Last ned» i stedet.'; });
+    });
+    var last = document.createElement('a');
+    last.className = 'knapp knapp--omriss'; last.textContent = 'Last ned PNG'; last.href = kilde; last.download = navn + '.png';
+    knapper.appendChild(kopier); knapper.appendChild(last);
   });
 </script>
 </body>
