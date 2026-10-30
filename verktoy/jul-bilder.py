@@ -239,6 +239,116 @@ def logo_krans():
 </svg>"""
 
 
+SW_LOGO = 11.8                                      # strektykkelse i logoen
+_logo_stier = re.findall(r'<path[^>]* d="([^"]+)"', Path('bilder/logo-cleanunit.svg').read_text())
+CLEAN_D, UNIT_D = _logo_stier[0], _logo_stier[1]    # grå sti = CLEAN, turkis sti = UNIT (ordrett fra logoen)
+SIFRE = {                                           # 2, 0 og 6 tegnet som streker i logoens tykkelse (se verktoy/jul-julen-logo.py)
+    '2': 'M6 103 A19 17.1 0 0 1 44 103 C44 122 26 132 6 144.1 H49',
+    '0': 'M25 85.9 A19.1 29.1 0 1 0 25.01 85.9Z',
+    '6': 'M5.9 121 A19.1 23.1 0 1 0 44.1 121 A19.1 23.1 0 1 0 5.9 121Z M5.9 121 C5.9 98 16 85.9 31 85.9 C36 85.9 40.5 87.2 44 90',
+}
+
+
+def aar_svg(farge):
+    return ''.join(f'<path transform="translate({i * 63} 0)" d="{SIFRE[c]}" fill="none" stroke="{farge}" stroke-width="{SW_LOGO}" stroke-linejoin="miter" stroke-miterlimit="10"/>'
+                   for i, c in enumerate('2026'))
+
+
+def tekst_pa_flate(svg, bbox, flate, maks_h=.52, bredde_andel=.8):
+    """Skalerer og midtstiller logo-skrift (gitt bbox i logoens koordinater) på en flate (x, y, w, h)."""
+    x0, y0, x1, y1 = bbox
+    fx, fy, fw, fh = flate
+    sk = min(fw * bredde_andel / (x1 - x0), fh * maks_h / (y1 - y0))
+    tx = fx + (fw - (x1 - x0) * sk) / 2 - x0 * sk
+    ty = fy + (fh - (y1 - y0) * sk) / 2 - y0 * sk
+    return f'<g transform="translate({tx:.1f} {ty:.1f}) scale({sk:.4f})">{svg}</g>'
+
+
+def pakke(x, y, w, h, farge, mork, bandfarge, tekst):
+    """Pakke sett forfra: korpus, lokk med bånd og sløyfe, snø på lokket. Teksten går på forsiden under lokket."""
+    lokk_h = 34
+    flate = (x, y + lokk_h, w, h - lokk_h)
+    cx = x + w / 2
+    sloyfe = (f'<g transform="translate({cx} {y - 4})"><ellipse cx="-26" cy="-8" rx="28" ry="15" transform="rotate(-24 -26 -8)" fill="{bandfarge}"/>'
+              f'<ellipse cx="26" cy="-8" rx="28" ry="15" transform="rotate(24 26 -8)" fill="{bandfarge}"/>'
+              f'<circle cx="0" cy="-2" r="10" fill="{bandfarge}" stroke="{mork}" stroke-opacity=".35" stroke-width="2"/></g>')
+    snoe = (f'<path d="M{x - 6} {y - 2} C{x + w * .12} {y - 24} {x + w * .22} {y - 6} {x + w * .32} {y - 18} '
+            f'C{x + w * .38} {y - 24} {x + w * .42} {y - 4} {x + w * .46} {y - 2}Z" fill="#fff"/>'
+            f'<path d="M{x + w * .6} {y - 2} C{x + w * .68} {y - 20} {x + w * .8} {y - 10} {x + w + 6} {y - 2}Z" fill="#fff"/>')
+    return (f'<ellipse cx="{cx}" cy="{y + h + 4}" rx="{w * .56}" ry="12" fill="#B9D3D8" opacity=".55"/>'
+            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" fill="{farge}"/>'
+            f'<rect x="{x - 7}" y="{y}" width="{w + 14}" height="{lokk_h}" rx="8" fill="{mork}"/>'
+            f'<rect x="{cx - 13}" y="{y}" width="26" height="{lokk_h}" fill="{bandfarge}"/>'
+            f'{snoe}{sloyfe}{tekst_pa_flate(*tekst, flate)}')
+
+
+def gavepakker():
+    CLEAN_B, UNIT_B, HELE_B, AAR_B = (3.8, 76.5, 355.1, 153.5), (380.5, 80, 625.2, 153.5), (3.8, 76.5, 625.2, 153.5), (0, 80, 239, 150)
+    # én rekke i rekkefølgen Clean, Unit, CleanUnit, 2026; ulik høyde, felles bunn (y 1110)
+    d = pakke(305, 970, 270, 140, TEAL, '#006567', '#FFD54F', (f'<path d="{CLEAN_D}" fill="#FFFFFF"/>', CLEAN_B))
+    d += pakke(605, 940, 210, 170, BURGUNDER, '#5E2A4A', '#87CAC9', (f'<path d="{UNIT_D}" fill="#BFE8E5"/>', UNIT_B))
+    d += pakke(845, 985, 400, 125, '#00595B', '#00403F', '#FFD54F',
+               (f'<path d="{CLEAN_D}" fill="#FFFFFF"/><path d="{UNIT_D}" fill="#87CAC9"/>', HELE_B))
+    d += pakke(1275, 955, 220, 155, '#87CAC9', '#5FB0AF', BURGUNDER, (aar_svg('#00595B'), AAR_B))
+    return d
+
+
+def juletre(pakker=False):
+    """Stort juletre i snøen. Kulene har logoens bobler: stor #87CAC9 (r 25,7), middels #008789 (r 17,8), liten #AED1D1 (r 9)."""
+    cx, bunn = 900, 1015
+    lag = [(175, 390, 135), (290, 545, 195), (420, 705, 255), (570, 870, 315), (735, bunn, 375)]
+    GRONN = ['#14513F', '#1B6650']                                  # dypere grønn enn merkets turkis, så kulene i turkis står frem
+    kuletyper = [(30, '#87CAC9'), (21, '#008789'), (11, '#AED1D1')]
+    antall = [4, 5, 7, 9, 11]
+    r = random.Random(9)
+    kuler = []
+    for i, (ty, by, w) in enumerate(lag):
+        # nedre del av laget, under lagene over (som tegnes foran) og under egen snøhette
+        ymin = lag[i - 1][1] + 50 if i else ty + (by - ty) * .52
+        forsok = 0
+        while sum(1 for k in kuler if k[3] == i) < antall[i] and forsok < 4000:
+            forsok += 1
+            y = r.uniform(ymin, by - (72 if i == len(lag) - 1 else 24))   # nederste lag: unna snøhaugen
+            halv = w * (y - ty) / (by - ty) - 40                       # kanten på laget i den høyden, minus margin
+            if halv < 20:
+                continue
+            x = cx + r.uniform(-halv, halv)
+            rad, farge = r.choices(kuletyper, weights=(33, 40, 27))[0]
+            if all((x - k[0]) ** 2 + (y - k[1]) ** 2 > (rad + k[2] + 16) ** 2 for k in kuler):
+                kuler.append((x, y, rad, i, farge))
+    d = ''
+    for i in reversed(range(len(lag))):                              # nederste lag først, så de øvre ligger foran
+        ty, by, w = lag[i]
+        bump = ''.join(f' Q{cx + w - (k + .5) * 2 * w / 5:.0f} {by + 38} {cx + w - (k + 1) * 2 * w / 5:.0f} {by}' for k in range(5))
+        d += f'<path d="M{cx} {ty} L{cx + w} {by}{bump}Z" fill="{GRONN[i % 2]}"/>'
+        d += (f'<clipPath id="t{i}"><path d="M{cx} {ty} L{cx + w} {by}{bump}Z"/></clipPath>'
+              f'<path clip-path="url(#t{i})" d="M{cx + w} {by}{bump}" fill="none" stroke="#fff" stroke-width="28" stroke-linejoin="round"/>')   # snø langs nedre kant
+        sw, sy = w * .46, ty + (by - ty) * .46
+        d += (f'<path d="M{cx} {ty} L{cx + sw:.0f} {sy:.0f} Q{cx + sw/2:.0f} {sy + 26:.0f} {cx} {sy - 4:.0f} '
+              f'Q{cx - sw/2:.0f} {sy + 26:.0f} {cx - sw:.0f} {sy:.0f}Z" fill="#fff"/>')
+        for x, y, rad, li, farge in kuler:
+            if li == i:
+                d += (f'<line x1="{x:.0f}" y1="{y - rad:.0f}" x2="{x:.0f}" y2="{y - rad - 9:.0f}" stroke="#E9C46A" stroke-width="3"/>'
+                      f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{rad}" fill="{farge}"/>'
+                      f'<circle cx="{x - rad * .32:.0f}" cy="{y - rad * .34:.0f}" r="{rad * .2:.1f}" fill="#fff" opacity=".7"/>')
+    stjerne = (f'<circle cx="{cx}" cy="150" r="80" fill="#FFE9A0" opacity=".4"/>'
+               f'<path transform="translate({cx} 150)" d="M0 -64 l17 42 44 4 -33 29 10 44 -38 -23 -38 23 10 -44 -33 -29 44 -4z" fill="#FFD54F"/>')
+    # snøhaugen foran: treet står nedsunket i snøen, uten synlig stamme
+    snohaug = (f'<path d="M{cx-520} 1070 C{cx-400} 995 {cx-220} 975 {cx} 985 C{cx+220} 975 {cx+400} 995 {cx+520} 1070Z" fill="#EAF4F6"/>'
+               f'<path d="M{cx-470} 1076 C{cx-350} 1012 {cx-190} 996 {cx} 1004 C{cx+190} 996 {cx+350} 1012 {cx+470} 1076Z" fill="#fff"/>')
+    tre_gruppe = f'{d}{stjerne}{snohaug}'
+    gaver = ''
+    if pakker:                                        # treet krympes og løftes, så det blir plass til pakkene foran
+        tre_gruppe = f'<g transform="translate(0 -70) translate({cx} {bunn}) scale(.86) translate({-cx} {-bunn})">{tre_gruppe}</g>'
+        gaver = gavepakker()
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{B}" height="{H}" viewBox="0 0 {B} {H}">
+{sky()}{sky_cloud(1400, 190, 1.15)}{sky_cloud(120, 400, .9)}{sky_cloud(1560, 560, .75)}
+{bakke()}
+{tre_gruppe}
+{snofall(61, 120)}{gaver}
+</svg>"""
+
+
 def eksporter(svg, navn):
     with tempfile.TemporaryDirectory() as tmp:
         sti = Path(tmp) / f'{navn}.svg'
@@ -263,3 +373,5 @@ eksporter(logo(), 'jul-logo')
 eksporter(logo(hilsen=True), 'jul-logo-hilsen')
 eksporter(logo_kveld(), 'jul-logo-kveld')
 eksporter(logo_krans(), 'jul-logo-krans')
+eksporter(juletre(), 'jul-juletre')
+eksporter(juletre(pakker=True), 'jul-juletre-pakker')
