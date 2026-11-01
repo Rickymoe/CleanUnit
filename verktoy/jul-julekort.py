@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lager jul2026/bilder/jul-julekort.{png,jpg}: ferdig julekort «God jul» (3:2, 2400 × 1600 px) på Oslo-vinterbildet med himmel.
+"""Lager jul2026/bilder/jul-julekort.{png,jpg} (Oslo) og jul-julekort-stavanger.{png,jpg}: ferdig julekort «God jul» (3:2, 2400 × 1600 px) på vinterbildet med himmel.
 Utformingen kommer fra «Julekort CleanUnit» i Claude Design (1200 × 800, Fraunces og DM Sans), tegnet her med Chrome uten skjerm i dobbel oppløsning.
 Krever nettilgang (skriftene hentes fra Google Fonts) og at verktoy/jul-himmel.py er kjørt.
 Kjør: python3 verktoy/jul-julekort.py"""
@@ -8,7 +8,7 @@ from pathlib import Path
 from PIL import Image
 
 UT = Path('jul2026/bilder')
-BAKGRUNN = UT / 'jul-oslo-vinter-himmel.png'
+KORT = [('jul-julekort', 'jul-oslo-vinter-himmel'), ('jul-julekort-stavanger', 'jul-stavanger-vinter-himmel')]
 B, H, SKALA = 1200, 800, 2
 FARGE_TEKST, FARGE_AKSENT = '#0E4A52', '#7A2A5E'
 
@@ -25,15 +25,16 @@ HTML = '''<!doctype html>
 <p style="margin:0;max-width:640px;font-size:26px;line-height:1.45;font-weight:500;color:{tekst}">Takk for et godt samarbeid i år. Vi ønsker deg og dine en fredfull juletid og et riktig godt nytt år.</p>
 </div></div></body></html>'''
 
-with tempfile.TemporaryDirectory() as tmp:
-    side = Path(tmp) / 'julekort.html'
-    side.write_text(HTML.format(b=B, h=H, bakgrunn=BAKGRUNN.resolve().as_uri(), aksent=FARGE_AKSENT, tekst=FARGE_TEKST))
-    png = UT / 'jul-julekort.png'
-    subprocess.run(['google-chrome', '--headless=new', '--no-sandbox', '--hide-scrollbars', '--allow-file-access-from-files',
-                    f'--screenshot={png.resolve()}', f'--window-size={B},{H}', f'--force-device-scale-factor={SKALA}',
-                    '--virtual-time-budget=8000', f'file://{side}'],
-                   check=True, capture_output=True)
-im = Image.open(UT / 'jul-julekort.png').convert('RGB')
-im.save(UT / 'jul-julekort.png', optimize=True)
-im.save(UT / 'jul-julekort.jpg', quality=92, optimize=True)
-print('jul-julekort', im.size)
+for navn, bakgrunn in KORT:
+    with tempfile.TemporaryDirectory() as tmp:
+        side = Path(tmp) / 'julekort.html'
+        side.write_text(HTML.format(b=B, h=H, bakgrunn=(UT / f'{bakgrunn}.png').resolve().as_uri(), aksent=FARGE_AKSENT, tekst=FARGE_TEKST))
+        png = UT / f'{navn}.png'
+        subprocess.run(['google-chrome', '--headless=new', '--no-sandbox', '--hide-scrollbars', '--allow-file-access-from-files',
+                        f'--screenshot={png.resolve()}', f'--window-size={B},{H}', f'--force-device-scale-factor={SKALA}',
+                        '--virtual-time-budget=8000', f'file://{side}'],
+                       check=True, capture_output=True)
+    im = Image.open(UT / f'{navn}.png').convert('RGB')
+    im.save(UT / f'{navn}.png', optimize=True)
+    im.save(UT / f'{navn}.jpg', quality=92, optimize=True)
+    print(navn, im.size)
