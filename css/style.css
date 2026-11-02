@@ -1270,6 +1270,19 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
 @media (hover: hover) {
   .side-footer__lenke:hover { color: #fff; }
 }
+/* Bunnraden i footeren (Marit 2026-11-02: utviklerlenke som på andre nettsider; Ricky: ordmerket «Webdesign by Ricky» til venstre, uten bakgrunn, Personvern til høyre).
+   Ordmerket (bilder/webdesign-by-ricky.svg) og Personvern har samme lyse grønn. Radene brytes og sentreres på smale skjermer. */
+.side-footer__bunn { justify-self: stretch; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s-2) var(--s-5); }
+.side-footer__bunn p { margin: 0; font-size: var(--t-sm); }
+.side-footer__bunn .side-footer__lenke { padding-block: var(--s-3); }
+.side-footer__utvikler { text-align: left; }
+.side-footer__bunn .side-footer__lenke { padding-inline: 0; }
+.side-footer__utviklerlenke { display: inline-block; padding-block: var(--s-3); line-height: 0; }
+.side-footer__utviklerlenke img { display: block; width: auto; height: 1.1rem; }
+@media (hover: hover) {
+  .side-footer__utviklerlenke:hover { opacity: .75; }
+}
+@media (max-width: 30rem) { .side-footer__bunn { justify-content: center; } }
 
 /* ===== Burgunder-aksenter (Ricky valgte i burgunder-laben 2026-10-05; Marit: «gir litt mer liv») =====
    Fargen brukes sparsomt, som aksent og ikke som handling: stiens aktive node, initialsirklene på
