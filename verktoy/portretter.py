@@ -39,7 +39,7 @@ SITATFOTO = {
     'fabiana':  (MAPPE_STAVANGER, 'Fabianabilde.jpg', (1376, 330, 3100)),
 }
 
-# Kontaktpersonene i Stavanger (Marit 09.11.2026): team-<navn>-liten.webp/.jpg (240 px, som Oslo-kontaktene). (mappe, fil, rotasjon i grader, luft over hodet i piksler, (senter_x, topp_y, side)). Er luft > 0, gjelder topp_y det forlengede bildet.
+# Kontaktpersonene i Stavanger (Marit 09.11.2026): team-<navn>-liten.webp/.jpg (240 px, Kontakt-raden) og team-<navn>.webp/.jpg (480 px, Om oss-kortet), som Oslo-kontaktene. (mappe, fil, rotasjon i grader, luft over hodet i piksler, (senter_x, topp_y, side)). Er luft > 0, gjelder topp_y det forlengede bildet.
 # Utsnittene er målt til samme ansiktsforhold (ansiktsboks / utsnitt ca. 0,49) som Oslo-kontaktene. Thords original er lagret liggende, så den roteres 90° med klokka;
 # Aleksandras utsnitt er videre enn originalen (sidene utvides).
 KONTAKTFOTO = {
@@ -149,3 +149,4 @@ for navn, (mappe, fil, rot, luft, (sx, ty, s)) in KONTAKTFOTO.items():
     if luft:
         im = luft_over_hodet(im, luft)
     lagre(utsnitt(im, sx, ty, s, 240), os.path.join(UT, f'team-{navn}-liten'))
+    lagre(utsnitt(im, sx, ty, int(s * 0.955), 480), os.path.join(UT, f'team-{navn}'))   # Om oss-kortet: litt strammere utsnitt (som Oslo: 3300 mot 3456)

@@ -1073,6 +1073,11 @@ test('Stavanger-lederen heter Thord Hegre, daglig leder (Enhetsregisteret), aldr
     assert.ok(h.includes('bilder/team-aleksandra-liten.jpg'), `${s.fil}: Aleksandra har foto`);
   }
   assert.match(les(sideFil('Stavanger', 'om_oss')), /<h4>Thord Hegre<\/h4>\s*<p class="team-rolle">Daglig leder<\/p>/, 'Om oss-kortet');
+  const stOm = les(sideFil('Stavanger', 'om_oss'));
+  assert.ok(stOm.includes('bilder/team-thord.jpg') && !stOm.includes('team-initialer'), 'Om oss: Thord har fotokort som Oslo, ikke initialer');
+  assert.match(stOm, /<h4>Aleksandra<\/h4>\s*<p class="team-rolle kontakt__mangler">Tittel<\/p>\s*<p class="kontakt__mangler">Beskrivelse<\/p>/, 'Om oss: Aleksandra med plassholdere for tittel og beskrivelse');
+  assert.match(stOm, /<h4>Thord Hegre<\/h4>\s*<p class="team-rolle">Daglig leder<\/p>\s*<p>Overordnet ansvar for drift, ansatte og kunder\.<\/p>/, 'Om oss: Thord har samme ansvar som Marit i Oslo');
+  assert.ok(stOm.includes('bilder/team-aleksandra.jpg'), 'Om oss: Aleksandra har foto');
 });
 
 test('CSS: heroens og «Ta kontakt»-boksens to knapper er like: omriss med grønn ramme, hvit bunn og grønn skrift', () => {
