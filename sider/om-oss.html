@@ -185,8 +185,10 @@
       <h3>Ansatte</h3>
       <p>Renhold er ofte en usynlig jobb. Arbeidet utføres gjerne etter at andre har gått hjem, og mange renholdere jobber alene på forskjellige arbeidssteder. Derfor legger vi stor vekt på lederkontakt, opplæring og oppfølging.</p>
     </div>{{/er_oslo}}<h3>Dette sier de som jobber hos oss</h3>
-    <!-- Marit 2026-10-13: tre ansattsitater (Irene, Monika S, Vilma) i stedet for fire; Urszula og Aneta er ute. Monika har fått ny tekst. Felles for begge byer. -->
+    <!-- Marit 2026-10-13: tre ansattsitater (Irene, Monika S, Vilma) i stedet for fire; Urszula og Aneta er ute. Monika har fått ny tekst.
+         Marit 2026-11-09: egne sitater for Stavanger (Thora, Anna, Fabiana); Oslo-sitatene står bare på Oslo, Stavanger-sitatene bare på Stavanger. -->
     <ul class="sitat-liste">
+      {{#er_oslo}}
       <li class="sitat-kort">
         <picture><source srcset="{{rot}}bilder/ansatt-irene.webp" type="image/webp"><img class="sitat-avatar sitat-avatar--foto" src="{{rot}}bilder/ansatt-irene.jpg" alt="Irene" width="288" height="288" loading="lazy" decoding="async"></picture>
         <blockquote>
@@ -209,6 +211,29 @@
           <footer>— Vilma</footer>
         </blockquote>
       </li>
+      {{/er_oslo}}{{^er_oslo}}
+      <li class="sitat-kort">
+        <picture><source srcset="{{rot}}bilder/ansatt-thora.webp" type="image/webp"><img class="sitat-avatar sitat-avatar--foto" src="{{rot}}bilder/ansatt-thora.jpg" alt="Thora" width="288" height="288" loading="lazy" decoding="async"></picture>
+        <blockquote>
+          <p>Jeg er student og setter stor pris på muligheten til å jobbe ved siden av studiene hos Clean Unit. Jeg jobber i helger og ferier, noe som gjør det enkelt å kombinere studiene med å tjene egne penger. Jeg har fått god opplæring og trives med både arbeidsoppgavene og kollegaene mine. Det er fint å ha en fleksibel jobb hvor jeg samtidig får nyttig arbeidserfaring.</p>
+          <footer>— Thora</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <picture><source srcset="{{rot}}bilder/ansatt-anna.webp" type="image/webp"><img class="sitat-avatar sitat-avatar--foto" src="{{rot}}bilder/ansatt-anna.jpg" alt="Anna" width="288" height="288" loading="lazy" decoding="async"></picture>
+        <blockquote>
+          <p>Jeg kom til Norge etter å ha flyktet fra krigen i Ukraina. I 2023 startet jeg med arbeidstrening hos Clean Unit gjennom NAV. Jeg fikk god opplæring og hjelp til å komme inn i arbeidslivet i Norge, og fikk etter hvert tilbud om fast jobb i full stilling. I dag har jeg ansvar for renholdet på Sandnes Kino og trives veldig godt med jobben. Jeg setter stor pris på muligheten jeg fikk, og tilliten og ansvaret jeg har fått.</p>
+          <footer>— Anna</footer>
+        </blockquote>
+      </li>
+      <li class="sitat-kort">
+        <picture><source srcset="{{rot}}bilder/ansatt-fabiana.webp" type="image/webp"><img class="sitat-avatar sitat-avatar--foto" src="{{rot}}bilder/ansatt-fabiana.jpg" alt="Fabiana" width="288" height="288" loading="lazy" decoding="async"></picture>
+        <blockquote>
+          <p>Jeg har jobbet hos Clean Unit helt siden Stavanger-avdelingen startet opp i 2022. Jeg har ikke mulighet til å jobbe fulltid, men setter stor pris på å kunne jobbe litt. Her har jeg fått en jobb som passer min situasjon. Jeg trives godt med arbeidsoppgavene og setter pris på forståelsen og fleksibiliteten jeg får hos Clean Unit.</p>
+          <footer>— Fabiana</footer>
+        </blockquote>
+      </li>
+      {{/er_oslo}}
     </ul>
     <p class="jobb-soknad">For å søke jobb: <a href="mailto:{{jobb_epost}}">{{jobb_epost}}</a></p>
   </div>

@@ -1178,7 +1178,7 @@ test('Kontakt: begge kortene har et dekorativt ikon foran overskriften (alt tom,
 });
 
 // Tekstsjekk 1 (Marit, 2026-10-08): kommaet i «fast, daglig renhold» er fjernet overalt, den nye
-// Jobb hos oss-overskriften gjelder begge byer, og ansattsitatene: Monika er signert «Monika S» (etter «Vilma: / Monika S»), alle fire sitatene står i begge byer (felles kultur og arbeidsmiljø).
+// Jobb hos oss-overskriften gjelder begge byer, og ansattsitatene: Monika er signert «Monika S» (etter «Vilma: / Monika S»), Oslo og Stavanger har hvert sine tre ansattsitater (Marit 2026-11-09).
 test('Tekstsjekk: «fast, daglig renhold» (med komma) står ingen steder i kildene eller de bygde sidene', () => {
   const kilder = [...['forside', 'tjenester', 'referanser', 'om-oss', 'miljo'].map((n) => `sider/${n}.html`), 'deler/kontakt.html', 'deler/layout.html', 'byer.json'];
   for (const f of [...kilder, ...alleSider().map((x) => x.fil)]) assert.doesNotMatch(les(f), /fast, daglig/i, f);
@@ -1192,22 +1192,32 @@ test('Tekstsjekk: «Renholderne er våre viktigste medarbeidere» står på Om o
     assert.ok(h.includes('Det er renholderne som hver dag sørger for at kundene våre møter en ren arbeidsplass.'), `${by}: ny ingress`);
   }
 });
-test('Tekstsjekk: tre ansattsitater (Irene, Monika S, Vilma) står i begge byer, Urszula og Aneta er ute (Marit 2026-10-13)', () => {
+test('Tekstsjekk: Oslo har ansattsitatene Irene, Monika S og Vilma, Stavanger har Thora, Anna og Fabiana, og ingen av dem står i den andre byen (Marit 2026-11-09)', () => {
   const sitat = (by, navn) => {
     const h = les(sideFil(by, 'om_oss'));
     const i = h.indexOf(`<footer>— ${navn}</footer>`);
     return i < 0 ? null : h.slice(h.lastIndexOf('<blockquote>', i), i);
   };
-  for (const by of ['Oslo', 'Stavanger']) {
-    const h = les(sideFil(by, 'om_oss'));
-    assert.ok(!h.includes('<footer>— Monika</footer>'), `${by}: Monika er signert Monika S`);
-    assert.ok(sitat(by, 'Irene').includes('<p>Jeg kom til Oslo for å studere og begynte å jobbe i Clean Unit i 2023.'), `${by}: Irene`);
-    assert.ok(sitat(by, 'Irene').includes('Nå rengjør jeg en fast barnehage'), `${by}: Irene, rettet «rengjøre»`);
-    assert.ok(sitat(by, 'Monika S').includes('<p>Jeg har jobbet i Clean Unit siden 2011 og har vasket både skole'), `${by}: Monikas nye tekst`);
-    assert.ok(sitat(by, 'Vilma').includes('<p>Jeg har jobbet i Clean Unit siden 2013. Dette er det første stedet'), `${by}: Vilma står`);
-    assert.ok(!h.includes('<footer>— Urszula</footer>') && !h.includes('<footer>— Aneta</footer>'), `${by}: Urszula og Aneta er ute`);
-    assert.equal((h.match(/class="sitat-kort"/g) || []).length, 3, `${by}: tre ansattsitater`);
+  const oslo = les(sideFil('Oslo', 'om_oss')); const st = les(sideFil('Stavanger', 'om_oss'));
+  assert.ok(!oslo.includes('<footer>— Monika</footer>'), 'Oslo: Monika er signert Monika S');
+  assert.ok(sitat('Oslo', 'Irene').includes('<p>Jeg kom til Oslo for å studere og begynte å jobbe i Clean Unit i 2023.'), 'Oslo: Irene');
+  assert.ok(sitat('Oslo', 'Irene').includes('Nå rengjør jeg en fast barnehage'), 'Oslo: Irene, rettet «rengjøre»');
+  assert.ok(sitat('Oslo', 'Monika S').includes('<p>Jeg har jobbet i Clean Unit siden 2011 og har vasket både skole'), 'Oslo: Monikas nye tekst');
+  assert.ok(sitat('Oslo', 'Vilma').includes('<p>Jeg har jobbet i Clean Unit siden 2013. Dette er det første stedet'), 'Oslo: Vilma');
+  assert.ok(oslo.includes('bilder/ansatt-vilma.jpg') && !oslo.includes('avatar-3.svg'), 'Oslo: Vilma har foto, ikke tegnet avatar');
+  assert.ok(sitat('Stavanger', 'Thora').includes('<p>Jeg er student og setter stor pris på muligheten til å jobbe ved siden av studiene'), 'Stavanger: Thora');
+  assert.ok(sitat('Stavanger', 'Anna').includes('Jeg kom til Norge etter å ha flyktet fra krigen i Ukraina.'), 'Stavanger: Anna');
+  assert.ok(sitat('Stavanger', 'Anna').includes('renholdet på Sandnes Kino'), 'Stavanger: Annas arbeidssted');
+  assert.ok(sitat('Stavanger', 'Fabiana').includes('siden Stavanger-avdelingen startet opp i 2022'), 'Stavanger: Fabiana');
+  for (const navn of ['Thora', 'Anna', 'Fabiana']) {
+    assert.ok(!oslo.includes(`<footer>— ${navn}</footer>`), `Oslo: ${navn} står bare på Stavanger`);
+    assert.ok(st.includes(`bilder/ansatt-${navn.toLowerCase()}.jpg`), `Stavanger: ${navn} har foto`);
   }
+  for (const navn of ['Irene', 'Monika S', 'Vilma', 'Urszula', 'Aneta']) {
+    assert.ok(!st.includes(`<footer>— ${navn}</footer>`), `Stavanger: ${navn} står bare på Oslo`);
+  }
+  assert.equal((oslo.match(/class="sitat-kort"/g) || []).length, 3, 'Oslo: tre ansattsitater');
+  assert.equal((st.match(/class="sitat-kort"/g) || []).length, 3, 'Stavanger: tre ansattsitater');
 });
 test('Tekstsjekk: Oslo har NS-INSTA, Stavanger har det ikke; barnehage-setningen står i begge byer (erfaring fra Oslo, Ricky 2026-10-08), ellers nevnes aldri Oslo i Stavangers innhold', () => {
   const o = les(sideFil('Oslo', 'tjenester')); const st = les(sideFil('Stavanger', 'tjenester'));

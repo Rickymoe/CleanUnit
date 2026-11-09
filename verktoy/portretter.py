@@ -3,13 +3,14 @@
 
 Kjør:  python3 verktoy/portretter.py [ut-mappe]      (standard: bilder/)
 Per person: team-<navn>.webp/.jpg (480 px, «Om oss»-kortet) og team-<navn>-liten.webp/.jpg (240 px,
-Kontakt-raden, videre utsnitt fordi det vises som 72 px rundt). Monika og Vilma: ansatt-monika og ansatt-vilma .webp/.jpg
-(288 px, sitat-avatarene, 288 px = 3 × 96 px). Vilmas original er fra Marit 02.11.2026 (egen mappe, se MAPPE_VILMA).
+Kontakt-raden, videre utsnitt fordi det vises som 72 px rundt). Monika og de andre sitat-avatarene (Vilma, Thora, Anna, Fabiana): ansatt-<navn>.webp/.jpg
+(288 px, sitat-avatarene, 288 px = 3 × 96 px). Originalene er fra Marit (Vilma 02.11.2026, Stavanger 09.11.2026), se SITATFOTO.
 
 Utsnittene er firkanter angitt som (senter-x, topp-y, side) i originalens piksler, målt fra miniatyrer.
 Sjekk alltid hårtoppen mot originalens topprader etter å ha endret et utsnitt."""
 import glob
 import os
+import subprocess
 import sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageOps
@@ -27,7 +28,28 @@ PERSONER = {
 # Monika: Marits forslag 02.11.2026 («mer ansikt»), funnet igjen i originalen ved mønstergjenkjenning: 855 px, x 330, y 169 (nederst i bildet).
 MONIKA = ('Monika S.jpeg', (757, 169, 855))
 MAPPE_VILMA = os.path.expanduser('~/Dokumenter/Koding/CleanUnit.Dokumenter/Oslo/02.11.2026.bilder')
-VILMA = ('Vilma.jpeg', (660, 0, 1480))   # litt videre enn bredden (sidene utvides): hodet like stort som Irenes og Monikas
+MAPPE_STAVANGER = os.path.expanduser('~/Dokumenter/Koding/CleanUnit.Dokumenter/Stavanger/09.11.2026.bilder')
+# Sitat-avatarene som ikke er Monika: (mappe, fil, (senter_x, topp_y, side)), 288 px. Vilma (Oslo): litt videre enn bredden (sidene utvides), så hodet blir like stort som Irenes og Monikas.
+# Stavanger (Marit 09.11.2026): Thora, Anna og Fabiana. Thoras bilde er et strandbilde i profil med en annen person bak (Marit var usikker på det); utsnittet er så stramt som mulig.
+SITATFOTO = {
+    'vilma':    (MAPPE_VILMA, 'Vilma.jpeg', (660, 0, 1480)),
+    'thora':    (MAPPE_STAVANGER, 'Thora bilde.jpeg', (660, 200, 700)),
+    'anna':     (MAPPE_STAVANGER, 'Anna bilde netsiden (lys).jpg', (625, 215, 560)),   # lysjustert i GIMP (verktoy/gimp-lys-anna.py), se lag_lys_anna()
+    'fabiana':  (MAPPE_STAVANGER, 'Fabianabilde.jpg', (1376, 330, 3100)),
+}
+
+
+def lag_lys_anna():
+    # Annas bilde lysjusteres i GIMP (variant C, Ricky 2026-11-09). Kjører GIMP uten grensesnitt hvis den justerte kopien mangler eller er eldre enn skriptet.
+    # Bruker /usr/bin/gimp (apt): snap-versjonen henger uten grensesnitt.
+    skript = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gimp-lys-anna.py')
+    ut = os.path.join(MAPPE_STAVANGER, 'Anna bilde netsiden (lys).jpg')
+    if os.path.exists(ut) and os.path.getmtime(ut) >= os.path.getmtime(skript):
+        return
+    if not os.path.exists('/usr/bin/gimp'):
+        raise SystemExit('trenger /usr/bin/gimp (sudo apt install gimp) for å lysjustere Annas bilde')
+    subprocess.run(['/usr/bin/gimp', '-i', '--quit', '--batch-interpreter=python-fu-eval', '-b', f"exec(open({skript!r}).read())"],
+                   check=True, timeout=180, capture_output=True)
 
 
 def finn(navn, mappe=MAPPE):
@@ -74,5 +96,6 @@ for navn, (fil, varianter) in PERSONER.items():
 fil, (sx, ty, s) = MONIKA
 lagre(utsnitt(ImageOps.exif_transpose(finn(fil)), sx, ty, s, 288), os.path.join(UT, 'ansatt-monika'))
 
-fil, (sx, ty, s) = VILMA
-lagre(utsnitt(ImageOps.exif_transpose(finn(fil, MAPPE_VILMA)), sx, ty, s, 288), os.path.join(UT, 'ansatt-vilma'))
+lag_lys_anna()
+for navn, (mappe, fil, (sx, ty, s)) in SITATFOTO.items():
+    lagre(utsnitt(ImageOps.exif_transpose(finn(fil, mappe)), sx, ty, s, 288), os.path.join(UT, f'ansatt-{navn}'))
