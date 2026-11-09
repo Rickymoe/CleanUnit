@@ -119,7 +119,7 @@ function glansSveip(reduksjon) {
 
 // Ordmerket «Webdesign by Ricky» nederst i footeren: bokstavene tennes én og én, med et lite blaff og en myk glød (Ricky 2026-11-09, som «Bokstavlys» på lilleh).
 // Siden leveres med det stille merket i <img src>. Hver gang merket kommer helt til syne etter å ha vært ute av syne (scroll i bunn), byttes det til den animerte SVG-en
-// (data-lys), som kjører én gang (ca. 4,6 s) og ender med at alle bokstavene står tent. Uten JavaScript, uten IntersectionObserver/fetch og med redusert bevegelse står det
+// (data-lys), som kjører én gang (ca. 4,8 s): bokstavene tennes én og én, alle flimrer noen ganger som et lysstoffrør, og slås av, så merket står som før effekten begynte. Uten JavaScript, uten IntersectionObserver/fetch og med redusert bevegelse står det
 // stille merket igjen. Hvert avspill får en ny blob:-adresse av samme SVG-tekst (hentet én gang), for å få nettleseren til å starte animasjonen på nytt uten ekstra nettverkskall:
 // å sette samme src på nytt kan gjenbruke bildet i sluttilstanden. Begge SVG-ene har samme viewBox, så bildet ikke endrer størrelse ved byttet.
 function ordmerkeLys(reduksjon) {
