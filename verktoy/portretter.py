@@ -29,6 +29,7 @@ PERSONER = {
 MONIKA = ('Monika S.jpeg', (757, 169, 855))
 MAPPE_VILMA = os.path.expanduser('~/Dokumenter/Koding/CleanUnit.Dokumenter/Oslo/02.11.2026.bilder')
 MAPPE_STAVANGER = os.path.expanduser('~/Dokumenter/Koding/CleanUnit.Dokumenter/Stavanger/09.11.2026.bilder')
+MAPPE_STAVANGER_KONTAKT = os.path.expanduser('~/Dokumenter/Koding/CleanUnit.Dokumenter/Stavanger/09.11.2026.bilder og doks')
 # Sitat-avatarene som ikke er Monika: (mappe, fil, (senter_x, topp_y, side)), 288 px. Vilma (Oslo): litt videre enn bredden (sidene utvides), så hodet blir like stort som Irenes og Monikas.
 # Stavanger (Marit 09.11.2026): Thora, Anna og Fabiana. Thoras bilde er et strandbilde i profil med en annen person bak (Marit var usikker på det); utsnittet er så stramt som mulig.
 SITATFOTO = {
@@ -36,6 +37,14 @@ SITATFOTO = {
     'thora':    (MAPPE_STAVANGER, 'Thora bilde.jpeg', (660, 200, 700)),
     'anna':     (MAPPE_STAVANGER, 'Anna bilde netsiden (lys).jpg', (625, 215, 560)),   # lysjustert i GIMP (verktoy/gimp-lys-anna.py), se lag_lys_anna()
     'fabiana':  (MAPPE_STAVANGER, 'Fabianabilde.jpg', (1376, 330, 3100)),
+}
+
+# Kontaktpersonene i Stavanger (Marit 09.11.2026): team-<navn>-liten.webp/.jpg (240 px, som Oslo-kontaktene). (mappe, fil, rotasjon i grader, luft over hodet i piksler, (senter_x, topp_y, side)). Er luft > 0, gjelder topp_y det forlengede bildet.
+# Utsnittene er målt til samme ansiktsforhold (ansiktsboks / utsnitt ca. 0,49) som Oslo-kontaktene. Thords original er lagret liggende, så den roteres 90° med klokka;
+# Aleksandras utsnitt er videre enn originalen (sidene utvides).
+KONTAKTFOTO = {
+    'thord':      (MAPPE_STAVANGER_KONTAKT, 'Thord.jpg', -90, 0, (1234, 581, 1416)),
+    'aleksandra': (MAPPE_STAVANGER_KONTAKT, 'Aleksandra.jpg', 0, 420, (1458, 100, 3657)),   # hodetoppen er kuttet i originalen: veggen forlenges 420 px, utsnittet starter 100 px ned (ca. 9 % luft)
 }
 
 
@@ -70,6 +79,39 @@ def utvid_sidene(im, side):
     return Image.composite(stor.filter(ImageFilter.GaussianBlur(25)), stor, maske.filter(ImageFilter.GaussianBlur(20)))
 
 
+def glid_maks(a, bredde):
+    # Glidende maksimum langs x (bredde i piksler) for en H x W x 3-matrise.
+    p = bredde // 2
+    pad = np.pad(a, ((0, 0), (p, p), (0, 0)), mode='edge')
+    ut = pad[:, 0:a.shape[1]]
+    for k in range(1, bredde):
+        ut = np.maximum(ut, pad[:, k:k + a.shape[1]])
+    return ut
+
+
+def luft_over_hodet(im, rader):
+    # Gir luft over hodet når hodetoppen er kuttet av bildekanten (Aleksandra, Ricky 2026-11-09). Veggen forlenges `rader` piksler oppover:
+    # veggfargen måles øverst i bildet BARE utenfor håret, glattes og interpoleres mykt over håret (ellers blir lyse hårpartier og hårskillen til grå striper).
+    # De svake loddrette skjøtene i veggpanelet fjernes (bare lyse og svake avvik, så mørkt hår og hårstrå røres ikke). Hår legges ikke til.
+    a = np.asarray(im).astype(np.float32)
+    W = a.shape[1]
+    kol = np.where((a[0:40].mean(2) < 130).any(0))[0]
+    h0, h1 = max(kol.min() - 80, 0), min(kol.max() + 80, W - 1)             # hårets bredde øverst, med margin
+    xs = np.arange(W)
+    utenfor = (xs < h0) | (xs > h1)
+    rad0, w, k = a[0:12].mean(0), utenfor.astype(np.float64), np.ones(401)
+    glatt = np.stack([np.convolve(rad0[:, c] * w, k, 'same') / np.maximum(np.convolve(w, k, 'same'), 1e-6) for c in range(3)], 1)
+    fyll = np.stack([np.interp(xs, xs[utenfor], glatt[utenfor, c]) for c in range(3)], 1)
+    topp = np.tile(fyll[None], (rader, 1, 1)) + np.random.default_rng(1).normal(0, 1.0, (rader, W, 1))   # svak støy som originalen
+    full = np.vstack([topp, a])
+    dil = glid_maks(full, 61)
+    l, ld = full.mean(2), dil.mean(2)
+    m = ((ld > 190) & ((ld - l) < 45) & ((ld - l) > 2)).astype(np.float32)
+    m = np.asarray(Image.fromarray((m * 255).astype('uint8')).filter(ImageFilter.GaussianBlur(1.5))).astype(np.float32)[..., None] / 255
+    full = full * (1 - m) + dil * m
+    return Image.fromarray(np.clip(full, 0, 255).astype('uint8'))
+
+
 def utsnitt(im, senter_x, topp, side, px):
     # Utsnittet må ligge innenfor originalen: utenfor blir det svart kant ved siden av lyse klær.
     # Er det bredere enn originalen (side > bredde), utvides sidene med uskarp bakgrunn; senter_x gjelder da originalen.
@@ -99,3 +141,11 @@ lagre(utsnitt(ImageOps.exif_transpose(finn(fil)), sx, ty, s, 288), os.path.join(
 lag_lys_anna()
 for navn, (mappe, fil, (sx, ty, s)) in SITATFOTO.items():
     lagre(utsnitt(ImageOps.exif_transpose(finn(fil, mappe)), sx, ty, s, 288), os.path.join(UT, f'ansatt-{navn}'))
+
+for navn, (mappe, fil, rot, luft, (sx, ty, s)) in KONTAKTFOTO.items():
+    im = ImageOps.exif_transpose(finn(fil, mappe))
+    if rot:
+        im = im.rotate(rot, expand=True)
+    if luft:
+        im = luft_over_hodet(im, luft)
+    lagre(utsnitt(im, sx, ty, s, 240), os.path.join(UT, f'team-{navn}-liten'))

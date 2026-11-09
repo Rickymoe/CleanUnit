@@ -932,6 +932,8 @@ html.js .js-reveal.revealed { opacity: 1; transform: none; }
    På touch får hver lenke en egen 44 px høy trykkflate (ingen negativ marg, så telefon og e-post aldri overlapper);
    med mus er de kompakte som før. */
 .kontakt__personer li > div a { overflow-wrap: anywhere; }
+/* Plassholdere for opplysninger som mangler ennå (Aleksandra, Ricky 2026-11-09): dempet og kursiv, så de ikke ligner ekte kontaktinfo. Fjernes når verdiene er på plass. */
+.kontakt__mangler { font-style: italic; opacity: .75; }
 @media (pointer: coarse) { .kontakt__personer li > div a { display: inline-flex; align-items: center; justify-self: start; min-height: 44px; } }
 /* Fra 48rem står de to personene i Oslo side om side (like kolonner); Stavanger har én og beholder den til venstre. */
 @media (min-width: 48rem) { .kontakt__personer { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-4); } }

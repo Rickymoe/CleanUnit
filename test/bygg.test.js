@@ -1068,7 +1068,9 @@ test('Stavanger-lederen heter Thord Hegre, daglig leder (Enhetsregisteret), aldr
     assert.ok(!h.includes('Thor D.'), `${s.fil}: «Thor D.» var en feiltolking av thord@ — navnet er Thord Hegre`);
     assert.ok(!h.includes('Leder Stavanger'), `${s.fil}: tittelen er Daglig leder`);
     assert.match(h, /<strong>Thord Hegre<\/strong><span>Daglig leder<\/span>/, `${s.fil}: kontaktkortet har navn og tittel`);
-    assert.match(h, /team-initialer" aria-hidden="true">TH</, `${s.fil}: initialene er TH`);
+    assert.ok(h.includes('bilder/team-thord-liten.jpg'), `${s.fil}: Thord har foto i kontaktkortet (Marit 2026-11-09), ikke initialer`);
+    assert.match(h, /<strong>Aleksandra<\/strong><span class="kontakt__mangler">Tittel<\/span><span class="kontakt__mangler">Telefonnummer<\/span><span class="kontakt__mangler">E-post<\/span>/, `${s.fil}: Aleksandra står med navn og plassholdere for tittel, telefon og e-post til Marit har svart (Ricky 2026-11-09)`);
+    assert.ok(h.includes('bilder/team-aleksandra-liten.jpg'), `${s.fil}: Aleksandra har foto`);
   }
   assert.match(les(sideFil('Stavanger', 'om_oss')), /<h4>Thord Hegre<\/h4>\s*<p class="team-rolle">Daglig leder<\/p>/, 'Om oss-kortet');
 });
@@ -1108,7 +1110,7 @@ test('Kontakt: person-lenkene har 44 px trykkflate på touch uten negativ marg, 
   assert.doesNotMatch(regelBlokk(css, '.kontakt__personer li > div a {'), /min-height|margin/, 'uten touch er lenkene kompakte');
 });
 
-test('Kontakt: Oslos to personer står side om side fra 48rem, Stavanger har én rad som ikke strekkes', () => {
+test('Kontakt: Oslos to personer og Stavangers to personer (Thord, Aleksandra) står side om side fra 48rem', () => {
   const css = les('css/style.css');
   assert.match(css, /@media \(min-width: 48rem\) \{ \.kontakt__personer \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); column-gap: var\(--s-4\); \} \}/);
   assert.doesNotMatch(regelBlokk(css, '.kontakt__personer {'), /grid-template-columns/, 'under 48rem stablet');
@@ -1116,7 +1118,7 @@ test('Kontakt: Oslos to personer står side om side fra 48rem, Stavanger har én
   const oslo = kontakt.slice(kontakt.indexOf('<ul class="kontakt__personer">'), kontakt.indexOf('</ul>'));
   const del = (s, a, b) => s.slice(s.indexOf(a), s.indexOf(b));
   assert.equal((del(oslo, '{{#er_oslo}}', '{{^er_oslo}}').match(/<li>/g) || []).length, 2, 'Oslo: to rader');
-  assert.equal((oslo.slice(oslo.indexOf('{{^er_oslo}}')).match(/<li>/g) || []).length, 1, 'Stavanger: én rad');
+  assert.equal((oslo.slice(oslo.indexOf('{{^er_oslo}}')).match(/<li>/g) || []).length, 2, 'Stavanger: to rader (Thord og Aleksandra)');
 });
 
 test('Kontakt: «Gå til Clean Unit …»-lenka er bare så bred som teksten', () => {
