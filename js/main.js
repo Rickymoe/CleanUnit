@@ -5,6 +5,7 @@ export function initSider() {
   kortReveal(reduksjon)
   flaateInn(reduksjon)
   glansSveip(reduksjon)
+  ordmerkeLys(reduksjon)
   stiNedover(reduksjon)
   sideNav()
   åpneTjenesteFraAnker()
@@ -114,6 +115,52 @@ function glansSveip(reduksjon) {
     { threshold: 0.5 }
   )
   observer.observe(kort)
+}
+
+// Ordmerket «Webdesign by Ricky» nederst i footeren: bokstavene tennes én og én, med et lite blaff og en myk glød (Ricky 2026-11-09, som «Bokstavlys» på lilleh).
+// Siden leveres med det stille merket i <img src>. Hver gang merket kommer helt til syne etter å ha vært ute av syne (scroll i bunn), byttes det til den animerte SVG-en
+// (data-lys), som kjører én gang (ca. 4,6 s) og ender med at alle bokstavene står tent. Uten JavaScript, uten IntersectionObserver/fetch og med redusert bevegelse står det
+// stille merket igjen. Hvert avspill får en ny blob:-adresse av samme SVG-tekst (hentet én gang), for å få nettleseren til å starte animasjonen på nytt uten ekstra nettverkskall:
+// å sette samme src på nytt kan gjenbruke bildet i sluttilstanden. Begge SVG-ene har samme viewBox, så bildet ikke endrer størrelse ved byttet.
+function ordmerkeLys(reduksjon) {
+  const merke = document.querySelector('[data-lys]')
+  if (reduksjon || !merke) return
+  if (!('IntersectionObserver' in window) || !window.fetch || !URL.createObjectURL) return
+  let svg = null
+  let adresse = null
+  let ute = true
+  let venter = false
+  const spill = () => {
+    if (!svg) {
+      venter = true
+      return
+    }
+    if (adresse) URL.revokeObjectURL(adresse)
+    adresse = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }))
+    merke.src = adresse
+  }
+  fetch(merke.dataset.lys)
+    .then((svar) => (svar.ok ? svar.text() : Promise.reject(new Error('svg'))))
+    .then((tekst) => {
+      svg = tekst
+      if (venter) spill()
+      venter = false
+    })
+    .catch(() => {})
+  new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.intersectionRatio === 0) {
+          ute = true
+          venter = false
+        } else if (ute && entry.intersectionRatio >= 1) {
+          ute = false
+          spill()
+        }
+      })
+    },
+    { threshold: [0, 1] }
+  ).observe(merke)
 }
 
 // Logoen i heroen: hele logoen avsløres i ett sveip fra venstre («Vask», ren

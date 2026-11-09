@@ -203,6 +203,26 @@ test('main.js: sideNav kaster ikke på ikke-hash-lenker, og logoen navigerer nor
   assert.match(logoKlikk.slice(0, 260), /if \(!document\.querySelector\('\.hero'\)\) return/, 'logo-klikket må la nettleseren navigere når det ikke er noen hero');
 });
 
+test('Ordmerket i footeren: stille SVG i src, animert versjon via data-lys, lik viewBox, kjører én gang og står tent', () => {
+  for (const s of alleSider()) {
+    const h = les(s.fil);
+    assert.match(h, /src="[^"]*bilder\/webdesign-by-ricky\.svg" data-lys="[^"]*bilder\/webdesign-by-ricky-lys\.svg"/, `${s.fil}: stille merke i src og animert i data-lys`);
+  }
+  const stille = les('bilder/webdesign-by-ricky.svg'); const lys = les('bilder/webdesign-by-ricky-lys.svg');
+  const vb = (x) => x.match(/viewBox="([^"]+)"/)[1];
+  assert.equal(vb(stille), vb(lys), 'samme viewBox, så bildet ikke endrer størrelse ved byttet');
+  assert.doesNotMatch(lys, /infinite/, 'animasjonen kjører én gang (WCAG 2.2.2: bevegelse over 5 s skal kunne stoppes)');
+  assert.match(lys, /animation: tent [\d.]+s ease-out both/, 'bokstavene blir stående tent (fill-mode both)');
+  assert.match(lys, /prefers-reduced-motion: reduce/, 'redusert bevegelse: står tent uten animasjon');
+  const forsinkelser = [...lys.matchAll(/animation-delay:([\d.]+)s/g)].map((m) => Number(m[1]));
+  const varighet = Number(lys.match(/animation: tent ([\d.]+)s/)[1]);
+  assert.equal(forsinkelser.length, 16, 'én gruppe per bokstav i «Webdesign by Ricky»');
+  assert.ok(Math.max(...forsinkelser) + varighet < 5, 'hele animasjonen er under fem sekunder');
+  const js = les('js/main.js'); const fn = js.slice(js.indexOf('function ordmerkeLys'), js.indexOf('// Logoen i heroen'));
+  assert.match(fn, /createObjectURL/, 'hvert avspill får ny blob-adresse, så animasjonen starter på nytt');
+  assert.doesNotMatch(fn, /disconnect/, 'observeren slutter ikke å følge merket: animasjonen spilles hver gang footeren kommer til syne igjen');
+});
+
 test('main.js: hver init-funksjon verner mot manglende elementer', () => {
   const js = les('js/main.js');
   for (const [fn, vern] of [
@@ -211,6 +231,7 @@ test('main.js: hver init-funksjon verner mot manglende elementer', () => {
     ['function kortReveal', /if \(!kort\.length\) return/],
     ['function flaateInn', /if \(reduksjon \|\| !flaate\) return/],
     ['function glansSveip', /if \(reduksjon \|\| !kort\) return/],
+    ['function ordmerkeLys', /if \(reduksjon \|\| !merke\) return/],
     ['function stiNedover', /if \(!rad \|\| !linje \|\| !hero \|\| !footer\) return/],
   ]) {
     const start = js.indexOf(fn);

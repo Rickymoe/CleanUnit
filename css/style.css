@@ -1280,7 +1280,8 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
 .side-footer__utvikler { text-align: left; }
 .side-footer__bunn .side-footer__lenke { padding-inline: 0; }
 .side-footer__utviklerlenke { display: inline-block; padding-block: var(--s-3); line-height: 0; }
-.side-footer__utviklerlenke img { display: block; width: auto; height: 1.1rem; }
+/* Ordmerket har 24 enheters marg rundt teksten (så gløden ikke kuttes): 103 enheter høyt = 2,06rem, og margen trekkes inn igjen (24 enheter = 0,48rem), så teksten er 1,1rem høy og står som før. */
+.side-footer__utviklerlenke img { display: block; width: auto; max-width: none; height: 2.06rem; margin: -0.48rem; position: relative; top: 0.24rem; }   /* top: ordmerkets grunnlinje står 0,24rem over «Personvern», målt (Ricky 2026-11-09) */   /* max-width: none, ellers klemmer img { max-width: 100% } bildet smalere enn lenka og strekker det */
 @media (hover: hover) {
   .side-footer__utviklerlenke:hover { opacity: .75; }
 }
