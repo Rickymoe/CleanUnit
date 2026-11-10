@@ -30,12 +30,13 @@ MONIKA = ('Monika S.jpeg', (757, 169, 855))
 MAPPE_VILMA = os.path.expanduser('~/Dokumenter/Koding/CleanUnit.Dokumenter/Oslo/02.11.2026.bilder')
 MAPPE_STAVANGER = os.path.expanduser('~/Dokumenter/Koding/CleanUnit.Dokumenter/Stavanger/09.11.2026.bilder')
 MAPPE_STAVANGER_KONTAKT = os.path.expanduser('~/Dokumenter/Koding/CleanUnit.Dokumenter/Stavanger/09.11.2026.bilder og doks')
+MAPPE_STAVANGER_NY = os.path.expanduser('~/Dokumenter/Koding/CleanUnit.Dokumenter/Stavanger/10.11.2026.bilder')   # nye bilder av Thora og Anna (Marit 10.11.2026)
 # Sitat-avatarene som ikke er Monika: (mappe, fil, (senter_x, topp_y, side)), 288 px. Vilma (Oslo): litt videre enn bredden (sidene utvides), så hodet blir like stort som Irenes og Monikas.
 # Stavanger (Marit 09.11.2026): Thora, Anna og Fabiana. Thoras bilde er et strandbilde i profil med en annen person bak (Marit var usikker på det); utsnittet er så stramt som mulig.
 SITATFOTO = {
     'vilma':    (MAPPE_VILMA, 'Vilma.jpeg', (660, 0, 1480)),
-    'thora':    (MAPPE_STAVANGER, 'Thora bilde.jpeg', (660, 200, 700)),
-    'anna':     (MAPPE_STAVANGER, 'Anna bilde netsiden (lys).jpg', (625, 215, 560)),   # lysjustert i GIMP (verktoy/gimp-lys-anna.py), se lag_lys_anna()
+    'thora':    (MAPPE_STAVANGER_NY, 'Thora bilde1 (lys).jpg', (700, 190, 560)),   # nytt bilde 10.11. (ser mot kamera; det første var strandbildet i profil), lysjustert i GIMP: se lag_lys_thora()
+    'anna':     (MAPPE_STAVANGER_NY, 'Anna bilde netsiden1.jpeg', (432, 480, 240)),   # nytt bilde 10.11. (hel figur utendørs; lite ansikt i originalen, så utsnittet er ikke strammere enn dette)
     'fabiana':  (MAPPE_STAVANGER, 'Fabianabilde.jpg', (1376, 330, 3100)),
 }
 
@@ -48,15 +49,15 @@ KONTAKTFOTO = {
 }
 
 
-def lag_lys_anna():
-    # Annas bilde lysjusteres i GIMP (variant C, Ricky 2026-11-09). Kjører GIMP uten grensesnitt hvis den justerte kopien mangler eller er eldre enn skriptet.
+def lag_lys_thora():
+    # Thoras bilde (mørkt webkamerabilde) lysjusteres i GIMP (variant B, Ricky 2026-11-10). Kjører GIMP uten grensesnitt hvis den justerte kopien mangler eller er eldre enn skriptet.
     # Bruker /usr/bin/gimp (apt): snap-versjonen henger uten grensesnitt.
-    skript = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gimp-lys-anna.py')
-    ut = os.path.join(MAPPE_STAVANGER, 'Anna bilde netsiden (lys).jpg')
+    skript = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gimp-lys-thora.py')
+    ut = os.path.join(MAPPE_STAVANGER_NY, 'Thora bilde1 (lys).jpg')
     if os.path.exists(ut) and os.path.getmtime(ut) >= os.path.getmtime(skript):
         return
     if not os.path.exists('/usr/bin/gimp'):
-        raise SystemExit('trenger /usr/bin/gimp (sudo apt install gimp) for å lysjustere Annas bilde')
+        raise SystemExit('trenger /usr/bin/gimp (sudo apt install gimp) for å lysjustere Thoras bilde')
     subprocess.run(['/usr/bin/gimp', '-i', '--quit', '--batch-interpreter=python-fu-eval', '-b', f"exec(open({skript!r}).read())"],
                    check=True, timeout=180, capture_output=True)
 
@@ -138,7 +139,7 @@ for navn, (fil, varianter) in PERSONER.items():
 fil, (sx, ty, s) = MONIKA
 lagre(utsnitt(ImageOps.exif_transpose(finn(fil)), sx, ty, s, 288), os.path.join(UT, 'ansatt-monika'))
 
-lag_lys_anna()
+lag_lys_thora()
 for navn, (mappe, fil, (sx, ty, s)) in SITATFOTO.items():
     lagre(utsnitt(ImageOps.exif_transpose(finn(fil, mappe)), sx, ty, s, 288), os.path.join(UT, f'ansatt-{navn}'))
 
