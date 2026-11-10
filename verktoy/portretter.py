@@ -35,7 +35,7 @@ MAPPE_STAVANGER_NY = os.path.expanduser('~/Dokumenter/Koding/CleanUnit.Dokumente
 # Stavanger (Marit 09.11.2026): Thora, Anna og Fabiana. Thoras bilde er et strandbilde i profil med en annen person bak (Marit var usikker på det); utsnittet er så stramt som mulig.
 SITATFOTO = {
     'vilma':    (MAPPE_VILMA, 'Vilma.jpeg', (660, 0, 1480)),
-    'thora':    (MAPPE_STAVANGER_NY, 'Thora bilde1 (lys).jpg', (700, 190, 560)),   # nytt bilde 10.11. (ser mot kamera; det første var strandbildet i profil), lysjustert i GIMP: se lag_lys_thora()
+    'thora':    (MAPPE_STAVANGER_NY, 'Thora bilde1 (lys).jpg', (724, 89, 784)),   # nytt bilde 10.11. (ser mot kamera; det første var strandbildet i profil), lysjustert i GIMP: se lag_lys_thora(). Utsnitt 784 px = samme ansiktsforhold (0,48) som Fabiana: ansiktsboksen er 376 px (rotert ansiktsgjenkjenning)
     'anna':     (MAPPE_STAVANGER_NY, 'Anna bilde netsiden1.jpeg', (432, 480, 240)),   # nytt bilde 10.11. (hel figur utendørs; lite ansikt i originalen, så utsnittet er ikke strammere enn dette)
     'fabiana':  (MAPPE_STAVANGER, 'Fabianabilde.jpg', (1376, 330, 3100)),
 }
