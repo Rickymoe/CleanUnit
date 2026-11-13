@@ -959,6 +959,22 @@ test('Stavanger-siden får ikke Oslo-kontorets tekster, men beholder sine egne',
 // så kommentarer fjernes før letingen i stedet for å svekke kilden.
 const synlig = (h) => h.replace(/<!--[\s\S]*?-->/g, '');
 
+test('Om oss Stavanger: remse av fire arbeidsbilder over «Ansatte» (Marit 2026-11-13); Oslo beholder sine fire ruter ved siden av teksten', () => {
+  const st = les(sideFil('Stavanger', 'om_oss')); const oslo = les(sideFil('Oslo', 'om_oss'));
+  const iAnsatte = st.indexOf('<h3>Ansatte</h3>');
+  for (let i = 1; i <= 4; i++) {
+    const f = `bilder/ansatte-sta-${i}.jpg`;
+    assert.ok(st.includes(f) && st.indexOf(f) < iAnsatte, `Stavanger: bilde ${i} står over «Ansatte»`);
+    assert.ok(!oslo.includes(`ansatte-sta-${i}`), `Oslo: Stavanger-bilde ${i} står ikke på Oslo`);
+    assert.ok(oslo.includes(`bilder/ansatte-${i}.jpg`) && !st.includes(`bilder/ansatte-${i}.jpg`), `Oslo-rute ${i} står bare på Oslo`);
+  }
+  assert.ok(st.includes('class="ansatte ansatte--remse"'), 'Stavanger: remse-varianten');
+  assert.ok(!st.replace(/<!--[\s\S]*?-->/g, '').includes('alt="Iselin'), 'ingen navn i alt-tekstene');
+  const css = les('css/style.css');
+  assert.match(css, /\.ansatte--remse \.ansatte__bilder img \{ aspect-ratio: 4 \/ 5; \}/);
+  assert.match(css, /@media \(min-width: 40rem\) \{ \.ansatte--remse \.ansatte__bilder \{ grid-template-columns: repeat\(4, minmax\(0, 1fr\)\); \} \}/);
+});
+
 test('Om oss Stavanger: ny tekst «Fra oppstart til over 50 ansatte» ordrett fra dokumentet (Marit 2026-11-13), den gamle er borte; Oslo er uendret', () => {
   const st = les(sideFil('Stavanger', 'om_oss')); const oslo = les(sideFil('Oslo', 'om_oss'));
   const hoved = st.slice(st.indexOf('<h2 data-vask>Fra oppstart'), st.indexOf('</div>', st.indexOf('stopp__lede')));

@@ -190,9 +190,30 @@
       </div>
     </div>
     {{/er_oslo}}{{^er_oslo}}<!-- Marit 2026-10-12: Stavanger får «Ansatte»-avsnittet, men ikke Oslo-bildene og de to Oslo-spesifikke avsnittene (over ti år, SATS-avtalen). Teksten ligger i .ansatte__tekst som på Oslo, så den får samme dempede farge og lesebredde; løs i seksjonen ble den mørkere enn Oslo-varianten. -->
-    <div class="ansatte__tekst">
-      <h3>Ansatte</h3>
-      <p>Renhold er ofte en usynlig jobb. Arbeidet utføres gjerne etter at andre har gått hjem, og mange renholdere jobber alene på forskjellige arbeidssteder. Derfor legger vi stor vekt på lederkontakt, opplæring og oppfølging.</p>
+    <!-- Marit 2026-11-13: fire arbeidsbilder fra Stavanger som en remse over «Ansatte» (collage som i Oslo). Dekorative, så tom alt. Lages av verktoy/ansatte-stavanger.py. -->
+    <div class="ansatte ansatte--remse">
+      <div class="ansatte__bilder">
+        <picture>
+          <source srcset="{{rot}}bilder/ansatte-sta-1.webp" type="image/webp">
+          <img src="{{rot}}bilder/ansatte-sta-1.jpg" alt="" width="540" height="675" loading="lazy">
+        </picture>
+        <picture>
+          <source srcset="{{rot}}bilder/ansatte-sta-2.webp" type="image/webp">
+          <img src="{{rot}}bilder/ansatte-sta-2.jpg" alt="" width="540" height="675" loading="lazy">
+        </picture>
+        <picture>
+          <source srcset="{{rot}}bilder/ansatte-sta-3.webp" type="image/webp">
+          <img src="{{rot}}bilder/ansatte-sta-3.jpg" alt="" width="540" height="675" loading="lazy">
+        </picture>
+        <picture>
+          <source srcset="{{rot}}bilder/ansatte-sta-4.webp" type="image/webp">
+          <img src="{{rot}}bilder/ansatte-sta-4.jpg" alt="" width="540" height="675" loading="lazy">
+        </picture>
+      </div>
+      <div class="ansatte__tekst">
+        <h3>Ansatte</h3>
+        <p>Renhold er ofte en usynlig jobb. Arbeidet utføres gjerne etter at andre har gått hjem, og mange renholdere jobber alene på forskjellige arbeidssteder. Derfor legger vi stor vekt på lederkontakt, opplæring og oppfølging.</p>
+      </div>
     </div>{{/er_oslo}}<h3>Dette sier de som jobber hos oss</h3>
     <!-- Marit 2026-10-13: tre ansattsitater (Irene, Monika S, Vilma) i stedet for fire; Urszula og Aneta er ute. Monika har fått ny tekst.
          Marit 2026-11-09: egne sitater for Stavanger (Thora, Anna, Fabiana); Oslo-sitatene står bare på Oslo, Stavanger-sitatene bare på Stavanger. -->
