@@ -228,6 +228,21 @@ test('Ordmerket i footeren: stille SVG i src, animert versjon via data-lys, lik 
   assert.doesNotMatch(fn, /disconnect/, 'observeren slutter ikke å følge merket: animasjonen spilles hver gang footeren kommer til syne igjen');
 });
 
+test('Tjenester på mobil: overskriften og ikonet åpner og lukker «Les mer» (Ricky 2026-11-13), bare under 48rem, og pila viser det', () => {
+  const js = les('js/main.js'); const fn = js.slice(js.indexOf('function tjenesteKortTrykk'), js.indexOf('// Forsidekortene lenker til tjenester'));
+  assert.match(fn, /matchMedia\('\(max-width: 48rem\)'\)/, 'bare under 48rem');
+  assert.match(fn, /:scope > h3, :scope > \.tjeneste-kort__ikon/, 'overskrift og ikon');
+  assert.match(fn, /mer\.open = !mer\.open/, 'åpner og lukker samme details som «Les mer»');
+  assert.match(js, /initSider[\s\S]*tjenesteKortTrykk\(\)/, 'kalles fra initSider');
+  const css = les('css/style.css');
+  assert.match(css, /@media \(max-width: 48rem\) \{\s*\.tjeneste-kort:has\(> details\.tjeneste-mer\) :is\(h3, \.tjeneste-kort__ikon\) \{ cursor: pointer; \}/, 'pekeren');
+  assert.match(css, /\.tjeneste-kort:has\(> details\.tjeneste-mer\[open\]\) h3::after \{ transform: /, 'pila snur seg når kortet er åpent');
+  for (const by of ['Oslo', 'Stavanger']) {
+    const h = les(sideFil(by, 'tjenester'));
+    assert.equal((h.match(/<details class="tjeneste-mer">/g) || []).length, 7, `${by}: sju kort med «Les mer»`);
+  }
+});
+
 test('main.js: hver init-funksjon verner mot manglende elementer', () => {
   const js = les('js/main.js');
   for (const [fn, vern] of [
@@ -237,6 +252,7 @@ test('main.js: hver init-funksjon verner mot manglende elementer', () => {
     ['function flaateInn', /if \(reduksjon \|\| !flaate\) return/],
     ['function glansSveip', /if \(reduksjon \|\| !kort\) return/],
     ['function ordmerkeLys', /if \(reduksjon \|\| !merke\) return/],
+    ['function tjenesteKortTrykk', /if \(!kort\.length\) return/],
     ['function stiNedover', /if \(!rad \|\| !linje \|\| !hero \|\| !footer\) return/],
   ]) {
     const start = js.indexOf(fn);

@@ -10,6 +10,7 @@ export function initSider() {
   sideNav()
   åpneTjenesteFraAnker()
   addEventListener('hashchange', åpneTjenesteFraAnker)
+  tjenesteKortTrykk()
 }
 
 function debounce(fn, ms) {
@@ -534,6 +535,24 @@ function sideNav() {
   }
 }
 
+
+// Tjenestekortene på Tjenester, på mobil (Ricky 2026-11-13): å trykke på overskriften eller ikonet åpner og lukker «Les mer»-blokken i kortet (samme <details> som «Les mer»).
+// Bare under 48rem; på større skjermer gjør de ingenting. Tastatur og skjermleser bruker «Les mer»-summaryen som før, så overskriften trenger ikke egen rolle.
+// Forsidekortene (.tjeneste-kort uten details) berøres ikke.
+function tjenesteKortTrykk() {
+  const kort = document.querySelectorAll('.tjeneste-kort')
+  if (!kort.length) return
+  const mobil = matchMedia('(max-width: 48rem)')
+  kort.forEach((k) => {
+    const mer = k.querySelector(':scope > details.tjeneste-mer')
+    if (!mer) return
+    k.querySelectorAll(':scope > h3, :scope > .tjeneste-kort__ikon').forEach((el) => {
+      el.addEventListener('click', () => {
+        if (mobil.matches) mer.open = !mer.open
+      })
+    })
+  })
+}
 
 // Forsidekortene lenker til tjenester/#anker (Marit 2026-10-13). Kortet åpnes, så man lander på
 // teksten og ikke bare på overskriften. Kjører også ved hashchange (lenke på samme side).
