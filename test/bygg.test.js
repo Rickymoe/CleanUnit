@@ -572,7 +572,8 @@ test('om-oss/: «Om oss», flåten og «Jobb hos oss» (åpen søknad, ansattsit
     assert.ok(h.indexOf('id="om-oss"') < h.indexOf('id="jobb-hos-oss"'), `${by}: rekkefølgen`);
     const jobb = h.slice(h.indexOf('id="jobb-hos-oss"'));
     assert.equal((jobb.match(/class="sitat-kort"/g) || []).length, sitater, `${by}: ansattsitater`);
-    assert.match(jobb, /For å søke jobb: <a href="mailto:jobb@cleanunit\.no">jobb@cleanunit\.no<\/a>/, `${by}: jobbsøkere`);
+    assert.match(jobb, /<p class="jobb-soknad"><a class="knapp knapp--omriss" href="mailto:jobb@cleanunit\.no">Send søknad – jobb@cleanunit\.no<\/a><\/p>/, `${by}: jobbsøkere får en knapp (Ricky/Christopher 2026-11-13)`);
+    assert.ok(!jobb.replace(/<!--[\s\S]*?-->/g, '').includes('For å søke jobb:'), `${by}: tekstlenka er borte`);   // kommentaren nevner den gamle teksten
     assert.match(h, /<div class="flaate" aria-hidden="true">/, `${by}: flåten`);
     assert.match(h, /<p class="eyebrow">Jobb hos oss<\/p>/, `${by}: «Jobb hos oss» beholder eyebrow`);
     assert.doesNotMatch(h.slice(h.indexOf('id="om-oss"'), h.indexOf('id="jobb-hos-oss"')), /class="eyebrow"/, `${by}: «Om oss»-eyebrowen er H1 nå`);
@@ -939,7 +940,7 @@ test('Maritts innhold (Oppsett ny nettside) står på Oslo-siden: sju tjenester,
     assert.ok(h.includes(t), `mangler «${t}»`);
   }
   for (const [tlf] of [['+4797195993'], ['+4747298445']]) assert.ok(h.includes(`href="tel:${tlf}"`), tlf);
-  assert.ok(h.includes('For å søke jobb: <a href="mailto:jobb@cleanunit.no">'), 'jobbsøkere sendes til jobb@');
+  assert.ok(h.includes('<a class="knapp knapp--omriss" href="mailto:jobb@cleanunit.no">Send søknad – jobb@cleanunit.no</a>'), 'jobbsøkere sendes til jobb@ (knapp)');
   assert.match(h, /<div class="om-foto-rad" hidden>/, 'fotoplassholderen skal fortsatt være skjult');
 });
 

@@ -715,8 +715,7 @@ html.js .flaate--inne .flaate__vei { clip-path: inset(0 0 0 0); }
   .sitat-logo { object-position: center; }   /* midtstilt i logokolonnen: de nesten kvadratiske logoene (Dragaberget, Union) ble ellers stående helt til venstre med et hull mot teksten; på mobil står logoen over teksten og beholder venstrekanten */
   .stopp--referanser .sitat-kort:not(:has(> picture)) { padding-left: calc(var(--s-5) + 12.5rem + var(--s-4)); }
 }
-.stopp--jobb .jobb-soknad { margin-top: var(--s-6); font-weight: 700; font-size: var(--t-md); }
-.stopp--jobb .jobb-soknad a { color: var(--teal-mork); text-underline-offset: 3px; }
+.stopp--jobb .jobb-soknad { margin-top: var(--s-6); }   /* knapp (.knapp--omriss) siden 2026-11-13; var tekstlenke «For å søke jobb: …» */
 .side-footer { background: var(--teal-mork); color: #fff; padding-block: var(--s-8); }
 .side-footer .wrap { display: grid; gap: var(--s-6); justify-items: center; text-align: center; }
 /* Veinett-teppet i footeren (Ricky, 2026-09-26: «endre vannmerke i footer
