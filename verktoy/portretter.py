@@ -44,8 +44,8 @@ SITATFOTO = {
 # Utsnittene er målt til samme ansiktsforhold (ansiktsboks / utsnitt ca. 0,49) som Oslo-kontaktene. Thords original er lagret liggende, så den roteres 90° med klokka;
 # Aleksandras utsnitt er videre enn originalen (sidene utvides).
 KONTAKTFOTO = {
-    'thord':      (MAPPE_STAVANGER_KONTAKT, 'Thord.jpg', -90, 0, (1234, 581, 1416)),
-    'aleksandra': (MAPPE_STAVANGER_KONTAKT, 'Aleksandra.jpg', 0, 420, (1458, 100, 3657)),   # hodetoppen er kuttet i originalen: veggen forlenges 420 px, utsnittet starter 100 px ned (ca. 9 % luft)
+    'thord':      (MAPPE_STAVANGER_KONTAKT, 'Thord.jpg', -90, 0, (1234, 581, 1416)),   # Kontakt (240) og Om oss (480)
+    'aleksandra': (MAPPE_STAVANGER_KONTAKT, 'Aleksandra.jpg', 0, 420, (1458, 100, 3657)),   # bare Om oss (480), ikke Kontakt (Marit 2026-11-13). Hodetoppen er kuttet i originalen: veggen forlenges 420 px, utsnittet starter 100 px ned (ca. 9 % luft)
 }
 
 
@@ -149,5 +149,6 @@ for navn, (mappe, fil, rot, luft, (sx, ty, s)) in KONTAKTFOTO.items():
         im = im.rotate(rot, expand=True)
     if luft:
         im = luft_over_hodet(im, luft)
-    lagre(utsnitt(im, sx, ty, s, 240), os.path.join(UT, f'team-{navn}-liten'))
+    if navn != 'aleksandra':   # Aleksandra står bare på Om oss, ikke i Kontakt-raden
+        lagre(utsnitt(im, sx, ty, s, 240), os.path.join(UT, f'team-{navn}-liten'))
     lagre(utsnitt(im, sx, ty, int(s * 0.955), 480), os.path.join(UT, f'team-{navn}'))   # Om oss-kortet: litt strammere utsnitt (som Oslo: 3300 mot 3456)
