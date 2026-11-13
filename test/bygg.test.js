@@ -989,8 +989,8 @@ test('Om oss Stavanger: remse av fire arbeidsbilder over «Ansatte» (Marit 2026
   assert.ok(st.includes('class="ansatte ansatte--remse"'), 'Stavanger: remse-varianten');
   assert.ok(!st.replace(/<!--[\s\S]*?-->/g, '').includes('alt="Iselin'), 'ingen navn i alt-tekstene');
   const css = les('css/style.css');
-  assert.match(css, /\.ansatte--remse \.ansatte__bilder img \{ aspect-ratio: 4 \/ 5; \}/);
-  assert.match(css, /@media \(min-width: 40rem\) \{ \.ansatte--remse \.ansatte__bilder \{ grid-template-columns: repeat\(4, minmax\(0, 1fr\)\); \} \}/);
+  assert.match(css, /\.ansatte--remse \.ansatte__bilder img \{ aspect-ratio: 1 \/ 1; object-position: center 30%; \}/, 'telefon: kvadrater');
+  assert.match(css, /@media \(min-width: 40rem\) \{\s*\.ansatte--remse \.ansatte__bilder \{ grid-template-columns: repeat\(4, minmax\(0, 1fr\)\); max-width: 40rem; \}\s*\.ansatte--remse \.ansatte__bilder img \{ aspect-ratio: 4 \/ 5;/, 'fra 40rem: fire på rad, maks 40rem bred, stående bilder');
 });
 
 test('Om oss Stavanger: ny tekst «Fra oppstart til over 50 ansatte» ordrett fra dokumentet (Marit 2026-11-13), den gamle er borte; Oslo er uendret', () => {

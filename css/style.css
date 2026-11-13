@@ -1136,9 +1136,13 @@ html.logo-anim .side-nav__logo .nb-skinn { animation: nb-skinn-sveip 520ms cubic
 .stopp--jobb .ansatte h3 { margin-top: 0; }
 .ansatte__tekst p { margin-top: var(--s-3); color: var(--tekst-svak); max-width: 60ch; }
 @media (min-width: 56rem) { .ansatte { grid-template-columns: 1.15fr 1fr; align-items: center; gap: var(--s-6); } }
-/* Stavanger (Marit 2026-11-13): fire arbeidsbilder som en remse over «Ansatte»: 2 × 2 på telefon, fire på rad fra 40rem, og teksten under (ikke ved siden av som på Oslo). */
-.ansatte--remse .ansatte__bilder img { aspect-ratio: 4 / 5; }
-@media (min-width: 40rem) { .ansatte--remse .ansatte__bilder { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* Stavanger (Marit 2026-11-13): fire arbeidsbilder som en remse over «Ansatte», og teksten under (ikke ved siden av som på Oslo). Remsen er maks 40rem (640 px) bred, ikke hele bredden (992 px var for stort;
+   Oslo-veggen er 513 px, Ricky 2026-11-13): 2 × 2 kvadrater på telefon, fire stående bilder (4:5) på rad fra 40rem. */
+.ansatte--remse .ansatte__bilder img { aspect-ratio: 1 / 1; object-position: center 30%; }
+@media (min-width: 40rem) {
+  .ansatte--remse .ansatte__bilder { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 40rem; }
+  .ansatte--remse .ansatte__bilder img { aspect-ratio: 4 / 5; object-position: center; }
+}
 @media (min-width: 56rem) { .ansatte.ansatte--remse { grid-template-columns: minmax(0, 1fr); align-items: start; } }
 
 /* Miljø og seriøsitet: Maritts fire tekstblokker på hvite kort under rutene */
