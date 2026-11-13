@@ -14,9 +14,12 @@
       <article class="miljo-kort">
         <div class="miljo-kort__topp"><img loading="lazy" decoding="async" class="miljo-kort__logo miljo-kort__logo--sert" src="{{rot}}bilder/logo-miljofyrtarn-horisontal.svg" alt="Miljøfyrtårn – sertifisert virksomhet" width="778" height="281"></div>
         <div class="miljo-kort__tekst">
-        <h3>Miljøfyrtårn siden 2011</h3>
+        {{#er_oslo}}<h3>Miljøfyrtårn siden 2011</h3>
         <p>Clean Unit har vært Miljøfyrtårn-sertifisert siden 2011.</p>
-        <p>Sertifiseringen innebærer at vi arbeider systematisk med å redusere miljøbelastningen fra virksomheten vår. Hvert år rapporterer vi klima- og miljødata, og vurderer tiltak for videre forbedring. Sertifiseringen krever årlig rapportering og regelmessig resertifisering.</p>
+        <p>Sertifiseringen innebærer at vi arbeider systematisk med å redusere miljøbelastningen fra virksomheten vår. Hvert år rapporterer vi klima- og miljødata, og vurderer tiltak for videre forbedring. Sertifiseringen krever årlig rapportering og regelmessig resertifisering.</p>{{/er_oslo}}{{^er_oslo}}<!-- Stavangers egen Miljøfyrtårn-tekst (Marit/Thord 2026-11-13, Tekst Stavanger 131126.docx), ordrett. -->
+        <h3>Miljøfyrtårn-sertifisert</h3>
+        <p>Clean Unit Stavanger er Miljøfyrtårn-sertifisert og arbeider systematisk med å redusere miljøbelastningen fra virksomheten. Clean Unit i Oslo har vært sertifisert siden 2011, og miljøarbeid har lenge vært en viktig del av måten vi driver på.</p>
+        <p>Vi har konkrete miljømål, rapporterer årlig og jobber med kontinuerlig forbedring.</p>{{/er_oslo}}
         <p>I praksis betyr det blant annet:</p>
         <ul>
           <li>miljømerkede rengjøringsmidler</li>

@@ -585,13 +585,28 @@ test('miljo/: fire detaljkort på hvit flate (aldri himmel under himmel-hodet), 
     const h = les(sideFil(by, 'miljo'));
     assert.match(h, /<section class="stopp--tillit" id="miljo">/, by);
     assert.equal((h.match(/<article class="miljo-kort">/g) || []).length, 4, `${by}: antall miljø-kort`);
-    for (const t of ['Miljøfyrtårn siden 2011', 'Medlem av Virke og med tariffavtale', 'Offentlig godkjent renholdsbedrift', 'Hvorfor vi velger bort underleverandører']) {
+    for (const t of [by === 'Oslo' ? 'Miljøfyrtårn siden 2011' : 'Miljøfyrtårn-sertifisert', 'Medlem av Virke og med tariffavtale', 'Offentlig godkjent renholdsbedrift', 'Hvorfor vi velger bort underleverandører']) {
       assert.ok(h.includes(`<h3>${t}</h3>`), `${by}: ${t}`);
     }
     assert.ok(h.includes('<div class="vask-boks"><h2 data-vask>Godkjent, ansvarlig og til stede</h2></div>'), by);
     assert.doesNotMatch(h.slice(h.indexOf('id="miljo"'), h.indexOf('</section>', h.indexOf('id="miljo"'))), /class="eyebrow"/, `${by}: eyebrowen er H1 nå`);
   }
 });
+test('Miljø Stavanger: egen Miljøfyrtårn-tekst ordrett fra dokumentet (Marit/Thord 2026-11-13), Oslo er uendret', () => {
+  const st = les(sideFil('Stavanger', 'miljo')); const oslo = les(sideFil('Oslo', 'miljo'));
+  const stKort = st.slice(st.indexOf('<h3>Miljøfyrtårn-sertifisert</h3>'), st.indexOf('</article>', st.indexOf('<h3>Miljøfyrtårn-sertifisert</h3>')));
+  for (const avsnitt of [
+    'Clean Unit Stavanger er Miljøfyrtårn-sertifisert og arbeider systematisk med å redusere miljøbelastningen fra virksomheten. Clean Unit i Oslo har vært sertifisert siden 2011, og miljøarbeid har lenge vært en viktig del av måten vi driver på.',
+    'Vi har konkrete miljømål, rapporterer årlig og jobber med kontinuerlig forbedring.',
+    'I praksis betyr det blant annet:',
+  ]) assert.ok(stKort.includes(`<p>${avsnitt}</p>`), `Stavanger: «${avsnitt.slice(0, 40)}…»`);
+  const punkter = [...stKort.matchAll(/<li>([^<]+)<\/li>/g)].map((m) => m[1]);
+  assert.deepEqual(punkter, ['miljømerkede rengjøringsmidler', 'mikrofiber og tørrest mulig renhold', 'riktig dosering av rengjøringsmidler', 'kildesortering', 'fokus på holdbart utstyr og riktig vedlikehold', 'årlig måling og forbedring av miljøarbeidet'], 'Stavanger: de seks punktene');
+  const stSynlig = st.replace(/<!--[\s\S]*?-->/g, '');
+  assert.ok(!stSynlig.includes('Miljøfyrtårn siden 2011') && !stSynlig.includes('Sertifiseringen innebærer at vi'), 'Stavanger: den felles Oslo-teksten er borte');
+  assert.ok(oslo.includes('<h3>Miljøfyrtårn siden 2011</h3>') && oslo.includes('Clean Unit har vært Miljøfyrtårn-sertifisert siden 2011.') && !oslo.includes('Miljøfyrtårn-sertifisert</h3>'), 'Oslo beholder sin tekst');
+});
+
 test('CSS: miljø-siden er hvit, og scroll-margin-listen kjenner #miljo', () => {
   const css = les('css/style.css');
   assert.match(css, /\.side--miljo \.stopp--tillit \{ background: var\(--flate\); \}/);
