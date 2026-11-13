@@ -1092,16 +1092,10 @@ html.logo-anim .side-nav__logo .nb-skinn { animation: nb-skinn-sveip 520ms cubic
 }
 .tjeneste-mer summary:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
 .tjeneste-mer[open] summary { margin-bottom: var(--s-1); }
-/* Mobil (Ricky 2026-11-13): overskriften og ikonet åpner/lukker «Les mer» (js/main.js, tjenesteKortTrykk). Pila ved overskriften viser at den kan trykkes på og snur seg når kortet er åpent. */
+/* Mobil (Ricky 2026-11-13): overskriften og ikonet åpner/lukker «Les mer» (js/main.js, tjenesteKortTrykk). Pekeren viser at de kan trykkes på. En pil ved overskriften ble prøvd og tatt bort igjen (Ricky). */
 @media (max-width: 48rem) {
   .tjeneste-kort:has(> details.tjeneste-mer) :is(h3, .tjeneste-kort__ikon) { cursor: pointer; }
-  .tjeneste-kort:has(> details.tjeneste-mer) h3::after {
-    content: ""; display: inline-block; width: .42em; height: .42em; margin-left: .6em; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
-    transform: translateY(-.18em) rotate(45deg); transition: transform .2s;
-  }
-  .tjeneste-kort:has(> details.tjeneste-mer[open]) h3::after { transform: translateY(.06em) rotate(-135deg); }
 }
-@media (max-width: 48rem) and (prefers-reduced-motion: reduce) { .tjeneste-kort:has(> details.tjeneste-mer) h3::after { transition: none; } }
 
 /* Om oss: Personkortene i høyrekolonnen */
 .om-team { min-width: 0; }
@@ -1400,4 +1394,3 @@ html.js .side-nav:not(.side-nav--festet) { background: transparent; box-shadow: 
 /* Sidehodets bilde: «ballong» (standard, Marit 2026-10-15) eller «miniby» (hode-oslo/hode-stavanger, tag sidehode-miniby; bytt
    hode_bilde/-bredde/-hoyde/-klasse i byer.json). Minibyen er høyere og trenger mindre luft over og under. */
 .side-hode__by--miniby { --hode-by-topp: 1.1rem; --hode-by-bunn: .4rem; }
-.by--stavanger .tjeneste-kort__ikon { height: 3.5rem; opacity: .85; }

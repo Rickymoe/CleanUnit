@@ -228,7 +228,7 @@ test('Ordmerket i footeren: stille SVG i src, animert versjon via data-lys, lik 
   assert.doesNotMatch(fn, /disconnect/, 'observeren slutter ikke å følge merket: animasjonen spilles hver gang footeren kommer til syne igjen');
 });
 
-test('Tjenester på mobil: overskriften og ikonet åpner og lukker «Les mer» (Ricky 2026-11-13), bare under 48rem, og pila viser det', () => {
+test('Tjenester på mobil: overskriften og ikonet åpner og lukker «Les mer» (Ricky 2026-11-13), bare under 48rem, uten pil; Stavanger-ikonene er like som Oslos', () => {
   const js = les('js/main.js'); const fn = js.slice(js.indexOf('function tjenesteKortTrykk'), js.indexOf('// Forsidekortene lenker til tjenester'));
   assert.match(fn, /matchMedia\('\(max-width: 48rem\)'\)/, 'bare under 48rem');
   assert.match(fn, /:scope > h3, :scope > \.tjeneste-kort__ikon/, 'overskrift og ikon');
@@ -236,7 +236,8 @@ test('Tjenester på mobil: overskriften og ikonet åpner og lukker «Les mer» (
   assert.match(js, /initSider[\s\S]*tjenesteKortTrykk\(\)/, 'kalles fra initSider');
   const css = les('css/style.css');
   assert.match(css, /@media \(max-width: 48rem\) \{\s*\.tjeneste-kort:has\(> details\.tjeneste-mer\) :is\(h3, \.tjeneste-kort__ikon\) \{ cursor: pointer; \}/, 'pekeren');
-  assert.match(css, /\.tjeneste-kort:has\(> details\.tjeneste-mer\[open\]\) h3::after \{ transform: /, 'pila snur seg når kortet er åpent');
+  assert.doesNotMatch(css, /tjeneste-mer[^{]*h3::after/, 'ingen pil ved overskriften (Ricky 2026-11-13)');
+  assert.doesNotMatch(css, /\.by--stavanger \.tjeneste-kort__ikon/, 'Stavanger-ikonene har ingen egen regel: samme 6,25rem og full styrke som Oslo');
   for (const by of ['Oslo', 'Stavanger']) {
     const h = les(sideFil(by, 'tjenester'));
     assert.equal((h.match(/<details class="tjeneste-mer">/g) || []).length, 7, `${by}: sju kort med «Les mer»`);
@@ -916,11 +917,11 @@ test('Kontakt: seksjonen fortsetter bakgrunnsvekslingen, uten skjema', () => {
   assert.match(css, /\[hidden\] \{ display: none; \}/);
 });
 
-test('Stavanger: samme grønne palett som Oslo, eget bybilde og dempede symboler, Oslo uendret', () => {
+test('Stavanger: samme grønne palett som Oslo, eget bybilde og samme symboler som Oslo (størrelse og styrke), Oslo uendret', () => {
   const css = les('css/style.css');
   assert.doesNotMatch(css, /\.by--stavanger[^{]*\{[^}]*--teal/, 'Stavanger skal ikke overstyre fargetokenene');
   assert.doesNotMatch(css, /\.by--stavanger[^{]*\{[^}]*(5A2848|F5EBF1|--burgunder)/, 'ingen burgunder tema for Stavanger');
-  assert.match(css, /\.by--stavanger \.tjeneste-kort__ikon \{/);
+  assert.doesNotMatch(css, /\.by--stavanger \.tjeneste-kort__ikon/, 'Stavanger-ikonene har ingen egen regel: samme størrelse (6,25rem) og full styrke som Oslo (Ricky 2026-11-13)');
   assert.doesNotMatch(css, /\.by--oslo \{[^}]*--teal:/);
   assert.match(les('test/ut/stavanger/index.html'), /name="theme-color" content="#00595B"/);
   assert.match(les('test/ut/index.html'), /name="theme-color" content="#00595B"/);
