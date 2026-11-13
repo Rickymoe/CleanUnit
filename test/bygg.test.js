@@ -1127,11 +1127,19 @@ test('Oslo: heroens grå ingress er nøyaktig de tre punktene, uten underleveran
   assert.ok(!/underleverandør/i.test(tagline + grå));
 });
 
-// Ricky 2026-10-12 (Marits endringsark): Stavangers hero-ingress er byttet fra «Spesialister på
-// barnehagerenhold …» til byens egen linje. Begge byene har nå direkte-ansatte-løftet i heroen.
-test('Stavanger: heroens ingress er byens egen (restauranter og kinoer, direkte ansatte)', () => {
-  assert.equal(heroIngress('test/ut/stavanger/index.html'),
-    '<strong>Profesjonelt renhold for bedrifter, restauranter,<br> kinoer og barnehager</strong><br><span class="ingress-direkte hero__fakta hero__fakta--to"><span>Direkte ansatte</span><i aria-hidden="true"></i><span>ingen underleverandører</span></span>');
+// Ricky 2026-10-12 (Marits endringsark): Stavangers hero-ingress er byens egen linje (restauranter og kinoer). 2026-11-13 (Marit, Tekst Stavanger 131126.docx):
+// den fete setningen står på én linje og fakta-linja er «Etablert i 2022 • Miljøfyrtårn • Offentlig godkjent» (Marits «Miljøfyrtårn-sertifisert» kortet til Oslos «Miljøfyrtårn», Ricky 2026-11-13), som Oslos oppsett (like brede linjer).
+// «Egne renholdere» er utelatt (Marit foreslo selv å fjerne den); «Direkte ansatte • ingen underleverandører» er byttet ut.
+test('Stavanger: heroens ingress er byens egen: fet setning på én linje og tre fakta (Marit 2026-11-13), bygget som Oslos', () => {
+  const [tagline, grå, ...rest] = heroIngress('test/ut/stavanger/index.html').split('<br>');
+  assert.equal(rest.length, 0, 'bare ett <br>, som Oslo');
+  assert.equal(tagline, '<strong>Profesjonelt renhold for bedrifter, restauranter, kinoer og barnehager</strong>');
+  assert.equal(grå, '<span class="hero__fakta"><span>Etablert i 2022</span><i aria-hidden="true"></i><span>Miljøfyrtårn</span><i aria-hidden="true"></i><span>Offentlig godkjent</span></span>');
+  assert.ok(!/underleverandør|Egne renholdere/i.test(tagline + grå), 'ikke «underleverandører» eller «Egne renholdere» i heroen');
+  const css = les('css/style.css');
+  assert.doesNotMatch(css, /hero__fakta--to/, 'den sentrerte varianten er borte: begge byer bruker samme .hero__fakta');
+  assert.match(css, /@media \(min-width: 48rem\) \{\s*\.by--stavanger \.hero__ingress strong \{ display: block; white-space: nowrap; font-size: calc\(var\(--logo-skrift\) \* \.153\);/, 'Stavanger: setningen på én linje fra 48rem');
+  assert.doesNotMatch(css, /@media \(max-width: 48rem\) \{[^}]*by--stavanger \.hero__ingress br/, 'ingen br-regel for telefon lenger (setningen har ingen tvungen brytning)');
 });
 
 test('Stavanger-lederen heter Thord Hegre, daglig leder (Enhetsregisteret), aldri «Thor D.»', () => {

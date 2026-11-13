@@ -301,12 +301,6 @@ html.js .logo.kjor, html.js-vask [data-vask].kjor {
 @media (max-width: 48rem) {
   .hero { --logo-skrift: clamp(3.6rem, 11.5vw, 5.6rem); }
   .hero__ingress { font-size: var(--t-sm); }
-  /* Stavanger: den tvungne brytningen i ingressen («…restauranter / kinoer og
-     barnehager.») ga tre linjer på telefon (förste del tar to). Skjul br-en så
-     teksten flyter og balanserer til to linjer. Sekundærlinjen «Direkte ansatte • ingen underleverandører» var skjult på telefon
-     (Ricky 2026-10-12), men vises nå også der (Ricky 2026-10-14: «vises ikke» på mobil); den er en .hero__fakta-rad som Oslos.
-     Kun Stavanger — Oslo-ingressen er urørt. */
-  .by--stavanger .hero__ingress br { display: none; }
   .hero__rekkevidde { font-size: var(--t-sm); margin-top: var(--s-2); }
 }
 
@@ -1029,10 +1023,18 @@ html.logo-anim .side-nav__logo .nb-skinn { animation: nb-skinn-sveip 520ms cubic
 /* Oslo-heroens tre punkter står som tre ledd på én rad i stedet for en kommaliste (Marit 2026-10-14: taglinen mister
    punktum, og «Etablert 2007, offentlig godkjent, Miljøfyrtårn» ble rar med komma). Leddene fordeles over ingressens bredde. */
 .hero__fakta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 .75rem; margin-top: .15rem; }
-.hero__fakta--to { justify-content: center; gap: 0 .75rem; }
 .hero__fakta > span { white-space: nowrap; }
+/* Stavanger (Marit 2026-11-13: «noen linjer som følges», «de to tekstlinjene i samme bredde»): den lengre setningen (70 tegn mot Oslos 54) står på én linje med samme bredde som logoen og fakta-linja.
+   Skriften følger logoen (0,153 × --logo-skrift = 13,7 px ved full logo; ved 15 px trengte setningen 497 px mot logoens 466), og linja strekkes de siste pikslene (justify).
+   Under 48rem flyter og balanserer setningen som før (der er logoen bare ca. 300 px bred). */
+@media (min-width: 48rem) {
+  .by--stavanger .hero__ingress strong { display: block; white-space: nowrap; font-size: calc(var(--logo-skrift) * .153); text-align: justify; text-align-last: justify; }
+  .by--stavanger .hero__ingress br { display: none; }   /* strong er en blokk nå; br-en ville laget en tom linje */
+}
 .hero__fakta > i { flex: none; align-self: center; width: .3rem; height: .3rem; border-radius: 50%; background: var(--teal); }
 @media (max-width: 48rem) { .hero__fakta { justify-content: center; gap: 0 .45rem; font-size: .8125rem; } }
+/* Stavanger (Ricky 2026-11-13): «Etablert i 2022 • Miljøfyrtårn • Offentlig godkjent» er 51 tegn og trenger litt tettere mellomrom for å holde seg på én linje på telefon (300 px). */
+@media (max-width: 48rem) { .by--stavanger .hero__fakta { gap: 0 .3rem; } }
 .stopp__lede--flere { max-width: 68ch; }
 .stopp__lede--flere > p + p { margin-top: var(--s-3); }
 
