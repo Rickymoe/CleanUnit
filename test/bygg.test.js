@@ -578,7 +578,7 @@ test('om-oss/: «Om oss», flåten og «Jobb hos oss» (åpen søknad, ansattsit
     assert.doesNotMatch(h.slice(h.indexOf('id="om-oss"'), h.indexOf('id="jobb-hos-oss"')), /class="eyebrow"/, `${by}: «Om oss»-eyebrowen er H1 nå`);
   }
   assert.ok(les(sideFil('Oslo', 'om_oss')).includes('Marit Byfuglien'));
-  assert.ok(les(sideFil('Stavanger', 'om_oss')).includes('To kontorer, samme standard'));
+  assert.ok(les(sideFil('Stavanger', 'om_oss')).includes('Fra oppstart til over 50 ansatte'));
 });
 test('miljo/: fire detaljkort på hvit flate (aldri himmel under himmel-hodet), id=miljo', () => {
   for (const by of ['Oslo', 'Stavanger']) {
@@ -612,9 +612,9 @@ const VASK = {
   Stavanger: {
     forside: ['Renhold tilpasset deres arbeidssted'], tjenester: ['Renhold tilpasset deres arbeidssted'],
     referanser: ['Dette sier kundene våre'],
-    // Marit 2026-10-12: Stavangers egen Om oss-tekst har samme overskrift som Oslo (samme historie,
-    // datert til Stavanger). Den erstattet utkastet «To kontorer, samme standard».
-    om_oss: ['Fra to personer med hver sin mopp', 'Renholderne er våre viktigste medarbeidere'],
+    // Marit 2026-10-12: Stavangers egen Om oss-tekst (erstattet utkastet «To kontorer, samme standard»); 2026-11-13 ny overskrift og tekst fra dokumentet
+    // «Tekst Stavanger 131126.docx»: «Fra oppstart til over 50 ansatte».
+    om_oss: ['Fra oppstart til over 50 ansatte', 'Renholderne er våre viktigste medarbeidere'],
     miljo: ['Godkjent, ansvarlig og til stede'],
   },
 };test('Vaskesveipet: riktige overskrifter per side, hver i .vask-boks', () => {
@@ -934,7 +934,7 @@ test('Stavanger-siden får ikke Oslo-kontorets tekster, men beholder sine egne',
     assert.ok(!h.includes(t), `Oslo-teksten «${t}» lekker inn i Stavanger-siden`);
   }
   assert.ok(h.includes('Hva koster renhold for dere?'));
-  assert.ok(h.includes('To kontorer, samme standard'));
+  assert.ok(h.includes('Fra oppstart til over 50 ansatte'));   // Stavangers egen Om oss-tekst (Marit 2026-11-13)
 });
 
 // Task 10: sikkerhetsnettet mot at en senere endring gjør Stavanger til en kopi av Oslo.
@@ -944,10 +944,25 @@ test('Stavanger-siden får ikke Oslo-kontorets tekster, men beholder sine egne',
 // så kommentarer fjernes før letingen i stedet for å svekke kilden.
 const synlig = (h) => h.replace(/<!--[\s\S]*?-->/g, '');
 
+test('Om oss Stavanger: ny tekst «Fra oppstart til over 50 ansatte» ordrett fra dokumentet (Marit 2026-11-13), den gamle er borte; Oslo er uendret', () => {
+  const st = les(sideFil('Stavanger', 'om_oss')); const oslo = les(sideFil('Oslo', 'om_oss'));
+  const hoved = st.slice(st.indexOf('<h2 data-vask>Fra oppstart'), st.indexOf('</div>', st.indexOf('stopp__lede')));
+  for (const avsnitt of [
+    'Clean Unit startet i Oslo i 2007 med to personer, hver sin mopp og en idé om å bygge en renholdsbedrift med god service og gode arbeidsforhold.',
+    'I 2022 startet vi opp i Stavanger. Siden den gang har vi vokst til over 50 ansatte, men tankegangen er fortsatt den samme: Renholderne skal kjenne arbeidsplassen sin, kundene skal vite hvem som kommer, og det skal være enkelt å få tak i oss når noe må løses.',
+    'Clean Unit Stavanger ledes lokalt, med kort vei mellom kundene, renholderne og administrasjonen. Vi legger stor vekt på faste renholdere, god opplæring og tett oppfølging.',
+    'Våre ansatte får både teoretisk og praktisk opplæring i arbeidsmetoder, hygiene, HMS og oppgavene på arbeidsstedet.',
+    'Vi ønsker å være en renholdsleverandør kundene kjenner, og som kjenner kundene sine.',
+  ]) assert.ok(hoved.includes(`<p>${avsnitt}</p>`), `Stavanger Om oss: «${avsnitt.slice(0, 40)}…»`);
+  assert.equal((hoved.match(/<p>/g) || []).length, 5, 'fem avsnitt');
+  const stSynlig = st.replace(/<!--[\s\S]*?-->/g, '');   // kommentarer nevner den gamle overskriften
+  assert.ok(!stSynlig.includes('Fra to personer med hver sin mopp') && !stSynlig.includes('I 2022 ble Clean Unit Stavanger etablert'), 'den gamle Stavanger-teksten er borte');
+  assert.ok(oslo.includes('<h2 data-vask>Fra to personer med hver sin mopp</h2>') && !oslo.includes('Fra oppstart til over 50 ansatte'), 'Oslo beholder sin tekst');
+});
+
 test('Stavanger: ingen Oslo-tekster på noen av de fem sidene, men egne tekster og eget kontor', () => {
   const h = synlig(heleBy('Stavanger'));
-  // Merk: overskriften «Fra to personer med hver sin mopp» er ikke lenger Oslo-spesifikk — Marit
-  // 2026-10-12 ga Stavanger sin egen Om oss-tekst med samme overskrift.
+  // Merk: Stavanger har egen Om oss-tekst (Marit 2026-10-12, ny 2026-11-13: «Fra oppstart til over 50 ansatte»).
   for (const t of ['Marit Byfuglien', 'Mari Pedersen', 'Guro Klingenberg', 'Boligstiftelsen Nydalen', 'Dr. Brandt', 'logo-pioner', 'logo-bsn',
     'logo-kanvas', 'logo-medistim', 'logo-staalverkskroken',
     'rundt 100 kunder', 'over 100 kunder i Oslo', 'Flere av våre ansatte har jobbet i Clean Unit i over ti år', 'Trenger dere en ny renholdsleverandør?', '21 55 56 80', 'renhold@cleanunit.no']) {
